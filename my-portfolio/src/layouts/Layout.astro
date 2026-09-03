@@ -28,18 +28,76 @@ const {
 
     <title>{title}</title>
     <script is:inline src="/scripts/anime.min.js"></script>
+    <script is:inline src="/scripts/motion.js"></script>
   </head>
 
   <body>
+    <!-- Motion.dev Global Scroll Linked Telemetry Progress Bar -->
+    <div id="scrollProgressBar" aria-hidden="true"></div>
+
     <slot />
 
-    <!-- Anime.js Powered Global Scroll Reveal Orchestrator -->
+    <!-- Motion.dev & Skiper UI & Anime.js Interaction Orchestrator -->
     <script>
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const anime = (window as any).anime;
+      const Motion = (window as any).Motion;
 
+      // 1. Motion.dev Scroll Linked Telemetry Bar
+      if (Motion && Motion.scroll && Motion.animate && !prefersReduced) {
+        try {
+          Motion.scroll(
+            Motion.animate('#scrollProgressBar', { scaleX: [0, 1] }, { ease: 'linear' })
+          );
+        } catch {
+          // Fallback native scroll progress
+          window.addEventListener('scroll', () => {
+            const bar = document.getElementById('scrollProgressBar');
+            if (bar) {
+              const max = document.documentElement.scrollHeight - window.innerHeight;
+              const progress = max > 0 ? window.scrollY / max : 0;
+              bar.style.transform = `scaleX(${progress})`;
+            }
+          }, { passive: true });
+        }
+      }
+
+      // 2. Skiper UI Spotlight Cursor Tracking on Cards
+      const spotlightCards = document.querySelectorAll(
+        '.skiper-spotlight, .hud-card, .mission-dossier, .bay-card, .profile-specs-card, .comms-card'
+      );
+      spotlightCards.forEach((card) => {
+        card.addEventListener('mousemove', (e: any) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          (card as HTMLElement).style.setProperty('--mouse-x', `${x}px`);
+          (card as HTMLElement).style.setProperty('--mouse-y', `${y}px`);
+        });
+      });
+
+      // 3. Skiper UI 3D Interactive Card Perspective Tilt
       if (!prefersReduced) {
-        // Collect animatable section blocks
+        const tiltCards = document.querySelectorAll('.mission-dossier, .skiper-tilt');
+        tiltCards.forEach((card) => {
+          card.addEventListener('mousemove', (e: any) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const rotX = ((y - cy) / cy) * -3.5;
+            const rotY = ((x - cx) / cx) * 3.5;
+            (card as HTMLElement).style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-2px)`;
+          });
+          card.addEventListener('mouseleave', () => {
+            (card as HTMLElement).style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+          });
+        });
+      }
+
+      // 4. Scroll Reveal Orchestrator
+      if (!prefersReduced) {
         const animBlocks = document.querySelectorAll(
           '.section-header-wrap, .mission-dossier, .bay-card, .track-card, .profile-specs-card, .timeline-container, .comms-card'
         );
@@ -56,6 +114,17 @@ const {
               if (entry.isIntersecting) {
                 const target = entry.target as HTMLElement;
                 revealObserver.unobserve(target);
+
+                if (Motion && Motion.animate) {
+                  try {
+                    Motion.animate(
+                      target,
+                      { opacity: [0, 1], y: [24, 0] },
+                      { duration: 0.65, easing: [0.16, 1, 0.3, 1] }
+                    );
+                    return;
+                  } catch {}
+                }
 
                 if (anime) {
                   try {
