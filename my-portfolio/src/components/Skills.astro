@@ -1,0 +1,220 @@
+---
+const capabilities = [
+  {
+    category: 'Robotics & Autonomy',
+    icon: '◎',
+    items: [
+      'Autonomous Navigation',
+      'ROS / ROS 2',
+      'SLAM',
+      'Path Planning',
+      'Motion Control',
+      'Sensor Fusion',
+      'Drive-by-Wire',
+    ],
+  },
+  {
+    category: 'Perception & AI',
+    icon: '◈',
+    items: [
+      'Computer Vision',
+      'OpenCV',
+      'LiDAR Processing',
+      'Object Detection',
+      'Image Processing',
+      'Machine Learning',
+      'Python / AI Frameworks',
+    ],
+  },
+  {
+    category: 'Embedded Systems',
+    icon: '⬡',
+    items: [
+      'ESP32 / Microcontrollers',
+      'Custom ECU Design',
+      'CAN Bus Protocol',
+      'UART / SPI / I2C',
+      'HV/LV Wiring Harnesses',
+      'Firmware Development',
+      'Real-time Systems',
+    ],
+  },
+  {
+    category: 'Hardware Engineering',
+    icon: '△',
+    items: [
+      'PCB Design',
+      'Schematic Capture',
+      'Board Fabrication',
+      'Power Electronics',
+      'Sensor Integration',
+      'Vehicle Electrical Architecture',
+      'System Integration',
+    ],
+  },
+  {
+    category: 'Software & Tools',
+    icon: '⬢',
+    items: [
+      'Python',
+      'C / C++',
+      'Linux / Ubuntu',
+      'Git / GitHub',
+      'Gazebo / Simulation',
+      'Docker',
+      'VS Code',
+    ],
+  },
+  {
+    category: 'Communication & Networking',
+    icon: '◇',
+    items: [
+      'TCP/IP',
+      'CAN Bus',
+      'ROS Topics / Services',
+      'Serial Communication',
+      'IoT Protocols',
+      'Wireless Systems',
+    ],
+  },
+];
+---
+
+<section id="systems" class="section skills-section">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-header-left">
+        <span class="section-number mono">04</span>
+        <span class="label">Engineering Stack</span>
+      </div>
+      <h2>Technical<br/><span class="heading-accent">capabilities</span></h2>
+      <p class="section-intro">
+        Core technical domains spanning robotics, autonomy,
+        perception, embedded systems, and hardware engineering.
+      </p>
+    </div>
+
+    <div class="skills-grid reveal-stagger">
+      {capabilities.map((cap) => (
+        <div class="skill-block">
+          <div class="skill-block-header">
+            <span class="skill-icon">{cap.icon}</span>
+            <h3 class="skill-category">{cap.category}</h3>
+          </div>
+          <ul class="skill-list">
+            {cap.items.map((item) => (
+              <li class="skill-item">
+                <span class="skill-dot"></span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills-section {
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header {
+    margin-bottom: var(--space-16);
+    max-width: 560px;
+  }
+
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .heading-accent {
+    color: var(--accent);
+  }
+
+  .section-intro {
+    margin-top: var(--space-4);
+    font-size: var(--text-base);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+
+  .skill-block {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    transition: border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .skill-block:hover {
+    border-color: var(--border-light);
+  }
+
+  .skill-block-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-icon {
+    font-size: var(--text-lg);
+    color: var(--accent);
+    width: 28px;
+    text-align: center;
+  }
+
+  .skill-category {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0;
+  }
+
+  .skill-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  .skill-dot {
+    width: 3px;
+    height: 3px;
+    background: var(--text-muted);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 1024px) {
+    .skills-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

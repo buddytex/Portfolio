@@ -1,0 +1,178 @@
+---
+const researchAreas = [
+  {
+    title: 'Autonomous Navigation',
+    description: 'Exploring LiDAR-based SLAM, path planning algorithms, and real-time obstacle avoidance for mobile robots in unstructured environments.',
+    tags: ['SLAM', 'LiDAR', 'Path Planning', 'ROS 2'],
+  },
+  {
+    title: 'Robot Perception',
+    description: 'Working with computer vision pipelines for object detection, feature extraction, and sensor fusion to enable robots to understand their surroundings.',
+    tags: ['Computer Vision', 'OpenCV', 'Sensor Fusion', 'Deep Learning'],
+  },
+  {
+    title: 'Embodied Intelligence',
+    description: 'Interested in bridging AI and physical robotics — vision-language-action models, multimodal learning, and intelligent decision-making for real-world robots.',
+    tags: ['VLA Models', 'Multimodal AI', 'Reinforcement Learning'],
+  },
+  {
+    title: 'Swarm Robotics',
+    description: 'Investigating distributed coordination, communication protocols, and emergent behavior in multi-robot systems.',
+    tags: ['Multi-Robot', 'TCP/IP', 'Distributed Systems', 'Coordination'],
+  },
+];
+---
+
+<section id="research" class="section research-section">
+  <div class="container">
+    <div class="research-header reveal">
+      <div class="section-header-left">
+        <span class="section-number mono">05</span>
+        <span class="label">Research & Exploration</span>
+      </div>
+      <h2>Engineering<br/><span class="heading-accent">curiosity</span></h2>
+      <p class="section-intro">
+        Areas of active exploration and research interest in robotics,
+        autonomy, and intelligent systems.
+      </p>
+    </div>
+
+    <div class="research-grid">
+      {researchAreas.map((area, i) => (
+        <article class="research-card reveal">
+          <div class="research-card-line" aria-hidden="true"></div>
+          <div class="research-card-content">
+            <div class="research-card-header">
+              <span class="mono research-idx">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{area.title}</h3>
+            </div>
+            <p>{area.description}</p>
+            <div class="research-tags">
+              {area.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="research-note reveal">
+      <p class="mono">
+        <span class="accent-text">NOTE:</span> These represent active research interests and
+        areas of engineering exploration — not claimed professional expertise or publications.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .research-header {
+    margin-bottom: var(--space-16);
+    max-width: 560px;
+  }
+
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .heading-accent {
+    color: var(--accent);
+  }
+
+  .section-intro {
+    margin-top: var(--space-4);
+    font-size: var(--text-base);
+  }
+
+  .research-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  .research-card {
+    display: flex;
+    gap: var(--space-5);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    transition: border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .research-card:hover {
+    border-color: var(--border-light);
+  }
+
+  .research-card-line {
+    width: 2px;
+    min-height: 100%;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  .research-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .research-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .research-idx {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .research-card h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .research-card p {
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+
+  .research-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .research-note {
+    margin-top: var(--space-10);
+    padding: var(--space-4) var(--space-6);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    border-left: 2px solid var(--amber);
+  }
+
+  .research-note p {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .accent-text {
+    color: var(--amber);
+  }
+
+  @media (max-width: 768px) {
+    .research-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

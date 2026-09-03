@@ -1,0 +1,559 @@
+---
+---
+
+<section class="hero" id="hero">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+
+  <div class="container hero-inner">
+    <div class="hero-content">
+      <div class="hero-meta">
+        <span class="label">Robotics & Autonomous Systems</span>
+        <span class="hero-status">
+          <span class="status-dot"></span>
+          Open to opportunities
+        </span>
+      </div>
+
+      <h1 class="hero-title">
+        Building machines<br/>
+        that <span class="hero-accent">perceive</span>,<br/>
+        <span class="hero-accent">reason</span>,
+        and <span class="hero-accent">move</span>.
+      </h1>
+
+      <p class="hero-description">
+        I'm <strong>Naveen Shaji George</strong> — a Robotics Engineer focused on
+        autonomous systems, embedded electronics, robot perception, and
+        real-world hardware-software integration.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">
+          View Projects
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
+          </svg>
+        </a>
+        <a href="#contact" class="btn btn-secondary">Contact Me</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-value">AIR 7</span>
+          <span class="hero-stat-label">Team Equinox 2025</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">AIR 11</span>
+          <span class="hero-stat-label">Team Equinox 2026</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">E&E</span>
+          <span class="hero-stat-label">Head, aBAJA Vehicle</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <canvas id="lidarCanvas" width="480" height="480"></canvas>
+      <div class="hero-visual-label">
+        <span class="mono">LiDAR_SCAN</span>
+        <span class="hero-visual-freq">10 Hz</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-indicator" aria-hidden="true">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<script>
+  // LiDAR Visualization — lightweight canvas animation
+  const canvas = document.getElementById('lidarCanvas') as HTMLCanvasElement;
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const size = 480;
+      canvas.width = size * dpr;
+      canvas.height = size * dpr;
+      ctx.scale(dpr, dpr);
+
+      const cx = size / 2;
+      const cy = size / 2;
+      const maxRadius = size * 0.42;
+
+      // Environment obstacles (walls/objects)
+      const obstacles: { angle: number; dist: number; width: number }[] = [];
+      for (let i = 0; i < 60; i++) {
+        const angle = (Math.PI * 2 * i) / 60 + (Math.random() - 0.5) * 0.06;
+        // Create irregular room-like boundaries
+        let dist = 0.7 + 0.25 * Math.sin(angle * 3) + 0.1 * Math.cos(angle * 7);
+        // Add some "doorways" (gaps)
+        if ((angle > 1.2 && angle < 1.5) || (angle > 4.0 && angle < 4.3)) {
+          dist = 0.95;
+        }
+        // Add closer obstacles
+        if ((angle > 2.3 && angle < 2.8) || (angle > 5.0 && angle < 5.3)) {
+          dist = 0.4 + Math.random() * 0.1;
+        }
+        obstacles.push({ angle, dist, width: 0.03 + Math.random() * 0.02 });
+      }
+
+      let scanAngle = 0;
+      let animationFrame: number;
+      const detectedPoints: { x: number; y: number; alpha: number; age: number }[] = [];
+
+      // Planned trajectory points
+      const trajectory: { x: number; y: number }[] = [];
+      for (let i = 0; i < 8; i++) {
+        trajectory.push({
+          x: cx + (i - 3.5) * 18 + Math.sin(i * 0.8) * 12,
+          y: cy - 10 - i * 8 + Math.cos(i * 0.6) * 6,
+        });
+      }
+
+      // Reduce motion check
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function getHitDistance(angle: number): number {
+        let minDist = 1.0;
+        for (const obs of obstacles) {
+          const diff = Math.abs(angle - obs.angle);
+          if (diff < obs.width || Math.abs(diff - Math.PI * 2) < obs.width) {
+            minDist = Math.min(minDist, obs.dist);
+          }
+        }
+        return minDist;
+      }
+
+      function draw() {
+        ctx!.clearRect(0, 0, size, size);
+
+        // Grid
+        ctx!.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+        ctx!.lineWidth = 0.5;
+        for (let r = 40; r <= maxRadius; r += 40) {
+          ctx!.beginPath();
+          ctx!.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx!.stroke();
+        }
+        // Cross hairs
+        ctx!.beginPath();
+        ctx!.moveTo(cx - maxRadius, cy);
+        ctx!.lineTo(cx + maxRadius, cy);
+        ctx!.moveTo(cx, cy - maxRadius);
+        ctx!.lineTo(cx, cy + maxRadius);
+        ctx!.stroke();
+
+        // Coordinate labels
+        ctx!.font = '9px "JetBrains Mono", monospace';
+        ctx!.fillStyle = 'rgba(255,255,255,0.12)';
+        ctx!.fillText('+X', cx + maxRadius - 16, cy - 6);
+        ctx!.fillText('+Y', cx + 6, cy - maxRadius + 14);
+
+        // FOV cone (scanning area highlight)
+        const fovWidth = 0.15;
+        ctx!.beginPath();
+        ctx!.moveTo(cx, cy);
+        ctx!.arc(cx, cy, maxRadius, scanAngle - fovWidth, scanAngle + fovWidth);
+        ctx!.closePath();
+        const fovGrad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, maxRadius);
+        fovGrad.addColorStop(0, 'rgba(0, 212, 255, 0.08)');
+        fovGrad.addColorStop(1, 'rgba(0, 212, 255, 0)');
+        ctx!.fillStyle = fovGrad;
+        ctx!.fill();
+
+        // Scan ray
+        const hitDist = getHitDistance(scanAngle);
+        const rayLen = hitDist * maxRadius;
+        const rayEndX = cx + Math.cos(scanAngle) * rayLen;
+        const rayEndY = cy + Math.sin(scanAngle) * rayLen;
+
+        ctx!.beginPath();
+        ctx!.moveTo(cx, cy);
+        ctx!.lineTo(rayEndX, rayEndY);
+        ctx!.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+        ctx!.lineWidth = 1;
+        ctx!.stroke();
+
+        // Add detected point
+        if (hitDist < 0.98) {
+          detectedPoints.push({
+            x: rayEndX,
+            y: rayEndY,
+            alpha: 1,
+            age: 0,
+          });
+        }
+
+        // Draw & age detected points
+        for (let i = detectedPoints.length - 1; i >= 0; i--) {
+          const pt = detectedPoints[i];
+          pt.age++;
+          pt.alpha = Math.max(0, 1 - pt.age / 180);
+
+          if (pt.alpha <= 0) {
+            detectedPoints.splice(i, 1);
+            continue;
+          }
+
+          ctx!.beginPath();
+          ctx!.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+          ctx!.fillStyle = `rgba(0, 212, 255, ${pt.alpha * 0.7})`;
+          ctx!.fill();
+        }
+
+        // Trajectory
+        if (trajectory.length > 1) {
+          ctx!.beginPath();
+          ctx!.moveTo(trajectory[0].x, trajectory[0].y);
+          for (let i = 1; i < trajectory.length; i++) {
+            ctx!.lineTo(trajectory[i].x, trajectory[i].y);
+          }
+          ctx!.strokeStyle = 'rgba(34, 197, 94, 0.4)';
+          ctx!.lineWidth = 1.5;
+          ctx!.setLineDash([4, 4]);
+          ctx!.stroke();
+          ctx!.setLineDash([]);
+
+          // Trajectory waypoints
+          trajectory.forEach((pt, i) => {
+            ctx!.beginPath();
+            ctx!.arc(pt.x, pt.y, 2, 0, Math.PI * 2);
+            ctx!.fillStyle = i === 0 ? 'rgba(34, 197, 94, 0.8)' : 'rgba(34, 197, 94, 0.3)';
+            ctx!.fill();
+          });
+        }
+
+        // Robot body (center)
+        ctx!.beginPath();
+        ctx!.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx!.fillStyle = '#00d4ff';
+        ctx!.fill();
+
+        // Robot direction indicator
+        ctx!.beginPath();
+        ctx!.moveTo(cx, cy - 10);
+        ctx!.lineTo(cx - 4, cy - 4);
+        ctx!.lineTo(cx + 4, cy - 4);
+        ctx!.closePath();
+        ctx!.fillStyle = 'rgba(0, 212, 255, 0.5)';
+        ctx!.fill();
+
+        // Advance scan
+        scanAngle += 0.04;
+        if (scanAngle > Math.PI * 2) scanAngle -= Math.PI * 2;
+
+        animationFrame = requestAnimationFrame(draw);
+      }
+
+      // Start animation (or show static frame for reduced motion)
+      if (prefersReducedMotion) {
+        // Draw a static full scan
+        for (let a = 0; a < Math.PI * 2; a += 0.05) {
+          scanAngle = a;
+          const hitDist = getHitDistance(a);
+          if (hitDist < 0.98) {
+            detectedPoints.push({
+              x: cx + Math.cos(a) * hitDist * maxRadius,
+              y: cy + Math.sin(a) * hitDist * maxRadius,
+              alpha: 0.6,
+              age: 0,
+            });
+          }
+        }
+        scanAngle = 0;
+        // Draw once
+        const drawOnce = () => {
+          ctx!.clearRect(0, 0, size, size);
+          ctx!.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+          ctx!.lineWidth = 0.5;
+          for (let r = 40; r <= maxRadius; r += 40) {
+            ctx!.beginPath();
+            ctx!.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx!.stroke();
+          }
+          ctx!.beginPath();
+          ctx!.moveTo(cx - maxRadius, cy);
+          ctx!.lineTo(cx + maxRadius, cy);
+          ctx!.moveTo(cx, cy - maxRadius);
+          ctx!.lineTo(cx, cy + maxRadius);
+          ctx!.stroke();
+          detectedPoints.forEach((pt) => {
+            ctx!.beginPath();
+            ctx!.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+            ctx!.fillStyle = `rgba(0, 212, 255, ${pt.alpha * 0.7})`;
+            ctx!.fill();
+          });
+          if (trajectory.length > 1) {
+            ctx!.beginPath();
+            ctx!.moveTo(trajectory[0].x, trajectory[0].y);
+            for (let i = 1; i < trajectory.length; i++) {
+              ctx!.lineTo(trajectory[i].x, trajectory[i].y);
+            }
+            ctx!.strokeStyle = 'rgba(34, 197, 94, 0.4)';
+            ctx!.lineWidth = 1.5;
+            ctx!.setLineDash([4, 4]);
+            ctx!.stroke();
+            ctx!.setLineDash([]);
+          }
+          ctx!.beginPath();
+          ctx!.arc(cx, cy, 6, 0, Math.PI * 2);
+          ctx!.fillStyle = '#00d4ff';
+          ctx!.fill();
+        };
+        drawOnce();
+      } else {
+        // Pause when not visible
+        const heroObserver = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              if (!animationFrame) draw();
+            } else {
+              if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = 0;
+              }
+            }
+          },
+          { threshold: 0.1 }
+        );
+        heroObserver.observe(canvas);
+        draw();
+      }
+    }
+  }
+</script>
+
+<style>
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: calc(var(--nav-height) + var(--space-8));
+    padding-bottom: var(--space-16);
+  }
+
+  /* Subtle grid background */
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--space-16);
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Content */
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .hero-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero-title {
+    color: var(--text);
+    max-width: 680px;
+  }
+
+  .hero-accent {
+    color: var(--accent);
+  }
+
+  .hero-description {
+    font-size: var(--text-md);
+    max-width: 540px;
+    line-height: 1.7;
+  }
+
+  .hero-description strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  /* Stats */
+  .hero-stats {
+    display: flex;
+    gap: var(--space-10);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .hero-stat-value {
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .hero-stat-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  /* Visual */
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  #lidarCanvas {
+    width: 480px;
+    height: 480px;
+    max-width: 100%;
+    aspect-ratio: 1;
+  }
+
+  .hero-visual-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .hero-visual-label .mono {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .hero-visual-freq {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--accent);
+    opacity: 0.6;
+  }
+
+  /* Scroll indicator */
+  .hero-scroll-indicator {
+    position: absolute;
+    bottom: var(--space-8);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 0.8; transform: scaleY(1.2); }
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+    }
+
+    .hero-visual {
+      order: -1;
+    }
+
+    #lidarCanvas {
+      width: 360px;
+      height: 360px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding-top: calc(var(--nav-height) + var(--space-12));
+    }
+
+    .hero-inner {
+      gap: var(--space-8);
+    }
+
+    #lidarCanvas {
+      width: 300px;
+      height: 300px;
+    }
+
+    .hero-stats {
+      gap: var(--space-6);
+    }
+
+    .hero-stat-value {
+      font-size: var(--text-base);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-stats {
+      flex-wrap: wrap;
+      gap: var(--space-4) var(--space-8);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .status-dot,
+    .scroll-line {
+      animation: none;
+    }
+  }
+</style>

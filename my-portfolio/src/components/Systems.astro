@@ -1,0 +1,278 @@
+---
+const pipeline = [
+  { label: 'Sensors', detail: '/scan  /camera  /imu', color: 'var(--accent)' },
+  { label: 'Perception', detail: 'Object Detection · Feature Extraction', color: 'var(--accent)' },
+  { label: 'Localization', detail: 'SLAM · Odometry · TF', color: 'var(--accent-2)' },
+  { label: 'Planning', detail: 'Path Planning · Trajectory', color: 'var(--accent-2)' },
+  { label: 'Control', detail: '/cmd_vel · PID · Drive-by-Wire', color: 'var(--green)' },
+  { label: 'Actuators', detail: 'Motors · Steering · Braking', color: 'var(--green)' },
+];
+
+const rosTopics = [
+  '/scan',
+  '/camera/image_raw',
+  '/odom',
+  '/tf',
+  '/cmd_vel',
+  '/imu/data',
+  '/map',
+  '/goal_pose',
+];
+---
+
+<section id="ros-systems" class="section systems-section">
+  <div class="container">
+    <div class="systems-header reveal">
+      <div class="section-header-left">
+        <span class="section-number mono">03</span>
+        <span class="label">Robotics Systems</span>
+      </div>
+      <h2>Autonomous<br/><span class="heading-accent">architecture</span></h2>
+      <p class="section-intro">
+        Understanding the full autonomy stack — from raw sensor data to
+        physical robot actuation.
+      </p>
+    </div>
+
+    <div class="systems-content">
+      <!-- Pipeline visualization -->
+      <div class="pipeline reveal">
+        <div class="pipeline-label mono">AUTONOMY PIPELINE</div>
+        <div class="pipeline-flow">
+          {pipeline.map((stage, i) => (
+            <div class="pipeline-stage">
+              <div class="pipeline-node" style={`border-color: ${stage.color}`}>
+                <span class="pipeline-node-label">{stage.label}</span>
+                <span class="pipeline-node-detail mono">{stage.detail}</span>
+              </div>
+              {i < pipeline.length - 1 && (
+                <div class="pipeline-arrow" aria-hidden="true">
+                  <svg width="24" height="12" viewBox="0 0 24 12">
+                    <path d="M0 6h20M16 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1"/>
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ROS Topics -->
+      <div class="ros-topics reveal">
+        <div class="ros-topics-header">
+          <span class="mono ros-topics-title">ROS 2 TOPICS</span>
+          <span class="ros-status">
+            <span class="ros-status-dot"></span>
+            <span class="mono">active</span>
+          </span>
+        </div>
+        <div class="ros-topic-list">
+          {rosTopics.map((topic) => (
+            <div class="ros-topic-item">
+              <span class="ros-topic-chevron">›</span>
+              <span class="mono ros-topic-name">{topic}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .systems-section {
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--border);
+  }
+
+  .systems-header {
+    margin-bottom: var(--space-16);
+    max-width: 560px;
+  }
+
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .heading-accent {
+    color: var(--accent);
+  }
+
+  .section-intro {
+    margin-top: var(--space-4);
+    font-size: var(--text-base);
+  }
+
+  .systems-content {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  /* Pipeline */
+  .pipeline {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-8);
+  }
+
+  .pipeline-label {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-8);
+  }
+
+  .pipeline-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .pipeline-stage {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .pipeline-node {
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    transition: background var(--duration-normal) var(--ease-out);
+    min-width: 120px;
+  }
+
+  .pipeline-node:hover {
+    background: var(--bg-surface-2);
+  }
+
+  .pipeline-node-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .pipeline-node-detail {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .pipeline-arrow {
+    color: var(--text-muted);
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+
+  /* ROS Topics */
+  .ros-topics {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+  }
+
+  .ros-topics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ros-topics-title {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .ros-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.625rem;
+    color: var(--green);
+  }
+
+  .ros-status-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: ros-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes ros-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .ros-topic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ros-topic-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: background var(--duration-fast);
+  }
+
+  .ros-topic-item:hover {
+    background: var(--bg-surface-2);
+  }
+
+  .ros-topic-chevron {
+    color: var(--accent);
+    font-size: var(--text-sm);
+    opacity: 0.5;
+  }
+
+  .ros-topic-name {
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 900px) {
+    .systems-content {
+      grid-template-columns: 1fr;
+    }
+
+    .pipeline-flow {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .pipeline-arrow {
+      transform: rotate(90deg);
+      align-self: center;
+    }
+
+    .pipeline-node {
+      min-width: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ros-status-dot {
+      animation: none;
+    }
+  }
+</style>

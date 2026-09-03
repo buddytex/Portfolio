@@ -1,0 +1,149 @@
+---
+---
+
+<section id="about" class="section about-section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-left reveal">
+        <div class="section-header-left">
+          <span class="section-number mono">01</span>
+          <span class="label">Engineering Identity</span>
+        </div>
+        <h2>From schematic<br/>to <span class="heading-accent">system</span></h2>
+      </div>
+
+      <div class="about-right reveal">
+        <p class="about-lead">
+          I work at the intersection of electronics, embedded systems, robotics,
+          and mechanical integration — building real systems that operate in the
+          physical world.
+        </p>
+
+        <div class="about-details">
+          <p>
+            My most significant engineering experience comes from <strong>Team Equinox</strong>,
+            where I led the Electrical & Electronics development of an autonomous Baja vehicle
+            across two national campaigns, achieving <strong>AIR 7 (2025)</strong> and
+            <strong>AIR 11 (2026)</strong>.
+          </p>
+
+          <p>
+            My work has covered electrical architecture design, HV/LV wiring harnesses,
+            custom PCB design and fabrication, CAN bus communication networks, embedded ECU
+            development, drive-by-wire systems, and complete vehicle integration.
+          </p>
+
+          <p>
+            Beyond vehicles, I've built hospital service robots, smart surveillance systems
+            with computer vision, and swarm robotics platforms — always focused on bridging
+            the gap between software intelligence and physical hardware.
+          </p>
+        </div>
+
+        <div class="about-domains">
+          <div class="about-domain">
+            <span class="about-domain-label mono">Primary Focus</span>
+            <span class="about-domain-value">Robotics & Autonomous Systems</span>
+          </div>
+          <div class="about-domain">
+            <span class="about-domain-label mono">Engineering</span>
+            <span class="about-domain-value">Embedded Systems, PCB Design, Vehicle Integration</span>
+          </div>
+          <div class="about-domain">
+            <span class="about-domain-label mono">Software</span>
+            <span class="about-domain-value">ROS, Computer Vision, AI/ML</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 0.7fr 1.3fr;
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .heading-accent {
+    color: var(--accent);
+  }
+
+  .about-right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .about-lead {
+    font-size: var(--text-md);
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1.7;
+  }
+
+  .about-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .about-details p {
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  .about-details strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .about-domains {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+
+  .about-domain {
+    display: flex;
+    gap: var(--space-6);
+    align-items: baseline;
+  }
+
+  .about-domain-label {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+
+  .about-domain-value {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+
+    .about-domain {
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+  }
+</style>
