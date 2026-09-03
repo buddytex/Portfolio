@@ -1,58 +1,121 @@
 ---
+// Engineer Profile & Mission Timeline
+const timeline = [
+  {
+    year: '2025 – 2026',
+    milestone: 'AIR 11 & AIR 7 · aBAJA Autonomous Competition',
+    subsystem: 'Team Equinox // Electrical & Electronics Head',
+    desc: 'Directed the electrical architecture, custom ECUs, CAN network protocol, and autonomous drive-by-wire integration for consecutive national aBAJA campaigns.',
+    tags: ['CAN Bus 2.0B', 'Custom ECUs', 'HV/LV Harnesses', 'Drive-by-Wire', 'Safety Interlocks'],
+  },
+  {
+    year: '2024 – 2025',
+    milestone: 'Hospital Service Autonomous Mobile Robot (AMR)',
+    subsystem: 'Autonomous Navigation & IoT Telemetry',
+    desc: 'Integrated planar LiDAR SLAM, Nav2 dynamic costmap path planning, and remote IoT monitoring for healthcare logistics.',
+    tags: ['ROS 2', 'Nav2', 'SLAM', 'ESP32', 'Differential Drive'],
+  },
+  {
+    year: '2023 – 2024',
+    milestone: 'Smart CCTV Edge Computer Vision & Swarm Robotics',
+    subsystem: 'Edge AI & Distributed Cooperative Systems',
+    desc: 'Developed embedded vision anomaly detection with OpenCV and engineered peer-to-peer TCP/IP mesh coordination across multi-robot swarm units.',
+    tags: ['OpenCV', 'Python', 'TCP/IP Mesh', 'Distributed Robotics'],
+  },
+];
 ---
 
-<section id="about" class="section about-section">
+<section id="profile" class="section profile-section">
   <div class="container">
-    <div class="about-grid">
-      <div class="about-left reveal">
-        <div class="section-header-left">
-          <span class="section-number mono">01</span>
-          <span class="label">Engineering Identity</span>
+    <!-- Header -->
+    <div class="section-header-wrap">
+      <div class="section-meta-row">
+        <span class="sys-num">05</span>
+        <span class="sys-label">ENGINEER PROFILE & DOSSIER</span>
+      </div>
+      <h2>System specification &<br/><span class="heading-accent">mission chronology</span></h2>
+      <p class="section-desc">
+        A technical record of hands-on robotics engineering, vehicle system integration, and autonomous hardware deployments.
+      </p>
+    </div>
+
+    <!-- Two-column Layout: Profile Specs & Chronology Timeline -->
+    <div class="profile-layout">
+      <!-- Left: Telemetry Profile Spec Card -->
+      <div class="profile-specs-card hud-card">
+        <div class="card-top">
+          <span class="mono card-sys-id">PROFILE_ID // NSG-ROBOTICS-01</span>
+          <span class="status-beacon">
+            <span class="beacon-dot"></span>
+            <span class="mono">ACTIVE</span>
+          </span>
         </div>
-        <h2>From schematic<br/>to <span class="heading-accent">system</span></h2>
+
+        <div class="specs-table">
+          <div class="spec-row">
+            <span class="mono spec-k">ENGINEER:</span>
+            <span class="spec-v">Naveen Shaji George</span>
+          </div>
+          <div class="spec-row">
+            <span class="mono spec-k">SPECIALIZATION:</span>
+            <span class="spec-v highlight">Robotics & Autonomous Systems</span>
+          </div>
+          <div class="spec-row">
+            <span class="mono spec-k">DOMAINS:</span>
+            <span class="spec-v">Perception, Embedded ECUs, CAN Networks, ROS 2, Vehicle Integration</span>
+          </div>
+          <div class="spec-row">
+            <span class="mono spec-k">LOCATION:</span>
+            <span class="spec-v">India · Open to Global Relocation</span>
+          </div>
+          <div class="spec-row">
+            <span class="mono spec-k">TARGET ROLES:</span>
+            <span class="spec-v">Robotics Engineer / Autonomous Systems R&D / Embedded Robotics</span>
+          </div>
+        </div>
+
+        <div class="philosophy-box">
+          <span class="mono philosophy-lbl">[ENGINEERING STATEMENT]</span>
+          <p class="philosophy-txt">
+            I don't just write algorithms in simulation—I design the custom ECUs, crimp the isolated harnesses,
+            debug the CAN bus traffic, calibrate the LiDAR sensors, and tune the motion controllers until physical
+            machines operate reliably in harsh, unpredictable environments.
+          </p>
+        </div>
+
+        <div class="profile-download-box">
+          <a href="/Naveen_Shaji_George_CV.pdf" class="btn-tactical btn-primary-tactical" style="width: 100%; justify-content: center;" download>
+            DOWNLOAD FULL ENGINEERING CV (PDF)
+          </a>
+        </div>
       </div>
 
-      <div class="about-right reveal">
-        <p class="about-lead">
-          I work at the intersection of electronics, embedded systems, robotics,
-          and mechanical integration — building real systems that operate in the
-          physical world.
-        </p>
-
-        <div class="about-details">
-          <p>
-            My most significant engineering experience comes from <strong>Team Equinox</strong>,
-            where I led the Electrical & Electronics development of an autonomous Baja vehicle
-            across two national campaigns, achieving <strong>AIR 7 (2025)</strong> and
-            <strong>AIR 11 (2026)</strong>.
-          </p>
-
-          <p>
-            My work has covered electrical architecture design, HV/LV wiring harnesses,
-            custom PCB design and fabrication, CAN bus communication networks, embedded ECU
-            development, drive-by-wire systems, and complete vehicle integration.
-          </p>
-
-          <p>
-            Beyond vehicles, I've built hospital service robots, smart surveillance systems
-            with computer vision, and swarm robotics platforms — always focused on bridging
-            the gap between software intelligence and physical hardware.
-          </p>
+      <!-- Right: Chronological Mission Timeline -->
+      <div class="timeline-container hud-card">
+        <div class="timeline-head">
+          <span class="mono timeline-title">MISSION CHRONOLOGY & DEPLOYMENTS</span>
         </div>
 
-        <div class="about-domains">
-          <div class="about-domain">
-            <span class="about-domain-label mono">Primary Focus</span>
-            <span class="about-domain-value">Robotics & Autonomous Systems</span>
-          </div>
-          <div class="about-domain">
-            <span class="about-domain-label mono">Engineering</span>
-            <span class="about-domain-value">Embedded Systems, PCB Design, Vehicle Integration</span>
-          </div>
-          <div class="about-domain">
-            <span class="about-domain-label mono">Software</span>
-            <span class="about-domain-value">ROS, Computer Vision, AI/ML</span>
-          </div>
+        <div class="timeline-tree">
+          {timeline.map((item) => (
+            <div class="timeline-item">
+              <div class="timeline-rail">
+                <span class="timeline-node"></span>
+                <span class="timeline-stem"></span>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-time-row">
+                  <span class="mono timeline-year">{item.year}</span>
+                  <span class="mono timeline-subsystem">{item.subsystem}</span>
+                </div>
+                <h3 class="timeline-milestone">{item.milestone}</h3>
+                <p class="timeline-desc">{item.desc}</p>
+                <div class="tags-cluster" style="margin-top: 6px;">
+                  {item.tags.map((t) => <span class="tech-tag">{t}</span>)}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -60,90 +123,186 @@
 </section>
 
 <style>
-  .about-grid {
+  .profile-section {
+    background: var(--bg);
+  }
+
+  .profile-layout {
     display: grid;
-    grid-template-columns: 0.7fr 1.3fr;
-    gap: var(--space-16);
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: var(--space-8);
     align-items: start;
   }
 
-  .section-header-left {
+  /* Left Specs Card */
+  .profile-specs-card {
+    padding: var(--space-6);
     display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
   }
 
-  .heading-accent {
+  .card-sys-id {
+    font-size: var(--text-2xs);
     color: var(--accent);
+    font-weight: 700;
   }
 
-  .about-right {
+  .specs-table {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-3);
   }
 
-  .about-lead {
-    font-size: var(--text-md);
-    color: var(--text);
-    font-weight: 400;
-    line-height: 1.7;
+  .spec-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: var(--space-3);
+    font-size: var(--text-xs);
+    align-items: baseline;
   }
 
-  .about-details {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
+  .spec-k {
+    color: var(--text-muted);
+    font-size: var(--text-2xs);
   }
 
-  .about-details p {
-    font-size: var(--text-base);
-    line-height: 1.7;
+  .spec-v {
+    color: var(--text-secondary);
+    line-height: 1.5;
   }
 
-  .about-details strong {
+  .spec-v.highlight {
     color: var(--text);
     font-weight: 600;
   }
 
-  .about-domains {
+  .philosophy-box {
+    background: rgba(10, 13, 12, 0.7);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: var(--space-4);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--border);
+    gap: 4px;
   }
 
-  .about-domain {
-    display: flex;
-    gap: var(--space-6);
-    align-items: baseline;
+  .philosophy-lbl {
+    font-size: 0.625rem;
+    color: var(--accent);
   }
 
-  .about-domain-label {
+  .philosophy-txt {
     font-size: var(--text-xs);
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    min-width: 120px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .profile-download-box {
+    padding-top: var(--space-2);
+  }
+
+  /* Right Timeline */
+  .timeline-container {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .timeline-head {
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .timeline-title {
+    font-size: var(--text-2xs);
+    color: var(--accent-blue);
+    font-weight: 700;
+  }
+
+  .timeline-tree {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .timeline-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 14px;
+  }
+
+  .timeline-node {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent);
+    margin-top: 5px;
     flex-shrink: 0;
   }
 
-  .about-domain-value {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
+  .timeline-stem {
+    width: 1px;
+    height: 100%;
+    background: var(--border);
+    margin-top: 4px;
   }
 
-  @media (max-width: 768px) {
-    .about-grid {
-      grid-template-columns: 1fr;
-      gap: var(--space-8);
-    }
+  .timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1;
+  }
 
-    .about-domain {
-      flex-direction: column;
-      gap: var(--space-1);
+  .timeline-time-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .timeline-year {
+    font-size: var(--text-xs);
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .timeline-subsystem {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+  }
+
+  .timeline-milestone {
+    font-size: var(--text-base);
+    color: var(--text);
+  }
+
+  .timeline-desc {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 960px) {
+    .profile-layout {
+      grid-template-columns: 1fr;
     }
   }
 </style>

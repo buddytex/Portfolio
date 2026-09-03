@@ -1,104 +1,153 @@
 ---
 interface Props {
-  number: string;
+  missionId: string;
+  codeName: string;
   title: string;
-  subtitle?: string;
+  role: string;
+  status: string;
+  badge?: string;
   description: string;
-  problem?: string;
-  approach?: string;
-  technologies: string[];
-  hardware?: string[];
-  software?: string[];
+  problem: string;
+  approach: string;
+  pipeline: string[];
+  hardware: string[];
+  software: string[];
+  results: string[];
   github?: string;
   demo?: string;
   featured?: boolean;
 }
 
 const {
-  number,
+  missionId,
+  codeName,
   title,
-  subtitle,
+  role,
+  status,
+  badge,
   description,
   problem,
   approach,
-  technologies,
+  pipeline,
   hardware,
   software,
+  results,
   github,
   demo,
   featured = false,
 } = Astro.props;
 ---
 
-<article class:list={['project-card', { 'project-featured': featured }]}>
-  <div class="project-card-header">
-    <span class="project-number mono">{number}</span>
-    {featured && <span class="project-badge label">Featured</span>}
-  </div>
-
-  <div class="project-card-body">
-    <h3 class="project-title">
-      {title}
-      {subtitle && <span class="project-subtitle">{subtitle}</span>}
-    </h3>
-
-    <p class="project-description">{description}</p>
-
-    {problem && (
-      <div class="project-detail">
-        <span class="project-detail-label mono">Problem</span>
-        <p class="project-detail-text">{problem}</p>
-      </div>
-    )}
-
-    {approach && (
-      <div class="project-detail">
-        <span class="project-detail-label mono">Approach</span>
-        <p class="project-detail-text">{approach}</p>
-      </div>
-    )}
-
-    {hardware && hardware.length > 0 && (
-      <div class="project-detail">
-        <span class="project-detail-label mono">Hardware</span>
-        <div class="project-tags">
-          {hardware.map((h) => <span class="tag">{h}</span>)}
-        </div>
-      </div>
-    )}
-
-    {software && software.length > 0 && (
-      <div class="project-detail">
-        <span class="project-detail-label mono">Software</span>
-        <div class="project-tags">
-          {software.map((s) => <span class="tag">{s}</span>)}
-        </div>
-      </div>
-    )}
-  </div>
-
-  <div class="project-card-footer">
-    <div class="project-tech-strip">
-      {technologies.map((tech) => (
-        <span class="project-tech">{tech}</span>
-      ))}
+<article class:list={['mission-dossier', 'hud-card', { 'featured-mission': featured }]}>
+  <!-- Mission Dossier Header -->
+  <div class="mission-header">
+    <div class="mission-identity">
+      <span class="mono mission-id">MISSION // {missionId}</span>
+      <span class="mission-sep">::</span>
+      <span class="mono mission-codename">{codeName}</span>
     </div>
 
-    <div class="project-links">
+    <div class="mission-status-wrap">
+      {badge && <span class="mission-badge mono">{badge}</span>}
+      <span class="status-beacon">
+        <span class="beacon-dot"></span>
+        <span class="mono status-txt">{status}</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Mission Body -->
+  <div class="mission-body">
+    <div class="mission-title-area">
+      <span class="mission-role mono">{role}</span>
+      <h3 class="mission-title">{title}</h3>
+      <p class="mission-overview">{description}</p>
+    </div>
+
+    <!-- Dataflow Pipeline Diagram -->
+    {pipeline && pipeline.length > 0 && (
+      <div class="mission-pipeline-box">
+        <div class="pipeline-header">
+          <span class="mono pipeline-label">SUBSYSTEM ARCHITECTURE & DATAFLOW</span>
+        </div>
+        <div class="pipeline-stages">
+          {pipeline.map((stage, idx) => (
+            <div class="stage-item">
+              <span class="stage-pill mono">{stage}</span>
+              {idx < pipeline.length - 1 && <span class="stage-arrow mono" aria-hidden="true">──►</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Engineering Deep Dive -->
+    <div class="mission-specs-grid">
+      <div class="spec-block">
+        <span class="spec-label mono">[CHALLENGE & SPECIFICATION]</span>
+        <p class="spec-text">{problem}</p>
+      </div>
+
+      <div class="spec-block">
+        <span class="spec-label mono">[ENGINEERING EXECUTION]</span>
+        <p class="spec-text">{approach}</p>
+      </div>
+    </div>
+
+    <!-- Hardware & Software Subsystems -->
+    <div class="mission-subsystems-row">
+      <div class="subsystem-col">
+        <span class="subsystem-label mono">HARDWARE ARCHITECTURE</span>
+        <div class="tags-cluster">
+          {hardware.map((h) => <span class="tech-tag">{h}</span>)}
+        </div>
+      </div>
+
+      <div class="subsystem-col">
+        <span class="subsystem-label mono">SOFTWARE & PROTOCOLS</span>
+        <div class="tags-cluster">
+          {software.map((s) => <span class="tech-tag" style="border-color: rgba(115, 169, 255, 0.25); color: #B4CEFF;">{s}</span>)}
+        </div>
+      </div>
+    </div>
+
+    <!-- Results & Milestones -->
+    {results && results.length > 0 && (
+      <div class="mission-results-bar">
+        <span class="mono results-label">VERIFIED RESULTS:</span>
+        <div class="results-tags">
+          {results.map((res) => (
+            <span class="result-tag mono">
+              <span class="result-check">✓</span>
+              {res}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+
+  <!-- Mission Footer Links -->
+  <div class="mission-footer">
+    <div class="mission-footer-left">
+      <span class="mono mission-hash">INTEGRATION_STATUS: 100%_VERIFIED</span>
+    </div>
+
+    <div class="mission-links">
       {github && (
-        <a href={github} target="_blank" rel="noopener noreferrer" class="project-link">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <a href={github} target="_blank" rel="noopener noreferrer" class="btn-tactical btn-secondary-tactical mission-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
           </svg>
-          Source
+          SOURCE REPO
         </a>
       )}
       {demo && (
-        <a href={demo} target="_blank" rel="noopener noreferrer" class="project-link">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/>
+        <a href={demo} target="_blank" rel="noopener noreferrer" class="btn-tactical btn-primary-tactical mission-btn">
+          <span>DEMO VIDEO</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17L17 7M17 7H7M17 7v10"/>
           </svg>
-          Demo
         </a>
       )}
     </div>
@@ -106,191 +155,288 @@ const {
 </article>
 
 <style>
-  .project-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+  .mission-dossier {
     padding: var(--space-8);
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
-    transition:
-      border-color var(--duration-normal) var(--ease-out),
-      transform var(--duration-normal) var(--ease-out),
-      box-shadow var(--duration-normal) var(--ease-out);
-    position: relative;
-    overflow: hidden;
   }
 
-  .project-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0;
-    transition: opacity var(--duration-normal) var(--ease-out);
-  }
-
-  .project-card:hover {
-    border-color: var(--border-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.04);
-  }
-
-  .project-card:hover::before {
-    opacity: 1;
-  }
-
-  .project-featured {
+  .featured-mission {
     grid-column: 1 / -1;
     background: var(--bg-elevated);
-    border-color: var(--border-light);
-  }
-
-  .project-featured .project-card-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-6) var(--space-10);
-  }
-
-  .project-featured .project-title {
-    grid-column: 1 / -1;
-    font-size: var(--text-2xl);
-  }
-
-  .project-featured .project-description {
-    grid-column: 1;
+    border-color: var(--border-bright);
   }
 
   /* Header */
-  .project-card-header {
+  .mission-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: var(--space-3);
   }
 
-  .project-number {
+  .mission-identity {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .mission-id {
     font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+
+  .mission-sep {
     color: var(--text-muted);
   }
 
-  .project-badge {
+  .mission-codename {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+  }
+
+  .mission-status-wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .mission-badge {
     font-size: 0.625rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-dim);
+    border: 1px solid rgba(115, 169, 255, 0.3);
     padding: 2px 8px;
-    background: var(--accent-dim);
-    border-radius: var(--radius-sm);
-    color: var(--accent);
+    border-radius: var(--radius-xs);
+    letter-spacing: 0.04em;
+  }
+
+  .status-txt {
+    font-size: var(--text-2xs);
+    letter-spacing: 0.06em;
   }
 
   /* Body */
-  .project-card-body {
+  .mission-body {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    flex: 1;
+    gap: var(--space-6);
   }
 
-  .project-title {
-    font-size: var(--text-xl);
-    color: var(--text);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-  }
-
-  .project-subtitle {
-    font-size: var(--text-sm);
-    font-weight: 400;
-    color: var(--text-secondary);
-  }
-
-  .project-description {
-    font-size: var(--text-base);
-    line-height: 1.7;
-  }
-
-  .project-detail {
+  .mission-title-area {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  .project-detail-label {
-    font-size: 0.625rem;
-    color: var(--accent);
-    letter-spacing: 0.1em;
+  .mission-role {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
-  .project-detail-text {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    line-height: 1.6;
+  .mission-title {
+    font-size: var(--text-2xl);
+    letter-spacing: -0.02em;
+    color: var(--text);
   }
 
-  .project-tags {
+  .featured-mission .mission-title {
+    font-size: clamp(1.75rem, 3.2vw, 2.35rem);
+  }
+
+  .mission-overview {
+    font-size: var(--text-md);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 860px;
+  }
+
+  /* Subsystem Architecture Pipeline */
+  .mission-pipeline-box {
+    background: rgba(10, 13, 12, 0.8);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .pipeline-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .pipeline-label {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .pipeline-stages {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .stage-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .stage-pill {
+    font-size: 0.6875rem;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    white-space: nowrap;
+  }
+
+  .stage-arrow {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  /* Specifications */
+  .mission-specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+
+  .spec-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .spec-label {
+    font-size: var(--text-2xs);
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+
+  .spec-text {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* Subsystem Hardware & Software Columns */
+  .mission-subsystems-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+  }
+
+  .subsystem-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .subsystem-label {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .tags-cluster {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: 6px;
+  }
+
+  /* Results Bar */
+  .mission-results-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: rgba(123, 224, 178, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    flex-wrap: wrap;
+  }
+
+  .results-label {
+    font-size: var(--text-2xs);
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .results-tags {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .result-tag {
+    font-size: var(--text-xs);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .result-check {
+    color: var(--accent);
+    font-weight: 700;
   }
 
   /* Footer */
-  .project-card-footer {
+  .mission-footer {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-end;
-    gap: var(--space-4);
     padding-top: var(--space-4);
     border-top: 1px solid var(--border);
     flex-wrap: wrap;
-  }
-
-  .project-tech-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
-  }
-
-  .project-tech {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--text-muted);
-  }
-
-  .project-links {
-    display: flex;
     gap: var(--space-4);
   }
 
-  .project-link {
-    display: inline-flex;
+  .mission-hash {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .mission-links {
+    display: flex;
     align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-xs);
-    font-weight: 500;
-    color: var(--accent);
-    transition: opacity var(--duration-fast);
+    gap: var(--space-3);
   }
 
-  .project-link:hover {
-    opacity: 0.8;
+  .mission-btn {
+    padding: 6px 14px;
+    font-size: var(--text-2xs);
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .project-card {
-      padding: var(--space-6);
-    }
-
-    .project-featured .project-card-body {
+  @media (max-width: 860px) {
+    .mission-specs-grid,
+    .mission-subsystems-row {
       grid-template-columns: 1fr;
     }
 
-    .project-featured .project-title {
-      font-size: var(--text-xl);
+    .mission-dossier {
+      padding: var(--space-5);
     }
   }
 </style>

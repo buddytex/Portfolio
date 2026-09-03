@@ -1,50 +1,53 @@
 /* ==========================================================
-   DESIGN SYSTEM — Naveen Shaji George Robotics Portfolio
+   DESIGN SYSTEM — ROBOTICS MISSION CONTROL INTERFACE
+   Reference: Dribbble Mission Control & Tactical UI
+   Color foundation: #0A0D0C with #7BE0B2 (Mint) & #73A9FF (Tech Blue)
    ========================================================== */
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 
-/* --- Design Tokens --- */
 :root {
-  /* Color: Backgrounds */
-  --bg:             #06090f;
-  --bg-elevated:    #0a0e18;
-  --bg-surface:     #0e1320;
-  --bg-surface-2:   #131a2a;
+  /* Mission Control Palette */
+  --bg:             #0A0D0C;          /* Deep military/laboratory obsidian base */
+  --bg-elevated:    #101513;          /* Secondary panel surface */
+  --bg-surface:     #151B18;          /* Interactive card surface */
+  --bg-surface-2:   #1B231F;          /* High-contrast hover surface */
+  --bg-glass:       rgba(16, 21, 19, 0.85);
 
-  /* Color: Text */
-  --text:           #e8ecf1;
-  --text-secondary: #8c95a6;
-  --text-muted:     #515b6e;
+  /* Tactical Typography Colors */
+  --text:           #F2F5F3;          /* Bright instrument readout */
+  --text-secondary: #8D9993;          /* Subdued telemetry */
+  --text-muted:     #55625B;          /* Graticule labels & coordinates */
 
-  /* Color: Accent — technical cyan */
-  --accent:         #00d4ff;
-  --accent-dim:     rgba(0, 212, 255, 0.12);
-  --accent-glow:    rgba(0, 212, 255, 0.06);
+  /* Robotics Active Accents */
+  --accent:         #7BE0B2;          /* Robotics Sensor Mint / Active Green */
+  --accent-dim:     rgba(123, 224, 178, 0.12);
+  --accent-glow:    rgba(123, 224, 178, 0.25);
+  --accent-border:  rgba(123, 224, 178, 0.35);
 
-  /* Color: Secondary accent — cool blue */
-  --accent-2:       #3b82f6;
-  --accent-2-dim:   rgba(59, 130, 246, 0.12);
+  /* Data & Perception Blue */
+  --accent-blue:     #73A9FF;         /* Tactical Data Blue */
+  --accent-blue-dim: rgba(115, 169, 255, 0.12);
+  --accent-blue-glow:rgba(115, 169, 255, 0.25);
 
-  /* Color: Tertiary — status green */
-  --green:          #22c55e;
-  --green-dim:      rgba(34, 197, 94, 0.12);
+  /* Status Indicators */
+  --warning:        #F0B66A;          /* Telemetry Warning Amber */
+  --warning-dim:    rgba(240, 182, 106, 0.12);
+  --danger:         #FF6B6B;          /* Hazard / Offline Coral */
+  --danger-dim:     rgba(255, 107, 107, 0.12);
 
-  /* Color: Warning — amber */
-  --amber:          #f59e0b;
-  --amber-dim:      rgba(245, 158, 11, 0.12);
+  /* Borders & Grids */
+  --border:         rgba(123, 224, 178, 0.10);
+  --border-light:   rgba(255, 255, 255, 0.08);
+  --border-strong:  rgba(123, 224, 178, 0.25);
 
-  /* Color: Borders */
-  --border:         rgba(255, 255, 255, 0.06);
-  --border-light:   rgba(255, 255, 255, 0.10);
-  --border-accent:  rgba(0, 212, 255, 0.20);
+  /* Fonts */
+  --font-sans:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display:   'Space Grotesk', 'Inter', sans-serif;
+  --font-mono:      'JetBrains Mono', ui-monospace, monospace;
 
-  /* Typography */
-  --font-sans:      'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono:      'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
-
-  /* Font sizes — fluid scale */
+  /* Typography Scale */
+  --text-2xs:   0.6875rem;  /* 11px */
   --text-xs:    0.75rem;    /* 12px */
   --text-sm:    0.8125rem;  /* 13px */
   --text-base:  0.9375rem;  /* 15px */
@@ -52,10 +55,9 @@
   --text-lg:    1.25rem;    /* 20px */
   --text-xl:    1.5rem;     /* 24px */
   --text-2xl:   2rem;       /* 32px */
-  --text-3xl:   2.5rem;     /* 40px */
-  --text-4xl:   3.25rem;    /* 52px */
-  --text-5xl:   4rem;       /* 64px */
-  --text-display: clamp(3rem, 6vw, 5.5rem);
+  --text-3xl:   2.625rem;   /* 42px */
+  --text-4xl:   3.5rem;     /* 56px */
+  --text-display: clamp(2.5rem, 5.5vw, 4.75rem);
 
   /* Spacing */
   --space-1:    0.25rem;
@@ -70,36 +72,27 @@
   --space-16:   4rem;
   --space-20:   5rem;
   --space-24:   6rem;
-  --space-32:   8rem;
-  --section-padding: clamp(5rem, 10vh, 8rem);
+  --section-padding: clamp(4.5rem, 8vh, 7rem);
 
   /* Layout */
-  --max-width:  1200px;
+  --max-width:  1260px;
   --nav-height: 64px;
 
-  /* Animation */
-  --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out:  cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast:    150ms;
-  --duration-normal:  300ms;
-  --duration-slow:    500ms;
-  --duration-reveal:  800ms;
+  /* Transitions & Curves */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-tact:   cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-norm: 280ms;
+  --duration-slow: 480ms;
 
-  /* Radius */
+  --radius-xs:  2px;
   --radius-sm:  4px;
   --radius-md:  6px;
-  --radius-lg:  10px;
-
-  /* Shadows */
-  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md:  0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg:  0 12px 48px rgba(0, 0, 0, 0.5);
+  --radius-lg:  8px;
 }
 
-
 /* ==========================================================
-   RESET & BASE
+   RESET & FOUNDATIONS
    ========================================================== */
 
 *, *::before, *::after {
@@ -113,15 +106,30 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  background: var(--bg);
 }
 
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--text);
   background: var(--bg);
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Global Background Graticule / Telemetry Grid */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(123, 224, 178, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123, 224, 178, 0.018) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 a {
@@ -129,73 +137,55 @@ a {
   text-decoration: none;
 }
 
-button, a {
-  -webkit-tap-highlight-color: transparent;
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 
 img, svg {
-  max-width: 100%;
   display: block;
+  max-width: 100%;
 }
 
 ul, ol {
   list-style: none;
 }
 
-
-/* ==========================================================
-   LAYOUT
-   ========================================================== */
-
+/* Container */
 .container {
   width: min(100% - 48px, var(--max-width));
   margin-inline: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .section {
   padding: var(--section-padding) 0;
   position: relative;
+  border-top: 1px solid var(--border);
 }
-
 
 /* ==========================================================
    TYPOGRAPHY
    ========================================================== */
 
-/* Label — small technical metadata */
-.label {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-/* Section number — 01. 02. etc. */
-.section-number {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-  letter-spacing: 0.05em;
-}
-
-/* Heading hierarchy */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  color: var(--text);
 }
 
 h1 {
   font-size: var(--text-display);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.0;
+  letter-spacing: -0.035em;
 }
 
 h2 {
-  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-size: clamp(2rem, 3.8vw, 3.25rem);
   letter-spacing: -0.03em;
 }
 
@@ -207,112 +197,224 @@ h4 {
   font-size: var(--text-lg);
 }
 
-/* Paragraph */
 p {
   color: var(--text-secondary);
   line-height: 1.7;
 }
 
-/* Mono text */
 .mono {
   font-family: var(--font-mono);
 }
 
-
-/* ==========================================================
-   INTERACTIVE ELEMENTS
-   ========================================================== */
-
-/* Primary button */
-.btn {
+/* System Labels */
+.sys-label {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 12px 24px;
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.sys-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* Section Header Structure */
+.section-header-wrap {
+  margin-bottom: var(--space-12);
+  max-width: 640px;
+}
+
+.section-meta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.heading-accent {
+  color: var(--accent);
+}
+
+.heading-blue {
+  color: var(--accent-blue);
+}
+
+.section-desc {
+  margin-top: var(--space-4);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+}
+
+/* ==========================================================
+   TACTICAL HUD PRIMITIVES
+   ========================================================== */
+
+/* Tactical Corner Reticle / HUD Box */
+.hud-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  position: relative;
+  transition: border-color var(--duration-norm) var(--ease-tact),
+              transform var(--duration-norm) var(--ease-tact),
+              box-shadow var(--duration-norm) var(--ease-tact);
+}
+
+.hud-card::before,
+.hud-card::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+  border-color: var(--accent);
+  opacity: 0.4;
+  transition: opacity var(--duration-fast), border-color var(--duration-fast);
+}
+
+.hud-card::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid var(--accent);
+  border-left: 1.5px solid var(--accent);
+}
+
+.hud-card::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid var(--accent);
+  border-right: 1.5px solid var(--accent);
+}
+
+.hud-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 16px rgba(123, 224, 178, 0.06);
+}
+
+.hud-card:hover::before,
+.hud-card:hover::after {
+  opacity: 1;
+}
+
+/* Tactical Status Beacon */
+.status-beacon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--accent);
+}
+
+.beacon-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: beacon-pulse 2s ease-in-out infinite;
+}
+
+.beacon-dot.blue {
+  background: var(--accent-blue);
+  box-shadow: 0 0 8px var(--accent-blue);
+}
+
+.beacon-dot.warning {
+  background: var(--warning);
+  box-shadow: 0 0 8px var(--warning);
+}
+
+@keyframes beacon-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.85); }
+}
+
+/* Tactical Tags */
+.tech-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  white-space: nowrap;
+  transition: all var(--duration-fast);
+}
+
+.tech-tag:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-dim);
+}
+
+/* Interactive Buttons */
+.btn-tactical {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 20px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radius-xs);
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition:
-    background var(--duration-normal) var(--ease-out),
-    border-color var(--duration-normal) var(--ease-out),
-    color var(--duration-normal) var(--ease-out),
-    transform var(--duration-fast) var(--ease-out);
+  transition: all var(--duration-fast) var(--ease-tact);
   position: relative;
   overflow: hidden;
 }
 
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn-primary {
+.btn-primary-tactical {
   background: var(--accent);
-  color: var(--bg);
+  color: #0A0D0C;
   border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(123, 224, 178, 0.2);
 }
 
-.btn-primary:hover {
-  background: #33ddff;
+.btn-primary-tactical:hover {
+  background: #95ecc1;
+  box-shadow: 0 0 24px rgba(123, 224, 178, 0.35);
+  transform: translateY(-1px);
 }
 
-.btn-secondary {
-  background: transparent;
+.btn-secondary-tactical {
+  background: rgba(16, 21, 19, 0.8);
   color: var(--text);
-  border-color: var(--border-light);
+  border-color: var(--border-bright);
 }
 
-.btn-secondary:hover {
+.btn-secondary-tactical:hover {
   border-color: var(--accent);
   color: var(--accent);
+  background: var(--accent-dim);
+  transform: translateY(-1px);
 }
 
-/* Focus states */
-.btn:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-
-/* ==========================================================
-   TAGS
-   ========================================================== */
-
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  transition: border-color var(--duration-normal) var(--ease-out),
-              color var(--duration-normal) var(--ease-out);
-  white-space: nowrap;
-}
-
-
-/* ==========================================================
-   SELECTION
-   ========================================================== */
-
+/* Selection */
 ::selection {
   background: var(--accent);
-  color: var(--bg);
+  color: #0A0D0C;
 }
 
-
-/* ==========================================================
-   SCROLLBAR
-   ========================================================== */
-
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -322,58 +424,14 @@ a:focus-visible {
 ::-webkit-scrollbar-thumb {
   background: var(--bg-surface-2);
   border-radius: 3px;
+  border: 1px solid var(--border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: var(--accent-border);
 }
 
-
-/* ==========================================================
-   SCROLL REVEAL ANIMATION
-   ========================================================== */
-
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity var(--duration-reveal) var(--ease-out),
-    transform var(--duration-reveal) var(--ease-out);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Stagger children */
-.reveal-stagger > * {
-  opacity: 0;
-  transform: translateY(16px);
-  transition:
-    opacity var(--duration-slow) var(--ease-out),
-    transform var(--duration-slow) var(--ease-out);
-}
-
-.reveal-stagger.visible > * {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0ms; }
-.reveal-stagger.visible > *:nth-child(2) { transition-delay: 80ms; }
-.reveal-stagger.visible > *:nth-child(3) { transition-delay: 160ms; }
-.reveal-stagger.visible > *:nth-child(4) { transition-delay: 240ms; }
-.reveal-stagger.visible > *:nth-child(5) { transition-delay: 320ms; }
-.reveal-stagger.visible > *:nth-child(6) { transition-delay: 400ms; }
-.reveal-stagger.visible > *:nth-child(7) { transition-delay: 480ms; }
-.reveal-stagger.visible > *:nth-child(8) { transition-delay: 560ms; }
-
-
-/* ==========================================================
-   REDUCED MOTION
-   ========================================================== */
-
+/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -381,31 +439,11 @@ a:focus-visible {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
-  .reveal {
-    opacity: 1;
-    transform: none;
-  }
-
-  .reveal-stagger > * {
-    opacity: 1;
-    transform: none;
-  }
 }
 
-
-/* ==========================================================
-   RESPONSIVE
-   ========================================================== */
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
     width: min(100% - 32px, var(--max-width));
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    width: min(100% - 24px, var(--max-width));
   }
 }

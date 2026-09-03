@@ -1,177 +1,304 @@
 ---
-const researchAreas = [
+// Research & Exploration Section
+const researchPipeline = [
+  { step: '01', title: 'OBSERVE', desc: 'Real-world sensor telemetry & edge case anomalies' },
+  { step: '02', title: 'UNDERSTAND', desc: 'Mathematical modeling of kinematics & perception limits' },
+  { step: '03', title: 'SIMULATE', desc: 'High-fidelity Gazebo / Isaac Sim physics validation' },
+  { step: '04', title: 'EXPERIMENT', desc: 'Physical hardware deployment on embedded platforms' },
+  { step: '05', title: 'EVALUATE', desc: 'Latency, localization drift, and safety margins benchmark' },
+  { step: '06', title: 'ITERATE', desc: 'Firmware refinement and algorithmic convergence' },
+];
+
+const researchTracks = [
   {
-    title: 'Autonomous Navigation',
-    description: 'Exploring LiDAR-based SLAM, path planning algorithms, and real-time obstacle avoidance for mobile robots in unstructured environments.',
-    tags: ['SLAM', 'LiDAR', 'Path Planning', 'ROS 2'],
+    code: 'TRK_01',
+    title: 'Off-Road Autonomous Navigation',
+    focus: 'Dynamic Obstacle Avoidance in Unstructured Terrain',
+    description: 'Investigating real-time costmap updates and non-linear trajectory rollouts under low-traction off-road conditions where geometric assumptions break down.',
+    tags: ['LiDAR Point Cloud', 'SLAM', 'Nav2 Custom Controllers', 'Off-Road Kinematics'],
   },
   {
-    title: 'Robot Perception',
-    description: 'Working with computer vision pipelines for object detection, feature extraction, and sensor fusion to enable robots to understand their surroundings.',
-    tags: ['Computer Vision', 'OpenCV', 'Sensor Fusion', 'Deep Learning'],
+    code: 'TRK_02',
+    title: 'Embodied AI & Multimodal Robotics',
+    focus: 'Vision-Language-Action (VLA) for Physical Systems',
+    description: 'Exploring how multimodal foundational models can guide high-level task planning while strictly respecting low-level real-time safety and kinematic guarantees.',
+    tags: ['Embodied AI', 'VLA Architectures', 'Edge Neural Inference', 'Safety Interlocks'],
   },
   {
-    title: 'Embodied Intelligence',
-    description: 'Interested in bridging AI and physical robotics — vision-language-action models, multimodal learning, and intelligent decision-making for real-world robots.',
-    tags: ['VLA Models', 'Multimodal AI', 'Reinforcement Learning'],
+    code: 'TRK_03',
+    title: 'Multi-Sensor Fusion & State Estimation',
+    focus: 'Tightly-Coupled LiDAR-Inertial-Wheel Odometry',
+    description: 'Studying robust pose estimation in degraded environments (GPS-denied, sensor occlusion, high vibration) using Extended Kalman Filtering and graph optimization.',
+    tags: ['EKF Fusion', 'IMU Calibration', 'Drift Compensation', 'CAN Wheel Ticks'],
   },
   {
-    title: 'Swarm Robotics',
-    description: 'Investigating distributed coordination, communication protocols, and emergent behavior in multi-robot systems.',
-    tags: ['Multi-Robot', 'TCP/IP', 'Distributed Systems', 'Coordination'],
+    code: 'TRK_04',
+    title: 'Decentralized Swarm Coordination',
+    focus: 'Fault-Tolerant Consensus in Multi-Robot Meshes',
+    description: 'Developing lightweight consensus algorithms for peer-to-peer mobile robot teams operating without centralized cloud coordinators.',
+    tags: ['Swarm Robotics', 'TCP/IP Mesh', 'Consensus Algorithms', 'Distributed Control'],
   },
 ];
 ---
 
 <section id="research" class="section research-section">
   <div class="container">
-    <div class="research-header reveal">
-      <div class="section-header-left">
-        <span class="section-number mono">05</span>
-        <span class="label">Research & Exploration</span>
+    <!-- Header -->
+    <div class="section-header-wrap">
+      <div class="section-meta-row">
+        <span class="sys-num">04</span>
+        <span class="sys-label">RESEARCH & EXPLORATION INITIATIVES</span>
       </div>
-      <h2>Engineering<br/><span class="heading-accent">curiosity</span></h2>
-      <p class="section-intro">
-        Areas of active exploration and research interest in robotics,
-        autonomy, and intelligent systems.
+      <h2>Engineering curiosity &<br/><span class="heading-accent">experimental frontiers</span></h2>
+      <p class="section-desc">
+        Active areas of theoretical investigation and engineering exploration in real-world robotics autonomy,
+        perception pipelines, and intelligent physical agents.
       </p>
     </div>
 
-    <div class="research-grid">
-      {researchAreas.map((area, i) => (
-        <article class="research-card reveal">
-          <div class="research-card-line" aria-hidden="true"></div>
-          <div class="research-card-content">
-            <div class="research-card-header">
-              <span class="mono research-idx">{String(i + 1).padStart(2, '0')}</span>
-              <h3>{area.title}</h3>
+    <!-- Research Methodology Pipeline -->
+    <div class="pipeline-container hud-card">
+      <div class="pipeline-top-bar">
+        <span class="mono pipeline-badge">METHODOLOGY // REPRODUCIBLE ROBOTICS ENGINEERING CYCLE</span>
+      </div>
+      <div class="pipeline-flow-row">
+        {researchPipeline.map((item, idx) => (
+          <div class="flow-step">
+            <div class="flow-pill">
+              <span class="flow-num mono">{item.step}</span>
+              <span class="flow-title mono">{item.title}</span>
             </div>
-            <p>{area.description}</p>
-            <div class="research-tags">
-              {area.tags.map((tag) => (
-                <span class="tag">{tag}</span>
-              ))}
+            <p class="flow-desc">{item.desc}</p>
+            {idx < researchPipeline.length - 1 && (
+              <span class="flow-arrow mono" aria-hidden="true">→</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Exploration Tracks Grid -->
+    <div class="tracks-grid">
+      {researchTracks.map((track) => (
+        <article class="track-card hud-card">
+          <div class="track-header">
+            <span class="track-code mono">{track.code}</span>
+            <span class="track-status mono">
+              <span class="beacon-dot" style="background: var(--accent-blue);"></span>
+              EXPLORATION
+            </span>
+          </div>
+
+          <div class="track-body">
+            <h3 class="track-title">{track.title}</h3>
+            <span class="track-focus mono">{track.focus}</span>
+            <p class="track-desc">{track.description}</p>
+          </div>
+
+          <div class="track-footer">
+            <div class="tags-cluster">
+              {track.tags.map((t) => <span class="tech-tag">{t}</span>)}
             </div>
           </div>
         </article>
       ))}
     </div>
 
-    <div class="research-note reveal">
-      <p class="mono">
-        <span class="accent-text">NOTE:</span> These represent active research interests and
-        areas of engineering exploration — not claimed professional expertise or publications.
-      </p>
+    <!-- Research Integrity Disclaimer -->
+    <div class="research-disclaimer hud-card">
+      <div class="disclaimer-inner">
+        <span class="disclaimer-badge mono">[RESEARCH CLASSIFICATION NOTE]</span>
+        <p class="disclaimer-text mono">
+          These research tracks represent active areas of experimental study, literature review, and ongoing simulation
+          prototyping. They reflect engineering curiosity and self-directed R&D, not claimed peer-reviewed papers or formal institutional publications.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  .research-header {
-    margin-bottom: var(--space-16);
-    max-width: 560px;
+  .research-section {
+    background: var(--bg-elevated);
   }
 
-  .section-header-left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
-  }
-
-  .heading-accent {
-    color: var(--accent);
-  }
-
-  .section-intro {
-    margin-top: var(--space-4);
-    font-size: var(--text-base);
-  }
-
-  .research-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
-  }
-
-  .research-card {
-    display: flex;
-    gap: var(--space-5);
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+  /* Pipeline */
+  .pipeline-container {
     padding: var(--space-6);
-    transition: border-color var(--duration-normal) var(--ease-out);
+    margin-bottom: var(--space-8);
+    background: rgba(10, 13, 12, 0.7);
   }
 
-  .research-card:hover {
-    border-color: var(--border-light);
+  .pipeline-top-bar {
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-5);
   }
 
-  .research-card-line {
-    width: 2px;
-    min-height: 100%;
-    background: linear-gradient(to bottom, var(--accent), transparent);
-    border-radius: 1px;
-    flex-shrink: 0;
+  .pipeline-badge {
+    font-size: var(--text-2xs);
+    color: var(--accent);
+    font-weight: 700;
   }
 
-  .research-card-content {
+  .pipeline-flow-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-4);
+  }
+
+  .flow-step {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
+    position: relative;
   }
 
-  .research-card-header {
+  .flow-pill {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: 6px;
+    background: var(--accent-dim);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: var(--radius-xs);
+    width: fit-content;
   }
 
-  .research-idx {
-    font-size: var(--text-xs);
+  .flow-num {
+    font-size: 0.625rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .flow-title {
+    font-size: var(--text-2xs);
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .flow-desc {
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .flow-arrow {
+    position: absolute;
+    top: 6px;
+    right: -12px;
     color: var(--text-muted);
+    opacity: 0.4;
   }
 
-  .research-card h3 {
-    font-size: var(--text-base);
-    font-weight: 600;
+  /* Tracks Grid */
+  .tracks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+
+  .track-card {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .track-code {
+    font-size: 0.625rem;
+    color: var(--accent-blue);
+    font-weight: 700;
+  }
+
+  .track-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.625rem;
+    color: var(--accent-blue);
+  }
+
+  .track-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    flex: 1;
+  }
+
+  .track-title {
+    font-size: var(--text-lg);
     color: var(--text);
   }
 
-  .research-card p {
+  .track-focus {
+    font-size: var(--text-2xs);
+    color: var(--accent);
+  }
+
+  .track-desc {
     font-size: var(--text-sm);
-    line-height: 1.7;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-top: var(--space-1);
   }
 
-  .research-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-top: var(--space-2);
+  .track-footer {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
   }
 
-  .research-note {
-    margin-top: var(--space-10);
+  /* Disclaimer */
+  .research-disclaimer {
+    margin-top: var(--space-8);
     padding: var(--space-4) var(--space-6);
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    border-left: 2px solid var(--amber);
+    background: rgba(10, 13, 12, 0.85);
+    border-left: 2px solid var(--warning);
   }
 
-  .research-note p {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
+  .disclaimer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .disclaimer-badge {
+    font-size: var(--text-2xs);
+    color: var(--warning);
+    font-weight: 700;
+  }
+
+  .disclaimer-text {
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
     line-height: 1.6;
   }
 
-  .accent-text {
-    color: var(--amber);
+  @media (max-width: 1024px) {
+    .pipeline-flow-row {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+
+    .flow-arrow {
+      display: none;
+    }
+
+    .tracks-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
-  @media (max-width: 768px) {
-    .research-grid {
+  @media (max-width: 640px) {
+    .pipeline-flow-row {
       grid-template-columns: 1fr;
     }
   }

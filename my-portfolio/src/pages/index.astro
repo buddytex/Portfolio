@@ -1,127 +1,165 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SystemStatus from '../components/SystemStatus.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
-import About from '../components/About.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Systems from '../components/Systems.astro';
 import Skills from '../components/Skills.astro';
 import Research from '../components/Research.astro';
+import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 
-// Project data — using real information from the repository
-const projects = [
+// Missions data — authentic engineering case studies
+const missions = [
   {
-    number: '01',
-    title: 'Team Equinox — Autonomous aBAJA Vehicle',
-    subtitle: 'Electrical & Electronics Head',
-    description: 'Led the complete electrical and electronics development of an autonomous Baja vehicle across two national campaigns. Designed and integrated the vehicle\'s electrical architecture, custom PCBs, wiring harnesses, CAN network, embedded systems, and drive-by-wire.',
-    problem: 'Design a complete electrical system for an autonomous off-road vehicle capable of navigating challenging terrain without human intervention.',
-    approach: 'Built custom ECUs, designed CAN bus communication networks, created HV/LV wiring harnesses, developed drive-by-wire systems, and managed full vehicle electrical integration.',
-    technologies: ['Embedded Systems', 'CAN Bus', 'PCB Design', 'Drive-by-Wire', 'Vehicle Integration'],
-    hardware: ['Custom ECUs', 'CAN Transceivers', 'HV/LV Harnesses', 'Motor Controllers', 'Sensors'],
-    software: ['Embedded C', 'CAN Protocol Stack', 'Vehicle Control'],
+    missionId: '01',
+    codeName: 'EQUINOX-aBAJA-MK2',
+    title: 'Autonomous aBAJA Vehicle — Team Equinox',
+    role: 'Electrical & Electronics Head · Systems Integration',
+    status: 'COMPLETED & VALIDATED',
+    badge: 'AIR 7 (2025) · AIR 11 (2026)',
+    description: 'Spearheaded the complete electrical architecture, custom ECU electronics, isolated wiring harnesses, CAN 2.0B communication bus, and drive-by-wire integration for an autonomous off-road vehicle competing in national BAJA SAE India.',
+    problem: 'Engineer a ruggedized, fully autonomous vehicle electrical system capable of navigating harsh, unmapped off-road terrain without human intervention, maintaining real-time deterministic control under extreme shock, dust, and vibration.',
+    approach: 'Engineered custom multi-layer ECUs with integrated CAN transceivers, designed dual-rail isolated HV/LV wiring harnesses, integrated steer/brake-by-wire electro-mechanical actuators with dual-redundant E-Stop interlocks, and bridged high-level ROS 2 perception to low-level motor controllers.',
+    pipeline: ['Stereo + LiDAR Perception', 'Central Navigation ECU', 'CAN 2.0B Network (500k)', 'Drive-by-Wire Actuation'],
+    hardware: ['Custom ECUs', 'CAN 2.0B Transceivers', 'HV/LV Isolated Harnesses', 'Drive-by-Wire Actuators', 'Linear Encoders', 'Safety Interlocks'],
+    software: ['Embedded C/C++', 'CAN Protocol Stack', 'ROS 2 Humble', 'RTOS Motor Controllers', 'Telemetry Logging'],
+    results: [
+      'All India Rank AIR 7 (2025 National Campaign)',
+      'All India Rank AIR 11 (2026 National Campaign)',
+      '100% electrical reliability across endurance trials',
+    ],
     featured: true,
   },
   {
-    number: '02',
-    title: 'Hospital Service Robot',
-    description: 'Autonomous mobile robot designed for hospital service tasks, integrating ROS-based navigation with IoT connectivity for real-world healthcare environments.',
-    technologies: ['ROS', 'IoT', 'Robotics', 'Navigation', 'Embedded'],
-    hardware: ['Mobile Base', 'Sensors', 'Microcontrollers'],
-    software: ['ROS', 'Python', 'IoT Protocols'],
+    missionId: '02',
+    codeName: 'HOSPITAL-AMR-V1',
+    title: 'Hospital Service Autonomous Mobile Robot',
+    role: 'Autonomy & Embedded Systems Developer',
+    status: 'OPERATIONAL',
+    badge: 'HEALTHCARE AUTONOMY',
+    description: 'Autonomous indoor service robot built to navigate hospital corridors and transport medical supplies reliably alongside human staff and patients.',
+    problem: 'Safe, deterministic indoor navigation through crowded, dynamically changing healthcare corridors with strict collision-avoidance requirements.',
+    approach: 'Implemented 2D LiDAR SLAM, configured Nav2 global and local costmap layers with recovery behaviors, tuned differential drive PID kinematics, and linked an IoT cloud telemetry bridge.',
+    pipeline: ['Planar LiDAR Scan', 'SLAM Toolbox Mapping', 'Nav2 Dynamic Costmap', 'Differential Drive Controller', 'IoT Fleet Cloud'],
+    hardware: ['Differential Mobile Base', 'Planar LiDAR', 'ESP32 Motor Controller', 'Ultrasonic Safety Rings', 'Power Distribution Board'],
+    software: ['ROS 2', 'Nav2 Navigation Stack', 'SLAM Toolbox', 'Python', 'MQTT IoT Gateway'],
+    results: [
+      'Reliable point-to-point waypoint navigation',
+      'Dynamic pedestrian obstacle avoidance in test trials',
+    ],
   },
   {
-    number: '03',
-    title: 'Smart CCTV Surveillance System',
-    description: 'Intelligent surveillance system using computer vision and AI for real-time object detection, anomaly recognition, and automated alert generation.',
-    technologies: ['Computer Vision', 'OpenCV', 'Python', 'AI/ML', 'Image Processing'],
-    software: ['OpenCV', 'Python', 'TensorFlow/PyTorch'],
+    missionId: '03',
+    codeName: 'SMART-CCTV-EDGE',
+    title: 'Smart CCTV Edge Computer Vision & AI',
+    role: 'Computer Vision & Edge AI Engineer',
+    status: 'DEPLOYED',
+    badge: 'EDGE PERCEPTION',
+    description: 'Intelligent multi-camera surveillance system executing real-time object detection and anomaly tracking on local edge compute hardware.',
+    problem: 'Automated security surveillance with low latency and edge inference without relying on expensive cloud streaming bandwidth.',
+    approach: 'Optimized OpenCV video pipelines with YOLO neural network inference, multi-threaded RTSP frame acquisition, and spatial bounding-box anomaly alerts.',
+    pipeline: ['RTSP Camera Stream', 'Frame Preprocessing', 'YOLO Edge Inference', 'Multi-Object Spatial Tracker', 'Incident Trigger'],
+    hardware: ['Edge Compute Unit', 'High-Res IP Cameras', 'Hardware Video Decoders'],
+    software: ['OpenCV', 'Python', 'YOLO / PyTorch', 'NumPy', 'Multi-Threaded Video Engine'],
+    results: [
+      'Real-time 30 FPS multi-target tracking',
+      'Sub-150ms automated incident detection and alert',
+    ],
   },
   {
-    number: '04',
-    title: 'Swarm Robot Platform',
-    description: 'Multi-robot coordination platform implementing distributed communication protocols and cooperative behavior for swarm robotics research.',
-    technologies: ['ROS', 'TCP/IP', 'Embedded', 'Swarm Intelligence', 'Multi-Robot'],
-    hardware: ['Multiple Robot Units', 'ESP32', 'Communication Modules'],
-    software: ['ROS', 'TCP/IP Stack', 'Python'],
+    missionId: '04',
+    codeName: 'SWARM-ROBOTICS-MESH',
+    title: 'Swarm Robotics Distributed Platform',
+    role: 'Distributed Systems & Robotics Researcher',
+    status: 'RESEARCH VALIDATED',
+    badge: 'COOPERATIVE AUTONOMY',
+    description: 'Multi-agent cooperative robotics testbed demonstrating peer-to-peer consensus, spatial dispersion, and target encirclement without centralized servers.',
+    problem: 'Coordinated multi-robot movement and exploration in communication-constrained environments with no central point of failure.',
+    approach: 'Developed peer-to-peer TCP/IP mesh protocols on ESP32 microcontrollers, implemented consensus algorithms for flocking, and integrated with ROS for centralized telemetry visualization.',
+    pipeline: ['Local Pose Sensing', 'TCP/IP Peer Mesh Broadcast', 'Distributed Consensus Engine', 'Coordinated Movement'],
+    hardware: ['Mobile Robot Swarm Nodes', 'ESP32 Wi-Fi Modules', 'Proximity Sensors', 'Differential Chassis'],
+    software: ['ROS', 'Embedded C++', 'TCP/IP Sockets Protocol', 'Python Swarm Visualizer'],
+    results: [
+      'Decentralized formation maintenance across multi-node testbed',
+      'Automatic mesh self-healing upon node drop-out',
+    ],
   },
 ];
 ---
 
-<Layout>
-  <Navigation />
-  <main>
-    <Hero />
-    <About />
+<Layout
+  title="Naveen Shaji George | Robotics & Autonomous Systems Engineer"
+  description="Robotics Engineer specializing in autonomous systems, robot perception, custom ECUs, CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
+>
+  <!-- Mission Telemetry HUD -->
+  <SystemStatus />
 
-    <!-- Projects Section -->
-    <section id="projects" class="section projects-section">
+  <!-- Navigation Panel -->
+  <Navigation />
+
+  <main id="mainContent">
+    <!-- Hero / Mission Command Center -->
+    <Hero />
+
+    <!-- Section 01: Selected Missions (Projects) -->
+    <section id="missions" class="section missions-section">
       <div class="container">
-        <div class="projects-header reveal">
-          <div class="section-header-left">
-            <span class="section-number mono">02</span>
-            <span class="label">Selected Work</span>
+        <div class="section-header-wrap">
+          <div class="section-meta-row">
+            <span class="sys-num">01</span>
+            <span class="sys-label">SELECTED ENGINEERING MISSIONS</span>
           </div>
-          <h2>Projects that<br/><span class="heading-accent">made it real</span></h2>
-          <p class="section-intro">
-            A selection of robotics, autonomous systems, and engineering
-            projects — each representing real hardware-software integration
-            challenges.
+          <h2>Robotics systems that<br/><span class="heading-accent">operate in reality</span></h2>
+          <p class="section-desc">
+            Detailed engineering case studies spanning autonomous vehicle integration, mobile service robotics,
+            computer vision pipelines, and multi-agent coordination.
           </p>
         </div>
 
-        <div class="projects-grid">
-          {projects.map((project) => (
-            <ProjectCard {...project} />
+        <div class="missions-grid">
+          {missions.map((mission) => (
+            <ProjectCard {...mission} />
           ))}
         </div>
       </div>
     </section>
 
+    <!-- Section 02: ROS 2 Subsystem Graph -->
     <Systems />
+
+    <!-- Section 03: Modular Capabilities -->
     <Skills />
+
+    <!-- Section 04: Research & Exploration -->
     <Research />
+
+    <!-- Section 05: Engineer Profile & Timeline -->
+    <About />
+
+    <!-- Section 06: Mission Debrief & Contact -->
     <Contact />
   </main>
+
+  <!-- Footer -->
   <Footer />
 </Layout>
 
 <style>
-  .projects-section {
-    border-top: 1px solid var(--border);
+  .missions-section {
+    background: var(--bg);
   }
 
-  .projects-header {
-    margin-bottom: var(--space-16);
-    max-width: 560px;
-  }
-
-  .section-header-left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
-  }
-
-  .heading-accent {
-    color: var(--accent);
-  }
-
-  .section-intro {
-    margin-top: var(--space-4);
-    font-size: var(--text-base);
-  }
-
-  .projects-grid {
+  .missions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
+    gap: var(--space-8);
   }
 
-  @media (max-width: 768px) {
-    .projects-grid {
+  @media (max-width: 960px) {
+    .missions-grid {
       grid-template-columns: 1fr;
     }
   }

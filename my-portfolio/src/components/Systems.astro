@@ -1,55 +1,125 @@
 ---
-const pipeline = [
-  { label: 'Sensors', detail: '/scan  /camera  /imu', color: 'var(--accent)' },
-  { label: 'Perception', detail: 'Object Detection · Feature Extraction', color: 'var(--accent)' },
-  { label: 'Localization', detail: 'SLAM · Odometry · TF', color: 'var(--accent-2)' },
-  { label: 'Planning', detail: 'Path Planning · Trajectory', color: 'var(--accent-2)' },
-  { label: 'Control', detail: '/cmd_vel · PID · Drive-by-Wire', color: 'var(--green)' },
-  { label: 'Actuators', detail: 'Motors · Steering · Braking', color: 'var(--green)' },
+// ROS 2 Subsystem Architecture & Active Dataflow Visualizer
+const nodes = [
+  {
+    id: 'node-lidar',
+    name: '/sensors/rplidar_driver',
+    type: 'Hardware Driver',
+    pub: '/scan [sensor_msgs/LaserScan]',
+    sub: 'None (Hardware Serial /dev/ttyUSB0)',
+    qos: 'Best Effort · 10 Hz',
+    desc: 'Acquires 360° raw time-of-flight laser range measurements over high-speed UART and publishes planar scan arrays.',
+    color: 'var(--accent)',
+  },
+  {
+    id: 'node-perception',
+    name: '/perception/obstacle_detector',
+    type: 'Perception Node',
+    pub: '/detected_obstacles [visualization_msgs/MarkerArray]',
+    sub: '/scan · /tf',
+    qos: 'Reliable · 10 Hz',
+    desc: 'Segments point cloud clusters, filters sensor noise, and extracts bounding obstacles with spatial clearance zones.',
+    color: 'var(--accent)',
+  },
+  {
+    id: 'node-localization',
+    name: '/localization/ekf_odom_node',
+    type: 'State Estimation',
+    pub: '/odom [nav_msgs/Odometry] · /tf',
+    sub: '/wheel_encoders · /imu/data',
+    qos: 'Reliable · 50 Hz',
+    desc: 'Extended Kalman Filter fusing wheel tick encoders, IMU angular velocity, and LiDAR scan matching for drift-free robot pose.',
+    color: 'var(--accent-blue)',
+  },
+  {
+    id: 'node-nav2',
+    name: '/navigation/nav2_controller',
+    type: 'Path Planning',
+    pub: '/cmd_vel [geometry_msgs/Twist]',
+    sub: '/scan · /odom · /tf · /goal_pose',
+    qos: 'Reliable · 20 Hz',
+    desc: 'Computes global A* paths and local DWB collision-avoidance velocity vectors to drive the platform to goal poses.',
+    color: 'var(--accent-blue)',
+  },
+  {
+    id: 'node-can',
+    name: '/actuation/can_bridge_ecu',
+    type: 'Vehicle Interface',
+    pub: '/can_rx · /wheel_encoders',
+    sub: '/cmd_vel [geometry_msgs/Twist]',
+    qos: 'Real-Time · 100 Hz',
+    desc: 'Translates velocity twists into high-priority CAN 2.0B arbitration frames (0x120, 0x124) commanding custom drive-by-wire ECUs.',
+    color: 'var(--warning)',
+  },
 ];
 
-const rosTopics = [
-  '/scan',
-  '/camera/image_raw',
-  '/odom',
-  '/tf',
-  '/cmd_vel',
-  '/imu/data',
-  '/map',
-  '/goal_pose',
+const topics = [
+  { topic: '/scan', msgType: 'sensor_msgs/msg/LaserScan', rate: '10.0 Hz', bw: '48.2 KB/s', qos: 'Best Effort' },
+  { topic: '/camera/image_raw', msgType: 'sensor_msgs/msg/Image', rate: '30.0 Hz', bw: '1.8 MB/s', qos: 'Best Effort' },
+  { topic: '/odom', msgType: 'nav_msgs/msg/Odometry', rate: '50.0 Hz', bw: '8.4 KB/s', qos: 'Reliable' },
+  { topic: '/tf', msgType: 'tf2_msgs/msg/TFMessage', rate: '50.0 Hz', bw: '12.1 KB/s', qos: 'Reliable' },
+  { topic: '/cmd_vel', msgType: 'geometry_msgs/msg/Twist', rate: '20.0 Hz', bw: '1.2 KB/s', qos: 'Reliable' },
+  { topic: '/can_tx', msgType: 'can_msgs/msg/Frame', rate: '100.0 Hz', bw: '3.6 KB/s', qos: 'Real-Time' },
 ];
 ---
 
-<section id="ros-systems" class="section systems-section">
+<section id="systems" class="section systems-section">
   <div class="container">
-    <div class="systems-header reveal">
-      <div class="section-header-left">
-        <span class="section-number mono">03</span>
-        <span class="label">Robotics Systems</span>
+    <!-- Header -->
+    <div class="section-header-wrap">
+      <div class="section-meta-row">
+        <span class="sys-num">02</span>
+        <span class="sys-label">AUTONOMY SOFTWARE ARCHITECTURE</span>
       </div>
-      <h2>Autonomous<br/><span class="heading-accent">architecture</span></h2>
-      <p class="section-intro">
-        Understanding the full autonomy stack — from raw sensor data to
-        physical robot actuation.
+      <h2>ROS 2 Computational<br/><span class="heading-accent">graph & dataflow</span></h2>
+      <p class="section-desc">
+        A real-time robotics software architecture mapping asynchronous sensor streams through
+        perception, state estimation, and Nav2 motion planning down to custom CAN bus vehicle actuators.
       </p>
     </div>
 
-    <div class="systems-content">
-      <!-- Pipeline visualization -->
-      <div class="pipeline reveal">
-        <div class="pipeline-label mono">AUTONOMY PIPELINE</div>
-        <div class="pipeline-flow">
-          {pipeline.map((stage, i) => (
-            <div class="pipeline-stage">
-              <div class="pipeline-node" style={`border-color: ${stage.color}`}>
-                <span class="pipeline-node-label">{stage.label}</span>
-                <span class="pipeline-node-detail mono">{stage.detail}</span>
-              </div>
-              {i < pipeline.length - 1 && (
-                <div class="pipeline-arrow" aria-hidden="true">
-                  <svg width="24" height="12" viewBox="0 0 24 12">
-                    <path d="M0 6h20M16 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1"/>
-                  </svg>
+    <!-- Interactive Architecture Graph & Inspector -->
+    <div class="graph-layout">
+      <!-- Left: Active Node Flow -->
+      <div class="graph-flow hud-card">
+        <div class="graph-flow-header">
+          <div class="graph-flow-title">
+            <span class="beacon-dot"></span>
+            <span class="mono">ACTIVE COMPUTATIONAL GRAPH // ROS 2 HUMBLE</span>
+          </div>
+          <span class="mono data-flow-hint">[CLICK NODE TO INSPECT TELEMETRY]</span>
+        </div>
+
+        <div class="nodes-stream">
+          {nodes.map((node, index) => (
+            <div class="stream-step">
+              <button
+                class:list={['node-card', { active: index === 0 }]}
+                id={node.id}
+                data-name={node.name}
+                data-type={node.type}
+                data-pub={node.pub}
+                data-sub={node.sub}
+                data-qos={node.qos}
+                data-desc={node.desc}
+                type="button"
+              >
+                <div class="node-card-top">
+                  <span class="node-type mono" style={`color: ${node.color}`}>{node.type}</span>
+                  <span class="node-pulse-dot" style={`background: ${node.color}`}></span>
+                </div>
+                <div class="node-name mono">{node.name}</div>
+                <div class="node-io mono">
+                  <span class="io-pub">PUB: {node.pub.split(' ')[0]}</span>
+                </div>
+              </button>
+
+              {index < nodes.length - 1 && (
+                <div class="stream-connector" aria-hidden="true">
+                  <div class="connector-line">
+                    <span class="connector-packet"></span>
+                  </div>
+                  <span class="connector-topic mono">{node.pub.split(' ')[0]}</span>
                 </div>
               )}
             </div>
@@ -57,221 +127,404 @@ const rosTopics = [
         </div>
       </div>
 
-      <!-- ROS Topics -->
-      <div class="ros-topics reveal">
-        <div class="ros-topics-header">
-          <span class="mono ros-topics-title">ROS 2 TOPICS</span>
-          <span class="ros-status">
-            <span class="ros-status-dot"></span>
-            <span class="mono">active</span>
-          </span>
+      <!-- Right: Live Node Telemetry Inspector -->
+      <div class="graph-inspector hud-card">
+        <div class="inspector-header">
+          <span class="mono inspector-badge">NODE_INSPECTOR // ROS2_CLI</span>
+          <span class="mono inspector-live">LIVE TELEMETRY</span>
         </div>
-        <div class="ros-topic-list">
-          {rosTopics.map((topic) => (
-            <div class="ros-topic-item">
-              <span class="ros-topic-chevron">›</span>
-              <span class="mono ros-topic-name">{topic}</span>
+
+        <div class="inspector-content" id="inspectorContent">
+          <div class="inspector-field">
+            <span class="mono field-lbl">NODE NAME:</span>
+            <span class="mono field-val highlight" id="inspName">/sensors/rplidar_driver</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="mono field-lbl">SUBSYSTEM TYPE:</span>
+            <span class="mono field-val" id="inspType">Hardware Driver</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="mono field-lbl">QoS PROFILE:</span>
+            <span class="mono field-val warning" id="inspQoS">Best Effort · 10 Hz</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="mono field-lbl">SUBSCRIBES TO:</span>
+            <span class="mono field-val dim" id="inspSub">None (Hardware Serial /dev/ttyUSB0)</span>
+          </div>
+
+          <div class="inspector-field">
+            <span class="mono field-lbl">PUBLISHES TOPICS:</span>
+            <span class="mono field-val accent" id="inspPub">/scan [sensor_msgs/LaserScan]</span>
+          </div>
+
+          <div class="inspector-field desc-field">
+            <span class="mono field-lbl">SUBSYSTEM ARCHITECTURE ROLE:</span>
+            <p class="field-desc" id="inspDesc">
+              Acquires 360° raw time-of-flight laser range measurements over high-speed UART and publishes planar scan arrays.
+            </p>
+          </div>
+        </div>
+
+        <!-- Real-time Active Topics Table -->
+        <div class="topic-monitor-wrap">
+          <div class="topic-monitor-head">
+            <span class="mono topic-table-title">ROS 2 TOPIC MONITOR</span>
+            <span class="mono topic-table-stat">DDS: CYCLONEDDS</span>
+          </div>
+
+          <div class="topic-table">
+            <div class="table-row table-head mono">
+              <span>TOPIC</span>
+              <span>TYPE</span>
+              <span>RATE</span>
             </div>
-          ))}
+            {topics.map((t) => (
+              <div class="table-row mono">
+                <span class="topic-col-name">{t.topic}</span>
+                <span class="topic-col-type">{t.msgType.split('/')[2]}</span>
+                <span class="topic-col-rate">{t.rate}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<script>
+  // Node inspector interactivity
+  const nodeButtons = document.querySelectorAll('.node-card');
+  const inspName = document.getElementById('inspName');
+  const inspType = document.getElementById('inspType');
+  const inspQoS = document.getElementById('inspQoS');
+  const inspSub = document.getElementById('inspSub');
+  const inspPub = document.getElementById('inspPub');
+  const inspDesc = document.getElementById('inspDesc');
+
+  nodeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      nodeButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (inspName) inspName.textContent = btn.getAttribute('data-name') || '';
+      if (inspType) inspType.textContent = btn.getAttribute('data-type') || '';
+      if (inspQoS) inspQoS.textContent = btn.getAttribute('data-qos') || '';
+      if (inspSub) inspSub.textContent = btn.getAttribute('data-sub') || '';
+      if (inspPub) inspPub.textContent = btn.getAttribute('data-pub') || '';
+      if (inspDesc) inspDesc.textContent = btn.getAttribute('data-desc') || '';
+    });
+  });
+</script>
+
 <style>
   .systems-section {
     background: var(--bg-elevated);
-    border-top: 1px solid var(--border);
   }
 
-  .systems-header {
-    margin-bottom: var(--space-16);
-    max-width: 560px;
-  }
-
-  .section-header-left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
-  }
-
-  .heading-accent {
-    color: var(--accent);
-  }
-
-  .section-intro {
-    margin-top: var(--space-4);
-    font-size: var(--text-base);
-  }
-
-  .systems-content {
+  .graph-layout {
     display: grid;
-    grid-template-columns: 1fr 280px;
+    grid-template-columns: 1.15fr 0.85fr;
     gap: var(--space-8);
     align-items: start;
   }
 
-  /* Pipeline */
-  .pipeline {
+  /* Left: Active Computational Graph */
+  .graph-flow {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .graph-flow-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .graph-flow-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .data-flow-hint {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+  }
+
+  .nodes-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stream-step {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .node-card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: var(--space-8);
-  }
-
-  .pipeline-label {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    margin-bottom: var(--space-8);
-  }
-
-  .pipeline-flow {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .pipeline-stage {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .pipeline-node {
+    border-radius: var(--radius-xs);
     padding: var(--space-4) var(--space-5);
-    border: 1px solid var(--border);
-    border-left-width: 3px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-elevated);
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
-    transition: background var(--duration-normal) var(--ease-out);
-    min-width: 120px;
+    text-align: left;
+    transition: all var(--duration-fast) var(--ease-tact);
+    cursor: pointer;
   }
 
-  .pipeline-node:hover {
+  .node-card:hover {
+    border-color: var(--border-bright);
     background: var(--bg-surface-2);
+    transform: translateX(4px);
   }
 
-  .pipeline-node-label {
+  .node-card.active {
+    border-color: var(--accent);
+    background: rgba(123, 224, 178, 0.08);
+    box-shadow: 0 0 16px rgba(123, 224, 178, 0.12);
+  }
+
+  .node-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .node-type {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .node-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .node-name {
     font-size: var(--text-sm);
     font-weight: 600;
     color: var(--text);
   }
 
-  .pipeline-node-detail {
-    font-size: 0.625rem;
+  .node-io {
+    font-size: var(--text-2xs);
     color: var(--text-muted);
-    white-space: nowrap;
   }
 
-  .pipeline-arrow {
-    color: var(--text-muted);
-    opacity: 0.4;
-    flex-shrink: 0;
-  }
-
-  /* ROS Topics */
-  .ros-topics {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
-  }
-
-  .ros-topics-header {
+  /* Animated stream connector */
+  .stream-connector {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-4);
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-6);
+  }
+
+  .connector-line {
+    width: 2px;
+    height: 28px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .connector-packet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: var(--accent);
+    animation: packet-flow 1.5s linear infinite;
+  }
+
+  @keyframes packet-flow {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(350%); }
+  }
+
+  .connector-topic {
+    font-size: 0.625rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-dim);
+    padding: 1px 6px;
+    border-radius: var(--radius-xs);
+    border: 1px solid rgba(115, 169, 255, 0.2);
+  }
+
+  /* Right: Telemetry Inspector */
+  .graph-inspector {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .inspector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding-bottom: var(--space-3);
     border-bottom: 1px solid var(--border);
   }
 
-  .ros-topics-title {
+  .inspector-badge {
     font-size: var(--text-xs);
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--accent);
   }
 
-  .ros-status {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
+  .inspector-live {
     font-size: 0.625rem;
-    color: var(--green);
+    color: var(--warning);
   }
 
-  .ros-status-dot {
-    width: 5px;
-    height: 5px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: ros-pulse 2s ease-in-out infinite;
+  .inspector-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    background: rgba(10, 13, 12, 0.75);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: var(--space-4);
   }
 
-  @keyframes ros-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  .ros-topic-list {
+  .inspector-field {
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
 
-  .ros-topic-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-sm);
-    transition: background var(--duration-fast);
+  .field-lbl {
+    font-size: 0.625rem;
+    color: var(--text-muted);
   }
 
-  .ros-topic-item:hover {
-    background: var(--bg-surface-2);
+  .field-val {
+    font-size: var(--text-xs);
+    color: var(--text);
   }
 
-  .ros-topic-chevron {
-    color: var(--accent);
-    font-size: var(--text-sm);
-    opacity: 0.5;
+  .field-val.highlight {
+    color: var(--text);
+    font-weight: 700;
   }
 
-  .ros-topic-name {
-    font-size: 0.6875rem;
+  .field-val.warning {
+    color: var(--warning);
+  }
+
+  .field-val.dim {
     color: var(--text-secondary);
   }
 
-  @media (max-width: 900px) {
-    .systems-content {
+  .field-val.accent {
+    color: var(--accent);
+  }
+
+  .desc-field {
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--border);
+  }
+
+  .field-desc {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Topics Table */
+  .topic-monitor-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .topic-monitor-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .topic-table-title {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .topic-table-stat {
+    font-size: 0.5625rem;
+    color: var(--accent-blue);
+  }
+
+  .topic-table {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: rgba(10, 13, 12, 0.6);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: var(--space-2);
+  }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1.2fr 0.8fr;
+    font-size: 0.6875rem;
+    padding: 3px 6px;
+    border-radius: var(--radius-xs);
+  }
+
+  .table-row.table-head {
+    color: var(--text-muted);
+    font-size: 0.5625rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+    margin-bottom: 2px;
+  }
+
+  .topic-col-name {
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .topic-col-type {
+    color: var(--accent-blue);
+  }
+
+  .topic-col-rate {
+    color: var(--accent);
+    text-align: right;
+  }
+
+  @media (max-width: 960px) {
+    .graph-layout {
       grid-template-columns: 1fr;
-    }
-
-    .pipeline-flow {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .pipeline-arrow {
-      transform: rotate(90deg);
-      align-self: center;
-    }
-
-    .pipeline-node {
-      min-width: auto;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ros-status-dot {
+    .connector-packet {
       animation: none;
     }
   }

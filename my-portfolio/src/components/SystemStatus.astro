@@ -1,0 +1,169 @@
+---
+// Mission Status & Telemetry Bar
+---
+
+<aside class="system-hud" aria-label="System Telemetry Status Bar">
+  <div class="container hud-inner">
+    <div class="hud-left">
+      <div class="status-indicator">
+        <span class="beacon-dot"></span>
+        <span class="mono hud-status">SYSTEM: ONLINE</span>
+      </div>
+      <span class="hud-sep">|</span>
+      <div class="hud-stat">
+        <span class="mono hud-dim">KERNEL:</span>
+        <span class="mono hud-val">PREEMPT_RT</span>
+      </div>
+      <span class="hud-sep">|</span>
+      <div class="hud-stat">
+        <span class="mono hud-dim">ROS_DOMAIN:</span>
+        <span class="mono hud-val">42</span>
+      </div>
+      <span class="hud-sep">|</span>
+      <div class="hud-stat">
+        <span class="mono hud-dim">CAN BUS:</span>
+        <span class="mono hud-val">500 kbps</span>
+      </div>
+    </div>
+
+    <div class="hud-right">
+      <div class="hud-stat">
+        <span class="mono hud-dim">SENSORS:</span>
+        <span class="mono hud-highlight">LiDAR [10Hz] · STEREO · IMU</span>
+      </div>
+      <span class="hud-sep">|</span>
+      <div class="hud-stat" id="cursorCoordBox">
+        <span class="mono hud-dim">COORD:</span>
+        <span class="mono hud-coord" id="cursorCoord">X: +0.00m  Y: +0.00m</span>
+      </div>
+      <span class="hud-sep">|</span>
+      <div class="hud-time">
+        <span class="mono hud-dim">UTC:</span>
+        <span class="mono hud-clock" id="missionClock">00:00:00Z</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+  // Live mission clock
+  const clockEl = document.getElementById('missionClock');
+  function updateClock() {
+    if (clockEl) {
+      const now = new Date();
+      clockEl.textContent = now.toISOString().substring(11, 19) + 'Z';
+    }
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Live cursor coordinate telemetry tracker
+  const coordEl = document.getElementById('cursorCoord');
+  if (coordEl && window.matchMedia('(pointer: fine)').matches) {
+    window.addEventListener('mousemove', (e) => {
+      const x = ((e.clientX / window.innerWidth) * 20 - 10).toFixed(2);
+      const y = (((window.innerHeight - e.clientY) / window.innerHeight) * 20 - 10).toFixed(2);
+      const signX = Number(x) >= 0 ? '+' : '';
+      const signY = Number(y) >= 0 ? '+' : '';
+      coordEl.textContent = `X: ${signX}${x}m  Y: ${signY}${y}m`;
+    }, { passive: true });
+  }
+</script>
+
+<style>
+  .system-hud {
+    position: relative;
+    background: rgba(10, 13, 12, 0.95);
+    border-bottom: 1px solid var(--border);
+    font-size: var(--text-2xs);
+    z-index: 40;
+    padding: 6px 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .hud-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .hud-left,
+  .hud-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .beacon-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent);
+    animation: beacon-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes beacon-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.85); }
+  }
+
+  .hud-status {
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .hud-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .hud-dim {
+    color: var(--text-muted);
+  }
+
+  .hud-val {
+    color: var(--text-secondary);
+  }
+
+  .hud-highlight {
+    color: var(--accent-blue);
+  }
+
+  .hud-coord {
+    color: var(--accent);
+    min-width: 140px;
+  }
+
+  .hud-clock {
+    color: var(--warning);
+  }
+
+  .hud-sep {
+    color: var(--text-muted);
+    opacity: 0.35;
+  }
+
+  @media (max-width: 960px) {
+    .hud-stat:nth-child(4),
+    .hud-stat:nth-child(5) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #cursorCoordBox {
+      display: none;
+    }
+  }
+</style>

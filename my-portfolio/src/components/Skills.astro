@@ -1,114 +1,109 @@
 ---
-const capabilities = [
+// Technical Capabilities & Modular System Racks
+const skillBays = [
   {
-    category: 'Robotics & Autonomy',
-    icon: '◎',
-    items: [
-      'Autonomous Navigation',
-      'ROS / ROS 2',
-      'SLAM',
-      'Path Planning',
-      'Motion Control',
-      'Sensor Fusion',
-      'Drive-by-Wire',
+    bayId: 'BAY_01',
+    domain: 'Robotics & Autonomy',
+    badge: 'MISSION_CRITICAL',
+    status: 'OPTIMAL',
+    skills: [
+      { name: 'ROS 2 / ROS', desc: 'DDS middleware, Node lifecycle, Action servers, TF2 transforms, URDF' },
+      { name: 'Autonomous Navigation', desc: 'Nav2 stack, Global A*, Local DWB planner, Costmap2D layers' },
+      { name: 'SLAM & Odometry', desc: 'Cartographer, SLAM Toolbox, Extended Kalman Filter (EKF) sensor fusion' },
+      { name: 'Sensor Fusion', desc: 'Multi-rate IMU, wheel ticks, and laser scan matching' },
+      { name: 'Drive-by-Wire Control', desc: 'Fail-safe steer-by-wire and electronic brake actuation' },
     ],
   },
   {
-    category: 'Perception & AI',
-    icon: '◈',
-    items: [
-      'Computer Vision',
-      'OpenCV',
-      'LiDAR Processing',
-      'Object Detection',
-      'Image Processing',
-      'Machine Learning',
-      'Python / AI Frameworks',
+    bayId: 'BAY_02',
+    domain: 'Perception & Computer Vision',
+    badge: 'SENSOR_PIPELINE',
+    status: 'ONLINE',
+    skills: [
+      { name: 'LiDAR Processing', desc: 'Planar scan filtering, point-cloud clustering, Euclidean segmentation' },
+      { name: 'Computer Vision', desc: 'OpenCV image processing, spatial filtering, contour tracking, homography' },
+      { name: 'Edge AI / Detection', desc: 'YOLO object detection, real-time bounding box tracking, anomaly detection' },
+      { name: 'Camera Calibration', desc: 'Pinhole intrinsic/extrinsic stereo calibration and undistortion' },
     ],
   },
   {
-    category: 'Embedded Systems',
-    icon: '⬡',
-    items: [
-      'ESP32 / Microcontrollers',
-      'Custom ECU Design',
-      'CAN Bus Protocol',
-      'UART / SPI / I2C',
-      'HV/LV Wiring Harnesses',
-      'Firmware Development',
-      'Real-time Systems',
+    bayId: 'BAY_03',
+    domain: 'Embedded Systems & Hardware',
+    badge: 'VEHICLE_CORE',
+    status: 'DEPLOYED',
+    skills: [
+      { name: 'Custom ECU Design', desc: 'Microcontroller architecture, sensor signal conditioning, ruggedized power' },
+      { name: 'CAN Bus 2.0B Networks', desc: '500 kbps automotive arbitration, frame prioritization, DBC parsing' },
+      { name: 'Microcontrollers', desc: 'ESP32 (dual-core RTOS), STM32, ARM Cortex-M, Arduino bare-metal' },
+      { name: 'Protocols', desc: 'UART, SPI, I2C, CAN, RS485 differential communication' },
+      { name: 'HV/LV Wiring Harnesses', desc: 'Split-voltage isolation, EMI shielding, crimping, automotive sealing' },
     ],
   },
   {
-    category: 'Hardware Engineering',
-    icon: '△',
-    items: [
-      'PCB Design',
-      'Schematic Capture',
-      'Board Fabrication',
-      'Power Electronics',
-      'Sensor Integration',
-      'Vehicle Electrical Architecture',
-      'System Integration',
-    ],
-  },
-  {
-    category: 'Software & Tools',
-    icon: '⬢',
-    items: [
-      'Python',
-      'C / C++',
-      'Linux / Ubuntu',
-      'Git / GitHub',
-      'Gazebo / Simulation',
-      'Docker',
-      'VS Code',
-    ],
-  },
-  {
-    category: 'Communication & Networking',
-    icon: '◇',
-    items: [
-      'TCP/IP',
-      'CAN Bus',
-      'ROS Topics / Services',
-      'Serial Communication',
-      'IoT Protocols',
-      'Wireless Systems',
+    bayId: 'BAY_04',
+    domain: 'Software Engineering & Tooling',
+    badge: 'COMPUTE_STACK',
+    status: 'ACTIVE',
+    skills: [
+      { name: 'Python', desc: 'Robotics scripting, ROS 2 rclpy, NumPy, OpenCV, telemetry visualizers' },
+      { name: 'C / C++', desc: 'Real-time performance, memory safety, embedded drivers, rclcpp' },
+      { name: 'Linux / Ubuntu', desc: 'Bash scripting, systemd robot daemons, udev rules, PREEMPT_RT kernel' },
+      { name: 'Simulation & Debug', desc: 'Gazebo physics worlds, RViz 2 visual inspection, Foxglove Studio' },
+      { name: 'Version Control & CI', desc: 'Git branch workflows, GitHub Actions, Docker containerization' },
     ],
   },
 ];
 ---
 
-<section id="systems" class="section skills-section">
+<section id="capabilities" class="section capabilities-section">
   <div class="container">
-    <div class="section-header reveal">
-      <div class="section-header-left">
-        <span class="section-number mono">04</span>
-        <span class="label">Engineering Stack</span>
+    <!-- Header -->
+    <div class="section-header-wrap">
+      <div class="section-meta-row">
+        <span class="sys-num">03</span>
+        <span class="sys-label">ENGINEERING STACK & DOMAINS</span>
       </div>
-      <h2>Technical<br/><span class="heading-accent">capabilities</span></h2>
-      <p class="section-intro">
-        Core technical domains spanning robotics, autonomy,
-        perception, embedded systems, and hardware engineering.
+      <h2>Modular System<br/><span class="heading-accent">capabilities & instrumentation</span></h2>
+      <p class="section-desc">
+        Engineered hardware-software competency spanning automotive autonomy, low-level embedded
+        circuits, perception algorithms, and robot operating systems.
       </p>
     </div>
 
-    <div class="skills-grid reveal-stagger">
-      {capabilities.map((cap) => (
-        <div class="skill-block">
-          <div class="skill-block-header">
-            <span class="skill-icon">{cap.icon}</span>
-            <h3 class="skill-category">{cap.category}</h3>
+    <!-- Modular Instrument Benches -->
+    <div class="bays-grid">
+      {skillBays.map((bay) => (
+        <div class="bay-card hud-card">
+          <div class="bay-header">
+            <div class="bay-id-group">
+              <span class="bay-num mono">{bay.bayId}</span>
+              <h3 class="bay-title">{bay.domain}</h3>
+            </div>
+            <div class="bay-meta">
+              <span class="bay-badge mono">{bay.badge}</span>
+              <span class="bay-status mono">
+                <span class="beacon-dot"></span>
+                {bay.status}
+              </span>
+            </div>
           </div>
-          <ul class="skill-list">
-            {cap.items.map((item) => (
-              <li class="skill-item">
-                <span class="skill-dot"></span>
-                {item}
-              </li>
+
+          <div class="bay-skills-list">
+            {bay.skills.map((skill) => (
+              <div class="skill-item-row" tabindex="0">
+                <div class="skill-head">
+                  <span class="skill-bullet mono">›</span>
+                  <span class="skill-name mono">{skill.name}</span>
+                </div>
+                <p class="skill-telemetry-desc">{skill.desc}</p>
+              </div>
             ))}
-          </ul>
+          </div>
+
+          <div class="bay-footer">
+            <span class="bay-health mono">HEALTH: 100%_OPERATIONAL</span>
+            <span class="bay-signal mono">SIG: NOMINAL</span>
+          </div>
         </div>
       ))}
     </div>
@@ -116,104 +111,140 @@ const capabilities = [
 </section>
 
 <style>
-  .skills-section {
-    background: var(--bg-elevated);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+  .capabilities-section {
+    background: var(--bg);
   }
 
-  .section-header {
-    margin-bottom: var(--space-16);
-    max-width: 560px;
-  }
-
-  .section-header-left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
-  }
-
-  .heading-accent {
-    color: var(--accent);
-  }
-
-  .section-intro {
-    margin-top: var(--space-4);
-    font-size: var(--text-base);
-  }
-
-  .skills-grid {
+  .bays-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-6);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
   }
 
-  .skill-block {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+  .bay-card {
     padding: var(--space-6);
-    transition: border-color var(--duration-normal) var(--ease-out);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
   }
 
-  .skill-block:hover {
-    border-color: var(--border-light);
+  .bay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: var(--space-2);
   }
 
-  .skill-block-header {
+  .bay-id-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .bay-num {
+    font-size: 0.625rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .bay-title {
+    font-size: var(--text-lg);
+    color: var(--text);
+  }
+
+  .bay-meta {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    margin-bottom: var(--space-5);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--border);
   }
 
-  .skill-icon {
-    font-size: var(--text-lg);
+  .bay-badge {
+    font-size: 0.5625rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-dim);
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+    border: 1px solid rgba(115, 169, 255, 0.2);
+  }
+
+  .bay-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.625rem;
     color: var(--accent);
-    width: 28px;
-    text-align: center;
   }
 
-  .skill-category {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: 0;
-  }
-
-  .skill-list {
+  /* Skills List */
+  .bay-skills-list {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
 
-  .skill-item {
+  .skill-item-row {
+    padding: var(--space-3);
+    background: rgba(10, 13, 12, 0.5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    transition: all var(--duration-fast) var(--ease-tact);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .skill-item-row:hover,
+  .skill-item-row:focus-visible {
+    background: var(--bg-surface-2);
+    border-color: var(--border-bright);
+    transform: translateX(3px);
+  }
+
+  .skill-head {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .skill-bullet {
+    color: var(--accent);
     font-size: var(--text-sm);
+  }
+
+  .skill-name {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .skill-telemetry-desc {
+    font-size: var(--text-2xs);
     color: var(--text-secondary);
+    line-height: 1.5;
+    padding-left: 14px;
   }
 
-  .skill-dot {
-    width: 3px;
-    height: 3px;
-    background: var(--text-muted);
-    border-radius: 50%;
-    flex-shrink: 0;
+  /* Footer */
+  .bay-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    font-size: 0.5625rem;
+    color: var(--text-muted);
   }
 
-  @media (max-width: 1024px) {
-    .skills-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .bay-health {
+    color: var(--accent);
   }
 
-  @media (max-width: 600px) {
-    .skills-grid {
+  @media (max-width: 960px) {
+    .bays-grid {
       grid-template-columns: 1fr;
     }
   }
