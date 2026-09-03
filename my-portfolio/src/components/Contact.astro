@@ -93,15 +93,37 @@
 </section>
 
 <script>
-  // 1-Click Copy Email to clipboard
+  // 1-Click Copy Email to clipboard with Anime.js feedback
   const copyBtn = document.getElementById('copyEmailBtn');
   const copyText = document.getElementById('copyText');
+  const emailVal = document.getElementById('emailVal');
   const email = 'naveensg.rbb2226@saintgits.org';
+  const anime = (window as any).anime;
 
   copyBtn?.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(email);
       if (copyText) copyText.textContent = 'COPIED TO CLIPBOARD ✓';
+
+      if (anime) {
+        try {
+          const animateFn = anime.animate || anime;
+          animateFn(copyBtn, {
+            scale: [1, 0.94, 1.05, 1],
+            duration: 400,
+            ease: 'outBack',
+          });
+
+          if (emailVal) {
+            animateFn(emailVal, {
+              color: ['#7BE0B2', '#F2F5F3'],
+              duration: 800,
+              ease: 'outQuad',
+            });
+          }
+        } catch {}
+      }
+
       setTimeout(() => {
         if (copyText) copyText.textContent = 'COPY ADDRESS';
       }, 2500);

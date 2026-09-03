@@ -27,30 +27,64 @@ const {
     <meta property="og:type" content="website" />
 
     <title>{title}</title>
+    <script is:inline src="/scripts/anime.min.js"></script>
   </head>
 
   <body>
     <slot />
 
-    <!-- Scroll reveal observer -->
+    <!-- Anime.js Powered Global Scroll Reveal Orchestrator -->
     <script>
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-            }
-          });
-        },
-        {
-          threshold: 0.1,
-          rootMargin: '0px 0px -40px 0px',
-        }
-      );
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const anime = (window as any).anime;
 
-      document.querySelectorAll('.reveal, .reveal-stagger').forEach((el) => {
-        observer.observe(el);
-      });
+      if (!prefersReduced) {
+        // Collect animatable section blocks
+        const animBlocks = document.querySelectorAll(
+          '.section-header-wrap, .mission-dossier, .bay-card, .track-card, .profile-specs-card, .timeline-container, .comms-card'
+        );
+
+        animBlocks.forEach((el) => {
+          (el as HTMLElement).style.opacity = '0';
+          (el as HTMLElement).style.transform = 'translateY(24px)';
+          (el as HTMLElement).style.willChange = 'opacity, transform';
+        });
+
+        const revealObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const target = entry.target as HTMLElement;
+                revealObserver.unobserve(target);
+
+                if (anime) {
+                  try {
+                    const animateFn = anime.animate || anime;
+                    animateFn(target, {
+                      opacity: [0, 1],
+                      translateY: [24, 0],
+                      duration: 750,
+                      easing: 'easeOutCubic',
+                    });
+                  } catch {
+                    target.style.opacity = '1';
+                    target.style.transform = 'none';
+                  }
+                } else {
+                  target.style.opacity = '1';
+                  target.style.transform = 'none';
+                }
+              }
+            });
+          },
+          {
+            threshold: 0.12,
+            rootMargin: '0px 0px -40px 0px',
+          }
+        );
+
+        animBlocks.forEach((el) => revealObserver.observe(el));
+      }
     </script>
   </body>
 </html>

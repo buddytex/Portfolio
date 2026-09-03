@@ -196,19 +196,41 @@ const topics = [
 </section>
 
 <script>
-  // Node inspector interactivity
+  // Node inspector interactivity with Anime.js
   const nodeButtons = document.querySelectorAll('.node-card');
+  const inspContainer = document.getElementById('inspectorContent');
   const inspName = document.getElementById('inspName');
   const inspType = document.getElementById('inspType');
   const inspQoS = document.getElementById('inspQoS');
   const inspSub = document.getElementById('inspSub');
   const inspPub = document.getElementById('inspPub');
   const inspDesc = document.getElementById('inspDesc');
+  const anime = (window as any).anime;
 
   nodeButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       nodeButtons.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
+
+      if (anime) {
+        try {
+          const animateFn = anime.animate || anime;
+          animateFn(btn, {
+            scale: [1, 1.03, 1],
+            duration: 350,
+            ease: 'outBack',
+          });
+
+          if (inspContainer) {
+            animateFn(inspContainer, {
+              opacity: [0.4, 1],
+              translateX: [6, 0],
+              duration: 380,
+              ease: 'outExpo',
+            });
+          }
+        } catch {}
+      }
 
       if (inspName) inspName.textContent = btn.getAttribute('data-name') || '';
       if (inspType) inspType.textContent = btn.getAttribute('data-type') || '';
