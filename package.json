@@ -1,0 +1,9 @@
+{
+  "name": "portfolio-wrapper",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix my-portfolio run dev",
+    "build": "npm --prefix my-portfolio run build",
+    "preview": "npm --prefix my-portfolio run preview"
+  }
+}
