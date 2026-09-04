@@ -1,304 +1,256 @@
 ---
-// Research & Exploration Section
-const researchPipeline = [
-  { step: '01', title: 'OBSERVE', desc: 'Real-world sensor telemetry & edge case anomalies' },
-  { step: '02', title: 'UNDERSTAND', desc: 'Mathematical modeling of kinematics & perception limits' },
-  { step: '03', title: 'SIMULATE', desc: 'High-fidelity Gazebo / Isaac Sim physics validation' },
-  { step: '04', title: 'EXPERIMENT', desc: 'Physical hardware deployment on embedded platforms' },
-  { step: '05', title: 'EVALUATE', desc: 'Latency, localization drift, and safety margins benchmark' },
-  { step: '06', title: 'ITERATE', desc: 'Firmware refinement and algorithmic convergence' },
-];
-
+// Research & Exploration Section — Editorial presentation of robotics research interests
 const researchTracks = [
   {
-    code: 'TRK_01',
-    title: 'Off-Road Autonomous Navigation',
-    focus: 'Dynamic Obstacle Avoidance in Unstructured Terrain',
-    description: 'Investigating real-time costmap updates and non-linear trajectory rollouts under low-traction off-road conditions where geometric assumptions break down.',
-    tags: ['LiDAR Point Cloud', 'SLAM', 'Nav2 Custom Controllers', 'Off-Road Kinematics'],
+    id: '01',
+    title: 'Off-Road Autonomous Navigation & Trajectory Planning',
+    focus: 'Dynamic Costmap Adaptation in Unstructured Environments',
+    description: 'Investigating real-time local costmap updates and non-linear trajectory rollouts under low-traction off-road conditions where standard 2D geometric assumptions break down.',
+    topics: ['3D LiDAR Point Clouds', 'Terrain Traversability', 'Nav2 Controller Tuning', 'Non-linear Kinematics'],
   },
   {
-    code: 'TRK_02',
-    title: 'Embodied AI & Multimodal Robotics',
-    focus: 'Vision-Language-Action (VLA) for Physical Systems',
-    description: 'Exploring how multimodal foundational models can guide high-level task planning while strictly respecting low-level real-time safety and kinematic guarantees.',
-    tags: ['Embodied AI', 'VLA Architectures', 'Edge Neural Inference', 'Safety Interlocks'],
-  },
-  {
-    code: 'TRK_03',
-    title: 'Multi-Sensor Fusion & State Estimation',
+    id: '02',
+    title: 'Multi-Sensor Fusion & Robust State Estimation',
     focus: 'Tightly-Coupled LiDAR-Inertial-Wheel Odometry',
-    description: 'Studying robust pose estimation in degraded environments (GPS-denied, sensor occlusion, high vibration) using Extended Kalman Filtering and graph optimization.',
-    tags: ['EKF Fusion', 'IMU Calibration', 'Drift Compensation', 'CAN Wheel Ticks'],
+    description: 'Studying robust pose estimation in degraded operational environments (GPS-denied, sensor occlusion, high mechanical shock) using Extended Kalman Filtering and sensor uncertainty modeling.',
+    topics: ['Extended Kalman Filtering', 'IMU Calibration', 'Drift Minimization', 'CAN Wheel Odometry'],
   },
   {
-    code: 'TRK_04',
-    title: 'Decentralized Swarm Coordination',
-    focus: 'Fault-Tolerant Consensus in Multi-Robot Meshes',
-    description: 'Developing lightweight consensus algorithms for peer-to-peer mobile robot teams operating without centralized cloud coordinators.',
-    tags: ['Swarm Robotics', 'TCP/IP Mesh', 'Consensus Algorithms', 'Distributed Control'],
+    id: '03',
+    title: 'Embodied AI & Multimodal Physical Systems',
+    focus: 'Vision-Language-Action (VLA) for Real-World Manipulation',
+    description: 'Exploring how multimodal foundation models can guide high-level spatial task planning while strictly maintaining low-level real-time safety, collision checks, and deterministic execution.',
+    topics: ['Embodied AI', 'VLA Architectures', 'Edge Neural Inference', 'Deterministic Safety Interlocks'],
   },
+  {
+    id: '04',
+    title: 'Decentralized Swarm & Multi-Agent Coordination',
+    focus: 'Fault-Tolerant Consensus in Distributed Robot Meshes',
+    description: 'Developing lightweight peer-to-peer consensus algorithms for cooperative mobile robot fleets operating in communication-constrained environments without centralized cloud servers.',
+    topics: ['Multi-Agent Systems', 'Distributed Consensus', 'TCP/IP Sockets Protocol', 'Decentralized SLAM'],
+  },
+];
+
+const methodology = [
+  { step: '01', title: 'Characterize', desc: 'Real-world sensor telemetry & physical edge-case discovery' },
+  { step: '02', title: 'Model', desc: 'Mathematical modeling of kinematics, perception, and state drift' },
+  { step: '03', title: 'Simulate', desc: 'High-fidelity physics validation in Gazebo and Isaac Sim' },
+  { step: '04', title: 'Validate', desc: 'Hardware deployment, bench testing, and closed-loop validation' },
 ];
 ---
 
 <section id="research" class="section research-section">
   <div class="container">
     <!-- Header -->
-    <div class="section-header-wrap">
-      <div class="section-meta-row">
-        <span class="sys-num">04</span>
-        <span class="sys-label">RESEARCH & EXPLORATION INITIATIVES</span>
-      </div>
-      <h2>Engineering curiosity &<br/><span class="heading-accent">experimental frontiers</span></h2>
-      <p class="section-desc">
-        Active areas of theoretical investigation and engineering exploration in real-world robotics autonomy,
-        perception pipelines, and intelligent physical agents.
+    <div class="section-header">
+      <span class="editorial-tag section-tag">Academic & R&D Interests</span>
+      <h2>Engineering Research &<br/><span class="text-accent">Exploratory Frontiers</span></h2>
+      <p class="section-lead">
+        Active areas of theoretical investigation and engineering prototyping in real-world robotics autonomy,
+        multi-modal perception, and intelligent physical systems.
       </p>
     </div>
 
-    <!-- Research Methodology Pipeline -->
-    <div class="pipeline-container hud-card">
-      <div class="pipeline-top-bar">
-        <span class="mono pipeline-badge">METHODOLOGY // REPRODUCIBLE ROBOTICS ENGINEERING CYCLE</span>
-      </div>
-      <div class="pipeline-flow-row">
-        {researchPipeline.map((item, idx) => (
-          <div class="flow-step">
-            <div class="flow-pill">
-              <span class="flow-num mono">{item.step}</span>
-              <span class="flow-title mono">{item.title}</span>
+    <!-- Research Methodology Strip -->
+    <div class="methodology-bar">
+      <div class="methodology-label mono">ENGINEERING LIFECYCLE</div>
+      <div class="methodology-grid">
+        {methodology.map((m, idx) => (
+          <div class="method-item">
+            <div class="method-header">
+              <span class="method-num mono">{m.step}</span>
+              <span class="method-title mono">{m.title}</span>
             </div>
-            <p class="flow-desc">{item.desc}</p>
-            {idx < researchPipeline.length - 1 && (
-              <span class="flow-arrow mono" aria-hidden="true">→</span>
-            )}
+            <p class="method-desc">{m.desc}</p>
           </div>
         ))}
       </div>
     </div>
 
-    <!-- Exploration Tracks Grid -->
+    <!-- Research Tracks Grid -->
     <div class="tracks-grid">
       {researchTracks.map((track) => (
-        <article class="track-card hud-card">
+        <div class="track-card">
           <div class="track-header">
-            <span class="track-code mono">{track.code}</span>
-            <span class="track-status mono">
-              <span class="beacon-dot" style="background: var(--accent-blue);"></span>
-              EXPLORATION
-            </span>
-          </div>
-
-          <div class="track-body">
+            <span class="track-num mono">Track {track.id}</span>
             <h3 class="track-title">{track.title}</h3>
             <span class="track-focus mono">{track.focus}</span>
-            <p class="track-desc">{track.description}</p>
           </div>
 
-          <div class="track-footer">
-            <div class="tags-cluster">
-              {track.tags.map((t) => <span class="tech-tag">{t}</span>)}
-            </div>
+          <p class="track-desc">{track.description}</p>
+
+          <div class="track-tags">
+            {track.topics.map((tag) => (
+              <span class="track-pill mono">{tag}</span>
+            ))}
           </div>
-        </article>
+        </div>
       ))}
     </div>
 
-    <!-- Research Integrity Disclaimer -->
-    <div class="research-disclaimer hud-card">
-      <div class="disclaimer-inner">
-        <span class="disclaimer-badge mono">[RESEARCH CLASSIFICATION NOTE]</span>
-        <p class="disclaimer-text mono">
-          These research tracks represent active areas of experimental study, literature review, and ongoing simulation
-          prototyping. They reflect engineering curiosity and self-directed R&D, not claimed peer-reviewed papers or formal institutional publications.
-        </p>
-      </div>
+    <!-- Academic Integrity Note -->
+    <div class="research-note">
+      <p class="mono note-text">
+        RESEARCH NOTE: Exploratory tracks represent ongoing independent R&D, prototype simulations, and hands-on laboratory validation.
+      </p>
     </div>
   </div>
 </section>
 
 <style>
   .research-section {
-    background: var(--bg-elevated);
+    background: var(--bg);
   }
 
-  /* Pipeline */
-  .pipeline-container {
-    padding: var(--space-6);
-    margin-bottom: var(--space-8);
-    background: rgba(10, 13, 12, 0.7);
+  /* Methodology Bar */
+  .methodology-bar {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-8);
+    margin-bottom: var(--space-12);
   }
 
-  .pipeline-top-bar {
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--border);
-    margin-bottom: var(--space-5);
-  }
-
-  .pipeline-badge {
+  .methodology-label {
     font-size: var(--text-2xs);
-    color: var(--accent);
-    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-4);
   }
 
-  .pipeline-flow-row {
+  .methodology-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: var(--space-4);
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
   }
 
-  .flow-step {
+  .method-item {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    position: relative;
   }
 
-  .flow-pill {
+  .method-header {
     display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--accent-dim);
-    border: 1px solid var(--border);
-    padding: 4px 8px;
-    border-radius: var(--radius-xs);
-    width: fit-content;
+    align-items: baseline;
+    gap: var(--space-2);
   }
 
-  .flow-num {
-    font-size: 0.625rem;
+  .method-num {
+    font-size: var(--text-xs);
     color: var(--accent);
-    font-weight: 700;
+    font-weight: 600;
   }
 
-  .flow-title {
-    font-size: var(--text-2xs);
+  .method-title {
+    font-size: var(--text-sm);
     color: var(--text);
-    font-weight: 700;
+    font-weight: 600;
+    letter-spacing: 0.04em;
   }
 
-  .flow-desc {
-    font-size: 0.6875rem;
+  .method-desc {
+    font-size: var(--text-xs);
     color: var(--text-secondary);
-    line-height: 1.4;
-  }
-
-  .flow-arrow {
-    position: absolute;
-    top: 6px;
-    right: -12px;
-    color: var(--text-muted);
-    opacity: 0.4;
+    line-height: 1.5;
   }
 
   /* Tracks Grid */
   .tracks-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: var(--space-8);
   }
 
   .track-card {
-    padding: var(--space-6);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-5);
+    transition: border-color var(--duration-norm) var(--ease-editorial);
+  }
+
+  .track-card:hover {
+    border-color: var(--border-hover);
   }
 
   .track-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: var(--space-2);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .track-code {
-    font-size: 0.625rem;
-    color: var(--accent-blue);
-    font-weight: 700;
-  }
-
-  .track-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.625rem;
-    color: var(--accent-blue);
-  }
-
-  .track-body {
-    display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    flex: 1;
+  }
+
+  .track-num {
+    font-size: var(--text-xs);
+    color: var(--accent);
+    font-weight: 600;
   }
 
   .track-title {
     font-size: var(--text-lg);
     color: var(--text);
+    line-height: 1.3;
   }
 
   .track-focus {
-    font-size: var(--text-2xs);
-    color: var(--accent);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
   }
 
   .track-desc {
     font-size: var(--text-sm);
     color: var(--text-secondary);
-    line-height: 1.6;
-    margin-top: var(--space-1);
+    line-height: 1.7;
   }
 
-  .track-footer {
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--border);
-  }
-
-  /* Disclaimer */
-  .research-disclaimer {
-    margin-top: var(--space-8);
-    padding: var(--space-4) var(--space-6);
-    background: rgba(10, 13, 12, 0.85);
-    border-left: 2px solid var(--warning);
-  }
-
-  .disclaimer-inner {
+  .track-tags {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: auto;
+    padding-top: var(--space-2);
   }
 
-  .disclaimer-badge {
-    font-size: var(--text-2xs);
-    color: var(--warning);
-    font-weight: 700;
+  .track-pill {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
   }
 
-  .disclaimer-text {
-    font-size: var(--text-2xs);
-    color: var(--text-secondary);
-    line-height: 1.6;
+  .research-note {
+    margin-top: var(--space-10);
+    padding: var(--space-4) var(--space-6);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
   }
 
-  @media (max-width: 1024px) {
-    .pipeline-flow-row {
-      grid-template-columns: repeat(3, 1fr);
+  .note-text {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 900px) {
+    .methodology-grid {
+      grid-template-columns: 1fr 1fr;
       gap: var(--space-6);
     }
-
-    .flow-arrow {
-      display: none;
-    }
-
     .tracks-grid {
       grid-template-columns: 1fr;
     }
   }
 
-  @media (max-width: 640px) {
-    .pipeline-flow-row {
+  @media (max-width: 600px) {
+    .methodology-grid {
       grid-template-columns: 1fr;
     }
   }

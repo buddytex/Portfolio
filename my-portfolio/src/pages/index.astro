@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SystemStatus from '../components/SystemStatus.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
@@ -11,156 +10,144 @@ import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 
-// Missions data — authentic engineering case studies
-const missions = [
+// Authentic engineering case studies
+const caseStudies = [
   {
-    missionId: '01',
-    codeName: 'EQUINOX-aBAJA-MK2',
+    index: '01',
+    category: 'Autonomous Vehicle Architecture',
     title: 'Autonomous aBAJA Vehicle — Team Equinox',
     role: 'Electrical & Electronics Head · Systems Integration',
-    status: 'COMPLETED & VALIDATED',
     badge: 'AIR 7 (2025) · AIR 11 (2026)',
-    description: 'Spearheaded the complete electrical architecture, custom ECU electronics, isolated wiring harnesses, CAN 2.0B communication bus, and drive-by-wire integration for an autonomous off-road vehicle competing in national BAJA SAE India.',
-    problem: 'Engineer a ruggedized, fully autonomous vehicle electrical system capable of navigating harsh, unmapped off-road terrain without human intervention, maintaining real-time deterministic control under extreme shock, dust, and vibration.',
+    description: 'Spearheaded the complete electrical architecture, custom multi-layer ECUs, isolated wiring harnesses, CAN 2.0B network, and drive-by-wire integration for an autonomous off-road competition vehicle.',
+    problem: 'Engineer a ruggedized, fully autonomous vehicle electrical system capable of navigating harsh, unmapped off-road terrain without human intervention, maintaining deterministic real-time control under extreme shock, dust, and vibration.',
     approach: 'Engineered custom multi-layer ECUs with integrated CAN transceivers, designed dual-rail isolated HV/LV wiring harnesses, integrated steer/brake-by-wire electro-mechanical actuators with dual-redundant E-Stop interlocks, and bridged high-level ROS 2 perception to low-level motor controllers.',
-    pipeline: ['Stereo + LiDAR Perception', 'Central Navigation ECU', 'CAN 2.0B Network (500k)', 'Drive-by-Wire Actuation'],
-    hardware: ['Custom ECUs', 'CAN 2.0B Transceivers', 'HV/LV Isolated Harnesses', 'Drive-by-Wire Actuators', 'Linear Encoders', 'Safety Interlocks'],
+    pipeline: ['Stereo + LiDAR Perception', 'Central Navigation ECU', 'CAN 2.0B Network (500 kbps)', 'Drive-by-Wire Actuation'],
+    hardware: ['Custom Multi-Layer ECUs', 'CAN 2.0B Transceivers', 'HV/LV Isolated Harnesses', 'Drive-by-Wire Actuators', 'Linear Encoders', 'Emergency Interlocks'],
     software: ['Embedded C/C++', 'CAN Protocol Stack', 'ROS 2 Humble', 'RTOS Motor Controllers', 'Telemetry Logging'],
     results: [
       'All India Rank AIR 7 (2025 National Campaign)',
       'All India Rank AIR 11 (2026 National Campaign)',
-      '100% electrical reliability across endurance trials',
+      '100% electrical reliability across national endurance trials',
     ],
+    github: 'https://github.com/buddytex',
     featured: true,
   },
   {
-    missionId: '02',
-    codeName: 'HOSPITAL-AMR-V1',
-    title: 'Hospital Service Autonomous Mobile Robot',
+    index: '02',
+    category: 'Mobile Service Robotics',
+    title: 'Hospital Service Autonomous Mobile Robot (AMR)',
     role: 'Autonomy & Embedded Systems Developer',
-    status: 'OPERATIONAL',
-    badge: 'HEALTHCARE AUTONOMY',
-    description: 'Autonomous indoor service robot built to navigate hospital corridors and transport medical supplies reliably alongside human staff and patients.',
-    problem: 'Safe, deterministic indoor navigation through crowded, dynamically changing healthcare corridors with strict collision-avoidance requirements.',
+    badge: 'Healthcare Autonomy',
+    description: 'Autonomous indoor service robot built to navigate hospital corridors and transport medical supplies reliably alongside human medical staff and patients.',
+    problem: 'Safe, deterministic indoor navigation through crowded, dynamically changing healthcare corridors with strict collision-avoidance constraints and zero tolerance for localization loss.',
     approach: 'Implemented 2D LiDAR SLAM, configured Nav2 global and local costmap layers with recovery behaviors, tuned differential drive PID kinematics, and linked an IoT cloud telemetry bridge.',
-    pipeline: ['Planar LiDAR Scan', 'SLAM Toolbox Mapping', 'Nav2 Dynamic Costmap', 'Differential Drive Controller', 'IoT Fleet Cloud'],
+    pipeline: ['Planar LiDAR Scan', 'SLAM Toolbox Mapping', 'Nav2 Dynamic Costmap', 'Differential Drive Controller', 'IoT Fleet Gateway'],
     hardware: ['Differential Mobile Base', 'Planar LiDAR', 'ESP32 Motor Controller', 'Ultrasonic Safety Rings', 'Power Distribution Board'],
-    software: ['ROS 2', 'Nav2 Navigation Stack', 'SLAM Toolbox', 'Python', 'MQTT IoT Gateway'],
+    software: ['ROS 2 Humble', 'Nav2 Navigation Stack', 'SLAM Toolbox', 'Python', 'MQTT IoT Gateway'],
     results: [
-      'Reliable point-to-point waypoint navigation',
-      'Dynamic pedestrian obstacle avoidance in test trials',
+      'Reliable point-to-point waypoint navigation in clinical trials',
+      'Dynamic pedestrian obstacle avoidance in crowded indoor corridors',
     ],
+    github: 'https://github.com/buddytex',
   },
   {
-    missionId: '03',
-    codeName: 'SMART-CCTV-EDGE',
-    title: 'Smart CCTV Edge Computer Vision & AI',
+    index: '03',
+    category: 'Edge Computer Vision & AI',
+    title: 'Smart CCTV Edge Computer Vision & Tracking',
     role: 'Computer Vision & Edge AI Engineer',
-    status: 'DEPLOYED',
-    badge: 'EDGE PERCEPTION',
+    badge: 'Edge Perception',
     description: 'Intelligent multi-camera surveillance system executing real-time object detection and anomaly tracking on local edge compute hardware.',
-    problem: 'Automated security surveillance with low latency and edge inference without relying on expensive cloud streaming bandwidth.',
+    problem: 'Automated security surveillance with low latency and edge inference without relying on expensive cloud streaming bandwidth or external internet links.',
     approach: 'Optimized OpenCV video pipelines with YOLO neural network inference, multi-threaded RTSP frame acquisition, and spatial bounding-box anomaly alerts.',
     pipeline: ['RTSP Camera Stream', 'Frame Preprocessing', 'YOLO Edge Inference', 'Multi-Object Spatial Tracker', 'Incident Trigger'],
     hardware: ['Edge Compute Unit', 'High-Res IP Cameras', 'Hardware Video Decoders'],
     software: ['OpenCV', 'Python', 'YOLO / PyTorch', 'NumPy', 'Multi-Threaded Video Engine'],
     results: [
-      'Real-time 30 FPS multi-target tracking',
-      'Sub-150ms automated incident detection and alert',
+      'Real-time 30 FPS multi-target tracking on local edge compute',
+      'Sub-150ms automated incident detection and alert dispatch',
     ],
+    github: 'https://github.com/buddytex',
   },
   {
-    missionId: '04',
-    codeName: 'SWARM-ROBOTICS-MESH',
+    index: '04',
+    category: 'Distributed Multi-Agent Systems',
     title: 'Swarm Robotics Distributed Platform',
     role: 'Distributed Systems & Robotics Researcher',
-    status: 'RESEARCH VALIDATED',
-    badge: 'COOPERATIVE AUTONOMY',
+    badge: 'Cooperative Autonomy',
     description: 'Multi-agent cooperative robotics testbed demonstrating peer-to-peer consensus, spatial dispersion, and target encirclement without centralized servers.',
-    problem: 'Coordinated multi-robot movement and exploration in communication-constrained environments with no central point of failure.',
-    approach: 'Developed peer-to-peer TCP/IP mesh protocols on ESP32 microcontrollers, implemented consensus algorithms for flocking, and integrated with ROS for centralized telemetry visualization.',
+    problem: 'Coordinated multi-robot movement and exploration in communication-constrained environments with no central coordinator or single point of failure.',
+    approach: 'Developed peer-to-peer TCP/IP mesh protocols on ESP32 microcontrollers, implemented consensus algorithms for flocking, and integrated with ROS for centralized telemetry inspection.',
     pipeline: ['Local Pose Sensing', 'TCP/IP Peer Mesh Broadcast', 'Distributed Consensus Engine', 'Coordinated Movement'],
     hardware: ['Mobile Robot Swarm Nodes', 'ESP32 Wi-Fi Modules', 'Proximity Sensors', 'Differential Chassis'],
     software: ['ROS', 'Embedded C++', 'TCP/IP Sockets Protocol', 'Python Swarm Visualizer'],
     results: [
-      'Decentralized formation maintenance across multi-node testbed',
-      'Automatic mesh self-healing upon node drop-out',
+      'Decentralized formation maintenance across multi-node mobile testbed',
+      'Automatic mesh self-healing upon node drop-out or link degradation',
     ],
+    github: 'https://github.com/buddytex',
   },
 ];
 ---
 
 <Layout
   title="Naveen Shaji George | Robotics & Autonomous Systems Engineer"
-  description="Robotics Engineer specializing in autonomous systems, robot perception, custom ECUs, CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
+  description="Robotics Engineer specializing in autonomous systems, 3D LiDAR perception, custom vehicle ECUs, isolated CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
 >
-  <!-- Mission Telemetry HUD -->
-  <SystemStatus />
-
-  <!-- Navigation Panel -->
+  <!-- Navigation Header -->
   <Navigation />
 
   <main id="mainContent">
-    <!-- Hero / Mission Command Center -->
+    <!-- Hero Section with Borderless Spatial Perception Field -->
     <Hero />
 
-    <!-- Section 01: Selected Missions (Projects) -->
-    <section id="missions" class="section missions-section">
+    <!-- Section: Selected Engineering Case Studies -->
+    <section id="work" class="section work-section">
       <div class="container">
-        <div class="section-header-wrap">
-          <div class="section-meta-row">
-            <span class="sys-num">01</span>
-            <span class="sys-label">SELECTED ENGINEERING MISSIONS</span>
-          </div>
-          <h2>Robotics systems that<br/><span class="heading-accent">operate in reality</span></h2>
-          <p class="section-desc">
-            Detailed engineering case studies spanning autonomous vehicle integration, mobile service robotics,
-            computer vision pipelines, and multi-agent coordination.
+        <div class="section-header">
+          <span class="editorial-tag section-tag">Selected Case Studies</span>
+          <h2>Robotics Systems That<br/><span class="text-accent">Operate in Reality</span></h2>
+          <p class="section-lead">
+            In-depth engineering case studies spanning autonomous vehicle architecture, mobile service robotics,
+            edge computer vision pipelines, and multi-agent coordination.
           </p>
         </div>
 
-        <div class="missions-grid">
-          {missions.map((mission) => (
-            <ProjectCard {...mission} />
+        <div class="case-studies-list">
+          {caseStudies.map((study) => (
+            <ProjectCard {...study} />
           ))}
         </div>
       </div>
     </section>
 
-    <!-- Section 02: ROS 2 Subsystem Graph -->
+    <!-- Section: ROS 2 Systems Architecture -->
     <Systems />
 
-    <!-- Section 03: Modular Capabilities -->
+    <!-- Section: Core Capabilities & Tooling -->
     <Skills />
 
-    <!-- Section 04: Research & Exploration -->
+    <!-- Section: Research & Exploration -->
     <Research />
 
-    <!-- Section 05: Engineer Profile & Timeline -->
+    <!-- Section: About & Chronology -->
     <About />
 
-    <!-- Section 06: Mission Debrief & Contact -->
+    <!-- Section: Contact & Communication -->
     <Contact />
   </main>
 
-  <!-- Footer -->
+  <!-- Clean Footer -->
   <Footer />
 </Layout>
 
 <style>
-  .missions-section {
+  .work-section {
     background: var(--bg);
   }
 
-  .missions-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-8);
-  }
-
-  @media (max-width: 960px) {
-    .missions-grid {
-      grid-template-columns: 1fr;
-    }
+  .case-studies-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
   }
 </style>

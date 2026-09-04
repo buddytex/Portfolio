@@ -5,8 +5,8 @@ interface Props {
 }
 
 const {
-  title = "Naveen Shaji George | Robotics Engineer",
-  description = "Robotics Engineer specializing in autonomous systems, robot perception, embedded systems, and intelligent robotic systems. Building machines that perceive, reason, and move."
+  title = "Naveen Shaji George | Robotics & Autonomous Systems Engineer",
+  description = "Robotics Engineer specializing in autonomous systems, 3D LiDAR perception, embedded vehicle ECUs, isolated CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
 } = Astro.props;
 ---
 
@@ -17,7 +17,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="author" content="Naveen Shaji George" />
-    <meta name="theme-color" content="#06090f" />
+    <meta name="theme-color" content="#0B0D0E" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
@@ -27,84 +27,168 @@ const {
     <meta property="og:type" content="website" />
 
     <title>{title}</title>
-    <script is:inline src="/scripts/anime.min.js"></script>
     <script is:inline src="/scripts/motion.js"></script>
   </head>
 
   <body>
-    <!-- Motion.dev Global Scroll Linked Telemetry Progress Bar -->
+    <!-- Subtle Scroll Progress Bar -->
     <div id="scrollProgressBar" aria-hidden="true"></div>
+
+    <!-- Subtle Interactive Spatial Background Grid Canvas -->
+    <canvas id="interactiveGridCanvas" class="interactive-grid-canvas" aria-hidden="true"></canvas>
 
     <slot />
 
-    <!-- Motion.dev & Skiper UI & Anime.js Interaction Orchestrator -->
+    <!-- Interactive Grid & Motion.dev Script -->
     <script>
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const anime = (window as any).anime;
-      const Motion = (window as any).Motion;
+      // ==========================================================
+      // 1. SUBTLE INTERACTIVE BACKGROUND GRID WITH CURSOR PARALLAX
+      // ==========================================================
+      const gridCanvas = document.getElementById('interactiveGridCanvas') as HTMLCanvasElement;
+      if (gridCanvas) {
+        const ctx = gridCanvas.getContext('2d');
+        if (ctx) {
+          let w = 0;
+          let h = 0;
+          const gridSize = 64;
+          const mouse = { x: -9999, y: -9999, targetX: -9999, targetY: -9999 };
 
-      // 1. Motion.dev Scroll Linked Telemetry Bar
-      if (Motion && Motion.scroll && Motion.animate && !prefersReduced) {
+          function resizeGrid() {
+            w = window.innerWidth;
+            h = window.innerHeight;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            gridCanvas.width = w * dpr;
+            gridCanvas.height = h * dpr;
+            ctx!.scale(dpr, dpr);
+          }
+
+          window.addEventListener('resize', resizeGrid);
+          resizeGrid();
+
+          window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+          }, { passive: true });
+
+          window.addEventListener('mouseleave', () => {
+            mouse.targetX = -9999;
+            mouse.targetY = -9999;
+          });
+
+          let animId = 0;
+          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+          function renderGrid() {
+            ctx!.clearRect(0, 0, w, h);
+
+            // Smooth mouse interpolation
+            mouse.x += (mouse.targetX - mouse.x) * 0.08;
+            mouse.y += (mouse.targetY - mouse.y) * 0.08;
+
+            ctx!.lineWidth = 1;
+            const cols = Math.ceil(w / gridSize) + 1;
+            const rows = Math.ceil(h / gridSize) + 1;
+
+            // Draw interactive warped vertical and horizontal lines
+            ctx!.strokeStyle = 'rgba(255, 255, 255, 0.022)';
+
+            // Draw horizontal lines with subtle cursor deflection
+            for (let r = 0; r <= rows; r++) {
+              const yBase = r * gridSize;
+              ctx!.beginPath();
+
+              for (let c = 0; c <= cols; c++) {
+                const xBase = c * gridSize;
+                let x = xBase;
+                let y = yBase;
+
+                if (!prefersReduced && mouse.x > -500) {
+                  const d = Math.hypot(xBase - mouse.x, yBase - mouse.y);
+                  if (d < 220) {
+                    const factor = Math.pow(1 - d / 220, 2) * 9;
+                    const ang = Math.atan2(yBase - mouse.y, xBase - mouse.x);
+                    x += Math.cos(ang) * factor;
+                    y += Math.sin(ang) * factor;
+                  }
+                }
+
+                if (c === 0) ctx!.moveTo(x, y);
+                else ctx!.lineTo(x, y);
+              }
+              ctx!.stroke();
+            }
+
+            // Draw vertical lines
+            for (let c = 0; c <= cols; c++) {
+              const xBase = c * gridSize;
+              ctx!.beginPath();
+
+              for (let r = 0; r <= rows; r++) {
+                const yBase = r * gridSize;
+                let x = xBase;
+                let y = yBase;
+
+                if (!prefersReduced && mouse.x > -500) {
+                  const d = Math.hypot(xBase - mouse.x, yBase - mouse.y);
+                  if (d < 220) {
+                    const factor = Math.pow(1 - d / 220, 2) * 9;
+                    const ang = Math.atan2(yBase - mouse.y, xBase - mouse.x);
+                    x += Math.cos(ang) * factor;
+                    y += Math.sin(ang) * factor;
+                  }
+                }
+
+                if (r === 0) ctx!.moveTo(x, y);
+                else ctx!.lineTo(x, y);
+              }
+              ctx!.stroke();
+            }
+
+            animId = requestAnimationFrame(renderGrid);
+          }
+
+          if (!prefersReduced) {
+            renderGrid();
+          } else {
+            // Render a single static crisp frame
+            renderGrid();
+            cancelAnimationFrame(animId);
+          }
+        }
+      }
+
+      // ==========================================================
+      // 2. MOTION.DEV SCROLL PROGRESS & SECTION REVEALS
+      // ==========================================================
+      const Motion = (window as any).Motion;
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (Motion && Motion.scroll && Motion.animate && !prefersReducedMotion) {
         try {
           Motion.scroll(
             Motion.animate('#scrollProgressBar', { scaleX: [0, 1] }, { ease: 'linear' })
           );
         } catch {
-          // Fallback native scroll progress
           window.addEventListener('scroll', () => {
             const bar = document.getElementById('scrollProgressBar');
             if (bar) {
               const max = document.documentElement.scrollHeight - window.innerHeight;
-              const progress = max > 0 ? window.scrollY / max : 0;
-              bar.style.transform = `scaleX(${progress})`;
+              const p = max > 0 ? window.scrollY / max : 0;
+              bar.style.transform = `scaleX(${p})`;
             }
           }, { passive: true });
         }
       }
 
-      // 2. Skiper UI Spotlight Cursor Tracking on Cards
-      const spotlightCards = document.querySelectorAll(
-        '.skiper-spotlight, .hud-card, .mission-dossier, .bay-card, .profile-specs-card, .comms-card'
-      );
-      spotlightCards.forEach((card) => {
-        card.addEventListener('mousemove', (e: any) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          (card as HTMLElement).style.setProperty('--mouse-x', `${x}px`);
-          (card as HTMLElement).style.setProperty('--mouse-y', `${y}px`);
-        });
-      });
-
-      // 3. Skiper UI 3D Interactive Card Perspective Tilt
-      if (!prefersReduced) {
-        const tiltCards = document.querySelectorAll('.mission-dossier, .skiper-tilt');
-        tiltCards.forEach((card) => {
-          card.addEventListener('mousemove', (e: any) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const cx = rect.width / 2;
-            const cy = rect.height / 2;
-            const rotX = ((y - cy) / cy) * -3.5;
-            const rotY = ((x - cx) / cx) * 3.5;
-            (card as HTMLElement).style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-2px)`;
-          });
-          card.addEventListener('mouseleave', () => {
-            (card as HTMLElement).style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
-          });
-        });
-      }
-
-      // 4. Scroll Reveal Orchestrator
-      if (!prefersReduced) {
-        const animBlocks = document.querySelectorAll(
-          '.section-header-wrap, .mission-dossier, .bay-card, .track-card, .profile-specs-card, .timeline-container, .comms-card'
+      // Subtle scroll entrance reveal
+      if (!prefersReducedMotion) {
+        const animElements = document.querySelectorAll(
+          '.section-header, .case-study, .track-card, .timeline-item, .contact-card, .node-button'
         );
 
-        animBlocks.forEach((el) => {
+        animElements.forEach((el) => {
           (el as HTMLElement).style.opacity = '0';
-          (el as HTMLElement).style.transform = 'translateY(24px)';
+          (el as HTMLElement).style.transform = 'translateY(20px)';
           (el as HTMLElement).style.willChange = 'opacity, transform';
         });
 
@@ -119,40 +203,22 @@ const {
                   try {
                     Motion.animate(
                       target,
-                      { opacity: [0, 1], y: [24, 0] },
-                      { duration: 0.65, easing: [0.16, 1, 0.3, 1] }
+                      { opacity: [0, 1], y: [20, 0] },
+                      { duration: 0.6, easing: [0.16, 1, 0.3, 1] }
                     );
                     return;
                   } catch {}
                 }
 
-                if (anime) {
-                  try {
-                    const animateFn = anime.animate || anime;
-                    animateFn(target, {
-                      opacity: [0, 1],
-                      translateY: [24, 0],
-                      duration: 750,
-                      easing: 'easeOutCubic',
-                    });
-                  } catch {
-                    target.style.opacity = '1';
-                    target.style.transform = 'none';
-                  }
-                } else {
-                  target.style.opacity = '1';
-                  target.style.transform = 'none';
-                }
+                target.style.opacity = '1';
+                target.style.transform = 'none';
               }
             });
           },
-          {
-            threshold: 0.12,
-            rootMargin: '0px 0px -40px 0px',
-          }
+          { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
         );
 
-        animBlocks.forEach((el) => revealObserver.observe(el));
+        animElements.forEach((el) => revealObserver.observe(el));
       }
     </script>
   </body>
@@ -160,4 +226,17 @@ const {
 
 <style is:global>
   @import '../styles/global.css';
+
+  #scrollProgressBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: 0%;
+    transform: scaleX(0);
+    z-index: 9999;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  }
 </style>

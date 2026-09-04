@@ -1,55 +1,40 @@
 ---
-// Technical Capabilities & Modular System Racks
-const skillBays = [
+// Engineering Competencies & Tooling
+const domains = [
   {
-    bayId: 'BAY_01',
-    domain: 'Robotics & Autonomy',
-    badge: 'MISSION_CRITICAL',
-    status: 'OPTIMAL',
+    title: 'Autonomy & Navigation',
     skills: [
-      { name: 'ROS 2 / ROS', desc: 'DDS middleware, Node lifecycle, Action servers, TF2 transforms, URDF' },
-      { name: 'Autonomous Navigation', desc: 'Nav2 stack, Global A*, Local DWB planner, Costmap2D layers' },
-      { name: 'SLAM & Odometry', desc: 'Cartographer, SLAM Toolbox, Extended Kalman Filter (EKF) sensor fusion' },
-      { name: 'Sensor Fusion', desc: 'Multi-rate IMU, wheel ticks, and laser scan matching' },
-      { name: 'Drive-by-Wire Control', desc: 'Fail-safe steer-by-wire and electronic brake actuation' },
+      { name: 'ROS 2 / ROS', desc: 'DDS middleware, Node lifecycles, Action servers, TF2 coordinate transforms, URDF' },
+      { name: 'Autonomous Navigation', desc: 'Nav2 stack, global A* pathing, local DWB trajectory rollout, Costmap2D layers' },
+      { name: 'SLAM & Odometry', desc: 'Cartographer, SLAM Toolbox, Extended Kalman Filter (EKF) multi-sensor fusion' },
+      { name: 'Drive-by-Wire Control', desc: 'Fail-safe electro-mechanical steering and electronic braking actuation' },
     ],
   },
   {
-    bayId: 'BAY_02',
-    domain: 'Perception & Computer Vision',
-    badge: 'SENSOR_PIPELINE',
-    status: 'ONLINE',
+    title: 'Perception & Vision',
     skills: [
-      { name: 'LiDAR Processing', desc: 'Planar scan filtering, point-cloud clustering, Euclidean segmentation' },
+      { name: 'LiDAR Processing', desc: 'Planar scan filtering, point-cloud clustering, spatial Euclidean segmentation' },
       { name: 'Computer Vision', desc: 'OpenCV image processing, spatial filtering, contour tracking, homography' },
-      { name: 'Edge AI / Detection', desc: 'YOLO object detection, real-time bounding box tracking, anomaly detection' },
-      { name: 'Camera Calibration', desc: 'Pinhole intrinsic/extrinsic stereo calibration and undistortion' },
+      { name: 'Edge AI Inference', desc: 'YOLO neural detection, multi-threaded RTSP acquisition, real-time spatial tracking' },
+      { name: 'Sensor Calibration', desc: 'Camera intrinsic/extrinsic stereo calibration and LiDAR-camera alignment' },
     ],
   },
   {
-    bayId: 'BAY_03',
-    domain: 'Embedded Systems & Hardware',
-    badge: 'VEHICLE_CORE',
-    status: 'DEPLOYED',
+    title: 'Embedded Systems & CAN Bus',
     skills: [
-      { name: 'Custom ECU Design', desc: 'Microcontroller architecture, sensor signal conditioning, ruggedized power' },
-      { name: 'CAN Bus 2.0B Networks', desc: '500 kbps automotive arbitration, frame prioritization, DBC parsing' },
-      { name: 'Microcontrollers', desc: 'ESP32 (dual-core RTOS), STM32, ARM Cortex-M, Arduino bare-metal' },
-      { name: 'Protocols', desc: 'UART, SPI, I2C, CAN, RS485 differential communication' },
-      { name: 'HV/LV Wiring Harnesses', desc: 'Split-voltage isolation, EMI shielding, crimping, automotive sealing' },
+      { name: 'Custom ECU Design', desc: 'Multi-layer schematics, sensor signal conditioning, ruggedized power rails' },
+      { name: 'CAN 2.0B Networks', desc: '500 kbps automotive arbitration, frame prioritization, DBC parsing' },
+      { name: 'Microcontrollers', desc: 'ESP32 (dual-core RTOS), STM32, ARM Cortex-M architecture' },
+      { name: 'Wiring & Harnessing', desc: 'Split-voltage HV/LV electrical isolation, EMI shielding, automotive Deutsch connectors' },
     ],
   },
   {
-    bayId: 'BAY_04',
-    domain: 'Software Engineering & Tooling',
-    badge: 'COMPUTE_STACK',
-    status: 'ACTIVE',
+    title: 'Software & Simulation',
     skills: [
-      { name: 'Python', desc: 'Robotics scripting, ROS 2 rclpy, NumPy, OpenCV, telemetry visualizers' },
-      { name: 'C / C++', desc: 'Real-time performance, memory safety, embedded drivers, rclcpp' },
-      { name: 'Linux / Ubuntu', desc: 'Bash scripting, systemd robot daemons, udev rules, PREEMPT_RT kernel' },
-      { name: 'Simulation & Debug', desc: 'Gazebo physics worlds, RViz 2 visual inspection, Foxglove Studio' },
-      { name: 'Version Control & CI', desc: 'Git branch workflows, GitHub Actions, Docker containerization' },
+      { name: 'C / C++', desc: 'Real-time performance, memory safety, embedded firmware, rclcpp' },
+      { name: 'Python', desc: 'Robotics algorithms, rclpy, NumPy, OpenCV, telemetry visualizers' },
+      { name: 'Linux / OS', desc: 'Ubuntu, Bash automation, systemd robot daemons, PREEMPT_RT real-time kernel' },
+      { name: 'Simulation & Debug', desc: 'Gazebo physics simulation, RViz 2 visualization, Foxglove Studio' },
     ],
   },
 ];
@@ -57,52 +42,27 @@ const skillBays = [
 
 <section id="capabilities" class="section capabilities-section">
   <div class="container">
-    <!-- Header -->
-    <div class="section-header-wrap">
-      <div class="section-meta-row">
-        <span class="sys-num">03</span>
-        <span class="sys-label">ENGINEERING STACK & DOMAINS</span>
-      </div>
-      <h2>Modular System<br/><span class="heading-accent">capabilities & instrumentation</span></h2>
-      <p class="section-desc">
-        Engineered hardware-software competency spanning automotive autonomy, low-level embedded
-        circuits, perception algorithms, and robot operating systems.
+    <div class="section-header">
+      <span class="editorial-tag section-tag">Core Competencies</span>
+      <h2>Technical Stack &<br/><span class="text-accent">Engineering Capabilities</span></h2>
+      <p class="section-lead">
+        Applied expertise across automotive autonomy stacks, real-time embedded hardware,
+        spatial perception, and robot operating systems.
       </p>
     </div>
 
-    <!-- Modular Instrument Benches -->
-    <div class="bays-grid">
-      {skillBays.map((bay) => (
-        <div class="bay-card hud-card skiper-spotlight skiper-tilt">
-          <div class="bay-header">
-            <div class="bay-id-group">
-              <span class="bay-num mono">{bay.bayId}</span>
-              <h3 class="bay-title">{bay.domain}</h3>
-            </div>
-            <div class="bay-meta">
-              <span class="bay-badge mono">{bay.badge}</span>
-              <span class="bay-status mono">
-                <span class="beacon-dot"></span>
-                {bay.status}
-              </span>
-            </div>
-          </div>
-
-          <div class="bay-skills-list">
-            {bay.skills.map((skill) => (
-              <div class="skill-item-row" tabindex="0">
-                <div class="skill-head">
-                  <span class="skill-bullet mono">›</span>
-                  <span class="skill-name mono">{skill.name}</span>
-                </div>
-                <p class="skill-telemetry-desc">{skill.desc}</p>
+    <!-- Competencies Grid -->
+    <div class="competencies-grid">
+      {domains.map((dom) => (
+        <div class="competency-card">
+          <h3 class="competency-title">{dom.title}</h3>
+          <div class="skills-list">
+            {dom.skills.map((skill) => (
+              <div class="skill-row">
+                <span class="skill-name mono">{skill.name}</span>
+                <p class="skill-desc">{skill.desc}</p>
               </div>
             ))}
-          </div>
-
-          <div class="bay-footer">
-            <span class="bay-health mono">HEALTH: 100%_OPERATIONAL</span>
-            <span class="bay-signal mono">SIG: NOMINAL</span>
           </div>
         </div>
       ))}
@@ -115,136 +75,55 @@ const skillBays = [
     background: var(--bg);
   }
 
-  .bays-grid {
+  .competencies-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-8);
   }
 
-  .bay-card {
-    padding: var(--space-6);
+  .competency-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .competency-title {
+    font-size: var(--text-lg);
+    color: var(--text);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .skills-list {
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
   }
 
-  .bay-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .bay-id-group {
+  .skill-row {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-  }
-
-  .bay-num {
-    font-size: 0.625rem;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-  }
-
-  .bay-title {
-    font-size: var(--text-lg);
-    color: var(--text);
-  }
-
-  .bay-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  .bay-badge {
-    font-size: 0.5625rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-dim);
-    padding: 2px 6px;
-    border-radius: var(--radius-xs);
-    border: 1px solid rgba(115, 169, 255, 0.2);
-  }
-
-  .bay-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.625rem;
-    color: var(--accent);
-  }
-
-  /* Skills List */
-  .bay-skills-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .skill-item-row {
-    padding: var(--space-3);
-    background: rgba(10, 13, 12, 0.5);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xs);
-    transition: all var(--duration-fast) var(--ease-tact);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .skill-item-row:hover,
-  .skill-item-row:focus-visible {
-    background: var(--bg-surface-2);
-    border-color: var(--border-bright);
-    transform: translateX(3px);
-  }
-
-  .skill-head {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .skill-bullet {
-    color: var(--accent);
-    font-size: var(--text-sm);
+    gap: 3px;
   }
 
   .skill-name {
-    font-size: var(--text-xs);
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: 0.02em;
-  }
-
-  .skill-telemetry-desc {
-    font-size: var(--text-2xs);
-    color: var(--text-secondary);
-    line-height: 1.5;
-    padding-left: 14px;
-  }
-
-  /* Footer */
-  .bay-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--border);
-    font-size: 0.5625rem;
-    color: var(--text-muted);
-  }
-
-  .bay-health {
+    font-size: var(--text-sm);
     color: var(--accent);
+    font-weight: 500;
   }
 
-  @media (max-width: 960px) {
-    .bays-grid {
+  .skill-desc {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 860px) {
+    .competencies-grid {
       grid-template-columns: 1fr;
     }
   }

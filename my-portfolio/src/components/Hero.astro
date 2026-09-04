@@ -1,120 +1,76 @@
 ---
-// Hero Section — Robotics Mission Control Interface with Anime.js & Realistic LiDAR
+// Hero Section — Editorial Robotics Engineering Identity
+// Features borderless, free-form floating spatial perception field (LiDAR)
 ---
 
 <section class="hero" id="hero">
-  <!-- Reticle Ambient Graticule -->
-  <div class="hero-graticule-bg" aria-hidden="true"></div>
-
-  <div class="container hero-inner">
-    <!-- Left: Mission Command Identity -->
+  <div class="container hero-container">
+    <!-- Left: Editorial Content -->
     <div class="hero-content">
-      <div class="hero-terminal-header">
-        <span class="mono hero-term-prompt">[INIT]</span>
-        <span class="mono hero-term-line">SUBSYSTEMS ONLINE · ROS 2 HUMBLE · RT-KERNEL</span>
-      </div>
-
-      <div class="hero-classification">
-        <span class="sys-label">
-          <span class="beacon-dot"></span>
-          ROBOTICS & AUTONOMOUS SYSTEMS
+      <div class="hero-meta">
+        <span class="editorial-tag">
+          <span class="tag-line"></span>
+          Robotics & Autonomous Systems
         </span>
       </div>
 
-      <h1 class="hero-title" id="heroTitle">
-        NAVEEN SHAJI<br/>
-        <span class="heading-accent">GEORGE</span>
+      <h1 class="hero-title">
+        Naveen Shaji<br/>
+        <span class="hero-title-sub">George</span>
       </h1>
 
-      <p class="hero-lead" id="heroLead">
-        I build intelligent robotic systems that <strong class="text-white">perceive</strong>,
-        <strong class="text-white">reason</strong>, and <strong class="text-white">act</strong> in the real world.
+      <div class="hero-role">
+        <span class="mono hero-role-title">ROBOTICS ENGINEER</span>
+        <span class="hero-role-dot">/</span>
+        <span class="mono hero-role-loc">AUTONOMOUS SYSTEMS R&D</span>
+      </div>
+
+      <p class="hero-quote">
+        “I build machines that <strong class="text-white">perceive</strong>,
+        <strong class="text-white">reason</strong>, and <strong class="text-white">act</strong> in the real world.”
       </p>
 
-      <p class="hero-sub" id="heroSub">
-        Specializing in autonomous navigation, robot perception (LiDAR & computer vision),
-        custom embedded ECUs, CAN bus networks, and full-stack vehicle hardware-software integration.
+      <p class="hero-description">
+        Specializing in autonomous navigation, robot perception (3D LiDAR & computer vision),
+        custom embedded ECUs, isolated CAN bus networks, and full-stack vehicle hardware-software integration.
       </p>
 
-      <!-- Key Tactical Achievements -->
-      <div class="hero-telemetry-strip hud-card" id="heroTelemetry">
-        <div class="telemetry-block">
-          <span class="telemetry-num mono" data-target="7">AIR 7</span>
-          <span class="telemetry-lbl mono">Team Equinox · 2025</span>
+      <!-- Verified Milestones -->
+      <div class="hero-credentials">
+        <div class="cred-item">
+          <span class="cred-badge mono">AIR 7 & AIR 11</span>
+          <span class="cred-desc">Team Equinox · BAJA SAE India Autonomous Campaign</span>
         </div>
-        <div class="telemetry-sep"></div>
-        <div class="telemetry-block">
-          <span class="telemetry-num mono" data-target="11">AIR 11</span>
-          <span class="telemetry-lbl mono">Team Equinox · 2026</span>
-        </div>
-        <div class="telemetry-sep"></div>
-        <div class="telemetry-block">
-          <span class="telemetry-num mono">E&E HEAD</span>
-          <span class="telemetry-lbl mono">Autonomous aBAJA</span>
+        <div class="cred-divider"></div>
+        <div class="cred-item">
+          <span class="cred-badge mono">E&E HEAD</span>
+          <span class="cred-desc">Autonomous Vehicle Electrical Architecture & CAN Bus</span>
         </div>
       </div>
 
-      <!-- Action CTAs -->
-      <div class="hero-actions" id="heroActions">
-        <a href="#missions" class="btn-tactical btn-primary-tactical">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="5 3 19 12 5 21 5 3"/>
+      <!-- Action Links -->
+      <div class="hero-actions">
+        <a href="#work" class="btn-editorial btn-editorial-primary">
+          <span>Explore Projects</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
           </svg>
-          EXPLORE MISSIONS
         </a>
 
-        <a href="#systems" class="btn-tactical btn-secondary-tactical">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-            <line x1="6" y1="6" x2="6.01" y2="6"/>
-            <line x1="6" y1="18" x2="6.01" y2="18"/>
-          </svg>
-          ROS 2 ARCHITECTURE
+        <a href="#research" class="btn-editorial btn-editorial-secondary">
+          <span>Research & Systems</span>
         </a>
       </div>
     </div>
 
-    <!-- Right: Enhanced Interactive Realistic LiDAR Perception Visualizer -->
-    <div class="hero-visual-wrapper">
-      <div class="lidar-instrument-box hud-card" id="lidarInstrument">
-        <div class="lidar-header">
-          <div class="lidar-title-group">
-            <span class="beacon-dot" id="sensorStatusBeacon"></span>
-            <span class="mono lidar-title">SENSOR_FEED // RPLiDAR-A2</span>
-            <span class="mono lidar-accel-badge" id="accelBadge">NOMINAL</span>
-          </div>
-          <div class="lidar-modes" role="tablist">
-            <button class="lidar-mode-btn active mono" id="modeScan" type="button">360° SCAN</button>
-            <button class="lidar-mode-btn mono" id="modeCostmap" type="button">COSTMAP</button>
-          </div>
-        </div>
-
-        <div class="lidar-canvas-container" id="canvasContainer">
-          <canvas id="lidarCanvas" width="500" height="500" aria-label="Interactive Realistic LiDAR Scanning Visualizer"></canvas>
-          <div class="lidar-cursor-hint mono" id="cursorHint">
-            [HOVER TO ACCELERATE CLOUD & PLACE OBSTACLE]
-          </div>
-        </div>
-
-        <!-- Telemetry HUD Footer with Real-time Rate -->
-        <div class="lidar-hud-footer">
-          <div class="hud-metric">
-            <span class="mono hud-metric-lbl">RANGE:</span>
-            <span class="mono hud-metric-val" id="hudRange">12.00 m</span>
-          </div>
-          <div class="hud-metric">
-            <span class="mono hud-metric-lbl">SCAN RATE:</span>
-            <span class="mono hud-metric-val" id="hudScanRate">14.2 Hz</span>
-          </div>
-          <div class="hud-metric">
-            <span class="mono hud-metric-lbl">POINTS:</span>
-            <span class="mono hud-metric-val" id="pointsCount">420</span>
-          </div>
-          <div class="hud-metric">
-            <span class="mono hud-metric-lbl">NAV2:</span>
-            <span class="mono hud-metric-val" id="nav2Status" style="color: var(--accent);">TRACKING</span>
-          </div>
+    <!-- Right: Free-Form Spatial Perception Field (LiDAR) -->
+    <!-- Integrated directly into the environment without cards, boxes, or radar borders -->
+    <div class="hero-visual">
+      <div class="pointcloud-wrap" id="pointcloudWrap">
+        <canvas id="pointcloudCanvas" aria-label="Interactive 3D LiDAR Spatial Perception Field"></canvas>
+        <div class="pointcloud-caption mono">
+          [ SPATIAL PERCEPTION FIELD · INTERACTIVE OBJECT DEFLECTION ]
         </div>
       </div>
     </div>
@@ -122,470 +78,233 @@
 </section>
 
 <script>
-  // 1. Anime.js Entrance Timeline for Hero Section
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const anime = (window as any).anime;
+  // ==========================================================
+  // FREE-FORM SPATIAL PERCEPTION POINT CLOUD (LiDAR)
+  // Physical spring-inertia cursor repulsion & 3D depth field
+  // ==========================================================
 
-  if (anime && !prefersReduced) {
-    try {
-      const tl = typeof anime.createTimeline === 'function'
-        ? anime.createTimeline({ defaults: { ease: 'outExpo', duration: 800 } })
-        : (typeof anime.timeline === 'function' ? anime.timeline({ easing: 'easeOutExpo', duration: 800 }) : null);
-
-      if (tl) {
-        tl.add('.hero-terminal-header', { opacity: [0, 1], y: [-15, 0], duration: 600 })
-          .add('.hero-classification', { opacity: [0, 1], x: [-20, 0], duration: 500 }, '-=350')
-          .add('#heroTitle', { opacity: [0, 1], y: [25, 0], duration: 900 }, '-=300')
-          .add(['#heroLead', '#heroSub'], { opacity: [0, 1], y: [15, 0], duration: 700 }, '-=500')
-          .add('#heroTelemetry', { opacity: [0, 1], scale: [0.95, 1], duration: 700 }, '-=400')
-          .add('#heroActions', { opacity: [0, 1], y: [15, 0], duration: 600 }, '-=400')
-          .add('#lidarInstrument', { opacity: [0, 1], scale: [0.93, 1], duration: 1000 }, '-=800');
-      }
-    } catch {
-      // Fallback gracefully
-    }
+  interface Point3D {
+    baseX: number;
+    baseY: number;
+    baseZ: number;
+    x: number;
+    y: number;
+    z: number;
+    vx: number;
+    vy: number;
+    vz: number;
+    radius: number;
+    phase: number;
+    orbitSpeed: number;
+    colorType: 'blue' | 'cyan' | 'slate';
   }
 
-  // 2. Realistic Physics-based Interactive LiDAR Visualizer
-  const canvas = document.getElementById('lidarCanvas') as HTMLCanvasElement;
-  const container = document.getElementById('canvasContainer');
-  const pointsCounter = document.getElementById('pointsCount');
-  const hudScanRate = document.getElementById('hudScanRate');
-  const accelBadge = document.getElementById('accelBadge');
-  const cursorHint = document.getElementById('cursorHint');
-  const modeScanBtn = document.getElementById('modeScan');
-  const modeCostmapBtn = document.getElementById('modeCostmap');
-  const nav2Status = document.getElementById('nav2Status');
+  const canvas = document.getElementById('pointcloudCanvas') as HTMLCanvasElement;
+  const wrap = document.getElementById('pointcloudWrap');
 
-  if (canvas && container) {
+  if (canvas && wrap) {
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const size = 500;
-      canvas.width = size * dpr;
-      canvas.height = size * dpr;
-      ctx.scale(dpr, dpr);
+      let width = 0;
+      let height = 0;
+      let animId = 0;
+      const points: Point3D[] = [];
+      const numPoints = 420;
 
-      const cx = size / 2;
-      const cy = size / 2;
-      const maxR = size * 0.44;
-
-      let isCostmapMode = false;
-      modeScanBtn?.addEventListener('click', () => {
-        isCostmapMode = false;
-        modeScanBtn.classList.add('active');
-        modeCostmapBtn?.classList.remove('active');
-      });
-      modeCostmapBtn?.addEventListener('click', () => {
-        isCostmapMode = true;
-        modeCostmapBtn.classList.add('active');
-        modeScanBtn?.classList.remove('active');
-      });
-
-      // Static room obstacles with realistic corridor geometry
-      interface Obstacle {
-        angle: number;
-        dist: number;
-        radius: number;
-      }
-
-      const staticObstacles: Obstacle[] = [];
-      const numObstacles = 56;
-      for (let i = 0; i < numObstacles; i++) {
-        const ang = (Math.PI * 2 * i) / numObstacles;
-        // Room perimeter shape with indentations
-        let dist = 0.72 + 0.18 * Math.sin(ang * 3) + 0.08 * Math.cos(ang * 5);
-        if ((ang > 1.2 && ang < 1.55) || (ang > 4.1 && ang < 4.45)) {
-          dist = 0.95; // Hallway doorways
-        }
-        staticObstacles.push({ angle: ang, dist, radius: 0.04 });
-      }
-
-      // Interior laboratory testing pylons
-      staticObstacles.push({ angle: 0.8, dist: 0.42, radius: 0.06 });
-      staticObstacles.push({ angle: 2.5, dist: 0.48, radius: 0.07 });
-      staticObstacles.push({ angle: 5.2, dist: 0.40, radius: 0.06 });
-
-      // Interactive user obstacle & cursor proximity tracking
-      let userObstacle = { x: 0, y: 0, active: false, proximity: 0 };
-      let cursorLocalPos = { x: cx, y: cy, isInside: false };
-
-      const updateCursor = (clientX: number, clientY: number) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-
-        if (x >= -60 && x <= rect.width + 60 && y >= -60 && y <= rect.height + 60) {
-          cursorLocalPos.isInside = true;
-          const normX = Math.max(0, Math.min(size, (x / rect.width) * size));
-          const normY = Math.max(0, Math.min(size, (y / rect.height) * size));
-          cursorLocalPos.x = normX;
-          cursorLocalPos.y = normY;
-
-          const distFromCenter = Math.hypot(normX - cx, normY - cy);
-          // Calculate proximity factor (1.0 at center, drops to 0 at edge)
-          userObstacle.proximity = Math.max(0, 1 - distFromCenter / (size * 0.75));
-
-          if (distFromCenter <= maxR && distFromCenter > 20) {
-            userObstacle.x = normX;
-            userObstacle.y = normY;
-            userObstacle.active = true;
-            if (cursorHint) cursorHint.style.opacity = '0';
-          }
-        } else {
-          cursorLocalPos.isInside = false;
-          userObstacle.active = false;
-          userObstacle.proximity = 0;
-          if (cursorHint) cursorHint.style.opacity = '0.7';
-        }
+      // Cursor position in canvas coordinates
+      const cursor = {
+        x: -9999,
+        y: -9999,
+        active: false,
       };
 
-      container.addEventListener('mousemove', (e) => updateCursor(e.clientX, e.clientY));
-      window.addEventListener('mousemove', (e) => {
+      function resize() {
+        const rect = wrap!.getBoundingClientRect();
+        width = rect.width;
+        height = rect.height;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx!.scale(dpr, dpr);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      // Initialize spatial points in 3D perception volume
+      function initPoints() {
+        points.length = 0;
+        const cx = width / 2;
+        const cy = height / 2;
+
+        for (let i = 0; i < numPoints; i++) {
+          // Semi-structured organic distribution reminiscent of a real LiDAR scan of surroundings
+          const theta = Math.random() * Math.PI * 2;
+          const phi = (Math.random() - 0.5) * Math.PI * 0.75;
+          const dist = 60 + Math.pow(Math.random(), 0.7) * (Math.min(width, height) * 0.42);
+
+          const bx = cx + Math.cos(theta) * Math.cos(phi) * dist;
+          const by = cy + Math.sin(phi) * dist * 0.85 + Math.sin(theta) * 35;
+          const bz = Math.sin(theta) * Math.cos(phi) * 160;
+
+          const rand = Math.random();
+          const colorType: 'blue' | 'cyan' | 'slate' =
+            rand > 0.45 ? 'blue' : (rand > 0.18 ? 'cyan' : 'slate');
+
+          points.push({
+            baseX: bx,
+            baseY: by,
+            baseZ: bz,
+            x: bx,
+            y: by,
+            z: bz,
+            vx: 0,
+            vy: 0,
+            vz: 0,
+            radius: 1.4 + Math.random() * 1.6,
+            phase: Math.random() * Math.PI * 2,
+            orbitSpeed: 0.0006 + Math.random() * 0.0008,
+            colorType,
+          });
+        }
+      }
+
+      initPoints();
+
+      // Track cursor relative to canvas
+      const updateCursor = (clientX: number, clientY: number) => {
         const rect = canvas.getBoundingClientRect();
-        const dx = e.clientX - (rect.left + rect.width / 2);
-        const dy = e.clientY - (rect.top + rect.height / 2);
-        const dist = Math.hypot(dx, dy);
-        // Proximity sensor: detect cursor even when moving outside canvas
-        if (dist < 500) {
-          userObstacle.proximity = Math.max(0, 1 - dist / 500);
-        } else if (!cursorLocalPos.isInside) {
-          userObstacle.proximity = 0;
+        cursor.x = clientX - rect.left;
+        cursor.y = clientY - rect.top;
+        cursor.active = true;
+      };
+
+      window.addEventListener('mousemove', (e) => updateCursor(e.clientX, e.clientY));
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          updateCursor(e.touches[0].clientX, e.touches[0].clientY);
         }
       }, { passive: true });
 
-      container.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) updateCursor(e.touches[0].clientX, e.touches[0].clientY);
-      }, { passive: true });
-
-      container.addEventListener('mouseleave', () => {
-        cursorLocalPos.isInside = false;
-        userObstacle.active = false;
-        userObstacle.proximity = 0;
-        if (cursorHint) cursorHint.style.opacity = '0.7';
+      window.addEventListener('mouseleave', () => {
+        cursor.active = false;
+        cursor.x = -9999;
+        cursor.y = -9999;
       });
 
-      // Point cloud data structure with individual dynamic velocities and intensity
-      interface LidarPoint {
-        x: number;
-        y: number;
-        baseX: number;
-        baseY: number;
-        vx: number;
-        vy: number;
-        alpha: number;
-        intensity: number;
-        isNearCursor: boolean;
-      }
-
-      let scanAngle = 0;
-      let animId: number;
-      const detectedPoints: LidarPoint[] = [];
-
-      // Raycast function with real-time obstacle intersection
-      function raycast(angle: number): { dist: number; hitUser: boolean } {
-        let minDist = 0.98;
-        let hitUser = false;
-
-        // Static obstacles
-        for (const obs of staticObstacles) {
-          let dAngle = Math.abs(angle - obs.angle);
-          if (dAngle > Math.PI) dAngle = Math.PI * 2 - dAngle;
-          if (dAngle < obs.radius) {
-            minDist = Math.min(minDist, obs.dist);
-          }
-        }
-
-        // Dynamic user obstacle placed by cursor
-        if (userObstacle.active) {
-          const uAngle = Math.atan2(userObstacle.y - cy, userObstacle.x - cx);
-          const uDist = Math.hypot(userObstacle.x - cx, userObstacle.y - cy) / maxR;
-          let diff = Math.abs(angle - (uAngle < 0 ? uAngle + Math.PI * 2 : uAngle));
-          if (diff > Math.PI) diff = Math.PI * 2 - diff;
-          if (diff < 0.14 && uDist < minDist) {
-            minDist = uDist;
-            hitUser = true;
-          }
-        }
-
-        // Realistic sensor measurement noise (±0.8% jitter)
-        minDist *= (1 + (Math.random() - 0.5) * 0.016);
-        return { dist: minDist, hitUser };
-      }
+      let time = 0;
+      const focalLength = 320;
+      const reactionRadius = 140;
+      const springK = 0.045; // Spring restoring tension
+      const damping = 0.87;  // Viscous fluid inertia damping
 
       function render() {
-        ctx!.clearRect(0, 0, size, size);
+        time += 1;
+        ctx!.clearRect(0, 0, width, height);
 
-        // Dynamic Scan Speed Acceleration based on cursor proximity!
-        // Baseline speed: 0.085 rad/frame (~14 Hz).
-        // Max turbo speed: up to 0.24 rad/frame (~38 Hz) when cursor is close!
-        const speedMultiplier = 1.0 + userObstacle.proximity * 2.2;
-        const currentScanSpeed = 0.085 * speedMultiplier;
+        const cx = width / 2;
+        const cy = height / 2;
 
-        // Telemetry Scan Rate update
-        const currentHz = (14.2 * speedMultiplier).toFixed(1);
-        if (hudScanRate) {
-          hudScanRate.textContent = `${currentHz} Hz`;
-          if (speedMultiplier > 1.3) {
-            hudScanRate.style.color = 'var(--warning)';
-            if (accelBadge) {
-              accelBadge.textContent = 'TURBO_SCAN';
-              accelBadge.style.color = 'var(--warning)';
-              accelBadge.style.borderColor = 'rgba(240, 182, 106, 0.4)';
-              accelBadge.style.background = 'rgba(240, 182, 106, 0.12)';
+        // Periodic subtle LiDAR laser excitation sweep
+        const laserSweepZ = Math.sin(time * 0.02) * 160;
+
+        // 1. Update physics for each point
+        for (let i = 0; i < points.length; i++) {
+          const pt = points[i];
+
+          // Natural subtle organic drift
+          const driftX = Math.sin(time * pt.orbitSpeed + pt.phase) * 14;
+          const driftY = Math.cos(time * pt.orbitSpeed * 1.1 + pt.phase) * 12;
+          const targetX = pt.baseX + driftX;
+          const targetY = pt.baseY + driftY;
+          const targetZ = pt.baseZ + Math.sin(time * 0.001 + pt.phase) * 15;
+
+          // PHYSICAL CURSOR INTERACTION (Cursor behaves as physical obstacle in LiDAR space)
+          if (cursor.active) {
+            const dx = pt.x - cursor.x;
+            const dy = pt.y - cursor.y;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist < reactionRadius && dist > 0.001) {
+              // Smooth non-linear repulsion force with inertia
+              const normDist = dist / reactionRadius;
+              const force = Math.pow(1 - normDist, 1.8) * 5.5;
+              const angle = Math.atan2(dy, dx);
+
+              pt.vx += Math.cos(angle) * force;
+              pt.vy += Math.sin(angle) * force;
+              pt.vz += force * 1.8; // Displace in depth like a 3D obstacle
             }
-          } else {
-            hudScanRate.style.color = 'var(--text-secondary)';
-            if (accelBadge) {
-              accelBadge.textContent = 'NOMINAL';
-              accelBadge.style.color = 'var(--accent)';
-              accelBadge.style.borderColor = 'var(--border)';
-              accelBadge.style.background = 'transparent';
+          }
+
+          // Damped Spring Return to equilibrium
+          const ax = (targetX - pt.x) * springK;
+          const ay = (targetY - pt.y) * springK;
+          const az = (targetZ - pt.z) * springK;
+
+          pt.vx = (pt.vx + ax) * damping;
+          pt.vy = (pt.vy + ay) * damping;
+          pt.vz = (pt.vz + az) * damping;
+
+          pt.x += pt.vx;
+          pt.y += pt.vy;
+          pt.z += pt.vz;
+        }
+
+        // 2. Spatial Connectivity Lines (Subtle perception mesh)
+        ctx!.lineWidth = 0.75;
+        for (let i = 0; i < points.length; i += 3) {
+          const p1 = points[i];
+          for (let j = i + 1; j < Math.min(i + 8, points.length); j++) {
+            const p2 = points[j];
+            const d = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            if (d < 46) {
+              const alpha = (1 - d / 46) * 0.12;
+              ctx!.strokeStyle = `rgba(59, 130, 246, ${alpha})`;
+              ctx!.beginPath();
+              ctx!.moveTo(p1.x, p1.y);
+              ctx!.lineTo(p2.x, p2.y);
+              ctx!.stroke();
             }
           }
         }
 
-        // 1. Polar Graticule & Metric Distance Rings
-        ctx!.strokeStyle = 'rgba(123, 224, 178, 0.08)';
-        ctx!.lineWidth = 1;
+        // 3. Render projected 3D Points
+        for (let i = 0; i < points.length; i++) {
+          const pt = points[i];
 
-        const rings = [3, 6, 9, 12];
-        rings.forEach((r) => {
-          const radius = (r / 12) * maxR;
+          // 3D perspective projection scale
+          const scale = focalLength / (focalLength + pt.z);
+          const r = Math.max(0.6, pt.radius * scale);
+
+          // Proximity to periodic sweep
+          const isSwept = Math.abs(pt.z - laserSweepZ) < 25;
+          const baseAlpha = Math.min(1, Math.max(0.2, (pt.z + 180) / 340));
+          const finalAlpha = isSwept ? Math.min(1, baseAlpha * 1.6) : baseAlpha * 0.85;
+
           ctx!.beginPath();
-          ctx!.arc(cx, cy, radius, 0, Math.PI * 2);
-          ctx!.stroke();
+          ctx!.arc(pt.x, pt.y, r, 0, Math.PI * 2);
 
-          ctx!.font = '9px "JetBrains Mono", monospace';
-          ctx!.fillStyle = 'rgba(123, 224, 178, 0.35)';
-          ctx!.fillText(`${r}m`, cx + radius - 18, cy - 4);
-        });
-
-        // Crosshairs
-        ctx!.beginPath();
-        ctx!.moveTo(cx - maxR, cy);
-        ctx!.lineTo(cx + maxR, cy);
-        ctx!.moveTo(cx, cy - maxR);
-        ctx!.lineTo(cx, cy + maxR);
-        ctx!.stroke();
-
-        // 2. Realistic FOV Laser Cone Sweep with Radial Gradient
-        const fovWidth = 0.24 * (1 + userObstacle.proximity * 0.3);
-        ctx!.beginPath();
-        ctx!.moveTo(cx, cy);
-        ctx!.arc(cx, cy, maxR, scanAngle - fovWidth, scanAngle + fovWidth);
-        ctx!.closePath();
-
-        const fovGrad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, maxR);
-        fovGrad.addColorStop(0, userObstacle.proximity > 0.4 ? 'rgba(240, 182, 106, 0.22)' : 'rgba(123, 224, 178, 0.18)');
-        fovGrad.addColorStop(1, 'rgba(123, 224, 178, 0.00)');
-        ctx!.fillStyle = fovGrad;
-        ctx!.fill();
-
-        // 3. Multi-Ray Laser Emission & Dynamic Hitpoints
-        const stepsPerFrame = Math.round(7 * speedMultiplier);
-        for (let s = 0; s < stepsPerFrame; s++) {
-          const rayAngle = scanAngle + (s * (currentScanSpeed / stepsPerFrame));
-          const { dist, hitUser } = raycast(rayAngle);
-          const hitR = dist * maxR;
-          const hx = cx + Math.cos(rayAngle) * hitR;
-          const hy = cy + Math.sin(rayAngle) * hitR;
-
-          // Compute particle velocity vectors
-          // If hit near cursor, particle gets explosive outward velocity!
-          let vx = (Math.random() - 0.5) * 1.5;
-          let vy = (Math.random() - 0.5) * 1.5;
-
-          if (userObstacle.active) {
-            const dCursor = Math.hypot(hx - userObstacle.x, hy - userObstacle.y);
-            if (dCursor < 80) {
-              const angOut = Math.atan2(hy - userObstacle.y, hx - userObstacle.x);
-              vx = Math.cos(angOut) * (3.5 + Math.random() * 2.5);
-              vy = Math.sin(angOut) * (3.5 + Math.random() * 2.5);
-            }
-          }
-
-          detectedPoints.push({
-            x: hx,
-            y: hy,
-            baseX: hx,
-            baseY: hy,
-            vx,
-            vy,
-            alpha: 1.0,
-            intensity: hitUser ? 1.0 : (0.55 + Math.random() * 0.45),
-            isNearCursor: hitUser,
-          });
-
-          // Laser sweep beam
-          ctx!.beginPath();
-          ctx!.moveTo(cx, cy);
-          ctx!.lineTo(hx, hy);
-          ctx!.strokeStyle = hitUser ? 'rgba(255, 107, 107, 0.85)' : 'rgba(123, 224, 178, 0.45)';
-          ctx!.lineWidth = hitUser ? 1.8 : 1.1;
-          ctx!.stroke();
-
-          // Laser contact spark on hit
-          if (hitUser) {
-            ctx!.beginPath();
-            ctx!.arc(hx, hy, 3.5, 0, Math.PI * 2);
-            ctx!.fillStyle = '#FFF';
-            ctx!.fill();
-          }
-        }
-
-        // 4. Draw Point Cloud & Accelerated Particle Flow near Cursor!
-        // Points move faster when cursor is near them
-        for (let i = detectedPoints.length - 1; i >= 0; i--) {
-          const pt = detectedPoints[i];
-
-          // Check proximity of this point to user cursor
-          const distToCursor = userObstacle.active
-            ? Math.hypot(pt.x - userObstacle.x, pt.y - userObstacle.y)
-            : Math.hypot(pt.x - cursorLocalPos.x, pt.y - cursorLocalPos.y);
-
-          // If cursor is near this point, ACCELERATE ITS MOTION & JITTER!
-          if (distToCursor < 90) {
-            const urgency = Math.max(0, 1 - distToCursor / 90);
-            // Move points faster!
-            pt.x += pt.vx * (1.8 + urgency * 3.5);
-            pt.y += pt.vy * (1.8 + urgency * 3.5);
-            // Decay faster near energetic cursor
-            pt.alpha -= 0.018 * (1 + urgency * 2);
+          if (isSwept) {
+            ctx!.fillStyle = `rgba(255, 255, 255, ${finalAlpha})`;
+          } else if (pt.colorType === 'blue') {
+            ctx!.fillStyle = `rgba(59, 130, 246, ${finalAlpha})`;
+          } else if (pt.colorType === 'cyan') {
+            ctx!.fillStyle = `rgba(96, 165, 250, ${finalAlpha * 0.9})`;
           } else {
-            // Normal decay
-            pt.alpha -= 0.0075 * speedMultiplier;
+            ctx!.fillStyle = `rgba(203, 213, 225, ${finalAlpha * 0.5})`;
           }
 
-          if (pt.alpha <= 0) {
-            detectedPoints.splice(i, 1);
-            continue;
-          }
-
-          ctx!.beginPath();
-          const ptRadius = isCostmapMode ? 3.5 : (pt.isNearCursor ? 2.8 : 1.6);
-          ctx!.arc(pt.x, pt.y, ptRadius, 0, Math.PI * 2);
-
-          if (isCostmapMode) {
-            ctx!.fillStyle = `rgba(115, 169, 255, ${pt.alpha * 0.75})`;
-          } else if (pt.isNearCursor) {
-            // Bright collision alert
-            ctx!.fillStyle = `rgba(255, 107, 107, ${pt.alpha})`;
-          } else {
-            // Gradient intensity based on reflection
-            ctx!.fillStyle = `rgba(123, 224, 178, ${pt.alpha * pt.intensity})`;
-          }
           ctx!.fill();
         }
-
-        if (pointsCounter && detectedPoints.length % 4 === 0) {
-          pointsCounter.textContent = String(detectedPoints.length);
-        }
-
-        // 5. Active User Cursor Obstacle Marker with Radar Ripple
-        if (userObstacle.active) {
-          ctx!.beginPath();
-          ctx!.arc(userObstacle.x, userObstacle.y, 14, 0, Math.PI * 2);
-          ctx!.fillStyle = 'rgba(255, 107, 107, 0.25)';
-          ctx!.fill();
-          ctx!.strokeStyle = '#FF6B6B';
-          ctx!.lineWidth = 1.5;
-          ctx!.stroke();
-
-          // Expanding sonar ring
-          const ringRad = 14 + (Date.now() % 1000) * 0.025;
-          ctx!.beginPath();
-          ctx!.arc(userObstacle.x, userObstacle.y, ringRad, 0, Math.PI * 2);
-          ctx!.strokeStyle = `rgba(255, 107, 107, ${Math.max(0, 1 - ringRad / 38)})`;
-          ctx!.lineWidth = 1;
-          ctx!.stroke();
-
-          ctx!.font = '9px "JetBrains Mono", monospace';
-          ctx!.fillStyle = '#FF6B6B';
-          ctx!.fillText('DYNAMIC_OBSTACLE', userObstacle.x + 18, userObstacle.y + 4);
-
-          if (nav2Status) {
-            nav2Status.textContent = 'AVOIDING';
-            nav2Status.style.color = '#FF6B6B';
-          }
-        } else if (nav2Status) {
-          nav2Status.textContent = 'TRACKING';
-          nav2Status.style.color = 'var(--accent)';
-        }
-
-        // 6. Planned Trajectory with Real-time Nav2 Obstacle Avoidance!
-        ctx!.beginPath();
-        const startX = cx;
-        const startY = cy;
-        let ctrlX = cx + 25;
-        let ctrlY = cy - maxR * 0.45;
-        let endX = cx + 45;
-        let endY = cy - maxR * 0.85;
-
-        // Dynamic local trajectory deformation around cursor obstacle
-        if (userObstacle.active && userObstacle.y < cy + 20) {
-          const pushDir = userObstacle.x > cx ? -65 : 65;
-          ctrlX += pushDir;
-          endX += pushDir * 0.75;
-        }
-
-        ctx!.moveTo(startX, startY);
-        ctx!.quadraticCurveTo(ctrlX, ctrlY, endX, endY);
-        ctx!.strokeStyle = userObstacle.active ? 'rgba(240, 182, 106, 0.85)' : 'rgba(123, 224, 178, 0.8)';
-        ctx!.lineWidth = 2.2;
-        ctx!.setLineDash([5, 4]);
-        ctx!.stroke();
-        ctx!.setLineDash([]);
-
-        // Target waypoint
-        ctx!.beginPath();
-        ctx!.arc(endX, endY, 4.5, 0, Math.PI * 2);
-        ctx!.fillStyle = userObstacle.active ? 'var(--warning)' : 'var(--accent)';
-        ctx!.fill();
-        ctx!.font = '8px "JetBrains Mono", monospace';
-        ctx!.fillStyle = userObstacle.active ? 'var(--warning)' : 'var(--accent)';
-        ctx!.fillText('GOAL_POSE', endX + 8, endY + 3);
-
-        // 7. Center Robot Chassis & LiDAR Turret
-        ctx!.save();
-        ctx!.translate(cx, cy);
-        ctx!.strokeStyle = 'var(--accent)';
-        ctx!.lineWidth = 1.8;
-        ctx!.strokeRect(-9, -12, 18, 24);
-
-        // Wheels
-        ctx!.fillStyle = 'rgba(255, 255, 255, 0.6)';
-        ctx!.fillRect(-12, -10, 3, 7);
-        ctx!.fillRect(9, -10, 3, 7);
-        ctx!.fillRect(-12, 3, 3, 7);
-        ctx!.fillRect(9, 3, 3, 7);
-
-        // Center Sensor Dome with dynamic spin
-        ctx!.beginPath();
-        ctx!.arc(0, 0, 5, 0, Math.PI * 2);
-        ctx!.fillStyle = 'var(--accent)';
-        ctx!.fill();
-
-        // Direction arrow
-        ctx!.beginPath();
-        ctx!.moveTo(0, -11);
-        ctx!.lineTo(-4, -5);
-        ctx!.lineTo(4, -5);
-        ctx!.closePath();
-        ctx!.fillStyle = 'rgba(123, 224, 178, 0.7)';
-        ctx!.fill();
-        ctx!.restore();
-
-        // Increment scan angle with dynamic speed!
-        scanAngle += currentScanSpeed;
-        if (scanAngle > Math.PI * 2) scanAngle -= Math.PI * 2;
 
         animId = requestAnimationFrame(render);
       }
 
+      // IntersectionObserver: Pause when offscreen for high performance
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReduced) {
-        // Pause animation when off-screen for performance
-        const obs = new IntersectionObserver(([entry]) => {
+        const observer = new IntersectionObserver(([entry]) => {
           if (entry.isIntersecting) {
             if (!animId) render();
           } else {
@@ -594,8 +313,9 @@
               animId = 0;
             }
           }
-        }, { threshold: 0.1 });
-        obs.observe(canvas);
+        }, { threshold: 0.05 });
+
+        observer.observe(canvas);
         render();
       } else {
         render();
@@ -608,281 +328,194 @@
 <style>
   .hero {
     position: relative;
-    padding: var(--space-12) 0 var(--space-20);
-    overflow: hidden;
-    min-height: calc(100vh - var(--nav-height));
+    padding: clamp(4rem, 8vh, 6.5rem) 0 clamp(5rem, 10vh, 8rem);
+    min-height: calc(90vh - var(--nav-height));
     display: flex;
     align-items: center;
+    overflow: hidden;
   }
 
-  .hero-graticule-bg {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 65% 50%, rgba(123, 224, 178, 0.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .hero-inner {
+  .hero-container {
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     gap: var(--space-12);
     align-items: center;
-    position: relative;
-    z-index: 1;
   }
 
-  /* Left Content */
+  /* Left Editorial Content */
   .hero-content {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-6);
+    max-width: 660px;
+    z-index: 2;
   }
 
-  .hero-terminal-header {
+  .hero-meta {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    padding: 4px 10px;
-    background: rgba(123, 224, 178, 0.05);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xs);
-    width: fit-content;
   }
 
-  .hero-term-prompt {
-    font-size: var(--text-2xs);
-    color: var(--accent);
-    font-weight: 700;
-  }
-
-  .hero-term-line {
-    font-size: var(--text-2xs);
-    color: var(--text-secondary);
-  }
-
-  .hero-classification {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+  .tag-line {
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
   }
 
   .hero-title {
-    font-size: clamp(2.75rem, 5.5vw, 4.5rem);
-    letter-spacing: -0.035em;
-    line-height: 0.96;
-  }
-
-  .hero-lead {
-    font-size: var(--text-lg);
-    color: var(--text-secondary);
-    line-height: 1.5;
-    max-width: 580px;
-  }
-
-  .text-white {
+    font-size: clamp(3rem, 6.2vw, 5.25rem);
+    letter-spacing: -0.04em;
+    line-height: 0.94;
     color: var(--text);
   }
 
-  .hero-sub {
-    font-size: var(--text-sm);
+  .hero-title-sub {
     color: var(--text-secondary);
-    max-width: 540px;
-    line-height: 1.7;
+    font-weight: 500;
   }
 
-  /* Telemetry Strip */
-  .hero-telemetry-strip {
+  .hero-role {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
-    padding: var(--space-4) var(--space-6);
-    width: fit-content;
-    margin-top: var(--space-2);
+    gap: var(--space-3);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
   }
 
-  .telemetry-block {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .telemetry-num {
-    font-size: var(--text-md);
-    font-weight: 700;
+  .hero-role-title {
     color: var(--accent);
+    font-weight: 600;
   }
 
-  .telemetry-lbl {
-    font-size: var(--text-2xs);
+  .hero-role-dot {
+    color: var(--text-dim);
+  }
+
+  .hero-role-loc {
     color: var(--text-muted);
   }
 
-  .telemetry-sep {
+  .hero-quote {
+    font-size: clamp(1.125rem, 1.8vw, 1.35rem);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .hero-description {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* Verified Credentials */
+  .hero-credentials {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    margin-top: var(--space-2);
+  }
+
+  .cred-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .cred-badge {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+
+  .cred-desc {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .cred-divider {
     width: 1px;
-    height: 32px;
-    background: var(--border);
+    height: 36px;
+    background: var(--border-subtle);
   }
 
   .hero-actions {
     display: flex;
     align-items: center;
     gap: var(--space-4);
-    margin-top: var(--space-4);
+    margin-top: var(--space-2);
     flex-wrap: wrap;
   }
 
-  /* Right Visual: LiDAR Instrument Box */
-  .hero-visual-wrapper {
+  /* Right Visual: Free-Form Spatial Point Cloud */
+  .hero-visual {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 480px;
     display: flex;
+    align-items: center;
     justify-content: center;
   }
 
-  .lidar-instrument-box {
-    width: 100%;
-    max-width: 480px;
-    padding: var(--space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-
-  .lidar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .lidar-title-group {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .lidar-title {
-    font-size: var(--text-xs);
-    font-weight: 600;
-    color: var(--text);
-    letter-spacing: 0.04em;
-  }
-
-  .lidar-accel-badge {
-    font-size: 0.5625rem;
-    color: var(--accent);
-    border: 1px solid var(--border);
-    padding: 1px 5px;
-    border-radius: var(--radius-xs);
-    letter-spacing: 0.05em;
-    transition: all var(--duration-fast);
-  }
-
-  .lidar-modes {
-    display: flex;
-    gap: 4px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 2px;
-    border-radius: var(--radius-xs);
-  }
-
-  .lidar-mode-btn {
-    font-size: 0.625rem;
-    padding: 3px 8px;
-    color: var(--text-muted);
-    border-radius: var(--radius-xs);
-    transition: all var(--duration-fast);
-  }
-
-  .lidar-mode-btn.active {
-    color: var(--accent);
-    background: var(--accent-dim);
-  }
-
-  .lidar-canvas-container {
+  .pointcloud-wrap {
     position: relative;
     width: 100%;
-    aspect-ratio: 1;
-    background: #070908;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    cursor: crosshair;
+    height: 100%;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  #lidarCanvas {
+  #pointcloudCanvas {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
+    cursor: grab;
   }
 
-  .lidar-cursor-hint {
+  .pointcloud-caption {
     position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.5625rem;
-    color: var(--accent);
-    opacity: 0.7;
-    letter-spacing: 0.08em;
+    bottom: 10px;
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
     pointer-events: none;
-    transition: opacity var(--duration-fast);
-    white-space: nowrap;
-  }
-
-  .lidar-hud-footer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-2);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--border);
-  }
-
-  .hud-metric {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .hud-metric-lbl {
-    font-size: 0.5625rem;
-    color: var(--text-muted);
-  }
-
-  .hud-metric-val {
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
-    font-weight: 600;
+    text-align: center;
+    opacity: 0.75;
   }
 
   /* Responsive */
-  @media (max-width: 1080px) {
-    .hero-inner {
+  @media (max-width: 1024px) {
+    .hero-container {
       grid-template-columns: 1fr;
-      gap: var(--space-12);
+      gap: var(--space-10);
     }
-
-    .hero-visual-wrapper {
-      max-width: 480px;
-      margin-inline: auto;
-      width: 100%;
+    .hero-visual {
+      min-height: 380px;
+    }
+    .pointcloud-wrap {
+      min-height: 420px;
     }
   }
 
   @media (max-width: 640px) {
-    .hero-telemetry-strip {
+    .hero-credentials {
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-3);
-      width: 100%;
     }
-
-    .telemetry-sep {
+    .cred-divider {
       display: none;
-    }
-
-    .lidar-hud-footer {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-3);
     }
   }
 </style>

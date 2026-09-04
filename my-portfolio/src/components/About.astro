@@ -1,117 +1,105 @@
 ---
-// Engineer Profile & Mission Timeline
+// About Section — Editorial biography and verified engineering chronology
 const timeline = [
   {
-    year: '2025 – 2026',
-    milestone: 'AIR 11 & AIR 7 · aBAJA Autonomous Competition',
-    subsystem: 'Team Equinox // Electrical & Electronics Head',
-    desc: 'Directed the electrical architecture, custom ECUs, CAN network protocol, and autonomous drive-by-wire integration for consecutive national aBAJA campaigns.',
-    tags: ['CAN Bus 2.0B', 'Custom ECUs', 'HV/LV Harnesses', 'Drive-by-Wire', 'Safety Interlocks'],
+    period: '2025 – 2026',
+    role: 'Electrical & Electronics Head',
+    organization: 'Team Equinox · BAJA SAE India',
+    achievement: 'All India Rank AIR 7 (2025) & AIR 11 (2026)',
+    description: 'Directed the end-to-end electrical architecture, custom ECU electronics, CAN bus protocol stack, and drive-by-wire electro-mechanical integration for an autonomous off-road vehicle competing nationwide.',
+    skills: ['CAN Bus 2.0B', 'Custom Multi-Layer ECUs', 'Drive-by-Wire Actuators', 'HV/LV Harnessing', 'Safety Interlocks'],
   },
   {
-    year: '2024 – 2025',
-    milestone: 'Hospital Service Autonomous Mobile Robot (AMR)',
-    subsystem: 'Autonomous Navigation & IoT Telemetry',
-    desc: 'Integrated planar LiDAR SLAM, Nav2 dynamic costmap path planning, and remote IoT monitoring for healthcare logistics.',
-    tags: ['ROS 2', 'Nav2', 'SLAM', 'ESP32', 'Differential Drive'],
+    period: '2024 – 2025',
+    role: 'Autonomy & Embedded Developer',
+    organization: 'Hospital Service Autonomous Mobile Robot (AMR)',
+    achievement: 'Closed-Loop Hospital Logistics Autonomous Testbed',
+    description: 'Engineered 2D LiDAR SLAM, Nav2 local costmap dynamic tuning, and differential drive kinematics to achieve safe indoor transport of medical supplies.',
+    skills: ['ROS 2 Humble', 'Nav2', 'SLAM Toolbox', 'Differential Kinematics', 'IoT Telemetry'],
   },
   {
-    year: '2023 – 2024',
-    milestone: 'Smart CCTV Edge Computer Vision & Swarm Robotics',
-    subsystem: 'Edge AI & Distributed Cooperative Systems',
-    desc: 'Developed embedded vision anomaly detection with OpenCV and engineered peer-to-peer TCP/IP mesh coordination across multi-robot swarm units.',
-    tags: ['OpenCV', 'Python', 'TCP/IP Mesh', 'Distributed Robotics'],
+    period: '2023 – 2024',
+    role: 'Computer Vision & Systems Researcher',
+    organization: 'Edge Perception & Swarm Robotics Platforms',
+    achievement: 'Multi-Agent Mesh & Real-Time Computer Vision',
+    description: 'Developed real-time RTSP anomaly detection with OpenCV and engineered peer-to-peer TCP/IP mesh coordination across distributed mobile robot swarm nodes.',
+    skills: ['OpenCV', 'Python', 'TCP/IP Sockets Protocol', 'Edge AI', 'Distributed Systems'],
   },
 ];
 ---
 
-<section id="profile" class="section profile-section">
+<section id="about" class="section about-section">
   <div class="container">
     <!-- Header -->
-    <div class="section-header-wrap">
-      <div class="section-meta-row">
-        <span class="sys-num">05</span>
-        <span class="sys-label">ENGINEER PROFILE & DOSSIER</span>
-      </div>
-      <h2>System specification &<br/><span class="heading-accent">mission chronology</span></h2>
-      <p class="section-desc">
-        A technical record of hands-on robotics engineering, vehicle system integration, and autonomous hardware deployments.
+    <div class="section-header">
+      <span class="editorial-tag section-tag">Background & Experience</span>
+      <h2>Engineering Philosophy &<br/><span class="text-accent">Chronology</span></h2>
+      <p class="section-lead">
+        A hands-on track record spanning autonomous off-road vehicle architecture,
+        custom embedded electronics, and real-time robotic perception.
       </p>
     </div>
 
-    <!-- Two-column Layout: Profile Specs & Chronology Timeline -->
-    <div class="profile-layout">
-      <!-- Left: Telemetry Profile Spec Card -->
-      <div class="profile-specs-card hud-card">
-        <div class="card-top">
-          <span class="mono card-sys-id">PROFILE_ID // NSG-ROBOTICS-01</span>
-          <span class="status-beacon">
-            <span class="beacon-dot"></span>
-            <span class="mono">ACTIVE</span>
-          </span>
-        </div>
-
-        <div class="specs-table">
-          <div class="spec-row">
-            <span class="mono spec-k">ENGINEER:</span>
-            <span class="spec-v">Naveen Shaji George</span>
-          </div>
-          <div class="spec-row">
-            <span class="mono spec-k">SPECIALIZATION:</span>
-            <span class="spec-v highlight">Robotics & Autonomous Systems</span>
-          </div>
-          <div class="spec-row">
-            <span class="mono spec-k">DOMAINS:</span>
-            <span class="spec-v">Perception, Embedded ECUs, CAN Networks, ROS 2, Vehicle Integration</span>
-          </div>
-          <div class="spec-row">
-            <span class="mono spec-k">LOCATION:</span>
-            <span class="spec-v">India · Open to Global Relocation</span>
-          </div>
-          <div class="spec-row">
-            <span class="mono spec-k">TARGET ROLES:</span>
-            <span class="spec-v">Robotics Engineer / Autonomous Systems R&D / Embedded Robotics</span>
-          </div>
-        </div>
-
-        <div class="philosophy-box">
-          <span class="mono philosophy-lbl">[ENGINEERING STATEMENT]</span>
-          <p class="philosophy-txt">
-            I don't just write algorithms in simulation—I design the custom ECUs, crimp the isolated harnesses,
-            debug the CAN bus traffic, calibrate the LiDAR sensors, and tune the motion controllers until physical
-            machines operate reliably in harsh, unpredictable environments.
+    <!-- Editorial Layout: Biography Left, Chronology Right -->
+    <div class="about-grid">
+      <!-- Left: Narrative Bio -->
+      <div class="bio-column">
+        <div class="bio-lead">
+          <p>
+            I am a robotics engineer driven by the challenge of bridging <strong class="text-white">physical hardware</strong> and
+            <strong class="text-white">intelligent software</strong>. Rather than viewing robotics purely from an algorithmic or purely from a mechanical angle,
+            I focus on complete, unified systems integration.
           </p>
         </div>
 
-        <div class="profile-download-box">
-          <a href="/Naveen_Shaji_George_CV.pdf" class="btn-tactical btn-primary-tactical" style="width: 100%; justify-content: center;" download>
-            DOWNLOAD FULL ENGINEERING CV (PDF)
+        <div class="bio-body">
+          <p>
+            As the Electrical & Electronics Head for <em>Team Equinox</em>, I spearheaded the complete electronic powertrain and autonomous architecture
+            for our all-terrain vehicle, leading the team to top-tier national finishes (AIR 7 in 2025, AIR 11 in 2026).
+            My day-to-day spans designing custom multi-layer ECUs, assembling isolated wiring harnesses, troubleshooting deterministic CAN bus frames on an oscilloscope,
+            and tuning ROS 2 Nav2 costmaps.
+          </p>
+          <p>
+            I thrive in research and R&D environments where safety-critical hardware reliability meets state-of-the-art spatial perception.
+          </p>
+        </div>
+
+        <!-- Academic Foundation -->
+        <div class="education-block">
+          <span class="edu-label mono">ACADEMIC FOUNDATION</span>
+          <h4 class="edu-degree">B.Tech in Robotics & Automation Engineering</h4>
+          <span class="edu-school">Saintgits College of Engineering · Autonomous Institution</span>
+        </div>
+
+        <!-- Resume Action -->
+        <div class="bio-actions">
+          <a href="/Naveen_Shaji_George_CV.pdf" class="btn-editorial btn-editorial-primary" download>
+            <span>Download Curriculum Vitae (PDF)</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
           </a>
         </div>
       </div>
 
-      <!-- Right: Chronological Mission Timeline -->
-      <div class="timeline-container hud-card">
-        <div class="timeline-head">
-          <span class="mono timeline-title">MISSION CHRONOLOGY & DEPLOYMENTS</span>
-        </div>
-
-        <div class="timeline-tree">
+      <!-- Right: Engineering Chronology Tree -->
+      <div class="chronology-column">
+        <div class="chronology-label mono">DEPLOYED MILESTONES (2023 – 2026)</div>
+        <div class="timeline-list">
           {timeline.map((item) => (
             <div class="timeline-item">
-              <div class="timeline-rail">
-                <span class="timeline-node"></span>
-                <span class="timeline-stem"></span>
-              </div>
+              <div class="timeline-period mono">{item.period}</div>
               <div class="timeline-content">
-                <div class="timeline-time-row">
-                  <span class="mono timeline-year">{item.year}</span>
-                  <span class="mono timeline-subsystem">{item.subsystem}</span>
-                </div>
-                <h3 class="timeline-milestone">{item.milestone}</h3>
-                <p class="timeline-desc">{item.desc}</p>
-                <div class="tags-cluster" style="margin-top: 6px;">
-                  {item.tags.map((t) => <span class="tech-tag">{t}</span>)}
+                <h4 class="timeline-role">{item.role}</h4>
+                <div class="timeline-org mono">{item.organization}</div>
+                {item.achievement && (
+                  <div class="timeline-badge mono">{item.achievement}</div>
+                )}
+                <p class="timeline-desc">{item.description}</p>
+                <div class="timeline-skills">
+                  {item.skills.map((skill) => (
+                    <span class="skill-tag mono">{skill}</span>
+                  ))}
                 </div>
               </div>
             </div>
@@ -123,186 +111,180 @@ const timeline = [
 </section>
 
 <style>
-  .profile-section {
-    background: var(--bg);
+  .about-section {
+    background: var(--bg-subtle);
   }
 
-  .profile-layout {
+  .about-grid {
     display: grid;
-    grid-template-columns: 0.9fr 1.1fr;
-    gap: var(--space-8);
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
     align-items: start;
   }
 
-  /* Left Specs Card */
-  .profile-specs-card {
-    padding: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-  }
-
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .card-sys-id {
-    font-size: var(--text-2xs);
-    color: var(--accent);
-    font-weight: 700;
-  }
-
-  .specs-table {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .spec-row {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: var(--space-3);
-    font-size: var(--text-xs);
-    align-items: baseline;
-  }
-
-  .spec-k {
-    color: var(--text-muted);
-    font-size: var(--text-2xs);
-  }
-
-  .spec-v {
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  .spec-v.highlight {
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  .philosophy-box {
-    background: rgba(10, 13, 12, 0.7);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xs);
-    padding: var(--space-4);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .philosophy-lbl {
-    font-size: 0.625rem;
-    color: var(--accent);
-  }
-
-  .philosophy-txt {
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
-    line-height: 1.65;
-  }
-
-  .profile-download-box {
-    padding-top: var(--space-2);
-  }
-
-  /* Right Timeline */
-  .timeline-container {
-    padding: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-  }
-
-  .timeline-head {
-    padding-bottom: var(--space-3);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .timeline-title {
-    font-size: var(--text-2xs);
-    color: var(--accent-blue);
-    font-weight: 700;
-  }
-
-  .timeline-tree {
+  /* Left Bio */
+  .bio-column {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
   }
 
-  .timeline-item {
+  .bio-lead p {
+    font-size: var(--text-lg);
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .bio-body {
     display: flex;
+    flex-direction: column;
     gap: var(--space-4);
   }
 
-  .timeline-rail {
+  .bio-body p {
+    font-size: var(--text-base);
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  .bio-body em {
+    color: var(--text);
+    font-style: normal;
+  }
+
+  /* Education */
+  .education-block {
+    padding: var(--space-5) var(--space-6);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 14px;
+    gap: 4px;
+    margin-top: var(--space-2);
   }
 
-  .timeline-node {
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
+  .edu-label {
+    font-size: var(--text-2xs);
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+
+  .edu-degree {
+    font-size: var(--text-base);
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .edu-school {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .bio-actions {
+    margin-top: var(--space-2);
+  }
+
+  /* Right Chronology */
+  .chronology-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .chronology-label {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    position: relative;
+  }
+
+  .timeline-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-left: var(--space-6);
+    border-left: 1px solid var(--border);
+    position: relative;
+  }
+
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -3.5px;
+    top: 4px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    box-shadow: 0 0 6px var(--accent);
-    margin-top: 5px;
-    flex-shrink: 0;
+    background: var(--accent);
   }
 
-  .timeline-stem {
-    width: 1px;
-    height: 100%;
-    background: var(--border);
-    margin-top: 4px;
+  .timeline-period {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
   }
 
   .timeline-content {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    flex: 1;
   }
 
-  .timeline-time-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    flex-wrap: wrap;
+  .timeline-role {
+    font-size: var(--text-lg);
+    color: var(--text);
+    line-height: 1.3;
   }
 
-  .timeline-year {
+  .timeline-org {
     font-size: var(--text-xs);
     color: var(--accent);
-    font-weight: 700;
   }
 
-  .timeline-subsystem {
-    font-size: 0.625rem;
-    color: var(--text-muted);
-  }
-
-  .timeline-milestone {
-    font-size: var(--text-base);
+  .timeline-badge {
+    font-size: var(--text-2xs);
     color: var(--text);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    width: fit-content;
+    margin: 2px 0;
   }
 
   .timeline-desc {
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.65;
+  }
+
+  .timeline-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .skill-tag {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
   }
 
   @media (max-width: 960px) {
-    .profile-layout {
+    .about-grid {
       grid-template-columns: 1fr;
+      gap: var(--space-10);
     }
   }
 </style>
