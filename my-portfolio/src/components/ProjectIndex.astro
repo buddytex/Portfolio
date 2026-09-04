@@ -1,0 +1,335 @@
+---
+// ProjectIndex Component — Editorial Project Cards & Architecture Entry Points
+import { projects } from '../data/projects';
+---
+
+<section id="work" class="section work-section">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="section-header reveal">
+      <div class="header-tag mono">01 // SELECTED WORK</div>
+      <h2 class="section-title">Autonomous Machines That<br/><span class="text-cyan">Operate in Reality</span></h2>
+      <p class="section-lead">
+        Interactive entry points into verified engineering case studies. Each project bridges physical hardware,
+        sensor perception, embedded controllers, and real-time autonomy algorithms.
+      </p>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid stagger-children">
+      {projects.map((project) => (
+        <article class="project-card" id={`card-${project.id}`}>
+          <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture for ${project.title}`}>
+            <!-- Visual Architectural Preview Box -->
+            <div class="card-visual-wrap">
+              <div class="visual-canvas-container" data-type={project.visualSignature}>
+                {project.visualSignature === 'trajectory' && (
+                  <svg class="visual-svg" viewBox="0 0 400 240" fill="none" aria-hidden="true">
+                    <!-- Off-road terrain coordinate grid -->
+                    <path d="M40 200 L360 200 M40 160 L360 160 M40 120 L360 120 M40 80 L360 80" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 3"/>
+                    <path d="M80 40 L80 220 M160 40 L160 220 M240 40 L240 220 M320 40 L320 220" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 3"/>
+                    <!-- Planned vs Actual Trajectory -->
+                    <path d="M60 190 C120 180, 160 130, 220 110 C280 90, 310 60, 350 50" stroke="var(--text-dim)" stroke-width="2" stroke-dasharray="5 5"/>
+                    <path class="anim-path" d="M60 190 C120 175, 170 120, 230 105 C270 95, 300 70, 350 50" stroke="var(--cyan-dark)" stroke-width="3"/>
+                    <!-- Waypoints & Steer vector -->
+                    <circle cx="60" cy="190" r="4" fill="var(--text-primary)"/>
+                    <circle cx="170" cy="120" r="4" fill="var(--cyan-dark)"/>
+                    <circle cx="230" cy="105" r="4" fill="var(--cyan-dark)"/>
+                    <circle cx="350" cy="50" r="6" fill="var(--text-primary)"/>
+                    <!-- Vehicle orientation vector -->
+                    <line x1="230" y1="105" x2="260" y2="92" stroke="var(--text-primary)" stroke-width="2"/>
+                    <text x="270" y="90" font-family="var(--font-mono)" font-size="10" fill="var(--cyan-dark)">δ_steer: +14.2°</text>
+                  </svg>
+                )}
+
+                {project.visualSignature === 'lidar' && (
+                  <svg class="visual-svg" viewBox="0 0 400 240" fill="none" aria-hidden="true">
+                    <!-- Concentric LiDAR range rings -->
+                    <circle cx="200" cy="120" r="35" stroke="var(--border)" stroke-width="1"/>
+                    <circle cx="200" cy="120" r="70" stroke="var(--border)" stroke-width="1"/>
+                    <circle cx="200" cy="120" r="105" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4"/>
+                    <!-- Scanning beam sweep -->
+                    <line class="anim-beam" x1="200" y1="120" x2="290" y2="50" stroke="var(--cyan)" stroke-width="1.5"/>
+                    <!-- Obstacle returns & wall corridors -->
+                    <rect x="70" y="50" width="12" height="140" fill="var(--text-dim)" rx="2"/>
+                    <rect x="318" y="50" width="12" height="140" fill="var(--text-dim)" rx="2"/>
+                    <!-- Dynamic pedestrian obstacle -->
+                    <circle cx="230" cy="80" r="8" fill="var(--cyan-dark)"/>
+                    <circle cx="230" cy="80" r="16" stroke="var(--cyan-dark)" stroke-width="1" stroke-dasharray="3 3"/>
+                    <!-- AMR robot center -->
+                    <rect x="190" y="112" width="20" height="16" fill="var(--text-primary)" rx="3"/>
+                    <text x="145" y="210" font-family="var(--font-mono)" font-size="10" fill="var(--text-muted)">COSTMAP_INFLATION: 0.55m</text>
+                  </svg>
+                )}
+
+                {project.visualSignature === 'vision' && (
+                  <svg class="visual-svg" viewBox="0 0 400 240" fill="none" aria-hidden="true">
+                    <!-- Camera viewport frame -->
+                    <rect x="40" y="30" width="320" height="180" stroke="var(--border-strong)" stroke-width="1.5" rx="4"/>
+                    <!-- Real-time detection bounding box -->
+                    <rect class="anim-bbox" x="90" y="65" width="80" height="110" stroke="var(--cyan-dark)" stroke-width="2" rx="2"/>
+                    <rect x="90" y="50" width="70" height="15" fill="var(--cyan-dark)"/>
+                    <text x="94" y="61" font-family="var(--font-mono)" font-size="9" fill="#FFFFFF">PERSON 0.94</text>
+                    <!-- Second detection -->
+                    <rect x="230" y="90" width="95" height="75" stroke="var(--text-primary)" stroke-width="1.5" stroke-dasharray="4 2" rx="2"/>
+                    <text x="234" y="85" font-family="var(--font-mono)" font-size="9" fill="var(--text-primary)">VEHICLE 0.88</text>
+                    <!-- RTSP telemetry tag -->
+                    <text x="50" y="225" font-family="var(--font-mono)" font-size="10" fill="var(--cyan-dark)">30 FPS · RTSP INGESTION</text>
+                  </svg>
+                )}
+
+                {project.visualSignature === 'swarm' && (
+                  <svg class="visual-svg" viewBox="0 0 400 240" fill="none" aria-hidden="true">
+                    <!-- Mesh communication topology links -->
+                    <line x1="120" y1="80" x2="200" y2="60" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                    <line x1="200" y1="60" x2="280" y2="90" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                    <line x1="120" y1="80" x2="160" y2="160" stroke="var(--cyan)" stroke-width="1.5"/>
+                    <line x1="200" y1="60" x2="160" y2="160" stroke="var(--cyan)" stroke-width="1.5"/>
+                    <line x1="280" y1="90" x2="240" y2="170" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="3 3"/>
+                    <line x1="160" y1="160" x2="240" y2="170" stroke="var(--cyan-dark)" stroke-width="2"/>
+                    <!-- Swarm agent nodes -->
+                    <circle cx="120" cy="80" r="10" fill="var(--surface)" stroke="var(--text-primary)" stroke-width="2"/>
+                    <circle cx="200" cy="60" r="10" fill="var(--surface)" stroke="var(--text-primary)" stroke-width="2"/>
+                    <circle cx="280" cy="90" r="10" fill="var(--surface)" stroke="var(--text-primary)" stroke-width="2"/>
+                    <circle class="anim-node" cx="160" cy="160" r="12" fill="var(--cyan-dark)"/>
+                    <circle cx="240" cy="170" r="10" fill="var(--surface)" stroke="var(--text-primary)" stroke-width="2"/>
+                    <!-- Status -->
+                    <text x="120" y="215" font-family="var(--font-mono)" font-size="10" fill="var(--text-muted)">ESP32 AD-HOC TCP/IP MESH</text>
+                  </svg>
+                )}
+              </div>
+
+              <!-- Top index pill -->
+              <div class="card-visual-top">
+                <span class="visual-index mono">{project.index}</span>
+                <span class="visual-status tag tag-cyan">{project.status}</span>
+              </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="card-content">
+              <div class="card-header">
+                <span class="card-domain mono">{project.domain}</span>
+                <h3 class="card-title">{project.title}</h3>
+                <span class="card-year mono">{project.year}</span>
+              </div>
+
+              <p class="card-summary">{project.summary}</p>
+
+              <!-- Tech tags preview -->
+              <div class="card-tags">
+                {project.softwareStack.slice(0, 3).map((tech) => (
+                  <span class="tag">{tech}</span>
+                ))}
+                {project.hardwareStack.slice(0, 2).map((hw) => (
+                  <span class="tag">{hw}</span>
+                ))}
+              </div>
+
+              <!-- Action Link -->
+              <div class="card-cta mono">
+                <span>EXPLORE ARCHITECTURE</span>
+                <span class="cta-arrow" aria-hidden="true">→</span>
+              </div>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .work-section {
+    background: var(--bg);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .header-tag {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    transition: transform var(--dur-norm) var(--ease-out),
+                border-color var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out);
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Architectural Visual Box */
+  .card-visual-wrap {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: #FAF9F6;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .visual-canvas-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+  }
+
+  .visual-svg {
+    width: 100%;
+    height: 100%;
+    max-width: 360px;
+    max-height: 200px;
+  }
+
+  .card-visual-top {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-4);
+    right: var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+  }
+
+  .visual-index {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 3px 8px;
+    border-radius: var(--r-xs);
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* Content area */
+  .card-content {
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    flex-grow: 1;
+  }
+
+  .card-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card-domain {
+    font-size: var(--text-2xs);
+    color: var(--cyan-dark);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .card-title {
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .project-card:hover .card-title {
+    color: var(--cyan-dark);
+  }
+
+  .card-year {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .card-summary {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: var(--space-3);
+  }
+
+  /* CTA */
+  .card-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.04em;
+    margin-top: var(--space-2);
+  }
+
+  .cta-arrow {
+    color: var(--cyan-dark);
+    font-size: var(--text-sm);
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  .project-card:hover .cta-arrow {
+    transform: translateX(5px);
+  }
+
+  /* Micro-animations */
+  @keyframes pulsePath {
+    0%, 100% { stroke-dashoffset: 0; }
+    50% { stroke-dashoffset: 20; }
+  }
+
+  .project-card:hover .anim-path {
+    stroke-width: 4;
+  }
+
+  .project-card:hover .anim-bbox {
+    stroke-width: 3;
+    stroke: var(--text-primary);
+  }
+
+  @media (max-width: 960px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

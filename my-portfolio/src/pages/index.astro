@@ -1,160 +1,47 @@
 ---
+// Home Page — Editorial Robotics Engineering Portfolio
+// Naveen Shaji George · Autonomous Systems Engineer
 import Layout from '../layouts/Layout.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import Research from '../components/Research.astro';
-import Systems from '../components/Systems.astro';
-import Skills from '../components/Skills.astro';
+import ProjectIndex from '../components/ProjectIndex.astro';
+import SkillsEvidence from '../components/SkillsEvidence.astro';
 import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
-
-// Authentic engineering case studies with verified metrics & visualizer modes
-const caseStudies = [
-  {
-    index: '01',
-    category: 'Autonomous Vehicle Architecture',
-    title: 'Autonomous aBAJA Vehicle — Team Equinox',
-    role: 'Electrical & Electronics Head · Systems Integration',
-    badge: 'AIR 7 (2025) · AIR 11 (2026)',
-    summary: 'Spearheaded the end-to-end electrical architecture, custom multi-layer ECUs, isolated CAN 2.0B network, and steer/brake-by-wire electro-mechanical actuation for an autonomous all-terrain competition vehicle competing nationally.',
-    built: 'Custom multi-layer ECUs with integrated CAN transceivers, dual-rail isolated HV/LV wiring harnesses, dual-redundant safety interlocks, and electro-mechanical steer-by-wire actuation.',
-    howItWorks: 'High-level ROS 2 perception and trajectory nodes communicate over a deterministic 500 kbps CAN 2.0B bus to microcontrollers controlling steering servos, braking actuators, and motor drives with hardware E-stops.',
-    challenges: 'Eliminating electromagnetic interference (EMI) from high-current motor draws corrupting low-voltage sensor lines, and maintaining sub-10ms actuator response latency on uneven off-road terrain.',
-    pipeline: ['Perception & Local Odometry', 'Trajectory Planner Node', 'CAN 2.0B Protocol Gateway', 'Drive-by-Wire Actuation'],
-    hardware: ['Custom Multi-Layer ECUs', 'CAN 2.0B Transceivers', 'Isolated HV/LV Harnesses', 'Drive-by-Wire Actuators', 'Linear Encoders', 'Hardware E-Stop Interlocks'],
-    software: ['Embedded C/C++', 'CAN 2.0B Protocol Stack', 'ROS 2 Humble', 'RTOS Motor Control', 'Telemetry Logging'],
-    results: [
-      'All India Rank AIR 7 in BAJA SAE India 2025 National Campaign',
-      'All India Rank AIR 11 in BAJA SAE India 2026 National Campaign',
-      '100% electrical reliability across national off-road endurance challenges',
-    ],
-    visualType: 'trajectory' as const,
-    github: 'https://github.com/buddytex',
-  },
-  {
-    index: '02',
-    category: 'Mobile Service Robotics',
-    title: 'Hospital Service Autonomous Mobile Robot (AMR)',
-    role: 'Autonomy & Embedded Systems Developer',
-    badge: 'Healthcare Autonomy',
-    summary: 'Indoor autonomous transport platform engineered to reliably deliver medications and surgical supplies through dynamic healthcare corridors alongside hospital staff and patients.',
-    built: 'Integrated 2D LiDAR SLAM, calibrated differential drive wheel odometry, built dynamic local costmap recovery behaviors in Nav2, and deployed an IoT MQTT bridge for central dispatch.',
-    howItWorks: '360-degree planar LiDAR streams scan packets into SLAM Toolbox for sub-centimeter map matching. Nav2 generates collision-free Bezier paths, while dynamic costmaps flag unexpected pedestrians and re-route paths in real time.',
-    challenges: 'Preventing localization drift in featureless hospital corridors, avoiding glass partition blind spots, and guaranteeing smooth deceleration around vulnerable pedestrians.',
-    pipeline: ['Planar LiDAR Scan', 'SLAM Toolbox Mapping', 'Nav2 Dynamic Costmap', 'Differential Drive Kinematics', 'IoT Fleet Gateway'],
-    hardware: ['Differential Chassis Base', '2D Planar LiDAR', 'ESP32 Motor Controller', 'Ultrasonic Safety Rings', 'Power Distribution Board'],
-    software: ['ROS 2 Humble', 'Nav2 Navigation Stack', 'SLAM Toolbox', 'Python', 'MQTT Cloud Bridge'],
-    results: [
-      'Deterministic point-to-point indoor hospital waypoint navigation',
-      'Smooth dynamic pedestrian avoidance in congested corridor testbeds',
-    ],
-    visualType: 'amr_map' as const,
-    github: 'https://github.com/buddytex',
-  },
-  {
-    index: '03',
-    category: 'Edge Computer Vision & AI',
-    title: 'Smart CCTV Edge Computer Vision & Tracking',
-    role: 'Computer Vision & Edge AI Engineer',
-    badge: 'Edge Perception',
-    summary: 'High-throughput real-time multi-camera edge vision system executing object detection, bounding-box tracking, and spatial anomaly classification directly on local hardware without cloud roundtrips.',
-    built: 'Multi-threaded RTSP frame ingest pipeline with hardware-accelerated OpenCV decoders, YOLO neural network inference engine, and spatial tracking heuristics.',
-    howItWorks: 'Camera RTSP streams are ingested across dedicated worker threads, preprocessed with OpenCV, passed to quantized YOLO models for bounding box detection, and mapped to track IDs for anomaly alerting.',
-    challenges: 'Achieving sustained 30 FPS inference across simultaneous camera feeds without frame drops, thermal throttling, or high inference latency on compute-constrained edge boxes.',
-    pipeline: ['RTSP Video Ingestion', 'Frame Preprocessing', 'YOLO Edge Inference', 'Multi-Object Spatial Tracker', 'Automated Alert Trigger'],
-    hardware: ['Edge Compute Accelerator Unit', 'High-Res IP Cameras', 'Hardware Video Decoders'],
-    software: ['OpenCV', 'Python', 'YOLO / PyTorch', 'NumPy', 'Multi-Threaded Video Engine'],
-    results: [
-      '30 FPS real-time inference on edge compute hardware',
-      'Sub-150ms automated spatial perimeter breach alert dispatch',
-    ],
-    visualType: 'vision_bbox' as const,
-    github: 'https://github.com/buddytex',
-  },
-  {
-    index: '04',
-    category: 'Distributed Multi-Agent Systems',
-    title: 'Swarm Robotics Distributed Coordination Platform',
-    role: 'Distributed Systems & Robotics Researcher',
-    badge: 'Cooperative Autonomy',
-    summary: 'Multi-agent cooperative robotics testbed demonstrating decentralized consensus, dynamic spatial dispersion, and target encirclement over peer-to-peer wireless ad-hoc networks.',
-    built: 'Peer-to-peer TCP/IP ad-hoc communication protocol, distributed consensus state machine on ESP32 microcontrollers, and live swarm telemetry visualization tools.',
-    howItWorks: 'Nodes broadcast local sensor observations and relative neighbor distances over an ad-hoc Wi-Fi mesh. Each robot independently computes consensus velocity vectors using potential fields, maintaining formation without any master node.',
-    challenges: 'Handling packet loss, network latency jitter, and dynamic topology changes when nodes drop out or rejoin the swarm mid-operation.',
-    pipeline: ['Local Sensor Distance Sensing', 'TCP/IP Peer Mesh Broadcast', 'Distributed Consensus Engine', 'Coordinated Formation Movement'],
-    hardware: ['Differential Swarm Robot Nodes', 'ESP32 Wi-Fi Modules', 'Proximity Sensors', 'Custom Node PCB'],
-    software: ['ROS', 'Embedded C++', 'TCP/IP Sockets Protocol', 'Python Swarm Telemetry Visualizer'],
-    results: [
-      'Decentralized formation maintenance without single point of failure',
-      'Rapid mesh self-healing upon unexpected node drop-outs or link degradations',
-    ],
-    visualType: 'swarm_mesh' as const,
-    github: 'https://github.com/buddytex',
-  },
-];
 ---
 
 <Layout
-  title="Naveen Shaji George | Robotics & Autonomous Systems Engineer"
-  description="Robotics Engineer specializing in autonomous systems, 3D LiDAR perception, custom vehicle ECUs, isolated CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
+  title="Naveen Shaji George — Robotics & Autonomous Systems Engineer"
+  description="Robotics engineer specializing in autonomous vehicles, 3D LiDAR perception, custom vehicle ECUs, isolated CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
 >
-  <!-- Navigation Header -->
+  <!-- Minimalist Editorial Navigation -->
   <Navigation />
 
   <main id="mainContent">
-    <!-- Hero Section with Borderless Spatial Perception Field -->
+    <!-- Hero: Oversized Typography + 1:1 Video Frame + Free LiDAR Canvas -->
     <Hero />
 
-    <!-- Section 01: Selected Engineering Case Studies -->
-    <section id="work" class="section work-section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-num mono">01 / SELECTED WORK</span>
-          <h2 class="section-title">Robotics Systems That<br/><span class="text-cyan">Operate in Reality</span></h2>
-          <p class="section-desc">
-            Technical case studies detailing real-world engineering across autonomous vehicle architecture,
-            mobile service robotics, edge computer vision pipelines, and multi-agent coordination.
-          </p>
-        </div>
+    <!-- 01 // Selected Work: Interactive Editorial Entry Cards -->
+    <ProjectIndex />
 
-        <div class="case-studies-list">
-          {caseStudies.map((study) => (
-            <ProjectCard {...study} />
-          ))}
-        </div>
-      </div>
-    </section>
+    <!-- 02 // Skills & Evidence: Interactive Artifact Validation Inspector -->
+    <SkillsEvidence />
 
-    <!-- Section 02: Research & Exploration -->
-    <Research />
-
-    <!-- Section 03: ROS 2 & Distributed Systems Architecture -->
-    <Systems />
-
-    <!-- Technical Capabilities & Tooling Layers -->
-    <Skills />
-
-    <!-- Section 04: About & Engineering Chronology -->
+    <!-- 03 // About: Engineering Perspective, Academic Foundation & Chronology -->
     <About />
 
-    <!-- Section 05: Contact & Communication -->
+    <!-- 04 // Contact: Direct Communication & Verified Channels -->
     <Contact />
   </main>
 
-  <!-- Clean Minimal Footer -->
+  <!-- Clean Minimalist Footer Signature -->
   <Footer />
 </Layout>
 
 <style>
-  .work-section {
-    background: var(--bg);
-  }
-
-  .case-studies-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-12);
+  main {
+    position: relative;
+    z-index: 1;
   }
 </style>

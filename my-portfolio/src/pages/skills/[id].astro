@@ -1,0 +1,380 @@
+---
+// Dynamic Skill Evidence Route: /skills/[id]
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+import { skillsData, type SkillEvidence } from '../../data/skills';
+
+export function getStaticPaths() {
+  return skillsData.map((skill) => ({
+    params: { id: skill.id },
+    props: { skill },
+  }));
+}
+
+interface Props {
+  skill: SkillEvidence;
+}
+
+const { skill } = Astro.props;
+---
+
+<Layout
+  title={`${skill.title} — Validation Evidence | Naveen Shaji George`}
+  description={skill.shortDesc}
+>
+  <Navigation />
+
+  <main class="skill-detail-page">
+    <div class="container skill-container">
+      <!-- Back Link -->
+      <div class="skill-nav-bar">
+        <a href="/#skills" class="back-link mono">
+          <span class="back-arrow" aria-hidden="true">←</span>
+          <span>Back to Skills & Evidence</span>
+        </a>
+        <span class="skill-id-badge mono">{skill.id}</span>
+      </div>
+
+      <!-- Header -->
+      <header class="skill-header">
+        <span class="skill-category mono">{skill.category}</span>
+        <h1 class="skill-title">{skill.title}</h1>
+        <p class="skill-lead">{skill.shortDesc}</p>
+      </header>
+
+      <!-- Artifacts Section -->
+      <section class="artifacts-section">
+        <h2 class="section-kicker mono">EMPIRICAL ARTIFACTS & TECHNICAL EVIDENCE</h2>
+        <div class="artifacts-grid">
+          {skill.evidenceItems.map((item, idx) => (
+            <article class="artifact-full-card">
+              <div class="artifact-card-head">
+                <span class="artifact-num mono">ARTIFACT 0{idx + 1}</span>
+                <h3 class="artifact-title">{item.title}</h3>
+                <p class="artifact-lead">{item.description}</p>
+              </div>
+
+              <!-- Technical Specifications -->
+              <div class="artifact-block">
+                <span class="block-title mono">TECHNICAL SPECIFICATIONS</span>
+                <div class="specs-pills">
+                  {item.specs.map((spec) => (
+                    <span class="tag">{spec}</span>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Problem & Rationale -->
+              <div class="artifact-two-col">
+                <div class="col-item">
+                  <span class="col-title mono">PROBLEM SOLVED</span>
+                  <p class="col-body">{item.problemSolved}</p>
+                </div>
+                <div class="col-item">
+                  <span class="col-title mono">ENGINEERING DECISIONS</span>
+                  <p class="col-body">{item.designDecisions}</p>
+                </div>
+              </div>
+
+              <!-- Tools -->
+              <div class="tools-strip">
+                <span class="tools-title mono">INSTRUMENTS & TOOLS:</span>
+                <div class="tools-list">
+                  {item.tools.map((tool) => (
+                    <span class="mono tool-pill">{tool}</span>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- Systems Utilizing this Capability -->
+      <section class="related-systems-section">
+        <h2 class="section-kicker mono">DEPLOYED SYSTEMS USING THIS COMPETENCY</h2>
+        <div class="systems-grid">
+          {skill.relatedProjects.map((proj) => (
+            <a href={`/projects/${proj.id}`} class="system-box">
+              <span class="system-sub mono">CASE STUDY</span>
+              <h4 class="system-title">{proj.name}</h4>
+              <span class="system-action mono">Explore Architecture →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Bottom CTAs -->
+      <div class="skill-bottom-bar">
+        <a href="/#skills" class="btn btn-secondary">
+          <span>← All Competencies</span>
+        </a>
+        <a href="/#contact" class="btn btn-primary">
+          <span>Inquire About Engineering Roles</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .skill-detail-page {
+    padding: clamp(2rem, 5vh, 4rem) 0 var(--space-20);
+    background: var(--bg);
+  }
+
+  .skill-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+
+  .skill-nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .back-link:hover {
+    color: var(--cyan-dark);
+  }
+
+  .skill-id-badge {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  /* Header */
+  .skill-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .skill-category {
+    font-size: var(--text-xs);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .skill-title {
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--text-primary);
+  }
+
+  .skill-lead {
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 800px;
+  }
+
+  /* Artifacts */
+  .section-kicker {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: var(--space-6);
+  }
+
+  .artifacts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .artifact-full-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  }
+
+  .artifact-card-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .artifact-num {
+    font-size: var(--text-2xs);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .artifact-title {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .artifact-lead {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* Block */
+  .artifact-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .block-title {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .specs-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* 2-Col */
+  .artifact-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    padding: var(--space-6) 0;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .col-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .col-title {
+    font-size: var(--text-2xs);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .col-body {
+    font-size: var(--text-xs);
+    color: var(--text-body);
+    line-height: 1.6;
+  }
+
+  /* Tools */
+  .tools-strip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .tools-title {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tool-pill {
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+    background: var(--surface-dim);
+    border: 1px solid var(--border-subtle);
+    padding: 3px 8px;
+    border-radius: var(--r-xs);
+  }
+
+  /* Systems */
+  .systems-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  .system-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+
+  .system-box:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+  }
+
+  .system-sub {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .system-title {
+    font-size: var(--text-base);
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .system-action {
+    font-size: var(--text-xs);
+    color: var(--cyan-dark);
+    font-weight: 600;
+    margin-top: var(--space-2);
+  }
+
+  .skill-bottom-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .artifact-two-col,
+    .systems-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

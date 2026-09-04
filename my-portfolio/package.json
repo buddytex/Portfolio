@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node ./node_modules/astro/bin/astro.mjs build",
+    "build": "node scripts/build.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

@@ -1,85 +1,112 @@
 ---
-// Hero Section — Graphite + Electric Cyan
-// Free-floating spatial perception point cloud with physical spring-inertia cursor interaction
+// Hero — Editorial Light Canvas
+// Oversized typography + 1:1 Video Placeholder + Free-floating LiDAR point cloud
 ---
 
 <section class="hero" id="hero">
-  <div class="container hero-container">
-    <!-- Left: Editorial Content -->
-    <div class="hero-content">
-      <div class="hero-header">
-        <h1 class="hero-title">
-          NAVEEN SHAJI<br/>
-          <span class="hero-name-accent">GEORGE</span>
+  <div class="hero-canvas-wrap">
+    <!-- Free-floating LiDAR point cloud canvas (no box, no border) -->
+    <canvas id="lidarCanvas" aria-label="Interactive LiDAR point cloud sensor field"></canvas>
+
+    <!-- Floating editorial technical labels -->
+    <div class="float-label fl-1 mono" aria-hidden="true">ROS 2 HUMBLE</div>
+    <div class="float-label fl-2 mono" aria-hidden="true">3D LiDAR PERCEPTION</div>
+    <div class="float-label fl-3 fl-cyan mono" aria-hidden="true">AUTONOMOUS SYSTEMS</div>
+    <div class="float-label fl-4 mono" aria-hidden="true">CUSTOM ECUs · CAN 2.0B</div>
+    <div class="float-label fl-5 mono" aria-hidden="true">AIR 7 · AIR 11 BAJA</div>
+    <div class="float-label fl-6 fl-yellow mono" aria-hidden="true">PHYSICAL ROBOTICS →</div>
+
+    <div class="container hero-container">
+      <!-- Left: Large Editorial Headline & Positioning -->
+      <div class="hero-left">
+        <div class="hero-eyebrow mono hero-anim" style="--d:0ms">
+          ROBOTICS & AUTONOMOUS SYSTEMS ENGINEER
+        </div>
+
+        <h1 class="hero-title hero-anim" style="--d:60ms">
+          NAVEEN<br/>
+          SHAJI<br/>
+          <span class="hero-george">GEORGE</span>
         </h1>
-        <div class="hero-subtitle mono">
-          ROBOTICS · AUTONOMOUS SYSTEMS · AI
+
+        <div class="hero-body hero-anim" style="--d:140ms">
+          <p class="hero-statement">
+            I build intelligent robotic systems that <em>perceive</em>, <em>reason</em>, and <em>act</em> in the physical world.
+          </p>
+
+          <div class="hero-awards mono">
+            <span class="award-badge">AIR 7</span>
+            <span class="award-badge">AIR 11</span>
+            <span class="award-text">BAJA SAE India National Campaign · Team Equinox</span>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#work" class="btn btn-primary">Explore Selected Work ↓</a>
+            <a href="#skills" class="btn btn-secondary">Skills & Evidence</a>
+          </div>
         </div>
       </div>
 
-      <p class="hero-statement">
-        I build machines that <strong class="text-primary">perceive</strong>,
-        <strong class="text-primary">reason</strong>, and <strong class="text-primary">act</strong>.
-      </p>
+      <!-- Right: 1:1 Video Placeholder Frame -->
+      <div class="hero-right hero-anim" style="--d:200ms">
+        <div class="video-frame" id="introVideoFrame">
+          <!-- Top architectural bar -->
+          <div class="video-topbar mono">
+            <div class="rec-badge">
+              <span class="rec-dot"></span>
+              <span>INTRODUCTION</span>
+            </div>
+            <span class="video-timer">00:00 / 1:1</span>
+          </div>
 
-      <p class="hero-narrative">
-        Specializing in autonomous navigation, robot perception (LiDAR & computer vision),
-        custom embedded ECUs, CAN bus networks, and full-stack vehicle hardware-software integration.
-      </p>
+          <!-- Video container (1:1 ratio) -->
+          <div class="video-media-box">
+            <!-- Video element: auto-plays if user drops /video/introduction.mp4 into /public/video/ -->
+            <video
+              id="introVideo"
+              src="/video/introduction.mp4"
+              playsinline
+              muted
+              loop
+              preload="none"
+              class="actual-video"
+            ></video>
 
-      <!-- Focus Metadata Area (Restrained, technical, not a dashboard) -->
-      <div class="hero-focus-block">
-        <div class="focus-label mono">FOCUS AREAS</div>
-        <div class="focus-tags">
-          <span class="focus-tag mono">Robotics</span>
-          <span class="focus-sep">/</span>
-          <span class="focus-tag mono">Computer Vision</span>
-          <span class="focus-sep">/</span>
-          <span class="focus-tag mono">Autonomous Systems</span>
-          <span class="focus-sep">/</span>
-          <span class="focus-tag mono">ROS 2</span>
-          <span class="focus-sep">/</span>
-          <span class="focus-tag mono">AI / ML</span>
-        </div>
-      </div>
+            <!-- Architectural Standby Placeholder Screen -->
+            <div class="video-standby" id="videoStandby">
+              <!-- Corner alignment reticles -->
+              <span class="reticle top-left" aria-hidden="true">+</span>
+              <span class="reticle top-right" aria-hidden="true">+</span>
+              <span class="reticle bottom-left" aria-hidden="true">+</span>
+              <span class="reticle bottom-right" aria-hidden="true">+</span>
 
-      <!-- Verified Achievements -->
-      <div class="hero-milestones">
-        <div class="milestone-item">
-          <span class="milestone-rank mono text-cyan">AIR 7 & AIR 11</span>
-          <span class="milestone-desc">Team Equinox · BAJA SAE India Autonomous Vehicle</span>
-        </div>
-        <div class="milestone-divider"></div>
-        <div class="milestone-item">
-          <span class="milestone-rank mono">E&E HEAD</span>
-          <span class="milestone-desc">Vehicle Electronics, CAN Bus & Drive-by-Wire</span>
-        </div>
-      </div>
+              <!-- Geometric focus ring & play trigger -->
+              <div class="standby-center">
+                <div class="play-ring">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <polygon points="6 3 20 12 6 21 6 3"/>
+                  </svg>
+                </div>
+                <div class="standby-title mono">VIDEO INTRODUCTION</div>
+                <p class="standby-desc">Engineering overview & physical vehicle trials</p>
+              </div>
 
-      <!-- Action Buttons -->
-      <div class="hero-actions">
-        <a href="#work" class="btn-graphite btn-graphite-primary">
-          <span>View Projects</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <polyline points="19 12 12 19 5 12"></polyline>
-          </svg>
-        </a>
+              <!-- Media path reference -->
+              <div class="standby-path mono">
+                <span class="path-label">SOURCE:</span>
+                <span class="path-val">/public/video/introduction.mp4</span>
+              </div>
+            </div>
+          </div>
 
-        <a href="#contact" class="btn-graphite btn-graphite-secondary">
-          <span>Contact</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Right: Free-Floating Spatial Perception Field -->
-    <!-- Directly on the page, no card, no radar circles, no fake sweep line -->
-    <div class="hero-visual">
-      <div class="pointcloud-viewport" id="pointcloudViewport">
-        <canvas id="pointcloudCanvas" aria-label="Interactive Spatial Sensor Field"></canvas>
-        <div class="pointcloud-annotation mono">
-          <span class="annotation-dot"></span>
-          SPATIAL PERCEPTION FIELD · INTERACTIVE OBJECT DEFLECTION
+          <!-- Bottom bar -->
+          <div class="video-bottombar mono">
+            <span class="status-indicator">
+              <span class="status-dot"></span>
+              MEDIA STANDBY
+            </span>
+            <span class="ratio-label">1:1 ASPECT</span>
+          </div>
         </div>
       </div>
     </div>
@@ -87,243 +114,225 @@
 </section>
 
 <script>
-  // ==========================================================
-  // FREE-FLOATING SPATIAL PERCEPTION POINT CLOUD
-  // 95% Neutral Gray + ~5% Electric Cyan
-  // Physical spring-inertia cursor repulsion (No scanner sweep)
-  // ==========================================================
+// ============================================================
+// 1:1 VIDEO AUTODETECT SCRIPT
+// If /public/video/introduction.mp4 exists and is loadable,
+// it switches from standby placeholder to live video seamlessly.
+// ============================================================
+const introVideo = document.getElementById('introVideo') as HTMLVideoElement;
+const videoStandby = document.getElementById('videoStandby');
+const videoFrame = document.getElementById('introVideoFrame');
 
-  interface Point3D {
-    baseX: number;
-    baseY: number;
-    baseZ: number;
-    x: number;
-    y: number;
-    z: number;
-    vx: number;
-    vy: number;
-    vz: number;
-    radius: number;
-    isCyan: boolean;
-    phase: number;
-    driftSpeed: number;
-  }
+if (introVideo && videoStandby) {
+  introVideo.addEventListener('loadeddata', () => {
+    // Video found and ready!
+    videoStandby.style.display = 'none';
+    introVideo.style.display = 'block';
+    introVideo.play().catch(() => {});
+  });
 
-  const canvas = document.getElementById('pointcloudCanvas') as HTMLCanvasElement;
-  const viewport = document.getElementById('pointcloudViewport');
+  introVideo.addEventListener('error', () => {
+    // Graceful fallback: maintain architectural placeholder
+    videoStandby.style.display = 'flex';
+    introVideo.style.display = 'none';
+  });
 
-  if (canvas && viewport) {
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      let width = 0;
-      let height = 0;
-      let animId = 0;
-      const points: Point3D[] = [];
-      const numPoints = 360;
+  // Hover feedback on frame
+  videoFrame?.addEventListener('mouseenter', () => {
+    videoFrame.classList.add('hovered');
+  });
+  videoFrame?.addEventListener('mouseleave', () => {
+    videoFrame.classList.remove('hovered');
+  });
+}
 
-      const mouse = {
-        x: -9999,
-        y: -9999,
-        targetX: -9999,
-        targetY: -9999,
-        active: false,
-      };
+// ============================================================
+// FREE-FLOATING LIDAR POINT CLOUD
+// Points exist directly on the canvas — no card, no container
+// Cursor acts as a physical obstacle entering the sensor field
+// ============================================================
+interface Pt {
+  bx: number; by: number; bz: number;
+  x: number;  y: number;  z: number;
+  vx: number; vy: number; vz: number;
+  r: number;
+  isCyan: boolean;
+  phase: number;
+  drift: number;
+}
 
-      function resize() {
-        const rect = viewport!.getBoundingClientRect();
-        width = rect.width;
-        height = rect.height;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        ctx!.scale(dpr, dpr);
+const canvas = document.getElementById('lidarCanvas') as HTMLCanvasElement;
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    const N = 400;
+    const pts: Pt[] = [];
+    let W = 0, H = 0;
+    const mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999, active: false };
+    const SPRING = 0.038;
+    const DAMP   = 0.86;
+    const REPEL_R = 160;
+    const FOCAL  = 340;
+    let time = 0;
+
+    function resize() {
+      const rect = canvas.parentElement!.getBoundingClientRect();
+      W = rect.width;
+      H = rect.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx!.scale(dpr, dpr);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+    }
+
+    function initPts() {
+      pts.length = 0;
+      const cx = W * 0.72;
+      const cy = H * 0.45;
+
+      for (let i = 0; i < N; i++) {
+        // Natural spatial cluster geometry: arcs, obstacles, clusters
+        const ring = Math.floor(Math.random() * 4);
+        let baseR = 70;
+        if (ring === 1) baseR = 170;
+        if (ring === 2) baseR = 270;
+        if (ring === 3) baseR = 380;
+
+        const theta = Math.random() * Math.PI * 2;
+        const radSpread = (Math.random() - 0.5) * 80;
+        const finalR = baseR + radSpread;
+
+        const bx = cx + Math.cos(theta) * finalR;
+        const by = cy + Math.sin(theta) * finalR * 0.65;
+        const bz = (Math.random() - 0.5) * 400;
+
+        pts.push({
+          bx, by, bz,
+          x: bx, y: by, z: bz,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          vz: 0,
+          r: Math.random() < 0.15 ? 2.2 : 1.2,
+          isCyan: Math.random() < 0.22,
+          phase: Math.random() * Math.PI * 2,
+          drift: 0.2 + Math.random() * 0.35,
+        });
       }
+    }
 
-      window.addEventListener('resize', resize);
-      resize();
+    window.addEventListener('resize', () => { resize(); initPts(); });
+    resize();
+    initPts();
 
-      // Initialize 3D point cloud in spatial environment
-      function initPoints() {
-        points.length = 0;
-        const cx = width / 2;
-        const cy = height / 2;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        for (let i = 0; i < numPoints; i++) {
-          // Spatial geometry distribution
-          const theta = Math.random() * Math.PI * 2;
-          const phi = (Math.random() - 0.5) * Math.PI * 0.8;
-          const r = 50 + Math.pow(Math.random(), 0.75) * (Math.min(width, height) * 0.44);
-
-          const bx = cx + Math.cos(theta) * Math.cos(phi) * r;
-          const by = cy + Math.sin(phi) * r * 0.82 + Math.sin(theta) * 20;
-          const bz = Math.sin(theta) * Math.cos(phi) * 150;
-
-          // 95% neutral gray, 5% electric cyan
-          const isCyan = Math.random() < 0.055;
-
-          points.push({
-            baseX: bx,
-            baseY: by,
-            baseZ: bz,
-            x: bx,
-            y: by,
-            z: bz,
-            vx: 0,
-            vy: 0,
-            vz: 0,
-            radius: isCyan ? 1.8 : 1.3 + Math.random() * 1.2,
-            isCyan,
-            phase: Math.random() * Math.PI * 2,
-            driftSpeed: 0.0006 + Math.random() * 0.0006,
-          });
-        }
-      }
-
-      initPoints();
-
-      // Track cursor position relative to canvas
+    if (!prefersReduced) {
       window.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
-        mouse.targetX = e.clientX - rect.left;
-        mouse.targetY = e.clientY - rect.top;
+        mouse.tx = e.clientX - rect.left;
+        mouse.ty = e.clientY - rect.top;
         mouse.active = true;
       }, { passive: true });
 
       window.addEventListener('mouseleave', () => {
         mouse.active = false;
-        mouse.targetX = -9999;
-        mouse.targetY = -9999;
+        mouse.tx = -9999;
+        mouse.ty = -9999;
       });
-
-      let time = 0;
-      const focalLength = 300;
-      const reactionRadius = 140;
-      const springK = 0.042;
-      const damping = 0.87;
-
-      function render() {
-        time += 1;
-        ctx!.clearRect(0, 0, width, height);
-
-        // Smooth mouse interpolation
-        mouse.x += (mouse.targetX - mouse.x) * 0.12;
-        mouse.y += (mouse.targetY - mouse.y) * 0.12;
-
-        // 1. Update point physics
-        for (let i = 0; i < points.length; i++) {
-          const pt = points[i];
-
-          // Subtle natural spatial drift (no fast scanning)
-          const targetX = pt.baseX + Math.sin(time * pt.driftSpeed + pt.phase) * 8;
-          const targetY = pt.baseY + Math.cos(time * pt.driftSpeed * 1.1 + pt.phase) * 8;
-          const targetZ = pt.baseZ + Math.sin(time * 0.001 + pt.phase) * 10;
-
-          // Cursor physical repulsion
-          if (mouse.active && mouse.x > -500) {
-            const dx = pt.x - mouse.x;
-            const dy = pt.y - mouse.y;
-            const dist = Math.hypot(dx, dy);
-
-            if (dist < reactionRadius && dist > 0.01) {
-              const norm = dist / reactionRadius;
-              const force = Math.pow(1 - norm, 1.8) * 4.6;
-              const angle = Math.atan2(dy, dx);
-
-              pt.vx += Math.cos(angle) * force;
-              pt.vy += Math.sin(angle) * force;
-              pt.vz += force * 1.4; // Reveal depth when pushed
-            }
-          }
-
-          // Damped spring return
-          const ax = (targetX - pt.x) * springK;
-          const ay = (targetY - pt.y) * springK;
-          const az = (targetZ - pt.z) * springK;
-
-          pt.vx = (pt.vx + ax) * damping;
-          pt.vy = (pt.vy + ay) * damping;
-          pt.vz = (pt.vz + az) * damping;
-
-          pt.x += pt.vx;
-          pt.y += pt.vy;
-          pt.z += pt.vz;
-        }
-
-        // 2. Subtle connection mesh between nearby points (Restrained hairlines)
-        ctx!.lineWidth = 0.75;
-        for (let i = 0; i < points.length; i += 3) {
-          const p1 = points[i];
-          for (let j = i + 1; j < Math.min(i + 6, points.length); j++) {
-            const p2 = points[j];
-            const d = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-            if (d < 42) {
-              const alpha = (1 - d / 42) * (p1.isCyan || p2.isCyan ? 0.22 : 0.08);
-              ctx!.strokeStyle = p1.isCyan || p2.isCyan
-                ? `rgba(0, 229, 255, ${alpha})`
-                : `rgba(139, 148, 158, ${alpha})`;
-              ctx!.beginPath();
-              ctx!.moveTo(p1.x, p1.y);
-              ctx!.lineTo(p2.x, p2.y);
-              ctx!.stroke();
-            }
-          }
-        }
-
-        // 3. Render projected 3D points
-        for (let i = 0; i < points.length; i++) {
-          const pt = points[i];
-          const scale = focalLength / (focalLength + pt.z);
-          const r = Math.max(0.6, pt.radius * scale);
-          const alpha = Math.min(1, Math.max(0.2, (pt.z + 160) / 320));
-
-          ctx!.beginPath();
-          ctx!.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-
-          if (pt.isCyan) {
-            // The 1% Electric Cyan energy
-            ctx!.fillStyle = `rgba(0, 229, 255, ${alpha * 0.95})`;
-          } else {
-            // Neutral graphite / muted gray points
-            ctx!.fillStyle = `rgba(139, 148, 158, ${alpha * 0.65})`;
-          }
-
-          ctx!.fill();
-        }
-
-        animId = requestAnimationFrame(render);
-      }
-
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReduced) {
-        const obs = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting) {
-            if (!animId) render();
-          } else {
-            if (animId) {
-              cancelAnimationFrame(animId);
-              animId = 0;
-            }
-          }
-        }, { threshold: 0.05 });
-
-        obs.observe(canvas);
-        render();
-      } else {
-        render();
-        cancelAnimationFrame(animId);
-      }
     }
+
+    function render() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, W, H);
+      time += 0.016;
+
+      mouse.x += (mouse.tx - mouse.x) * 0.12;
+      mouse.y += (mouse.ty - mouse.y) * 0.12;
+
+      for (let i = 0; i < pts.length; i++) {
+        const pt = pts[i];
+
+        // Organic sensory drift
+        const wave = Math.sin(time * pt.drift + pt.phase);
+        const tx = pt.bx + Math.cos(time * 0.4 + pt.phase) * 10;
+        const ty = pt.by + wave * 8;
+        const tz = pt.bz + Math.sin(time * 0.3 + pt.phase) * 15;
+
+        // Obstacle detection interaction: cursor enters the field
+        if (mouse.active && mouse.x > -500) {
+          const dx = pt.x - mouse.x;
+          const dy = pt.y - mouse.y;
+          const d = Math.hypot(dx, dy);
+          if (d < REPEL_R && d > 0.01) {
+            const norm = d / REPEL_R;
+            const force = Math.pow(1 - norm, 1.8) * 6.0;
+            const ang = Math.atan2(dy, dx);
+            pt.vx += Math.cos(ang) * force;
+            pt.vy += Math.sin(ang) * force;
+            pt.vz += force * 1.5;
+          }
+        }
+
+        // Spring return
+        pt.vx = (pt.vx + (tx - pt.x) * SPRING) * DAMP;
+        pt.vy = (pt.vy + (ty - pt.y) * SPRING) * DAMP;
+        pt.vz = (pt.vz + (tz - pt.z) * SPRING) * DAMP;
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.z += pt.vz;
+
+        // Project with 3D perspective
+        const scale = FOCAL / (FOCAL + pt.z);
+        const px = pt.x;
+        const py = pt.y;
+        const pr = Math.max(0.4, pt.r * scale);
+        const depthAlpha = 0.2 + 0.7 * Math.max(0, Math.min(1, (pt.z + 300) / 600));
+
+        ctx.beginPath();
+        ctx.arc(px, py, pr, 0, Math.PI * 2);
+
+        if (pt.isCyan) {
+          ctx.fillStyle = `rgba(14, 165, 233, ${depthAlpha * 0.95})`;
+        } else {
+          ctx.fillStyle = `rgba(12, 12, 10, ${depthAlpha * 0.24})`;
+        }
+        ctx.fill();
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    render();
   }
+}
 </script>
 
 <style>
   .hero {
     position: relative;
-    padding: clamp(4rem, 8vh, 6.5rem) 0 clamp(4.5rem, 9vh, 7rem);
-    min-height: calc(90vh - var(--nav-height));
+    min-height: calc(96vh - var(--nav-height));
+    overflow: hidden;
     display: flex;
     align-items: center;
-    overflow: hidden;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .hero-canvas-wrap {
+    position: relative;
+    width: 100%;
+    padding: clamp(3rem, 7vh, 6rem) 0;
+  }
+
+  /* LiDAR canvas — free-floating background */
+  #lidarCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
   }
 
   .hero-container {
@@ -331,201 +340,362 @@
     grid-template-columns: 1.15fr 0.85fr;
     gap: var(--space-12);
     align-items: center;
-  }
-
-  /* Left Content */
-  .hero-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    max-width: 620px;
+    position: relative;
     z-index: 2;
   }
 
-  .hero-header {
+  /* === LEFT COLUMN: TYPOGRAPHY === */
+  .hero-left {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-6);
+  }
+
+  .hero-eyebrow {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    font-weight: 600;
   }
 
   .hero-title {
-    font-size: clamp(2.75rem, 5.5vw, 4.75rem);
-    letter-spacing: -0.04em;
-    line-height: 0.94;
+    font-size: clamp(3.2rem, 7.5vw, 6.2rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
     color: var(--text-primary);
   }
 
-  .hero-name-accent {
+  .hero-george {
     color: var(--text-secondary);
-    font-weight: 500;
+    font-weight: 300;
+    font-style: italic;
   }
 
-  .hero-subtitle {
-    font-size: var(--text-xs);
-    color: var(--cyan);
-    letter-spacing: 0.12em;
-    font-weight: 600;
+  .hero-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: 560px;
   }
 
   .hero-statement {
     font-size: clamp(1.125rem, 1.8vw, 1.35rem);
     color: var(--text-secondary);
-    line-height: 1.5;
+    line-height: 1.55;
+    font-weight: 400;
   }
 
-  .hero-narrative {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    line-height: 1.7;
-    max-width: 560px;
-  }
-
-  /* Focus Metadata Block */
-  .hero-focus-block {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-4);
-    background: var(--surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    width: fit-content;
-  }
-
-  .focus-label {
-    font-size: 0.625rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-  }
-
-  .focus-tags {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .focus-tag {
-    font-size: var(--text-xs);
+  .hero-statement em {
     color: var(--text-primary);
+    font-style: normal;
+    font-weight: 600;
   }
 
-  .focus-sep {
-    font-size: var(--text-xs);
-    color: var(--border);
-  }
-
-  /* Milestones */
-  .hero-milestones {
+  .hero-awards {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
-    padding: var(--space-3) 0;
-    border-top: 1px solid var(--border-subtle);
-    border-bottom: 1px solid var(--border-subtle);
+    gap: var(--space-3);
+    flex-wrap: wrap;
   }
 
-  .milestone-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .milestone-rank {
-    font-size: var(--text-sm);
-    font-weight: 600;
+  .award-badge {
+    display: inline-flex;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    color: var(--cyan-dark);
+    background: var(--cyan-light);
+    border: 1px solid rgba(14,165,233,0.3);
+    padding: 3px 9px;
+    border-radius: var(--r-pill);
     letter-spacing: 0.04em;
   }
 
-  .milestone-desc {
+  .award-text {
     font-size: var(--text-xs);
     color: var(--text-muted);
-  }
-
-  .milestone-divider {
-    width: 1px;
-    height: 32px;
-    background: var(--border-subtle);
   }
 
   .hero-actions {
     display: flex;
     align-items: center;
     gap: var(--space-4);
-    margin-top: var(--space-2);
     flex-wrap: wrap;
+    margin-top: var(--space-2);
   }
 
-  /* Right Visual: Free-Floating Point Cloud */
-  .hero-visual {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 480px;
+  /* === RIGHT COLUMN: 1:1 VIDEO PLACEHOLDER FRAME === */
+  .hero-right {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
   }
 
-  .pointcloud-viewport {
-    position: relative;
+  .video-frame {
     width: 100%;
-    height: 100%;
-    min-height: 500px;
+    max-width: 440px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
     display: flex;
+    flex-direction: column;
+    transition: transform var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out),
+                border-color var(--dur-norm) var(--ease-out);
+  }
+
+  .video-frame:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  .video-topbar {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    padding: 10px 16px;
+    background: var(--surface-dim);
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: var(--text-2xs);
   }
 
-  #pointcloudCanvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    cursor: default;
-  }
-
-  .pointcloud-annotation {
-    position: absolute;
-    bottom: 8px;
-    font-size: 0.625rem;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    pointer-events: none;
+  .rec-badge {
     display: flex;
     align-items: center;
     gap: 6px;
-    opacity: 0.8;
+    font-weight: 600;
+    color: var(--text-primary);
   }
 
-  .annotation-dot {
-    width: 4px;
-    height: 4px;
+  .rec-dot {
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--cyan);
+    background: #EF4444;
+    animation: blink 1.6s infinite ease-in-out;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .video-timer {
+    color: var(--text-muted);
+  }
+
+  /* 1:1 Ratio Box */
+  .video-media-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #FAF9F6;
+    overflow: hidden;
+  }
+
+  .actual-video {
+    display: none; /* hidden until src loads */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Standby Placeholder Screen */
+  .video-standby {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-6);
+    background: radial-gradient(circle at center, #FFFFFF 0%, #F5F4F0 100%);
+    text-align: center;
+  }
+
+  .reticle {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--border-strong);
+    user-select: none;
+    line-height: 1;
+  }
+  .reticle.top-left { top: 12px; left: 14px; }
+  .reticle.top-right { top: 12px; right: 14px; }
+  .reticle.bottom-left { bottom: 12px; left: 14px; }
+  .reticle.bottom-right { bottom: 12px; right: 14px; }
+
+  .standby-center {
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .play-ring {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1.5px solid var(--border-strong);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    transition: transform var(--dur-norm) var(--ease-out),
+                border-color var(--dur-norm) var(--ease-out),
+                color var(--dur-norm) var(--ease-out);
+  }
+
+  .video-frame:hover .play-ring {
+    transform: scale(1.08);
+    border-color: var(--cyan);
+    color: var(--cyan-dark);
+  }
+
+  .standby-title {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.06em;
+  }
+
+  .standby-desc {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    max-width: 240px;
+    line-height: 1.45;
+  }
+
+  .standby-path {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 10px;
+    border-radius: var(--r-sm);
+  }
+
+  .path-label {
+    color: var(--cyan-dark);
+    font-weight: 700;
+  }
+
+  .video-bottombar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    background: var(--surface-dim);
+    border-top: 1px solid var(--border-subtle);
+    font-size: var(--text-2xs);
+  }
+
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #16A34A;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #16A34A;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+  }
+
+  .ratio-label {
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  /* === FLOATING LABELS === */
+  .float-label {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: var(--r-sm);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    pointer-events: none;
+    z-index: 1;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  }
+
+  .fl-cyan {
+    background: var(--cyan-subtle);
+    border-color: rgba(14,165,233,0.25);
+    color: var(--cyan-dark);
+  }
+
+  .fl-yellow {
+    background: var(--yellow-bg);
+    border-color: rgba(245,208,0,0.3);
+    color: #7A6800;
+  }
+
+  .fl-1 { top: 10%; right: 12%; animation: floatA 5s ease-in-out infinite; }
+  .fl-2 { top: 22%; right: 4%;  animation: floatB 6.5s ease-in-out infinite; }
+  .fl-3 { top: 62%; right: 6%;  animation: floatA 7s ease-in-out infinite 1s; }
+  .fl-4 { bottom: 12%; right: 18%; animation: floatB 5.5s ease-in-out infinite 0.5s; }
+  .fl-5 { top: 12%; left: 3%;   animation: floatA 6s ease-in-out infinite 2s; }
+  .fl-6 { bottom: 10%; left: 3%;animation: floatB 4.8s ease-in-out infinite 0.8s; }
+
+  /* Entrance animations */
+  .hero-anim {
+    animation: fadeUp 0.8s var(--ease-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes floatA {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-7px); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(6px); }
   }
 
   @media (max-width: 1024px) {
     .hero-container {
       grid-template-columns: 1fr;
-      gap: var(--space-8);
+      gap: var(--space-10);
     }
-    .hero-visual {
-      min-height: 360px;
+    .hero-right {
+      order: 2;
     }
-    .pointcloud-viewport {
-      min-height: 380px;
+    .float-label {
+      display: none;
     }
   }
 
   @media (max-width: 640px) {
-    .hero-milestones {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-3);
-    }
-    .milestone-divider {
-      display: none;
+    .video-frame {
+      max-width: 100%;
     }
   }
 </style>

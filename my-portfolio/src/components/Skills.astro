@@ -1,8 +1,10 @@
 ---
-// Skills Section — Organized by Robotics System Layer (No wall of badges)
+// Skills Section — Editorial Light Canvas
+// Organized by Robotics System Layer (System-First, Engineering Precision)
+
 const systemLayers = [
   {
-    layer: 'ROBOTICS',
+    layer: 'ROBOTICS & AUTONOMY',
     num: '01',
     description: 'Autonomous middleware, vehicle kinematics, closed-loop state estimation, and physical actuation.',
     skills: [
@@ -13,7 +15,7 @@ const systemLayers = [
     ],
   },
   {
-    layer: 'PERCEPTION',
+    layer: 'SPATIAL PERCEPTION',
     num: '02',
     description: 'Sensory conversion of physical optical & laser photons into spatial environment models.',
     skills: [
@@ -24,7 +26,7 @@ const systemLayers = [
     ],
   },
   {
-    layer: 'AI / ML',
+    layer: 'APPLIED AI / ML',
     num: '03',
     description: 'Neural networks, edge inference, spatial detection, and embodied intelligence models.',
     skills: [
@@ -35,7 +37,7 @@ const systemLayers = [
     ],
   },
   {
-    layer: 'SOFTWARE',
+    layer: 'SOFTWARE SYSTEMS',
     num: '04',
     description: 'Production engineering, systems programming, real-time OS kernels, and development tooling.',
     skills: [
@@ -46,7 +48,7 @@ const systemLayers = [
     ],
   },
   {
-    layer: 'HARDWARE',
+    layer: 'EMBEDDED & HARDWARE',
     num: '05',
     description: 'Electronic schematics, vehicle bus networks, microcontroller firmware, and ruggedized harnessing.',
     skills: [
@@ -62,8 +64,8 @@ const systemLayers = [
 <section id="capabilities" class="section capabilities-section">
   <div class="container">
     <!-- Header -->
-    <div class="section-header">
-      <span class="section-num mono">CORE CAPABILITIES</span>
+    <div class="section-header reveal">
+      <span class="section-num mono">04 // CORE CAPABILITIES</span>
       <h2 class="section-title">Technical Competencies by<br/><span class="text-cyan">Robotics System Layer</span></h2>
       <p class="section-desc">
         A system-first breakdown of engineering competencies spanning low-level vehicle electronics
@@ -72,13 +74,13 @@ const systemLayers = [
     </div>
 
     <!-- System Layers List -->
-    <div class="layers-container">
+    <div class="layers-container stagger-children">
       {systemLayers.map((layer) => (
-        <div class="layer-block">
+        <article class="layer-block">
           <div class="layer-header">
             <div class="layer-title-row">
-              <span class="layer-num mono text-cyan">{layer.num}</span>
-              <h3 class="layer-name mono">{layer.layer}</h3>
+              <span class="layer-num mono">{layer.num}</span>
+              <h3 class="layer-name">{layer.layer}</h3>
             </div>
             <p class="layer-summary">{layer.description}</p>
           </div>
@@ -91,7 +93,7 @@ const systemLayers = [
               </div>
             ))}
           </div>
-        </div>
+        </article>
       ))}
     </div>
   </div>
@@ -100,28 +102,34 @@ const systemLayers = [
 <style>
   .capabilities-section {
     background: var(--bg);
+    border-top: 1px solid var(--border-subtle);
   }
 
   .layers-container {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-6);
   }
 
   .layer-block {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: var(--r-md);
     padding: var(--space-8);
     display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
+    grid-template-columns: 0.75fr 1.25fr;
     gap: var(--space-8);
     align-items: start;
-    transition: border-color var(--duration-fast) var(--ease-spring);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: transform var(--dur-norm) var(--ease-out),
+                border-color var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out);
   }
 
   .layer-block:hover {
-    border-color: var(--border-active);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.04);
   }
 
   .layer-header {
@@ -138,37 +146,53 @@ const systemLayers = [
 
   .layer-num {
     font-size: var(--text-xs);
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--cyan-dark);
   }
 
   .layer-name {
     font-size: var(--text-lg);
     color: var(--text-primary);
-    letter-spacing: 0.05em;
+    font-weight: 800;
+    letter-spacing: -0.01em;
   }
 
   .layer-summary {
     font-size: var(--text-xs);
-    color: var(--text-muted);
+    color: var(--text-secondary);
     line-height: 1.6;
   }
 
   .layer-skills-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-5);
+    gap: var(--space-4);
   }
 
   .skill-item {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-dim);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+
+  .skill-item:hover {
+    background: var(--surface);
+    border-color: var(--border-strong);
+  }
+
+  .skill-item:hover .skill-name {
+    color: var(--cyan-dark);
   }
 
   .skill-name {
     font-size: var(--text-xs);
     color: var(--text-primary);
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .skill-detail {
