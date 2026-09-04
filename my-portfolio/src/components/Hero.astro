@@ -1,112 +1,102 @@
 ---
-// Hero — Editorial Light Canvas
-// Oversized typography + 1:1 Video Placeholder + Free-floating LiDAR point cloud
+// Hero — Editorial Art-Directed Composition
+// Massive Typography + 1:1 Video Placeholder Frame + Site-Wide Spatial Perception Field
 ---
 
 <section class="hero" id="hero">
-  <div class="hero-canvas-wrap">
-    <!-- Free-floating LiDAR point cloud canvas (no box, no border) -->
-    <canvas id="lidarCanvas" aria-label="Interactive LiDAR point cloud sensor field"></canvas>
+  <!-- Subtle editorial floating tags framing the composition -->
+  <div class="hero-tag ht-1 mono" aria-hidden="true">ROS 2 HUMBLE</div>
+  <div class="hero-tag ht-2 mono" aria-hidden="true">3D LiDAR PERCEPTION</div>
+  <div class="hero-tag ht-3 mono" aria-hidden="true">CUSTOM VEHICLE ECUs</div>
+  <div class="hero-tag ht-4 mono" aria-hidden="true">AIR 7 · AIR 11 BAJA</div>
 
-    <!-- Floating editorial technical labels -->
-    <div class="float-label fl-1 mono" aria-hidden="true">ROS 2 HUMBLE</div>
-    <div class="float-label fl-2 mono" aria-hidden="true">3D LiDAR PERCEPTION</div>
-    <div class="float-label fl-3 fl-cyan mono" aria-hidden="true">AUTONOMOUS SYSTEMS</div>
-    <div class="float-label fl-4 mono" aria-hidden="true">CUSTOM ECUs · CAN 2.0B</div>
-    <div class="float-label fl-5 mono" aria-hidden="true">AIR 7 · AIR 11 BAJA</div>
-    <div class="float-label fl-6 fl-yellow mono" aria-hidden="true">PHYSICAL ROBOTICS →</div>
-
-    <div class="container hero-container">
-      <!-- Left: Large Editorial Headline & Positioning -->
-      <div class="hero-left">
-        <div class="hero-eyebrow mono hero-anim" style="--d:0ms">
-          ROBOTICS & AUTONOMOUS SYSTEMS ENGINEER
-        </div>
-
-        <h1 class="hero-title hero-anim" style="--d:60ms">
-          NAVEEN<br/>
-          SHAJI<br/>
-          <span class="hero-george">GEORGE</span>
-        </h1>
-
-        <div class="hero-body hero-anim" style="--d:140ms">
-          <p class="hero-statement">
-            I build intelligent robotic systems that <em>perceive</em>, <em>reason</em>, and <em>act</em> in the physical world.
-          </p>
-
-          <div class="hero-awards mono">
-            <span class="award-badge">AIR 7</span>
-            <span class="award-badge">AIR 11</span>
-            <span class="award-text">BAJA SAE India National Campaign · Team Equinox</span>
-          </div>
-
-          <div class="hero-actions">
-            <a href="#work" class="btn btn-primary">Explore Selected Work ↓</a>
-            <a href="#skills" class="btn btn-secondary">Skills & Evidence</a>
-          </div>
-        </div>
+  <div class="container hero-container">
+    <!-- Left Column: Huge Typographic Statement -->
+    <div class="hero-left">
+      <div class="hero-eyebrow mono hero-anim" style="--d:0ms">
+        ROBOTICS & AUTONOMOUS SYSTEMS ENGINEER
       </div>
 
-      <!-- Right: 1:1 Video Placeholder Frame -->
-      <div class="hero-right hero-anim" style="--d:200ms">
-        <div class="video-frame" id="introVideoFrame">
-          <!-- Top architectural bar -->
-          <div class="video-topbar mono">
-            <div class="rec-badge">
-              <span class="rec-dot"></span>
-              <span>INTRODUCTION</span>
-            </div>
-            <span class="video-timer">00:00 / 1:1</span>
-          </div>
+      <h1 class="hero-name hero-anim" style="--d:80ms">
+        NAVEEN<br/>
+        SHAJI<br/>
+        <span class="hero-george">GEORGE</span>
+      </h1>
 
-          <!-- Video container (1:1 ratio) -->
-          <div class="video-media-box">
-            <!-- Video element: auto-plays if user drops /video/introduction.mp4 into /public/video/ -->
-            <video
-              id="introVideo"
-              src="/video/introduction.mp4"
-              playsinline
-              muted
-              loop
-              preload="none"
-              class="actual-video"
-            ></video>
+      <div class="hero-body hero-anim" style="--d:160ms">
+        <p class="hero-statement">
+          I build intelligent robotic systems that <em>perceive</em>, <em>reason</em>, and <em>act</em> in the physical world.
+        </p>
 
-            <!-- Architectural Standby Placeholder Screen -->
-            <div class="video-standby" id="videoStandby">
-              <!-- Corner alignment reticles -->
-              <span class="reticle top-left" aria-hidden="true">+</span>
-              <span class="reticle top-right" aria-hidden="true">+</span>
-              <span class="reticle bottom-left" aria-hidden="true">+</span>
-              <span class="reticle bottom-right" aria-hidden="true">+</span>
+        <div class="hero-context mono">
+          <span class="context-tag">AIR 7 & AIR 11</span>
+          <span class="context-text">BAJA SAE India National Campaign · Electrical & Autonomy Lead</span>
+        </div>
 
-              <!-- Geometric focus ring & play trigger -->
-              <div class="standby-center">
-                <div class="play-ring">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <polygon points="6 3 20 12 6 21 6 3"/>
-                  </svg>
-                </div>
-                <div class="standby-title mono">VIDEO INTRODUCTION</div>
-                <p class="standby-desc">Engineering overview & physical vehicle trials</p>
+        <div class="hero-actions">
+          <a href="#work" class="btn btn-primary">
+            <span>Explore Selected Work</span>
+            <span class="btn-arrow" aria-hidden="true">↓</span>
+          </a>
+          <a href="#skills" class="btn btn-secondary">
+            <span>Skills & Evidence</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: 1:1 Video Placeholder Frame -->
+    <div class="hero-right hero-anim" style="--d:220ms">
+      <div class="video-container" id="introVideoContainer">
+        <!-- Top bar -->
+        <div class="video-bar-top mono">
+          <span class="video-bar-title">INTRODUCTION VIDEO</span>
+          <span class="video-bar-ratio">1:1</span>
+        </div>
+
+        <!-- 1:1 Media Box -->
+        <div class="video-aspect-box">
+          <!-- Video element: auto-plays if user drops /video/introduction.mp4 into public/video/ -->
+          <video
+            id="introVideo"
+            src="/video/introduction.mp4"
+            playsinline
+            muted
+            loop
+            preload="metadata"
+            class="video-player"
+          ></video>
+
+          <!-- Elegant Architectural Standby Placeholder -->
+          <div class="video-standby-view" id="videoStandby">
+            <!-- Delicate geometric alignment marks -->
+            <span class="align-mark top-left" aria-hidden="true">+</span>
+            <span class="align-mark top-right" aria-hidden="true">+</span>
+            <span class="align-mark bottom-left" aria-hidden="true">+</span>
+            <span class="align-mark bottom-right" aria-hidden="true">+</span>
+
+            <div class="standby-middle">
+              <div class="play-button-glyph">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="6 3 20 12 6 21 6 3"/>
+                </svg>
               </div>
+              <div class="standby-heading mono">INTRODUCTION VIDEO</div>
+              <p class="standby-sub">Engineering overview, laboratory walkthrough, and physical vehicle trials</p>
+            </div>
 
-              <!-- Media path reference -->
-              <div class="standby-path mono">
-                <span class="path-label">SOURCE:</span>
-                <span class="path-val">/public/video/introduction.mp4</span>
-              </div>
+            <!-- Path indication -->
+            <div class="standby-foot mono">
+              <span class="foot-label">SOURCE:</span>
+              <span class="foot-path">/public/video/introduction.mp4</span>
             </div>
           </div>
+        </div>
 
-          <!-- Bottom bar -->
-          <div class="video-bottombar mono">
-            <span class="status-indicator">
-              <span class="status-dot"></span>
-              MEDIA STANDBY
-            </span>
-            <span class="ratio-label">1:1 ASPECT</span>
-          </div>
+        <!-- Bottom bar -->
+        <div class="video-bar-bottom mono">
+          <span class="video-format">1:1 ASPECT RATIO</span>
+          <span class="video-ready text-cyan">AWAITING SOURCE MEDIA</span>
         </div>
       </div>
     </div>
@@ -114,237 +104,46 @@
 </section>
 
 <script>
-// ============================================================
-// 1:1 VIDEO AUTODETECT SCRIPT
-// If /public/video/introduction.mp4 exists and is loadable,
-// it switches from standby placeholder to live video seamlessly.
-// ============================================================
-const introVideo = document.getElementById('introVideo') as HTMLVideoElement;
-const videoStandby = document.getElementById('videoStandby');
-const videoFrame = document.getElementById('introVideoFrame');
+  // Automatic video detection script:
+  // If the user places /public/video/introduction.mp4, it seamlessly reveals and plays.
+  const videoEl = document.getElementById('introVideo') as HTMLVideoElement;
+  const standbyEl = document.getElementById('videoStandby');
 
-if (introVideo && videoStandby) {
-  introVideo.addEventListener('loadeddata', () => {
-    // Video found and ready!
-    videoStandby.style.display = 'none';
-    introVideo.style.display = 'block';
-    introVideo.play().catch(() => {});
-  });
+  if (videoEl && standbyEl) {
+    videoEl.addEventListener('loadeddata', () => {
+      standbyEl.style.display = 'none';
+      videoEl.style.display = 'block';
+      videoEl.play().catch(() => {});
+    });
 
-  introVideo.addEventListener('error', () => {
-    // Graceful fallback: maintain architectural placeholder
-    videoStandby.style.display = 'flex';
-    introVideo.style.display = 'none';
-  });
-
-  // Hover feedback on frame
-  videoFrame?.addEventListener('mouseenter', () => {
-    videoFrame.classList.add('hovered');
-  });
-  videoFrame?.addEventListener('mouseleave', () => {
-    videoFrame.classList.remove('hovered');
-  });
-}
-
-// ============================================================
-// FREE-FLOATING LIDAR POINT CLOUD
-// Points exist directly on the canvas — no card, no container
-// Cursor acts as a physical obstacle entering the sensor field
-// ============================================================
-interface Pt {
-  bx: number; by: number; bz: number;
-  x: number;  y: number;  z: number;
-  vx: number; vy: number; vz: number;
-  r: number;
-  isCyan: boolean;
-  phase: number;
-  drift: number;
-}
-
-const canvas = document.getElementById('lidarCanvas') as HTMLCanvasElement;
-if (canvas) {
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    const N = 400;
-    const pts: Pt[] = [];
-    let W = 0, H = 0;
-    const mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999, active: false };
-    const SPRING = 0.038;
-    const DAMP   = 0.86;
-    const REPEL_R = 160;
-    const FOCAL  = 340;
-    let time = 0;
-
-    function resize() {
-      const rect = canvas.parentElement!.getBoundingClientRect();
-      W = rect.width;
-      H = rect.height;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx!.scale(dpr, dpr);
-      canvas.style.width = W + 'px';
-      canvas.style.height = H + 'px';
-    }
-
-    function initPts() {
-      pts.length = 0;
-      const cx = W * 0.72;
-      const cy = H * 0.45;
-
-      for (let i = 0; i < N; i++) {
-        // Natural spatial cluster geometry: arcs, obstacles, clusters
-        const ring = Math.floor(Math.random() * 4);
-        let baseR = 70;
-        if (ring === 1) baseR = 170;
-        if (ring === 2) baseR = 270;
-        if (ring === 3) baseR = 380;
-
-        const theta = Math.random() * Math.PI * 2;
-        const radSpread = (Math.random() - 0.5) * 80;
-        const finalR = baseR + radSpread;
-
-        const bx = cx + Math.cos(theta) * finalR;
-        const by = cy + Math.sin(theta) * finalR * 0.65;
-        const bz = (Math.random() - 0.5) * 400;
-
-        pts.push({
-          bx, by, bz,
-          x: bx, y: by, z: bz,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          vz: 0,
-          r: Math.random() < 0.15 ? 2.2 : 1.2,
-          isCyan: Math.random() < 0.22,
-          phase: Math.random() * Math.PI * 2,
-          drift: 0.2 + Math.random() * 0.35,
-        });
-      }
-    }
-
-    window.addEventListener('resize', () => { resize(); initPts(); });
-    resize();
-    initPts();
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!prefersReduced) {
-      window.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mouse.tx = e.clientX - rect.left;
-        mouse.ty = e.clientY - rect.top;
-        mouse.active = true;
-      }, { passive: true });
-
-      window.addEventListener('mouseleave', () => {
-        mouse.active = false;
-        mouse.tx = -9999;
-        mouse.ty = -9999;
-      });
-    }
-
-    function render() {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, W, H);
-      time += 0.016;
-
-      mouse.x += (mouse.tx - mouse.x) * 0.12;
-      mouse.y += (mouse.ty - mouse.y) * 0.12;
-
-      for (let i = 0; i < pts.length; i++) {
-        const pt = pts[i];
-
-        // Organic sensory drift
-        const wave = Math.sin(time * pt.drift + pt.phase);
-        const tx = pt.bx + Math.cos(time * 0.4 + pt.phase) * 10;
-        const ty = pt.by + wave * 8;
-        const tz = pt.bz + Math.sin(time * 0.3 + pt.phase) * 15;
-
-        // Obstacle detection interaction: cursor enters the field
-        if (mouse.active && mouse.x > -500) {
-          const dx = pt.x - mouse.x;
-          const dy = pt.y - mouse.y;
-          const d = Math.hypot(dx, dy);
-          if (d < REPEL_R && d > 0.01) {
-            const norm = d / REPEL_R;
-            const force = Math.pow(1 - norm, 1.8) * 6.0;
-            const ang = Math.atan2(dy, dx);
-            pt.vx += Math.cos(ang) * force;
-            pt.vy += Math.sin(ang) * force;
-            pt.vz += force * 1.5;
-          }
-        }
-
-        // Spring return
-        pt.vx = (pt.vx + (tx - pt.x) * SPRING) * DAMP;
-        pt.vy = (pt.vy + (ty - pt.y) * SPRING) * DAMP;
-        pt.vz = (pt.vz + (tz - pt.z) * SPRING) * DAMP;
-        pt.x += pt.vx;
-        pt.y += pt.vy;
-        pt.z += pt.vz;
-
-        // Project with 3D perspective
-        const scale = FOCAL / (FOCAL + pt.z);
-        const px = pt.x;
-        const py = pt.y;
-        const pr = Math.max(0.4, pt.r * scale);
-        const depthAlpha = 0.2 + 0.7 * Math.max(0, Math.min(1, (pt.z + 300) / 600));
-
-        ctx.beginPath();
-        ctx.arc(px, py, pr, 0, Math.PI * 2);
-
-        if (pt.isCyan) {
-          ctx.fillStyle = `rgba(14, 165, 233, ${depthAlpha * 0.95})`;
-        } else {
-          ctx.fillStyle = `rgba(12, 12, 10, ${depthAlpha * 0.24})`;
-        }
-        ctx.fill();
-      }
-
-      requestAnimationFrame(render);
-    }
-
-    render();
+    videoEl.addEventListener('error', () => {
+      // Graceful fallback to architectural placeholder
+      standbyEl.style.display = 'flex';
+      videoEl.style.display = 'none';
+    });
   }
-}
 </script>
 
 <style>
   .hero {
     position: relative;
     min-height: calc(96vh - var(--nav-height));
-    overflow: hidden;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .hero-canvas-wrap {
-    position: relative;
-    width: 100%;
-    padding: clamp(3rem, 7vh, 6rem) 0;
-  }
-
-  /* LiDAR canvas — free-floating background */
-  #lidarCanvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
+    padding: clamp(4rem, 10vh, 7.5rem) 0;
+    overflow: hidden;
   }
 
   .hero-container {
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: var(--space-12);
+    grid-template-columns: 1.18fr 0.82fr;
+    gap: clamp(2.5rem, 5vw, 5rem);
     align-items: center;
     position: relative;
     z-index: 2;
   }
 
-  /* === LEFT COLUMN: TYPOGRAPHY === */
+  /* === LEFT COLUMN: HUGE NAME & TYPOGRAPHY === */
   .hero-left {
     display: flex;
     flex-direction: column;
@@ -354,33 +153,35 @@ if (canvas) {
   .hero-eyebrow {
     font-size: var(--text-2xs);
     color: var(--text-muted);
-    letter-spacing: 0.12em;
-    font-weight: 600;
+    letter-spacing: 0.14em;
+    font-weight: 700;
   }
 
-  .hero-title {
-    font-size: clamp(3.2rem, 7.5vw, 6.2rem);
+  .hero-name {
+    font-size: clamp(3.8rem, 8.8vw, 7.8rem);
     font-weight: 900;
-    letter-spacing: -0.045em;
-    line-height: 0.92;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
     color: var(--text-primary);
+    text-transform: uppercase;
   }
 
   .hero-george {
-    color: var(--text-secondary);
     font-weight: 300;
     font-style: italic;
+    color: var(--text-secondary);
   }
 
   .hero-body {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
-    max-width: 560px;
+    max-width: 580px;
+    margin-top: var(--space-2);
   }
 
   .hero-statement {
-    font-size: clamp(1.125rem, 1.8vw, 1.35rem);
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
     color: var(--text-secondary);
     line-height: 1.55;
     font-weight: 400;
@@ -389,32 +190,27 @@ if (canvas) {
   .hero-statement em {
     color: var(--text-primary);
     font-style: normal;
-    font-weight: 600;
+    font-weight: 700;
   }
 
-  .hero-awards {
+  .hero-context {
     display: flex;
     align-items: center;
     gap: var(--space-3);
     flex-wrap: wrap;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
   }
 
-  .award-badge {
+  .context-tag {
     display: inline-flex;
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
     font-weight: 700;
     color: var(--cyan-dark);
     background: var(--cyan-light);
-    border: 1px solid rgba(14,165,233,0.3);
+    border: 1px solid rgba(14, 165, 233, 0.28);
     padding: 3px 9px;
     border-radius: var(--r-pill);
     letter-spacing: 0.04em;
-  }
-
-  .award-text {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
   }
 
   .hero-actions {
@@ -425,6 +221,13 @@ if (canvas) {
     margin-top: var(--space-2);
   }
 
+  .btn-arrow {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .btn-primary:hover .btn-arrow {
+    transform: translateY(2px);
+  }
+
   /* === RIGHT COLUMN: 1:1 VIDEO PLACEHOLDER FRAME === */
   .hero-right {
     display: flex;
@@ -432,64 +235,49 @@ if (canvas) {
     align-items: center;
   }
 
-  .video-frame {
+  .video-container {
     width: 100%;
     max-width: 440px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: transform var(--dur-norm) var(--ease-out),
-                box-shadow var(--dur-norm) var(--ease-out),
-                border-color var(--dur-norm) var(--ease-out);
+                border-color var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out);
   }
 
-  .video-frame:hover {
+  .video-container:hover {
     transform: translateY(-3px);
     border-color: var(--border-strong);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.06);
   }
 
-  .video-topbar {
+  .video-bar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 16px;
+    padding: 12px 18px;
     background: var(--surface-dim);
     border-bottom: 1px solid var(--border-subtle);
     font-size: var(--text-2xs);
   }
 
-  .rec-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 600;
+  .video-bar-title {
+    font-weight: 700;
+    letter-spacing: 0.08em;
     color: var(--text-primary);
   }
 
-  .rec-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #EF4444;
-    animation: blink 1.6s infinite ease-in-out;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  .video-timer {
+  .video-bar-ratio {
     color: var(--text-muted);
+    font-weight: 600;
   }
 
-  /* 1:1 Ratio Box */
-  .video-media-box {
+  .video-aspect-box {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -497,40 +285,39 @@ if (canvas) {
     overflow: hidden;
   }
 
-  .actual-video {
-    display: none; /* hidden until src loads */
+  .video-player {
+    display: none;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  /* Standby Placeholder Screen */
-  .video-standby {
+  .video-standby-view {
     position: absolute;
     inset: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    padding: var(--space-6);
+    padding: var(--space-8);
     background: radial-gradient(circle at center, #FFFFFF 0%, #F5F4F0 100%);
     text-align: center;
   }
 
-  .reticle {
+  .align-mark {
     position: absolute;
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 13px;
     color: var(--border-strong);
-    user-select: none;
     line-height: 1;
+    user-select: none;
   }
-  .reticle.top-left { top: 12px; left: 14px; }
-  .reticle.top-right { top: 12px; right: 14px; }
-  .reticle.bottom-left { bottom: 12px; left: 14px; }
-  .reticle.bottom-right { bottom: 12px; right: 14px; }
+  .align-mark.top-left { top: 12px; left: 14px; }
+  .align-mark.top-right { top: 12px; right: 14px; }
+  .align-mark.bottom-left { bottom: 12px; left: 14px; }
+  .align-mark.bottom-right { bottom: 12px; right: 14px; }
 
-  .standby-center {
+  .standby-middle {
     margin: auto 0;
     display: flex;
     flex-direction: column;
@@ -538,9 +325,9 @@ if (canvas) {
     gap: var(--space-3);
   }
 
-  .play-ring {
-    width: 60px;
-    height: 60px;
+  .play-button-glyph {
+    width: 58px;
+    height: 58px;
     border-radius: 50%;
     background: var(--surface);
     border: 1.5px solid var(--border-strong);
@@ -548,33 +335,33 @@ if (canvas) {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     transition: transform var(--dur-norm) var(--ease-out),
                 border-color var(--dur-norm) var(--ease-out),
                 color var(--dur-norm) var(--ease-out);
   }
 
-  .video-frame:hover .play-ring {
+  .video-container:hover .play-button-glyph {
     transform: scale(1.08);
     border-color: var(--cyan);
     color: var(--cyan-dark);
   }
 
-  .standby-title {
+  .standby-heading {
     font-size: var(--text-xs);
-    font-weight: 700;
+    font-weight: 800;
     color: var(--text-primary);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
   }
 
-  .standby-desc {
+  .standby-sub {
     font-size: var(--text-xs);
     color: var(--text-secondary);
-    max-width: 240px;
-    line-height: 1.45;
+    max-width: 250px;
+    line-height: 1.5;
   }
 
-  .standby-path {
+  .standby-foot {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -586,54 +373,40 @@ if (canvas) {
     border-radius: var(--r-sm);
   }
 
-  .path-label {
+  .foot-label {
     color: var(--cyan-dark);
     font-weight: 700;
   }
 
-  .video-bottombar {
+  .video-bar-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px;
+    padding: 10px 18px;
     background: var(--surface-dim);
     border-top: 1px solid var(--border-subtle);
     font-size: var(--text-2xs);
   }
 
-  .status-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #16A34A;
+  .video-format {
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .video-ready {
     font-weight: 600;
     letter-spacing: 0.04em;
   }
 
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #16A34A;
-    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
-  }
-
-  .ratio-label {
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-
-  /* === FLOATING LABELS === */
-  .float-label {
+  /* === SUBTLE EDITORIAL FLOATING TAGS === */
+  .hero-tag {
     position: absolute;
-    display: inline-flex;
-    align-items: center;
-    background: rgba(255,255,255,0.92);
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    border-radius: var(--r-sm);
     font-size: var(--text-2xs);
     color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: var(--r-sm);
     letter-spacing: 0.06em;
     pointer-events: none;
     z-index: 1;
@@ -641,43 +414,20 @@ if (canvas) {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
   }
 
-  .fl-cyan {
-    background: var(--cyan-subtle);
-    border-color: rgba(14,165,233,0.25);
-    color: var(--cyan-dark);
-  }
-
-  .fl-yellow {
-    background: var(--yellow-bg);
-    border-color: rgba(245,208,0,0.3);
-    color: #7A6800;
-  }
-
-  .fl-1 { top: 10%; right: 12%; animation: floatA 5s ease-in-out infinite; }
-  .fl-2 { top: 22%; right: 4%;  animation: floatB 6.5s ease-in-out infinite; }
-  .fl-3 { top: 62%; right: 6%;  animation: floatA 7s ease-in-out infinite 1s; }
-  .fl-4 { bottom: 12%; right: 18%; animation: floatB 5.5s ease-in-out infinite 0.5s; }
-  .fl-5 { top: 12%; left: 3%;   animation: floatA 6s ease-in-out infinite 2s; }
-  .fl-6 { bottom: 10%; left: 3%;animation: floatB 4.8s ease-in-out infinite 0.8s; }
+  .ht-1 { top: 8%; right: 14%; }
+  .ht-2 { top: 20%; right: 4%; }
+  .ht-3 { bottom: 12%; right: 18%; }
+  .ht-4 { top: 10%; left: 4%; }
 
   /* Entrance animations */
   .hero-anim {
-    animation: fadeUp 0.8s var(--ease-out) both;
+    animation: fadeUp 0.85s var(--ease-out) both;
     animation-delay: var(--d, 0ms);
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(22px); }
     to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes floatA {
-    0%, 100% { transform: translateY(0px); }
-    50%      { transform: translateY(-7px); }
-  }
-  @keyframes floatB {
-    0%, 100% { transform: translateY(0px); }
-    50%      { transform: translateY(6px); }
   }
 
   @media (max-width: 1024px) {
@@ -688,14 +438,17 @@ if (canvas) {
     .hero-right {
       order: 2;
     }
-    .float-label {
+    .hero-tag {
       display: none;
     }
   }
 
   @media (max-width: 640px) {
-    .video-frame {
+    .video-container {
       max-width: 100%;
+    }
+    .hero-name {
+      font-size: clamp(3.2rem, 14vw, 4.5rem);
     }
   }
 </style>

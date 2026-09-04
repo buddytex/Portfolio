@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import SpatialField from '../components/SpatialField.astro';
 
 interface Props {
   title?: string;
@@ -34,8 +35,11 @@ const {
     <!-- Scroll progress bar -->
     <div id="scrollBar" aria-hidden="true"></div>
 
-    <!-- Interactive grid canvas — full page, behind everything -->
+    <!-- Interactive coordinate grid canvas — full page, behind everything -->
     <canvas id="gridCanvas" aria-hidden="true"></canvas>
+
+    <!-- Site-wide spatial point cloud perception field -->
+    <SpatialField />
 
     <slot />
 

@@ -1,0 +1,252 @@
+---
+// SpatialField Component — Site-Wide Continuous Perception & Point-Cloud Environment
+// Runs as a persistent background spatial canvas across all sections of the site
+// Reorganizes, morphs, and reacts to the cursor as a physical detected obstacle
+---
+
+<canvas id="spatialFieldCanvas" aria-hidden="true"></canvas>
+
+<script>
+interface Particle {
+  // Base coordinates in normalized 3D space (-1 to 1)
+  nx: number;
+  ny: number;
+  nz: number;
+  // Current rendered screen coordinates
+  x: number;
+  y: number;
+  z: number;
+  // Velocity for spring physics
+  vx: number;
+  vy: number;
+  vz: number;
+  // Visual attributes
+  baseRadius: number;
+  isCyan: boolean;
+  phase: number;
+  speed: number;
+}
+
+const canvas = document.getElementById('spatialFieldCanvas') as HTMLCanvasElement;
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 768;
+    const COUNT = isMobile ? 180 : 380;
+    const particles: Particle[] = [];
+    let W = 0;
+    let H = 0;
+    let time = 0;
+    let scrollProgress = 0; // 0 (top) to 1 (bottom)
+
+    // Cursor position in canvas space
+    const cursor = {
+      x: -9999,
+      y: -9999,
+      targetX: -9999,
+      targetY: -9999,
+      active: false,
+    };
+
+    // Physics constants
+    const SPRING = 0.035;
+    const DAMP = 0.85;
+    const REPEL_RADIUS = isMobile ? 110 : 160;
+    const REPEL_FORCE = isMobile ? 4.5 : 7.0;
+    const FOCAL_LENGTH = 350;
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      ctx!.scale(dpr, dpr);
+    }
+
+    function initParticles() {
+      particles.length = 0;
+      for (let i = 0; i < COUNT; i++) {
+        // Distribute in a spherical / cylindrical coordinate cloud
+        const theta = Math.random() * Math.PI * 2;
+        const phi = (Math.random() - 0.5) * Math.PI * 0.8;
+        const dist = 0.35 + Math.random() * 0.65;
+
+        const nx = Math.cos(theta) * Math.cos(phi) * dist;
+        const ny = Math.sin(phi) * dist;
+        const nz = Math.sin(theta) * Math.cos(phi) * dist;
+
+        const isCyan = Math.random() < 0.25; // 25% subtle electric cyan points
+
+        particles.push({
+          nx,
+          ny,
+          nz,
+          x: W * 0.5 + nx * W * 0.4,
+          y: H * 0.5 + ny * H * 0.4,
+          z: nz * 300,
+          vx: 0,
+          vy: 0,
+          vz: 0,
+          baseRadius: isCyan ? 1.8 : 1.1,
+          isCyan,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.3 + Math.random() * 0.5,
+        });
+      }
+    }
+
+    resize();
+    initParticles();
+
+    window.addEventListener('resize', () => {
+      resize();
+      initParticles();
+    }, { passive: true });
+
+    // Track scroll progress to continuously morph the spatial field
+    function updateScroll() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      scrollProgress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
+    }
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    updateScroll();
+
+    // Mouse movement: treat cursor as an obstacle in the perception field
+    if (!isReduced) {
+      window.addEventListener('mousemove', (e) => {
+        cursor.targetX = e.clientX;
+        cursor.targetY = e.clientY;
+        cursor.active = true;
+      }, { passive: true });
+
+      window.addEventListener('mouseleave', () => {
+        cursor.active = false;
+        cursor.targetX = -9999;
+        cursor.targetY = -9999;
+      });
+    }
+
+    function animate() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, W, H);
+      time += 0.015;
+
+      // Smooth cursor interpolation
+      cursor.x += (cursor.targetX - cursor.x) * 0.12;
+      cursor.y += (cursor.targetY - cursor.y) * 0.12;
+
+      // CONTINUOUS SCROLL MORPHING:
+      // In Hero (scroll = 0..0.15): cloud centered slightly right
+      // In Work (scroll = 0.15..0.45): cloud shifts to the sides framing content
+      // In Skills (scroll = 0.45..0.7): cloud forms a wider, shallower constellation
+      // In About/Contact (scroll = 0.7..1.0): cloud converges toward center-bottom
+      let centerTargetX = W * 0.5;
+      let centerTargetY = H * 0.5;
+      let spreadX = W * 0.42;
+      let spreadY = H * 0.42;
+
+      if (scrollProgress < 0.2) {
+        // Hero: centered slightly to the right around the name & video
+        centerTargetX = W > 1024 ? W * 0.62 : W * 0.5;
+        centerTargetY = H * 0.46;
+        spreadX = W * 0.42;
+        spreadY = H * 0.38;
+      } else if (scrollProgress < 0.5) {
+        // Work: wide lateral distribution framing the project cards
+        centerTargetX = W * 0.5;
+        centerTargetY = H * 0.48;
+        spreadX = W * 0.48;
+        spreadY = H * 0.44;
+      } else if (scrollProgress < 0.75) {
+        // Skills: structured spatial matrix
+        centerTargetX = W * 0.52;
+        centerTargetY = H * 0.5;
+        spreadX = W * 0.44;
+        spreadY = H * 0.46;
+      } else {
+        // About / Contact: calm ambient constellation
+        centerTargetX = W * 0.5;
+        centerTargetY = H * 0.52;
+        spreadX = W * 0.4;
+        spreadY = H * 0.4;
+      }
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        // Organic sensory drift
+        const wave = Math.sin(time * p.speed + p.phase);
+        const cosWave = Math.cos(time * p.speed * 0.8 + p.phase);
+
+        // Calculate destination based on morph target
+        const targetX = centerTargetX + (p.nx * spreadX) + cosWave * 12;
+        const targetY = centerTargetY + (p.ny * spreadY) + wave * 10;
+        const targetZ = p.nz * 320 + Math.sin(time * 0.4 + p.phase) * 20;
+
+        // Obstacle detection interaction: cursor enters the field
+        if (!isReduced && cursor.active && cursor.x > -500) {
+          const dx = p.x - cursor.x;
+          const dy = p.y - cursor.y;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist < REPEL_RADIUS && dist > 0.001) {
+            const factor = Math.pow(1 - dist / REPEL_RADIUS, 1.8);
+            const force = factor * REPEL_FORCE;
+            const angle = Math.atan2(dy, dx);
+
+            p.vx += Math.cos(angle) * force;
+            p.vy += Math.sin(angle) * force;
+            p.vz += force * 1.5;
+          }
+        }
+
+        // Spring physics return
+        p.vx = (p.vx + (targetX - p.x) * SPRING) * DAMP;
+        p.vy = (p.vy + (targetY - p.y) * SPRING) * DAMP;
+        p.vz = (p.vz + (targetZ - p.z) * SPRING) * DAMP;
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.z += p.vz;
+
+        // Perspective 3D projection
+        const scale = FOCAL_LENGTH / Math.max(10, FOCAL_LENGTH + p.z);
+        const px = p.x;
+        const py = p.y;
+        const pr = Math.max(0.4, p.baseRadius * scale);
+
+        // Alpha depth layering: points in foreground are crisper, background points softer
+        const depthNorm = Math.max(0, Math.min(1, (p.z + 250) / 500));
+        const alpha = 0.15 + 0.65 * depthNorm;
+
+        ctx.beginPath();
+        ctx.arc(px, py, pr, 0, Math.PI * 2);
+
+        if (p.isCyan) {
+          ctx.fillStyle = `rgba(14, 165, 233, ${alpha * 0.85})`;
+        } else {
+          ctx.fillStyle = `rgba(12, 12, 10, ${alpha * 0.22})`;
+        }
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+}
+</script>
+
+<style>
+  #spatialFieldCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>
