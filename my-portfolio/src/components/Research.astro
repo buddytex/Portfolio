@@ -1,41 +1,41 @@
 ---
-// Research & Exploration Section — Editorial presentation of robotics research interests
-const researchTracks = [
+// Research Section — Technical Laboratory Notebook & R&D Tracks
+const tracks = [
   {
-    id: '01',
-    title: 'Off-Road Autonomous Navigation & Trajectory Planning',
-    focus: 'Dynamic Costmap Adaptation in Unstructured Environments',
-    description: 'Investigating real-time local costmap updates and non-linear trajectory rollouts under low-traction off-road conditions where standard 2D geometric assumptions break down.',
-    topics: ['3D LiDAR Point Clouds', 'Terrain Traversability', 'Nav2 Controller Tuning', 'Non-linear Kinematics'],
+    num: '01',
+    title: 'PERCEPTION & SPATIAL GEOMETRY',
+    focus: '3D LiDAR Point Cloud Clustering & Multi-Sensor Odometry',
+    summary: 'Investigating real-time point-cloud spatial segmentation, ground-plane extraction, and multi-sensor fusion (IMU + wheel encoders + LiDAR) to maintain low-drift localization in GPS-denied environments.',
+    tags: ['LiDAR Clustering', 'EKF Odometry', 'Spatial Geometry', 'Sensor Fusion'],
   },
   {
-    id: '02',
-    title: 'Multi-Sensor Fusion & Robust State Estimation',
-    focus: 'Tightly-Coupled LiDAR-Inertial-Wheel Odometry',
-    description: 'Studying robust pose estimation in degraded operational environments (GPS-denied, sensor occlusion, high mechanical shock) using Extended Kalman Filtering and sensor uncertainty modeling.',
-    topics: ['Extended Kalman Filtering', 'IMU Calibration', 'Drift Minimization', 'CAN Wheel Odometry'],
+    num: '02',
+    title: 'AUTONOMOUS NAVIGATION & TRAJECTORY PLANNING',
+    focus: 'Dynamic Costmap Adaptation & Off-Road Non-Linear Control',
+    summary: 'Evaluating dynamic costmap inflation and non-linear trajectory rollout algorithms capable of maintaining stability over low-traction, unmapped terrain where standard planar assumptions fail.',
+    tags: ['Nav2 Local Planner', 'Trajectory Rollout', 'Costmap2D', 'Kinematic Limits'],
   },
   {
-    id: '03',
-    title: 'Embodied AI & Multimodal Physical Systems',
-    focus: 'Vision-Language-Action (VLA) for Real-World Manipulation',
-    description: 'Exploring how multimodal foundation models can guide high-level spatial task planning while strictly maintaining low-level real-time safety, collision checks, and deterministic execution.',
-    topics: ['Embodied AI', 'VLA Architectures', 'Edge Neural Inference', 'Deterministic Safety Interlocks'],
+    num: '03',
+    title: 'VISION-LANGUAGE-ACTION (VLA) MODELS',
+    focus: 'Embodied AI & High-Level Task Planning for Physical Robots',
+    summary: 'Studying how multimodal transformer models can decompose unstructured high-level commands into sequential waypoints while delegating real-time obstacle avoidance to deterministic safety layers.',
+    tags: ['Embodied AI', 'VLA Architectures', 'Edge Neural Inference', 'Safety Interlocks'],
   },
   {
-    id: '04',
-    title: 'Decentralized Swarm & Multi-Agent Coordination',
-    focus: 'Fault-Tolerant Consensus in Distributed Robot Meshes',
-    description: 'Developing lightweight peer-to-peer consensus algorithms for cooperative mobile robot fleets operating in communication-constrained environments without centralized cloud servers.',
-    topics: ['Multi-Agent Systems', 'Distributed Consensus', 'TCP/IP Sockets Protocol', 'Decentralized SLAM'],
+    num: '04',
+    title: 'DISTRIBUTED SWARM CONSENSUS',
+    focus: 'Decentralized Multi-Agent Coordination without Central Servers',
+    summary: 'Engineering peer-to-peer communication protocols and consensus algorithms on microcontrollers (ESP32) for spatial formation maintenance across decentralized mobile robot networks.',
+    tags: ['Multi-Agent Systems', 'TCP/IP Mesh', 'Consensus Algorithms', 'Distributed Robotics'],
   },
 ];
 
-const methodology = [
-  { step: '01', title: 'Characterize', desc: 'Real-world sensor telemetry & physical edge-case discovery' },
-  { step: '02', title: 'Model', desc: 'Mathematical modeling of kinematics, perception, and state drift' },
-  { step: '03', title: 'Simulate', desc: 'High-fidelity physics validation in Gazebo and Isaac Sim' },
-  { step: '04', title: 'Validate', desc: 'Hardware deployment, bench testing, and closed-loop validation' },
+const lifecycle = [
+  { step: '01', name: 'Formulate', desc: 'Identify physical edge cases & sensor degradation limits' },
+  { step: '02', name: 'Model', desc: 'Mathematical kinematic modeling & state covariance derivation' },
+  { step: '03', name: 'Simulate', desc: 'Closed-loop validation in Gazebo / Isaac Sim physics' },
+  { step: '04', name: 'Benchmark', desc: 'Hardware deployment, bench trials & empirical validation' },
 ];
 ---
 
@@ -43,56 +43,56 @@ const methodology = [
   <div class="container">
     <!-- Header -->
     <div class="section-header">
-      <span class="editorial-tag section-tag">Academic & R&D Interests</span>
-      <h2>Engineering Research &<br/><span class="text-accent">Exploratory Frontiers</span></h2>
-      <p class="section-lead">
-        Active areas of theoretical investigation and engineering prototyping in real-world robotics autonomy,
-        multi-modal perception, and intelligent physical systems.
+      <span class="section-num mono">02 // RESEARCH & EXPLORATION</span>
+      <h2 class="section-title">Applied Robotics Research &<br/><span class="text-cyan">Autonomous Frontiers</span></h2>
+      <p class="section-desc">
+        Laboratory investigations bridging mathematical modeling, spatial perception, and real-world physical deployment.
+        Approached with engineering rigor and reproducible methodology.
       </p>
     </div>
 
-    <!-- Research Methodology Strip -->
-    <div class="methodology-bar">
-      <div class="methodology-label mono">ENGINEERING LIFECYCLE</div>
-      <div class="methodology-grid">
-        {methodology.map((m, idx) => (
-          <div class="method-item">
-            <div class="method-header">
-              <span class="method-num mono">{m.step}</span>
-              <span class="method-title mono">{m.title}</span>
+    <!-- Laboratory Lifecycle Strip -->
+    <div class="lifecycle-bar">
+      <div class="lifecycle-title mono">ENGINEERING R&D METHODOLOGY</div>
+      <div class="lifecycle-grid">
+        {lifecycle.map((item) => (
+          <div class="lifecycle-item">
+            <div class="lifecycle-step-row">
+              <span class="step-num mono text-cyan">{item.step}</span>
+              <span class="step-name mono">{item.name}</span>
             </div>
-            <p class="method-desc">{m.desc}</p>
+            <p class="step-desc">{item.desc}</p>
           </div>
         ))}
       </div>
     </div>
 
     <!-- Research Tracks Grid -->
-    <div class="tracks-grid">
-      {researchTracks.map((track) => (
-        <div class="track-card">
+    <div class="research-grid">
+      {tracks.map((track) => (
+        <div class="research-track-card">
           <div class="track-header">
-            <span class="track-num mono">Track {track.id}</span>
-            <h3 class="track-title">{track.title}</h3>
+            <span class="track-index mono text-cyan">{track.num}</span>
+            <h3 class="track-title mono">{track.title}</h3>
             <span class="track-focus mono">{track.focus}</span>
           </div>
 
-          <p class="track-desc">{track.description}</p>
+          <p class="track-summary">{track.summary}</p>
 
           <div class="track-tags">
-            {track.topics.map((tag) => (
-              <span class="track-pill mono">{tag}</span>
+            {track.tags.map((tag) => (
+              <span class="track-tag mono">{tag}</span>
             ))}
           </div>
         </div>
       ))}
     </div>
 
-    <!-- Academic Integrity Note -->
-    <div class="research-note">
-      <p class="mono note-text">
-        RESEARCH NOTE: Exploratory tracks represent ongoing independent R&D, prototype simulations, and hands-on laboratory validation.
-      </p>
+    <!-- Academic Scope Disclaimer -->
+    <div class="research-disclaimer">
+      <span class="mono disclaimer-text">
+        LABORATORY NOTE: Research tracks represent active independent engineering investigations, prototype simulations, and hands-on laboratory validation.
+      </span>
     </div>
   </div>
 </section>
@@ -102,79 +102,78 @@ const methodology = [
     background: var(--bg);
   }
 
-  /* Methodology Bar */
-  .methodology-bar {
-    background: var(--bg-subtle);
+  /* Lifecycle Bar */
+  .lifecycle-bar {
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6) var(--space-8);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
     margin-bottom: var(--space-12);
   }
 
-  .methodology-label {
+  .lifecycle-title {
     font-size: var(--text-2xs);
     color: var(--text-muted);
     letter-spacing: 0.08em;
     margin-bottom: var(--space-4);
   }
 
-  .methodology-grid {
+  .lifecycle-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--space-6);
   }
 
-  .method-item {
+  .lifecycle-item {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 3px;
   }
 
-  .method-header {
+  .lifecycle-step-row {
     display: flex;
     align-items: baseline;
     gap: var(--space-2);
   }
 
-  .method-num {
+  .step-num {
     font-size: var(--text-xs);
-    color: var(--accent);
     font-weight: 600;
   }
 
-  .method-title {
+  .step-name {
     font-size: var(--text-sm);
-    color: var(--text);
+    color: var(--text-primary);
     font-weight: 600;
     letter-spacing: 0.04em;
   }
 
-  .method-desc {
+  .step-desc {
     font-size: var(--text-xs);
     color: var(--text-secondary);
     line-height: 1.5;
   }
 
-  /* Tracks Grid */
-  .tracks-grid {
+  /* Research Tracks Grid */
+  .research-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-8);
   }
 
-  .track-card {
-    background: var(--bg-surface);
+  .research-track-card {
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     padding: var(--space-8);
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    transition: border-color var(--duration-norm) var(--ease-editorial);
+    gap: var(--space-4);
+    transition: border-color var(--duration-fast) var(--ease-spring);
   }
 
-  .track-card:hover {
-    border-color: var(--border-hover);
+  .research-track-card:hover {
+    border-color: var(--border-active);
   }
 
   .track-header {
@@ -183,74 +182,72 @@ const methodology = [
     gap: var(--space-2);
   }
 
-  .track-num {
+  .track-index {
     font-size: var(--text-xs);
-    color: var(--accent);
     font-weight: 600;
   }
 
   .track-title {
-    font-size: var(--text-lg);
-    color: var(--text);
+    font-size: var(--text-base);
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
     line-height: 1.3;
   }
 
   .track-focus {
     font-size: var(--text-xs);
     color: var(--text-muted);
-    letter-spacing: 0.03em;
   }
 
-  .track-desc {
+  .track-summary {
     font-size: var(--text-sm);
     color: var(--text-secondary);
-    line-height: 1.7;
+    line-height: 1.65;
   }
 
   .track-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: 6px;
     margin-top: auto;
     padding-top: var(--space-2);
   }
 
-  .track-pill {
-    font-size: var(--text-xs);
+  .track-tag {
+    font-size: 0.6875rem;
     color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-subtle);
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
-  }
-
-  .research-note {
-    margin-top: var(--space-10);
-    padding: var(--space-4) var(--space-6);
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
   }
 
-  .note-text {
+  .research-disclaimer {
+    margin-top: var(--space-10);
+    padding: var(--space-4) var(--space-6);
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+  }
+
+  .disclaimer-text {
     font-size: var(--text-xs);
     color: var(--text-muted);
     line-height: 1.5;
-    letter-spacing: 0.03em;
   }
 
   @media (max-width: 900px) {
-    .methodology-grid {
+    .lifecycle-grid {
       grid-template-columns: 1fr 1fr;
       gap: var(--space-6);
     }
-    .tracks-grid {
+    .research-grid {
       grid-template-columns: 1fr;
     }
   }
 
   @media (max-width: 600px) {
-    .methodology-grid {
+    .lifecycle-grid {
       grid-template-columns: 1fr;
     }
   }

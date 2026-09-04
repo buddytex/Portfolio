@@ -1,40 +1,59 @@
 ---
-// Engineering Competencies & Tooling
-const domains = [
+// Skills Section — Organized by Robotics System Layer (No wall of badges)
+const systemLayers = [
   {
-    title: 'Autonomy & Navigation',
+    layer: 'ROBOTICS',
+    num: '01',
+    description: 'Autonomous middleware, vehicle kinematics, closed-loop state estimation, and physical actuation.',
     skills: [
-      { name: 'ROS 2 / ROS', desc: 'DDS middleware, Node lifecycles, Action servers, TF2 coordinate transforms, URDF' },
-      { name: 'Autonomous Navigation', desc: 'Nav2 stack, global A* pathing, local DWB trajectory rollout, Costmap2D layers' },
-      { name: 'SLAM & Odometry', desc: 'Cartographer, SLAM Toolbox, Extended Kalman Filter (EKF) multi-sensor fusion' },
-      { name: 'Drive-by-Wire Control', desc: 'Fail-safe electro-mechanical steering and electronic braking actuation' },
+      { name: 'ROS 2 / ROS', detail: 'DDS communications, rclcpp/rclpy, node lifecycles, Action servers, TF2 coordinate transforms' },
+      { name: 'Autonomous Navigation', detail: 'Nav2 stack architecture, global A* pathing, local DWB trajectory rollout, Costmap2D layers' },
+      { name: 'SLAM & Odometry', detail: 'Cartographer, SLAM Toolbox, Extended Kalman Filter (EKF) multi-rate sensor fusion' },
+      { name: 'Drive-by-Wire Control', detail: 'Fail-safe electro-mechanical steering actuators, electronic braking, and E-Stop interlocks' },
     ],
   },
   {
-    title: 'Perception & Vision',
+    layer: 'PERCEPTION',
+    num: '02',
+    description: 'Sensory conversion of physical optical & laser photons into spatial environment models.',
     skills: [
-      { name: 'LiDAR Processing', desc: 'Planar scan filtering, point-cloud clustering, spatial Euclidean segmentation' },
-      { name: 'Computer Vision', desc: 'OpenCV image processing, spatial filtering, contour tracking, homography' },
-      { name: 'Edge AI Inference', desc: 'YOLO neural detection, multi-threaded RTSP acquisition, real-time spatial tracking' },
-      { name: 'Sensor Calibration', desc: 'Camera intrinsic/extrinsic stereo calibration and LiDAR-camera alignment' },
+      { name: '3D LiDAR Processing', detail: 'Planar scan filtering, point-cloud clustering, spatial Euclidean segmentation' },
+      { name: 'Computer Vision', detail: 'OpenCV image processing, spatial filtering, contour tracking, homography transformation' },
+      { name: 'Sensor Calibration', detail: 'Pinhole intrinsic/extrinsic stereo calibration, LiDAR-camera spatial registration' },
+      { name: 'Spatial Costmaps', detail: 'Static, dynamic, and inflation obstacle layers for real-time collision avoidance' },
     ],
   },
   {
-    title: 'Embedded Systems & CAN Bus',
+    layer: 'AI / ML',
+    num: '03',
+    description: 'Neural networks, edge inference, spatial detection, and embodied intelligence models.',
     skills: [
-      { name: 'Custom ECU Design', desc: 'Multi-layer schematics, sensor signal conditioning, ruggedized power rails' },
-      { name: 'CAN 2.0B Networks', desc: '500 kbps automotive arbitration, frame prioritization, DBC parsing' },
-      { name: 'Microcontrollers', desc: 'ESP32 (dual-core RTOS), STM32, ARM Cortex-M architecture' },
-      { name: 'Wiring & Harnessing', desc: 'Split-voltage HV/LV electrical isolation, EMI shielding, automotive Deutsch connectors' },
+      { name: 'PyTorch / Neural Inference', detail: 'Model training, edge quantization, TensorRT optimization for real-time deployment' },
+      { name: 'Edge Object Detection', detail: 'YOLO architecture, multi-threaded RTSP acquisition, real-time spatial bounding box tracking' },
+      { name: 'Embodied AI & VLA', detail: 'Vision-Language-Action spatial task planning research with deterministic safety boundaries' },
+      { name: 'Anomaly Classification', detail: 'Unsupervised spatial anomaly alerts for autonomous video surveillance' },
     ],
   },
   {
-    title: 'Software & Simulation',
+    layer: 'SOFTWARE',
+    num: '04',
+    description: 'Production engineering, systems programming, real-time OS kernels, and development tooling.',
     skills: [
-      { name: 'C / C++', desc: 'Real-time performance, memory safety, embedded firmware, rclcpp' },
-      { name: 'Python', desc: 'Robotics algorithms, rclpy, NumPy, OpenCV, telemetry visualizers' },
-      { name: 'Linux / OS', desc: 'Ubuntu, Bash automation, systemd robot daemons, PREEMPT_RT real-time kernel' },
-      { name: 'Simulation & Debug', desc: 'Gazebo physics simulation, RViz 2 visualization, Foxglove Studio' },
+      { name: 'Modern C++ (17/20)', detail: 'Deterministic real-time performance, memory safety, embedded drivers, rclcpp' },
+      { name: 'Python', detail: 'Robotics algorithms, rclpy scripting, NumPy matrix math, OpenCV, telemetry visualizers' },
+      { name: 'Linux / RT-Kernel', detail: 'Ubuntu LTS, Bash automation, systemd robot services, PREEMPT_RT deterministic kernel' },
+      { name: 'Simulation & Tooling', detail: 'Gazebo physics simulation, RViz 2 visual inspection, Foxglove Studio, Git CI/CD, Docker' },
+    ],
+  },
+  {
+    layer: 'HARDWARE',
+    num: '05',
+    description: 'Electronic schematics, vehicle bus networks, microcontroller firmware, and ruggedized harnessing.',
+    skills: [
+      { name: 'Custom ECU Design', detail: 'Microcontroller architecture, sensor signal conditioning, ruggedized power supply rails' },
+      { name: 'CAN Bus 2.0B Networks', detail: '500 kbps automotive arbitration, frame prioritization, DBC parsing, differential transceivers' },
+      { name: 'Microcontrollers', detail: 'ESP32 (dual-core FreeRTOS), STM32 ARM Cortex-M, bare-metal hardware registers' },
+      { name: 'HV/LV Wiring Harnesses', detail: 'Split-voltage electrical isolation, EMI shielding, automotive Deutsch & Molex connectors' },
     ],
   },
 ];
@@ -42,25 +61,33 @@ const domains = [
 
 <section id="capabilities" class="section capabilities-section">
   <div class="container">
+    <!-- Header -->
     <div class="section-header">
-      <span class="editorial-tag section-tag">Core Competencies</span>
-      <h2>Technical Stack &<br/><span class="text-accent">Engineering Capabilities</span></h2>
-      <p class="section-lead">
-        Applied expertise across automotive autonomy stacks, real-time embedded hardware,
-        spatial perception, and robot operating systems.
+      <span class="section-num mono">CORE CAPABILITIES</span>
+      <h2 class="section-title">Technical Competencies by<br/><span class="text-cyan">Robotics System Layer</span></h2>
+      <p class="section-desc">
+        A system-first breakdown of engineering competencies spanning low-level vehicle electronics
+        through real-time operating systems and high-level perception pipelines.
       </p>
     </div>
 
-    <!-- Competencies Grid -->
-    <div class="competencies-grid">
-      {domains.map((dom) => (
-        <div class="competency-card">
-          <h3 class="competency-title">{dom.title}</h3>
-          <div class="skills-list">
-            {dom.skills.map((skill) => (
-              <div class="skill-row">
+    <!-- System Layers List -->
+    <div class="layers-container">
+      {systemLayers.map((layer) => (
+        <div class="layer-block">
+          <div class="layer-header">
+            <div class="layer-title-row">
+              <span class="layer-num mono text-cyan">{layer.num}</span>
+              <h3 class="layer-name mono">{layer.layer}</h3>
+            </div>
+            <p class="layer-summary">{layer.description}</p>
+          </div>
+
+          <div class="layer-skills-grid">
+            {layer.skills.map((skill) => (
+              <div class="skill-item">
                 <span class="skill-name mono">{skill.name}</span>
-                <p class="skill-desc">{skill.desc}</p>
+                <p class="skill-detail">{skill.detail}</p>
               </div>
             ))}
           </div>
@@ -75,55 +102,87 @@ const domains = [
     background: var(--bg);
   }
 
-  .competencies-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+  .layers-container {
+    display: flex;
+    flex-direction: column;
     gap: var(--space-8);
   }
 
-  .competency-card {
-    background: var(--bg-surface);
+  .layer-block {
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     padding: var(--space-8);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: var(--space-8);
+    align-items: start;
+    transition: border-color var(--duration-fast) var(--ease-spring);
   }
 
-  .competency-title {
+  .layer-block:hover {
+    border-color: var(--border-active);
+  }
+
+  .layer-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .layer-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+
+  .layer-num {
+    font-size: var(--text-xs);
+    font-weight: 600;
+  }
+
+  .layer-name {
     font-size: var(--text-lg);
-    color: var(--text);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    letter-spacing: 0.05em;
   }
 
-  .skills-list {
-    display: flex;
-    flex-direction: column;
+  .layer-summary {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .layer-skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: var(--space-5);
   }
 
-  .skill-row {
+  .skill-item {
     display: flex;
     flex-direction: column;
     gap: 3px;
   }
 
   .skill-name {
-    font-size: var(--text-sm);
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  .skill-desc {
     font-size: var(--text-xs);
-    color: var(--text-secondary);
-    line-height: 1.6;
+    color: var(--text-primary);
+    font-weight: 600;
   }
 
-  @media (max-width: 860px) {
-    .competencies-grid {
+  .skill-detail {
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 900px) {
+    .layer-block {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+    .layer-skills-grid {
       grid-template-columns: 1fr;
     }
   }

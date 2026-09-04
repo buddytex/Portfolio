@@ -1,51 +1,95 @@
 ---
-// ROS 2 Autonomy Stack & Systems Architecture
-// Clean technical schematic representing real ROS 2 computational graph
-const nodes = [
+// Systems Section — Graphite + Electric Cyan
+// Part 1: High-Level Autonomy Pipeline (Sensing ➔ Perception ➔ Planning ➔ Control ➔ Action)
+// Part 2: Dedicated ROS 2 Computational Graph (Nodes, Topics, Dataflow)
+
+const pipelineStages = [
+  {
+    stage: 'SENSING',
+    num: '01',
+    inputs: ['3D LiDAR Scan', 'Stereo Camera RTSP', '6-DoF IMU Sensor', 'CAN Wheel Ticks'],
+    desc: 'Raw multi-rate physical sensor streams acquired over high-speed UART, USB, and CAN transceivers.',
+  },
+  {
+    stage: 'PERCEPTION',
+    num: '02',
+    inputs: ['Euclidean Clustering', 'YOLO Edge Inference', 'Sensor Noise Filtering', 'Clearance Costmap'],
+    desc: 'Converts raw sensor arrays into segmented obstacles, spatial clearance envelopes, and dynamic tracks.',
+  },
+  {
+    stage: 'PLANNING',
+    num: '03',
+    inputs: ['Global A* Search', 'Local DWB Rollout', 'Trajectory Smoothing', 'Dynamic Obstacle Avoidance'],
+    desc: 'Computes collision-free kinematically feasible velocity paths toward target waypoints in real time.',
+  },
+  {
+    stage: 'CONTROL',
+    num: '04',
+    inputs: ['Pure Pursuit Tracking', 'PID Steer Controller', 'Speed Governor', 'Emergency Interlock'],
+    desc: 'Regulates velocity twists into deterministic motor commands with strict closed-loop feedback.',
+  },
+  {
+    stage: 'ACTION',
+    num: '05',
+    inputs: ['CAN 2.0B Arbitration', 'Steer-by-Wire Actuator', 'Brake-by-Wire Solenoid', 'Electric Motor Drive'],
+    desc: 'Dispatches high-priority 500 kbps CAN frames to custom vehicle ECUs for physical vehicle motion.',
+  },
+];
+
+const rosNodes = [
   {
     id: 'node-lidar',
     name: '/sensors/rplidar_driver',
     type: 'Hardware Driver',
-    pub: '/scan [sensor_msgs/LaserScan]',
-    sub: 'None (Hardware Serial /dev/ttyUSB0)',
+    pub: '/scan [sensor_msgs/msg/LaserScan]',
+    sub: 'Hardware Serial (/dev/ttyUSB0)',
     qos: 'Best Effort · 10 Hz',
-    desc: 'Acquires 360° raw time-of-flight laser range measurements over high-speed UART and publishes planar scan arrays.',
+    desc: 'Acquires raw time-of-flight laser range returns over high-speed UART and publishes planar scan arrays.',
+  },
+  {
+    id: 'node-camera',
+    name: '/sensors/camera_driver',
+    type: 'Perception Acquisition',
+    pub: '/camera/image_raw [sensor_msgs/msg/Image]',
+    sub: 'V4L2 Video Device (/dev/video0)',
+    qos: 'Best Effort · 30 Hz',
+    desc: 'Captures and debayers stereo visual frames with hardware-accelerated color space conversion.',
   },
   {
     id: 'node-perception',
     name: '/perception/obstacle_detector',
     type: 'Perception Node',
-    pub: '/detected_obstacles [visualization_msgs/MarkerArray]',
+    pub: '/detected_obstacles [visualization_msgs/msg/MarkerArray]',
     sub: '/scan · /tf',
     qos: 'Reliable · 10 Hz',
-    desc: 'Segments point cloud clusters, filters sensor noise, and extracts bounding obstacles with spatial clearance zones.',
+    desc: 'Segments point cloud clusters, extracts spatial bounding boxes, and marks localized collision hazards.',
   },
   {
-    id: 'node-localization',
+    id: 'node-ekf',
     name: '/localization/ekf_odom_node',
     type: 'State Estimation',
-    pub: '/odom [nav_msgs/Odometry] · /tf',
+    pub: '/odom [nav_msgs/msg/Odometry] · /tf',
     sub: '/wheel_encoders · /imu/data',
     qos: 'Reliable · 50 Hz',
-    desc: 'Extended Kalman Filter fusing wheel tick encoders, IMU angular velocity, and scan matching for drift-free vehicle pose.',
+    desc: 'Extended Kalman Filter fusing wheel tick counts, IMU angular velocity, and scan matching to calculate continuous 6-DoF vehicle pose.',
   },
   {
     id: 'node-nav2',
     name: '/navigation/nav2_controller',
-    type: 'Path Planning',
-    pub: '/cmd_vel [geometry_msgs/Twist]',
+    type: 'Trajectory Planner',
+    pub: '/cmd_vel [geometry_msgs/msg/Twist]',
     sub: '/scan · /odom · /tf · /goal_pose',
     qos: 'Reliable · 20 Hz',
-    desc: 'Computes global A* paths and local DWB collision-avoidance velocity vectors to drive the platform safely to target waypoints.',
+    desc: 'Evaluates global costmaps and optimizes local DWB trajectory velocity vectors to guide the robot around obstacles.',
   },
   {
     id: 'node-can',
     name: '/actuation/can_bridge_ecu',
     type: 'Vehicle Gateway',
     pub: '/can_rx · /wheel_encoders',
-    sub: '/cmd_vel [geometry_msgs/Twist]',
-    qos: 'Deterministic Real-Time · 100 Hz',
-    desc: 'Translates velocity twists into high-priority CAN 2.0B arbitration frames (0x120, 0x124) commanding custom drive-by-wire ECUs.',
+    sub: '/cmd_vel [geometry_msgs/msg/Twist]',
+    qos: 'Deterministic RT · 100 Hz',
+    desc: 'Translates geometry twists into high-priority CAN 2.0B arbitration frames (0x120, 0x124) commanding custom drive-by-wire ECUs.',
   },
 ];
 ---
@@ -54,24 +98,52 @@ const nodes = [
   <div class="container">
     <!-- Header -->
     <div class="section-header">
-      <span class="editorial-tag section-tag">Computational Graph</span>
-      <h2>ROS 2 Autonomy Stack &<br/><span class="text-accent">Systems Architecture</span></h2>
-      <p class="section-lead">
-        A real-time, deterministic software architecture orchestrating sensor ingestion, spatial perception,
-        probabilistic state estimation, and CAN 2.0B vehicle bus actuation.
+      <span class="section-num mono">03 // SYSTEMS ARCHITECTURE</span>
+      <h2 class="section-title">End-to-End Autonomy &<br/><span class="text-cyan">ROS 2 Computational Graph</span></h2>
+      <p class="section-desc">
+        Robotics is an interconnected physical discipline. Here is how sensor signals traverse perception,
+        probabilistic estimation, trajectory planning, and real-time vehicle actuation.
       </p>
     </div>
 
-    <!-- Architecture Layout: Left Schematic Graph, Right Subsystem Inspector -->
-    <div class="systems-grid">
-      <!-- Left: Interactive Computational Pipeline -->
-      <div class="graph-column">
-        <div class="graph-caption mono">AUTONOMY DATAFLOW PIPELINE · CLICK NODE TO INSPECT</div>
+    <!-- PART 1: Physical Autonomy System Flow -->
+    <div class="pipeline-block">
+      <div class="block-header">
+        <span class="block-title mono">SYSTEM DATAFLOW ARCHITECTURE</span>
+        <span class="block-subtitle mono">SENSING → PERCEPTION → PLANNING → CONTROL → ACTION</span>
+      </div>
+
+      <div class="stages-grid">
+        {pipelineStages.map((stage) => (
+          <div class="stage-card">
+            <div class="stage-top">
+              <span class="stage-num mono">{stage.num}</span>
+              <h3 class="stage-name">{stage.stage}</h3>
+            </div>
+            <div class="stage-inputs">
+              {stage.inputs.map((inp) => (
+                <span class="input-pill mono">{inp}</span>
+              ))}
+            </div>
+            <p class="stage-desc">{stage.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- PART 2: Dedicated ROS 2 Architecture & Node Inspector -->
+    <div class="ros2-block">
+      <div class="block-header">
+        <span class="block-title mono">ROS 2 HUMBLE COMPUTATIONAL GRAPH</span>
+        <span class="block-subtitle mono">NODE ──TOPIC/MESSAGE──► NODE</span>
+      </div>
+
+      <div class="ros2-grid">
+        <!-- Left: Node Pipeline List -->
         <div class="nodes-list" role="tablist">
-          {nodes.map((node, idx) => (
+          {rosNodes.map((node, idx) => (
             <button
-              class:list={['node-button', { active: idx === 0 }]}
-              data-id={node.id}
+              class:list={['node-item', { active: idx === 0 }]}
               data-name={node.name}
               data-type={node.type}
               data-pub={node.pub}
@@ -81,45 +153,43 @@ const nodes = [
               role="tab"
               aria-selected={idx === 0 ? "true" : "false"}
             >
-              <div class="node-num mono">0{idx + 1}</div>
-              <div class="node-info">
-                <span class="node-title mono">{node.name}</span>
-                <span class="node-subtitle">{node.type}</span>
+              <div class="node-indicator"></div>
+              <div class="node-details">
+                <span class="node-name mono">{node.name}</span>
+                <span class="node-role">{node.type}</span>
               </div>
-              <div class="node-arrow" aria-hidden="true">→</div>
+              <span class="node-arrow mono" aria-hidden="true">→</span>
             </button>
           ))}
         </div>
-      </div>
 
-      <!-- Right: Subsystem Inspector -->
-      <div class="inspector-column">
-        <div class="inspector-panel" id="inspectorPanel">
-          <div class="inspector-header">
-            <span class="inspector-tag mono">Subsystem Specification</span>
-            <h3 class="inspector-title mono" id="inspName">{nodes[0].name}</h3>
-            <span class="inspector-type" id="inspType">{nodes[0].type}</span>
+        <!-- Right: Real Subsystem Specification Inspector -->
+        <div class="inspector-card" id="rosInspector">
+          <div class="inspector-top">
+            <span class="inspector-label mono">SUBSYSTEM SPECIFICATION</span>
+            <h3 class="inspector-name mono" id="inspName">{rosNodes[0].name}</h3>
+            <span class="inspector-type" id="inspType">{rosNodes[0].type}</span>
           </div>
 
-          <div class="inspector-body">
-            <div class="spec-field">
-              <span class="spec-lbl mono">QoS Reliability</span>
-              <span class="spec-val mono" id="inspQoS">{nodes[0].qos}</span>
+          <div class="inspector-specs">
+            <div class="spec-row">
+              <span class="spec-label mono">QoS Reliability</span>
+              <span class="spec-value mono text-cyan" id="inspQoS">{rosNodes[0].qos}</span>
             </div>
 
-            <div class="spec-field">
-              <span class="spec-lbl mono">Subscribed Input</span>
-              <span class="spec-val mono" id="inspSub">{nodes[0].sub}</span>
+            <div class="spec-row">
+              <span class="spec-label mono">Subscribed Input</span>
+              <span class="spec-value mono" id="inspSub">{rosNodes[0].sub}</span>
             </div>
 
-            <div class="spec-field">
-              <span class="spec-lbl mono">Published Output</span>
-              <span class="spec-val mono accent" id="inspPub">{nodes[0].pub}</span>
+            <div class="spec-row">
+              <span class="spec-label mono">Published Output</span>
+              <span class="spec-value mono text-primary" id="inspPub">{rosNodes[0].pub}</span>
             </div>
 
-            <div class="spec-field desc-field">
-              <span class="spec-lbl mono">Architectural Role</span>
-              <p class="spec-desc" id="inspDesc">{nodes[0].desc}</p>
+            <div class="spec-row desc-row">
+              <span class="spec-label mono">Architectural Role</span>
+              <p class="spec-desc" id="inspDesc">{rosNodes[0].desc}</p>
             </div>
           </div>
         </div>
@@ -129,15 +199,15 @@ const nodes = [
 </section>
 
 <script>
-  // Clean Node inspector switcher
-  const nodeButtons = document.querySelectorAll('.node-button');
+  // ROS 2 Node Inspector interactive selection
+  const nodeButtons = document.querySelectorAll('.node-item');
   const inspName = document.getElementById('inspName');
   const inspType = document.getElementById('inspType');
   const inspQoS = document.getElementById('inspQoS');
   const inspSub = document.getElementById('inspSub');
   const inspPub = document.getElementById('inspPub');
   const inspDesc = document.getElementById('inspDesc');
-  const inspPanel = document.getElementById('inspectorPanel');
+  const inspectorCard = document.getElementById('rosInspector');
 
   nodeButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -155,12 +225,11 @@ const nodes = [
       if (inspPub) inspPub.textContent = btn.getAttribute('data-pub') || '';
       if (inspDesc) inspDesc.textContent = btn.getAttribute('data-desc') || '';
 
-      // Subtle feedback fade
-      if (inspPanel) {
-        inspPanel.style.opacity = '0.7';
+      if (inspectorCard) {
+        inspectorCard.style.opacity = '0.75';
         setTimeout(() => {
-          inspPanel.style.opacity = '1';
-        }, 80);
+          inspectorCard.style.opacity = '1';
+        }, 60);
       }
     });
   });
@@ -168,21 +237,105 @@ const nodes = [
 
 <style>
   .systems-section {
-    background: var(--bg-subtle);
+    background: var(--bg);
   }
 
-  .systems-grid {
+  /* Block Header */
+  .block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .block-title {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .block-subtitle {
+    font-size: var(--text-2xs);
+    color: var(--cyan-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* Part 1: Pipeline Stages Grid */
+  .pipeline-block {
+    margin-bottom: var(--space-16);
+  }
+
+  .stages-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-4);
+  }
+
+  .stage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition: border-color var(--duration-fast) var(--ease-spring);
+  }
+
+  .stage-card:hover {
+    border-color: var(--border-active);
+  }
+
+  .stage-top {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stage-num {
+    font-size: var(--text-xs);
+    color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .stage-name {
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .stage-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .input-pill {
+    font-size: 0.6875rem;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    padding: 3px 6px;
+    border-radius: var(--radius-xs);
+    line-height: 1.4;
+  }
+
+  .stage-desc {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: auto;
+  }
+
+  /* Part 2: ROS 2 Architecture Grid */
+  .ros2-grid {
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     gap: var(--space-8);
     align-items: start;
-  }
-
-  .graph-caption {
-    font-size: var(--text-2xs);
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    margin-bottom: var(--space-4);
   }
 
   .nodes-list {
@@ -191,151 +344,154 @@ const nodes = [
     gap: var(--space-3);
   }
 
-  .node-button {
+  .node-item {
     display: flex;
     align-items: center;
     gap: var(--space-4);
     padding: var(--space-4) var(--space-5);
-    background: var(--bg-surface);
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     text-align: left;
     width: 100%;
-    transition: all var(--duration-fast) var(--ease-editorial);
+    transition: all var(--duration-fast) var(--ease-spring);
     cursor: pointer;
   }
 
-  .node-button:hover {
-    border-color: var(--border-hover);
-    background: var(--bg-surface-hover);
-    transform: translateX(3px);
+  .node-item:hover {
+    border-color: var(--text-muted);
+    background: var(--surface-raised);
+    transform: translateX(2px);
   }
 
-  .node-button.active {
-    background: var(--bg-surface-hover);
-    border-color: var(--accent);
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.12);
+  .node-item.active {
+    border-color: var(--cyan-muted);
+    background: var(--surface-raised);
   }
 
-  .node-num {
-    font-size: var(--text-xs);
-    color: var(--text-dim);
-    font-weight: 600;
+  .node-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background var(--duration-fast) var(--ease-spring);
   }
 
-  .node-button.active .node-num {
-    color: var(--accent);
+  .node-item.active .node-indicator {
+    background: var(--cyan);
   }
 
-  .node-info {
+  .node-details {
     display: flex;
     flex-direction: column;
     gap: 2px;
     flex: 1;
   }
 
-  .node-title {
-    font-size: var(--text-sm);
-    color: var(--text);
+  .node-name {
+    font-size: var(--text-xs);
+    color: var(--text-primary);
     font-weight: 500;
   }
 
-  .node-subtitle {
-    font-size: var(--text-xs);
+  .node-role {
+    font-size: 0.6875rem;
     color: var(--text-muted);
   }
 
   .node-arrow {
     color: var(--text-dim);
-    font-size: var(--text-sm);
-    transition: transform var(--duration-fast) var(--ease-editorial),
-                color var(--duration-fast) var(--ease-editorial);
+    font-size: var(--text-xs);
+    transition: color var(--duration-fast) var(--ease-spring),
+                transform var(--duration-fast) var(--ease-spring);
   }
 
-  .node-button.active .node-arrow {
-    color: var(--accent);
-    transform: translateX(4px);
+  .node-item.active .node-arrow {
+    color: var(--cyan);
+    transform: translateX(3px);
   }
 
-  /* Right: Inspector */
-  .inspector-panel {
-    background: var(--bg-surface);
+  /* Right Inspector */
+  .inspector-card {
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: var(--space-6);
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
-    transition: opacity var(--duration-fast) var(--ease-editorial);
+    gap: var(--space-5);
+    transition: opacity var(--duration-fast) var(--ease-spring);
   }
 
-  .inspector-header {
+  .inspector-top {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 3px;
     padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--border-subtle);
   }
 
-  .inspector-tag {
-    font-size: var(--text-2xs);
+  .inspector-label {
+    font-size: 0.625rem;
     color: var(--text-muted);
     letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
 
-  .inspector-title {
+  .inspector-name {
     font-size: var(--text-base);
-    color: var(--text);
+    color: var(--text-primary);
     font-weight: 600;
     word-break: break-all;
   }
 
   .inspector-type {
     font-size: var(--text-xs);
-    color: var(--accent);
-    font-weight: 500;
+    color: var(--cyan);
   }
 
-  .inspector-body {
+  .inspector-specs {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
   }
 
-  .spec-field {
+  .spec-row {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
   }
 
-  .spec-lbl {
-    font-size: var(--text-2xs);
+  .spec-label {
+    font-size: 0.625rem;
     color: var(--text-muted);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
-  .spec-val {
+  .spec-value {
     font-size: var(--text-xs);
     color: var(--text-secondary);
-    line-height: 1.5;
-  }
-
-  .spec-val.accent {
-    color: var(--accent);
+    line-height: 1.4;
   }
 
   .spec-desc {
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     color: var(--text-secondary);
     line-height: 1.65;
   }
 
-  @media (max-width: 900px) {
-    .systems-grid {
+  @media (max-width: 1024px) {
+    .stages-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .stages-grid {
       grid-template-columns: 1fr;
-      gap: var(--space-6);
+    }
+    .ros2-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>

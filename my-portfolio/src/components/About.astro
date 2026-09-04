@@ -1,104 +1,120 @@
 ---
-// About Section — Editorial biography and verified engineering chronology
+// About Component — Graphite + Electric Cyan
+// Technical biography, academic foundation, and verified engineering chronology
+
 const timeline = [
   {
     period: '2025 – 2026',
     role: 'Electrical & Electronics Head',
     organization: 'Team Equinox · BAJA SAE India',
     achievement: 'All India Rank AIR 7 (2025) & AIR 11 (2026)',
-    description: 'Directed the end-to-end electrical architecture, custom ECU electronics, CAN bus protocol stack, and drive-by-wire electro-mechanical integration for an autonomous off-road vehicle competing nationwide.',
-    skills: ['CAN Bus 2.0B', 'Custom Multi-Layer ECUs', 'Drive-by-Wire Actuators', 'HV/LV Harnessing', 'Safety Interlocks'],
+    description: 'Spearheaded end-to-end electrical architecture, custom multi-layer ECUs, CAN 2.0B network integration, and steer/brake-by-wire electro-mechanical actuation for an autonomous all-terrain competition vehicle.',
+    skills: ['CAN Bus 2.0B', 'Custom ECUs', 'Drive-by-Wire Actuators', 'HV/LV Harnessing', 'Safety Interlocks'],
   },
   {
     period: '2024 – 2025',
     role: 'Autonomy & Embedded Developer',
     organization: 'Hospital Service Autonomous Mobile Robot (AMR)',
-    achievement: 'Closed-Loop Hospital Logistics Autonomous Testbed',
-    description: 'Engineered 2D LiDAR SLAM, Nav2 local costmap dynamic tuning, and differential drive kinematics to achieve safe indoor transport of medical supplies.',
+    achievement: 'Closed-Loop Healthcare Logistics Testbed',
+    description: 'Engineered 2D LiDAR SLAM, dynamic costmap layer tuning in Nav2, differential drive PID kinematics, and IoT fleet telemetry for deterministic indoor navigation.',
     skills: ['ROS 2 Humble', 'Nav2', 'SLAM Toolbox', 'Differential Kinematics', 'IoT Telemetry'],
   },
   {
     period: '2023 – 2024',
-    role: 'Computer Vision & Systems Researcher',
+    role: 'Perception & Systems Researcher',
     organization: 'Edge Perception & Swarm Robotics Platforms',
-    achievement: 'Multi-Agent Mesh & Real-Time Computer Vision',
-    description: 'Developed real-time RTSP anomaly detection with OpenCV and engineered peer-to-peer TCP/IP mesh coordination across distributed mobile robot swarm nodes.',
-    skills: ['OpenCV', 'Python', 'TCP/IP Sockets Protocol', 'Edge AI', 'Distributed Systems'],
+    achievement: 'Distributed Multi-Agent Mesh & Real-Time Edge Vision',
+    description: 'Engineered real-time RTSP video anomaly inference pipelines with OpenCV/YOLO and developed peer-to-peer TCP/IP mesh coordination across distributed ESP32 swarm nodes.',
+    skills: ['OpenCV', 'Python', 'TCP/IP Sockets', 'Edge AI Inference', 'Distributed Systems'],
   },
 ];
 ---
 
 <section id="about" class="section about-section">
   <div class="container">
-    <!-- Header -->
+    <!-- Section Header -->
     <div class="section-header">
-      <span class="editorial-tag section-tag">Background & Experience</span>
-      <h2>Engineering Philosophy &<br/><span class="text-accent">Chronology</span></h2>
-      <p class="section-lead">
-        A hands-on track record spanning autonomous off-road vehicle architecture,
-        custom embedded electronics, and real-time robotic perception.
+      <span class="section-num mono">04 / ABOUT</span>
+      <h2 class="section-title">Background & <span class="text-cyan">Engineering Focus</span></h2>
+      <p class="section-desc">
+        I work at the intersection of robotics, perception and intelligent systems. My interests include
+        autonomous robots, computer vision, ROS 2, AI/ML and real-world robotic hardware.
       </p>
     </div>
 
     <!-- Editorial Layout: Biography Left, Chronology Right -->
     <div class="about-grid">
-      <!-- Left: Narrative Bio -->
+      <!-- Left: Narrative Bio & Foundation -->
       <div class="bio-column">
-        <div class="bio-lead">
-          <p>
-            I am a robotics engineer driven by the challenge of bridging <strong class="text-white">physical hardware</strong> and
-            <strong class="text-white">intelligent software</strong>. Rather than viewing robotics purely from an algorithmic or purely from a mechanical angle,
-            I focus on complete, unified systems integration.
-          </p>
-        </div>
+        <div class="bio-card tech-surface">
+          <span class="card-kicker mono text-cyan">PERSPECTIVE</span>
+          <h3 class="bio-heading">Bridging physical hardware and intelligent software</h3>
+          
+          <div class="bio-text">
+            <p>
+              Rather than viewing robotics purely through the lens of abstract algorithms or purely mechanical fabrication,
+              I treat the entire stack as a tightly coupled, closed-loop machine. A perceptual model is only as dependable
+              as the sensor timing, power bus integrity, and actuator bandwidth that ground it in physical reality.
+            </p>
+            <p>
+              Leading the electrical and autonomous development for <em>Team Equinox</em> in BAJA SAE India taught me how to
+              design systems that thrive under real shock, mud, electrical noise, and thermal stress. That engineering rigor
+              guides every piece of software and hardware I build today.
+            </p>
+          </div>
 
-        <div class="bio-body">
-          <p>
-            As the Electrical & Electronics Head for <em>Team Equinox</em>, I spearheaded the complete electronic powertrain and autonomous architecture
-            for our all-terrain vehicle, leading the team to top-tier national finishes (AIR 7 in 2025, AIR 11 in 2026).
-            My day-to-day spans designing custom multi-layer ECUs, assembling isolated wiring harnesses, troubleshooting deterministic CAN bus frames on an oscilloscope,
-            and tuning ROS 2 Nav2 costmaps.
-          </p>
-          <p>
-            I thrive in research and R&D environments where safety-critical hardware reliability meets state-of-the-art spatial perception.
-          </p>
-        </div>
+          <!-- Academic Foundation Block -->
+          <div class="education-block">
+            <div class="edu-badge mono">ACADEMIC FOUNDATION</div>
+            <div class="edu-content">
+              <h4 class="edu-degree">B.Tech in Robotics & Automation Engineering</h4>
+              <span class="edu-institution">Saintgits College of Engineering · Autonomous Institution</span>
+              <span class="edu-focus mono">Focus: Autonomous Navigation, Computer Vision, Embedded Controllers</span>
+            </div>
+          </div>
 
-        <!-- Academic Foundation -->
-        <div class="education-block">
-          <span class="edu-label mono">ACADEMIC FOUNDATION</span>
-          <h4 class="edu-degree">B.Tech in Robotics & Automation Engineering</h4>
-          <span class="edu-school">Saintgits College of Engineering · Autonomous Institution</span>
-        </div>
-
-        <!-- Resume Action -->
-        <div class="bio-actions">
-          <a href="/Naveen_Shaji_George_CV.pdf" class="btn-editorial btn-editorial-primary" download>
-            <span>Download Curriculum Vitae (PDF)</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-            </svg>
-          </a>
+          <!-- CV Action -->
+          <div class="bio-action">
+            <a href="/Naveen_Shaji_George_CV.pdf" class="btn-graphite btn-graphite-cyan" download>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              </svg>
+              <span>Download Curriculum Vitae (PDF)</span>
+            </a>
+          </div>
         </div>
       </div>
 
-      <!-- Right: Engineering Chronology Tree -->
+      <!-- Right: Chronological Milestones -->
       <div class="chronology-column">
-        <div class="chronology-label mono">DEPLOYED MILESTONES (2023 – 2026)</div>
-        <div class="timeline-list">
+        <div class="chronology-header">
+          <span class="chronology-title mono">DEPLOYED ENGINEERING MILESTONES</span>
+          <span class="chronology-range mono text-muted">2023 — 2026</span>
+        </div>
+
+        <div class="timeline-tree">
           {timeline.map((item) => (
-            <div class="timeline-item">
-              <div class="timeline-period mono">{item.period}</div>
-              <div class="timeline-content">
-                <h4 class="timeline-role">{item.role}</h4>
-                <div class="timeline-org mono">{item.organization}</div>
-                {item.achievement && (
-                  <div class="timeline-badge mono">{item.achievement}</div>
-                )}
-                <p class="timeline-desc">{item.description}</p>
-                <div class="timeline-skills">
+            <div class="timeline-node">
+              <div class="node-marker">
+                <div class="marker-dot"></div>
+                <div class="marker-line"></div>
+              </div>
+
+              <div class="node-body tech-surface">
+                <div class="node-meta">
+                  <span class="node-period mono text-cyan">{item.period}</span>
+                  {item.achievement && (
+                    <span class="node-achievement mono">{item.achievement}</span>
+                  )}
+                </div>
+
+                <h4 class="node-role">{item.role}</h4>
+                <div class="node-org mono">{item.organization}</div>
+                <p class="node-desc">{item.description}</p>
+
+                <div class="node-tags">
                   {item.skills.map((skill) => (
-                    <span class="skill-tag mono">{skill}</span>
+                    <span class="node-tag mono">{skill}</span>
                   ))}
                 </div>
               </div>
@@ -112,179 +128,232 @@ const timeline = [
 
 <style>
   .about-section {
-    background: var(--bg-subtle);
+    background: var(--bg);
   }
 
   .about-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-16);
+    grid-template-columns: 1fr 1.15fr;
+    gap: var(--space-8);
     align-items: start;
   }
 
-  /* Left Bio */
+  /* Left Bio Card */
   .bio-column {
+    position: sticky;
+    top: calc(var(--nav-height) + 24px);
+  }
+
+  .bio-card {
+    padding: var(--space-8);
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
   }
 
-  .bio-lead p {
-    font-size: var(--text-lg);
-    line-height: 1.65;
-    color: var(--text-secondary);
+  .card-kicker {
+    font-size: var(--text-2xs);
+    letter-spacing: 0.1em;
   }
 
-  .bio-body {
+  .bio-heading {
+    font-size: var(--text-2xl);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .bio-text {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
   }
 
-  .bio-body p {
-    font-size: var(--text-base);
-    line-height: 1.75;
+  .bio-text p {
+    font-size: var(--text-sm);
+    line-height: 1.7;
     color: var(--text-secondary);
   }
 
-  .bio-body em {
-    color: var(--text);
+  .bio-text em {
     font-style: normal;
+    color: var(--text-primary);
   }
 
-  /* Education */
+  /* Education block */
   .education-block {
-    padding: var(--space-5) var(--space-6);
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: var(--space-5);
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-top: var(--space-2);
+    gap: var(--space-2);
   }
 
-  .edu-label {
+  .edu-badge {
     font-size: var(--text-2xs);
-    color: var(--accent);
+    color: var(--text-muted);
     letter-spacing: 0.08em;
   }
 
   .edu-degree {
     font-size: var(--text-base);
-    color: var(--text);
+    color: var(--text-primary);
     font-weight: 600;
   }
 
-  .edu-school {
+  .edu-institution {
     font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  .edu-focus {
+    font-size: var(--text-2xs);
     color: var(--text-muted);
+    margin-top: var(--space-1);
   }
 
-  .bio-actions {
-    margin-top: var(--space-2);
+  .bio-action {
+    padding-top: var(--space-2);
   }
 
-  /* Right Chronology */
+  /* Right Timeline */
   .chronology-column {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
   }
 
-  .chronology-label {
+  .chronology-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .chronology-title {
     font-size: var(--text-2xs);
-    color: var(--text-muted);
+    color: var(--text-secondary);
     letter-spacing: 0.08em;
   }
 
-  .timeline-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
-    position: relative;
-  }
-
-  .timeline-item {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding-left: var(--space-6);
-    border-left: 1px solid var(--border);
-    position: relative;
-  }
-
-  .timeline-item::before {
-    content: "";
-    position: absolute;
-    left: -3.5px;
-    top: 4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-
-  .timeline-period {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-  }
-
-  .timeline-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .timeline-role {
-    font-size: var(--text-lg);
-    color: var(--text);
-    line-height: 1.3;
-  }
-
-  .timeline-org {
-    font-size: var(--text-xs);
-    color: var(--accent);
-  }
-
-  .timeline-badge {
+  .chronology-range {
     font-size: var(--text-2xs);
-    color: var(--text);
+  }
+
+  .timeline-tree {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .timeline-node {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: var(--space-4);
+  }
+
+  .node-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 18px;
+  }
+
+  .marker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 8px var(--cyan-glow);
+    z-index: 2;
+  }
+
+  .marker-line {
+    width: 1px;
+    flex-grow: 1;
+    background: var(--border);
+    margin-top: 6px;
+  }
+
+  .timeline-node:last-child .marker-line {
+    display: none;
+  }
+
+  .node-body {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .node-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .node-period {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .node-achievement {
+    font-size: var(--text-2xs);
+    color: var(--text-primary);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--border);
     padding: 2px 8px;
     border-radius: var(--radius-pill);
-    width: fit-content;
-    margin: 2px 0;
   }
 
-  .timeline-desc {
+  .node-role {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .node-org {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  .node-desc {
     font-size: var(--text-sm);
     color: var(--text-secondary);
     line-height: 1.65;
   }
 
-  .timeline-skills {
+  .node-tags {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
     margin-top: var(--space-2);
   }
 
-  .skill-tag {
+  .node-tag {
     font-size: var(--text-2xs);
     color: var(--text-muted);
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-subtle);
-    padding: 2px 8px;
-    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
   }
 
   @media (max-width: 960px) {
     .about-grid {
       grid-template-columns: 1fr;
       gap: var(--space-10);
+    }
+    .bio-column {
+      position: static;
     }
   }
 </style>

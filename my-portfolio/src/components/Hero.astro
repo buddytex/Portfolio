@@ -1,76 +1,85 @@
 ---
-// Hero Section — Editorial Robotics Engineering Identity
-// Features borderless, free-form floating spatial perception field (LiDAR)
+// Hero Section — Graphite + Electric Cyan
+// Free-floating spatial perception point cloud with physical spring-inertia cursor interaction
 ---
 
 <section class="hero" id="hero">
   <div class="container hero-container">
     <!-- Left: Editorial Content -->
     <div class="hero-content">
-      <div class="hero-meta">
-        <span class="editorial-tag">
-          <span class="tag-line"></span>
-          Robotics & Autonomous Systems
-        </span>
-      </div>
-
-      <h1 class="hero-title">
-        Naveen Shaji<br/>
-        <span class="hero-title-sub">George</span>
-      </h1>
-
-      <div class="hero-role">
-        <span class="mono hero-role-title">ROBOTICS ENGINEER</span>
-        <span class="hero-role-dot">/</span>
-        <span class="mono hero-role-loc">AUTONOMOUS SYSTEMS R&D</span>
-      </div>
-
-      <p class="hero-quote">
-        “I build machines that <strong class="text-white">perceive</strong>,
-        <strong class="text-white">reason</strong>, and <strong class="text-white">act</strong> in the real world.”
-      </p>
-
-      <p class="hero-description">
-        Specializing in autonomous navigation, robot perception (3D LiDAR & computer vision),
-        custom embedded ECUs, isolated CAN bus networks, and full-stack vehicle hardware-software integration.
-      </p>
-
-      <!-- Verified Milestones -->
-      <div class="hero-credentials">
-        <div class="cred-item">
-          <span class="cred-badge mono">AIR 7 & AIR 11</span>
-          <span class="cred-desc">Team Equinox · BAJA SAE India Autonomous Campaign</span>
-        </div>
-        <div class="cred-divider"></div>
-        <div class="cred-item">
-          <span class="cred-badge mono">E&E HEAD</span>
-          <span class="cred-desc">Autonomous Vehicle Electrical Architecture & CAN Bus</span>
+      <div class="hero-header">
+        <h1 class="hero-title">
+          NAVEEN SHAJI<br/>
+          <span class="hero-name-accent">GEORGE</span>
+        </h1>
+        <div class="hero-subtitle mono">
+          ROBOTICS · AUTONOMOUS SYSTEMS · AI
         </div>
       </div>
 
-      <!-- Action Links -->
+      <p class="hero-statement">
+        I build machines that <strong class="text-primary">perceive</strong>,
+        <strong class="text-primary">reason</strong>, and <strong class="text-primary">act</strong>.
+      </p>
+
+      <p class="hero-narrative">
+        Specializing in autonomous navigation, robot perception (LiDAR & computer vision),
+        custom embedded ECUs, CAN bus networks, and full-stack vehicle hardware-software integration.
+      </p>
+
+      <!-- Focus Metadata Area (Restrained, technical, not a dashboard) -->
+      <div class="hero-focus-block">
+        <div class="focus-label mono">FOCUS AREAS</div>
+        <div class="focus-tags">
+          <span class="focus-tag mono">Robotics</span>
+          <span class="focus-sep">/</span>
+          <span class="focus-tag mono">Computer Vision</span>
+          <span class="focus-sep">/</span>
+          <span class="focus-tag mono">Autonomous Systems</span>
+          <span class="focus-sep">/</span>
+          <span class="focus-tag mono">ROS 2</span>
+          <span class="focus-sep">/</span>
+          <span class="focus-tag mono">AI / ML</span>
+        </div>
+      </div>
+
+      <!-- Verified Achievements -->
+      <div class="hero-milestones">
+        <div class="milestone-item">
+          <span class="milestone-rank mono text-cyan">AIR 7 & AIR 11</span>
+          <span class="milestone-desc">Team Equinox · BAJA SAE India Autonomous Vehicle</span>
+        </div>
+        <div class="milestone-divider"></div>
+        <div class="milestone-item">
+          <span class="milestone-rank mono">E&E HEAD</span>
+          <span class="milestone-desc">Vehicle Electronics, CAN Bus & Drive-by-Wire</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
       <div class="hero-actions">
-        <a href="#work" class="btn-editorial btn-editorial-primary">
-          <span>Explore Projects</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <a href="#work" class="btn-graphite btn-graphite-primary">
+          <span>View Projects</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <polyline points="19 12 12 19 5 12"></polyline>
           </svg>
         </a>
 
-        <a href="#research" class="btn-editorial btn-editorial-secondary">
-          <span>Research & Systems</span>
+        <a href="#contact" class="btn-graphite btn-graphite-secondary">
+          <span>Contact</span>
         </a>
       </div>
     </div>
 
-    <!-- Right: Free-Form Spatial Perception Field (LiDAR) -->
-    <!-- Integrated directly into the environment without cards, boxes, or radar borders -->
+    <!-- Right: Free-Floating Spatial Perception Field -->
+    <!-- Directly on the page, no card, no radar circles, no fake sweep line -->
     <div class="hero-visual">
-      <div class="pointcloud-wrap" id="pointcloudWrap">
-        <canvas id="pointcloudCanvas" aria-label="Interactive 3D LiDAR Spatial Perception Field"></canvas>
-        <div class="pointcloud-caption mono">
-          [ SPATIAL PERCEPTION FIELD · INTERACTIVE OBJECT DEFLECTION ]
+      <div class="pointcloud-viewport" id="pointcloudViewport">
+        <canvas id="pointcloudCanvas" aria-label="Interactive Spatial Sensor Field"></canvas>
+        <div class="pointcloud-annotation mono">
+          <span class="annotation-dot"></span>
+          SPATIAL PERCEPTION FIELD · INTERACTIVE OBJECT DEFLECTION
         </div>
       </div>
     </div>
@@ -79,8 +88,9 @@
 
 <script>
   // ==========================================================
-  // FREE-FORM SPATIAL PERCEPTION POINT CLOUD (LiDAR)
-  // Physical spring-inertia cursor repulsion & 3D depth field
+  // FREE-FLOATING SPATIAL PERCEPTION POINT CLOUD
+  // 95% Neutral Gray + ~5% Electric Cyan
+  // Physical spring-inertia cursor repulsion (No scanner sweep)
   // ==========================================================
 
   interface Point3D {
@@ -94,32 +104,33 @@
     vy: number;
     vz: number;
     radius: number;
+    isCyan: boolean;
     phase: number;
-    orbitSpeed: number;
-    colorType: 'blue' | 'cyan' | 'slate';
+    driftSpeed: number;
   }
 
   const canvas = document.getElementById('pointcloudCanvas') as HTMLCanvasElement;
-  const wrap = document.getElementById('pointcloudWrap');
+  const viewport = document.getElementById('pointcloudViewport');
 
-  if (canvas && wrap) {
+  if (canvas && viewport) {
     const ctx = canvas.getContext('2d');
     if (ctx) {
       let width = 0;
       let height = 0;
       let animId = 0;
       const points: Point3D[] = [];
-      const numPoints = 420;
+      const numPoints = 360;
 
-      // Cursor position in canvas coordinates
-      const cursor = {
+      const mouse = {
         x: -9999,
         y: -9999,
+        targetX: -9999,
+        targetY: -9999,
         active: false,
       };
 
       function resize() {
-        const rect = wrap!.getBoundingClientRect();
+        const rect = viewport!.getBoundingClientRect();
         width = rect.width;
         height = rect.height;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -131,25 +142,24 @@
       window.addEventListener('resize', resize);
       resize();
 
-      // Initialize spatial points in 3D perception volume
+      // Initialize 3D point cloud in spatial environment
       function initPoints() {
         points.length = 0;
         const cx = width / 2;
         const cy = height / 2;
 
         for (let i = 0; i < numPoints; i++) {
-          // Semi-structured organic distribution reminiscent of a real LiDAR scan of surroundings
+          // Spatial geometry distribution
           const theta = Math.random() * Math.PI * 2;
-          const phi = (Math.random() - 0.5) * Math.PI * 0.75;
-          const dist = 60 + Math.pow(Math.random(), 0.7) * (Math.min(width, height) * 0.42);
+          const phi = (Math.random() - 0.5) * Math.PI * 0.8;
+          const r = 50 + Math.pow(Math.random(), 0.75) * (Math.min(width, height) * 0.44);
 
-          const bx = cx + Math.cos(theta) * Math.cos(phi) * dist;
-          const by = cy + Math.sin(phi) * dist * 0.85 + Math.sin(theta) * 35;
-          const bz = Math.sin(theta) * Math.cos(phi) * 160;
+          const bx = cx + Math.cos(theta) * Math.cos(phi) * r;
+          const by = cy + Math.sin(phi) * r * 0.82 + Math.sin(theta) * 20;
+          const bz = Math.sin(theta) * Math.cos(phi) * 150;
 
-          const rand = Math.random();
-          const colorType: 'blue' | 'cyan' | 'slate' =
-            rand > 0.45 ? 'blue' : (rand > 0.18 ? 'cyan' : 'slate');
+          // 95% neutral gray, 5% electric cyan
+          const isCyan = Math.random() < 0.055;
 
           points.push({
             baseX: bx,
@@ -161,83 +171,71 @@
             vx: 0,
             vy: 0,
             vz: 0,
-            radius: 1.4 + Math.random() * 1.6,
+            radius: isCyan ? 1.8 : 1.3 + Math.random() * 1.2,
+            isCyan,
             phase: Math.random() * Math.PI * 2,
-            orbitSpeed: 0.0006 + Math.random() * 0.0008,
-            colorType,
+            driftSpeed: 0.0006 + Math.random() * 0.0006,
           });
         }
       }
 
       initPoints();
 
-      // Track cursor relative to canvas
-      const updateCursor = (clientX: number, clientY: number) => {
+      // Track cursor position relative to canvas
+      window.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
-        cursor.x = clientX - rect.left;
-        cursor.y = clientY - rect.top;
-        cursor.active = true;
-      };
-
-      window.addEventListener('mousemove', (e) => updateCursor(e.clientX, e.clientY));
-      window.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          updateCursor(e.touches[0].clientX, e.touches[0].clientY);
-        }
+        mouse.targetX = e.clientX - rect.left;
+        mouse.targetY = e.clientY - rect.top;
+        mouse.active = true;
       }, { passive: true });
 
       window.addEventListener('mouseleave', () => {
-        cursor.active = false;
-        cursor.x = -9999;
-        cursor.y = -9999;
+        mouse.active = false;
+        mouse.targetX = -9999;
+        mouse.targetY = -9999;
       });
 
       let time = 0;
-      const focalLength = 320;
+      const focalLength = 300;
       const reactionRadius = 140;
-      const springK = 0.045; // Spring restoring tension
-      const damping = 0.87;  // Viscous fluid inertia damping
+      const springK = 0.042;
+      const damping = 0.87;
 
       function render() {
         time += 1;
         ctx!.clearRect(0, 0, width, height);
 
-        const cx = width / 2;
-        const cy = height / 2;
+        // Smooth mouse interpolation
+        mouse.x += (mouse.targetX - mouse.x) * 0.12;
+        mouse.y += (mouse.targetY - mouse.y) * 0.12;
 
-        // Periodic subtle LiDAR laser excitation sweep
-        const laserSweepZ = Math.sin(time * 0.02) * 160;
-
-        // 1. Update physics for each point
+        // 1. Update point physics
         for (let i = 0; i < points.length; i++) {
           const pt = points[i];
 
-          // Natural subtle organic drift
-          const driftX = Math.sin(time * pt.orbitSpeed + pt.phase) * 14;
-          const driftY = Math.cos(time * pt.orbitSpeed * 1.1 + pt.phase) * 12;
-          const targetX = pt.baseX + driftX;
-          const targetY = pt.baseY + driftY;
-          const targetZ = pt.baseZ + Math.sin(time * 0.001 + pt.phase) * 15;
+          // Subtle natural spatial drift (no fast scanning)
+          const targetX = pt.baseX + Math.sin(time * pt.driftSpeed + pt.phase) * 8;
+          const targetY = pt.baseY + Math.cos(time * pt.driftSpeed * 1.1 + pt.phase) * 8;
+          const targetZ = pt.baseZ + Math.sin(time * 0.001 + pt.phase) * 10;
 
-          // PHYSICAL CURSOR INTERACTION (Cursor behaves as physical obstacle in LiDAR space)
-          if (cursor.active) {
-            const dx = pt.x - cursor.x;
-            const dy = pt.y - cursor.y;
+          // Cursor physical repulsion
+          if (mouse.active && mouse.x > -500) {
+            const dx = pt.x - mouse.x;
+            const dy = pt.y - mouse.y;
             const dist = Math.hypot(dx, dy);
 
-            if (dist < reactionRadius && dist > 0.001) {
-              // Smooth non-linear repulsion force with inertia
-              const normDist = dist / reactionRadius;
-              const force = Math.pow(1 - normDist, 1.8) * 5.5;
+            if (dist < reactionRadius && dist > 0.01) {
+              const norm = dist / reactionRadius;
+              const force = Math.pow(1 - norm, 1.8) * 4.6;
               const angle = Math.atan2(dy, dx);
 
               pt.vx += Math.cos(angle) * force;
               pt.vy += Math.sin(angle) * force;
-              pt.vz += force * 1.8; // Displace in depth like a 3D obstacle
+              pt.vz += force * 1.4; // Reveal depth when pushed
             }
           }
 
-          // Damped Spring Return to equilibrium
+          // Damped spring return
           const ax = (targetX - pt.x) * springK;
           const ay = (targetY - pt.y) * springK;
           const az = (targetZ - pt.z) * springK;
@@ -251,16 +249,18 @@
           pt.z += pt.vz;
         }
 
-        // 2. Spatial Connectivity Lines (Subtle perception mesh)
+        // 2. Subtle connection mesh between nearby points (Restrained hairlines)
         ctx!.lineWidth = 0.75;
         for (let i = 0; i < points.length; i += 3) {
           const p1 = points[i];
-          for (let j = i + 1; j < Math.min(i + 8, points.length); j++) {
+          for (let j = i + 1; j < Math.min(i + 6, points.length); j++) {
             const p2 = points[j];
             const d = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-            if (d < 46) {
-              const alpha = (1 - d / 46) * 0.12;
-              ctx!.strokeStyle = `rgba(59, 130, 246, ${alpha})`;
+            if (d < 42) {
+              const alpha = (1 - d / 42) * (p1.isCyan || p2.isCyan ? 0.22 : 0.08);
+              ctx!.strokeStyle = p1.isCyan || p2.isCyan
+                ? `rgba(0, 229, 255, ${alpha})`
+                : `rgba(139, 148, 158, ${alpha})`;
               ctx!.beginPath();
               ctx!.moveTo(p1.x, p1.y);
               ctx!.lineTo(p2.x, p2.y);
@@ -269,30 +269,22 @@
           }
         }
 
-        // 3. Render projected 3D Points
+        // 3. Render projected 3D points
         for (let i = 0; i < points.length; i++) {
           const pt = points[i];
-
-          // 3D perspective projection scale
           const scale = focalLength / (focalLength + pt.z);
           const r = Math.max(0.6, pt.radius * scale);
-
-          // Proximity to periodic sweep
-          const isSwept = Math.abs(pt.z - laserSweepZ) < 25;
-          const baseAlpha = Math.min(1, Math.max(0.2, (pt.z + 180) / 340));
-          const finalAlpha = isSwept ? Math.min(1, baseAlpha * 1.6) : baseAlpha * 0.85;
+          const alpha = Math.min(1, Math.max(0.2, (pt.z + 160) / 320));
 
           ctx!.beginPath();
           ctx!.arc(pt.x, pt.y, r, 0, Math.PI * 2);
 
-          if (isSwept) {
-            ctx!.fillStyle = `rgba(255, 255, 255, ${finalAlpha})`;
-          } else if (pt.colorType === 'blue') {
-            ctx!.fillStyle = `rgba(59, 130, 246, ${finalAlpha})`;
-          } else if (pt.colorType === 'cyan') {
-            ctx!.fillStyle = `rgba(96, 165, 250, ${finalAlpha * 0.9})`;
+          if (pt.isCyan) {
+            // The 1% Electric Cyan energy
+            ctx!.fillStyle = `rgba(0, 229, 255, ${alpha * 0.95})`;
           } else {
-            ctx!.fillStyle = `rgba(203, 213, 225, ${finalAlpha * 0.5})`;
+            // Neutral graphite / muted gray points
+            ctx!.fillStyle = `rgba(139, 148, 158, ${alpha * 0.65})`;
           }
 
           ctx!.fill();
@@ -301,10 +293,9 @@
         animId = requestAnimationFrame(render);
       }
 
-      // IntersectionObserver: Pause when offscreen for high performance
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReduced) {
-        const observer = new IntersectionObserver(([entry]) => {
+        const obs = new IntersectionObserver(([entry]) => {
           if (entry.isIntersecting) {
             if (!animId) render();
           } else {
@@ -315,7 +306,7 @@
           }
         }, { threshold: 0.05 });
 
-        observer.observe(canvas);
+        obs.observe(canvas);
         render();
       } else {
         render();
@@ -328,7 +319,7 @@
 <style>
   .hero {
     position: relative;
-    padding: clamp(4rem, 8vh, 6.5rem) 0 clamp(5rem, 10vh, 8rem);
+    padding: clamp(4rem, 8vh, 6.5rem) 0 clamp(4.5rem, 9vh, 7rem);
     min-height: calc(90vh - var(--nav-height));
     display: flex;
     align-items: center;
@@ -342,107 +333,118 @@
     align-items: center;
   }
 
-  /* Left Editorial Content */
+  /* Left Content */
   .hero-content {
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
-    max-width: 660px;
+    max-width: 620px;
     z-index: 2;
   }
 
-  .hero-meta {
+  .hero-header {
     display: flex;
-    align-items: center;
-  }
-
-  .tag-line {
-    display: inline-block;
-    width: 24px;
-    height: 1px;
-    background: var(--accent);
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
   .hero-title {
-    font-size: clamp(3rem, 6.2vw, 5.25rem);
+    font-size: clamp(2.75rem, 5.5vw, 4.75rem);
     letter-spacing: -0.04em;
     line-height: 0.94;
-    color: var(--text);
+    color: var(--text-primary);
   }
 
-  .hero-title-sub {
+  .hero-name-accent {
     color: var(--text-secondary);
     font-weight: 500;
   }
 
-  .hero-role {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+  .hero-subtitle {
     font-size: var(--text-xs);
-    letter-spacing: 0.08em;
-  }
-
-  .hero-role-title {
-    color: var(--accent);
+    color: var(--cyan);
+    letter-spacing: 0.12em;
     font-weight: 600;
   }
 
-  .hero-role-dot {
-    color: var(--text-dim);
-  }
-
-  .hero-role-loc {
-    color: var(--text-muted);
-  }
-
-  .hero-quote {
+  .hero-statement {
     font-size: clamp(1.125rem, 1.8vw, 1.35rem);
     color: var(--text-secondary);
     line-height: 1.5;
-    font-weight: 400;
   }
 
-  .hero-description {
-    font-size: var(--text-base);
+  .hero-narrative {
+    font-size: var(--text-sm);
     color: var(--text-secondary);
     line-height: 1.7;
-    max-width: 580px;
+    max-width: 560px;
   }
 
-  /* Verified Credentials */
-  .hero-credentials {
+  /* Focus Metadata Block */
+  .hero-focus-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    width: fit-content;
+  }
+
+  .focus-label {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .focus-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .focus-tag {
+    font-size: var(--text-xs);
+    color: var(--text-primary);
+  }
+
+  .focus-sep {
+    font-size: var(--text-xs);
+    color: var(--border);
+  }
+
+  /* Milestones */
+  .hero-milestones {
     display: flex;
     align-items: center;
     gap: var(--space-6);
-    padding: var(--space-4) 0;
+    padding: var(--space-3) 0;
     border-top: 1px solid var(--border-subtle);
     border-bottom: 1px solid var(--border-subtle);
-    margin-top: var(--space-2);
   }
 
-  .cred-item {
+  .milestone-item {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
   }
 
-  .cred-badge {
+  .milestone-rank {
     font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--text);
     letter-spacing: 0.04em;
   }
 
-  .cred-desc {
+  .milestone-desc {
     font-size: var(--text-xs);
     color: var(--text-muted);
-    line-height: 1.4;
   }
 
-  .cred-divider {
+  .milestone-divider {
     width: 1px;
-    height: 36px;
+    height: 32px;
     background: var(--border-subtle);
   }
 
@@ -454,7 +456,7 @@
     flex-wrap: wrap;
   }
 
-  /* Right Visual: Free-Form Spatial Point Cloud */
+  /* Right Visual: Free-Floating Point Cloud */
   .hero-visual {
     position: relative;
     width: 100%;
@@ -465,11 +467,11 @@
     justify-content: center;
   }
 
-  .pointcloud-wrap {
+  .pointcloud-viewport {
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 520px;
+    min-height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -480,41 +482,49 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    cursor: grab;
+    cursor: default;
   }
 
-  .pointcloud-caption {
+  .pointcloud-annotation {
     position: absolute;
-    bottom: 10px;
+    bottom: 8px;
     font-size: 0.625rem;
-    letter-spacing: 0.1em;
-    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
     pointer-events: none;
-    text-align: center;
-    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.8;
   }
 
-  /* Responsive */
+  .annotation-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--cyan);
+  }
+
   @media (max-width: 1024px) {
     .hero-container {
       grid-template-columns: 1fr;
-      gap: var(--space-10);
+      gap: var(--space-8);
     }
     .hero-visual {
-      min-height: 380px;
+      min-height: 360px;
     }
-    .pointcloud-wrap {
-      min-height: 420px;
+    .pointcloud-viewport {
+      min-height: 380px;
     }
   }
 
   @media (max-width: 640px) {
-    .hero-credentials {
+    .hero-milestones {
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-3);
     }
-    .cred-divider {
+    .milestone-divider {
       display: none;
     }
   }
