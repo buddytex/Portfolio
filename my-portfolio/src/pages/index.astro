@@ -1,10 +1,12 @@
 ---
-// Home Page — Editorial Robotics Engineering Portfolio
+// Home Page — Dark Maximalist Robotics Engineering Portfolio
 // Naveen Shaji George · Autonomous Systems Engineer
 import Layout from '../layouts/Layout.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
+import EngineeringField from '../components/EngineeringField.astro';
 import ProjectIndex from '../components/ProjectIndex.astro';
+import PCBShowcase from '../components/PCBShowcase.astro';
 import SkillsEvidence from '../components/SkillsEvidence.astro';
 import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
@@ -12,26 +14,36 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout
-  title="Naveen Shaji George — Robotics & Autonomous Systems Engineer"
+  title="Naveen Shaji George — Robotics Engineer"
   description="Robotics engineer specializing in autonomous vehicles, 3D LiDAR perception, custom vehicle ECUs, isolated CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
 >
   <!-- Minimalist Editorial Navigation -->
   <Navigation />
 
+  <!-- Ambient Engineering Field (non-hero sections) -->
+  <EngineeringField />
+
   <main id="mainContent">
-    <!-- Hero: Oversized Typography + 1:1 Video Frame + Free LiDAR Canvas -->
+    <!-- Hero: Monumental Typography + Large Portrait + Dense Circuit Network -->
     <Hero />
 
     <!-- 01 // Selected Work: Interactive Editorial Entry Cards -->
     <ProjectIndex />
 
-    <!-- 02 // Skills & Evidence: Interactive Artifact Validation Inspector -->
+    <!-- 02 // Physical Hardware: Interactive 3D PCB Artifact Inspector -->
+    <section id="hardware" class="section hardware-section" aria-label="Physical PCB Engineering Showcase">
+      <div class="container">
+        <PCBShowcase />
+      </div>
+    </section>
+
+    <!-- 03 // Skills & Evidence: Interactive Artifact Validation Inspector -->
     <SkillsEvidence />
 
-    <!-- 03 // About: Engineering Perspective, Academic Foundation & Chronology -->
+    <!-- 04 // About: Engineering Perspective, Academic Foundation & Chronology -->
     <About />
 
-    <!-- 04 // Contact: Direct Communication & Verified Channels -->
+    <!-- 05 // Contact: Direct Communication & Verified Channels -->
     <Contact />
   </main>
 

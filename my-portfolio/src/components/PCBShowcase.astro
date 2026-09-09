@@ -1,0 +1,989 @@
+---
+// PCBShowcase Component — Physical Engineering Artifact Inspector
+// Interactive 3D Perspective Tilt, Horizontally Swipable/Draggable Boards,
+// Test-Point Telemetry Inspection, and Deep Hardware Rationale
+// Performance: Pure CSS/SVG vector graphics + Anime.js v4 transitions (No WebGL bloat)
+
+interface PCBArtifact {
+  id: string;
+  name: string;
+  subsystem: string;
+  project: string;
+  projectId: string;
+  dimensions: string;
+  layerCount: string;
+  finish: string;
+  problemSolved: string;
+  designDecisions: string;
+  specs: { label: string; value: string }[];
+  testPoints: { id: string; x: number; y: number; label: string; desc: string }[];
+}
+
+const pcbArtifacts: PCBArtifact[] = [
+  {
+    id: 'vehicle-ecu',
+    name: 'Custom Multi-Layer Vehicle ECU',
+    subsystem: 'Steer-by-Wire & Isolated CAN Gateway',
+    project: 'Autonomous aBAJA Vehicle (AIR 7 & AIR 11)',
+    projectId: 'abaja',
+    dimensions: '120 mm × 85 mm',
+    layerCount: '4-Layer FR4 (1.6mm)',
+    finish: 'ENIG (Electroless Nickel Immersion Gold)',
+    problemSolved: 'Eliminated high-current electromagnetic interference (EMI) and 24V servo inductive kickback that caused logic microcontrollers to brown out during rapid full-lock steering on rough off-road terrain.',
+    designDecisions: 'Physically separated power and logic planes via optocoupled galvanic isolation. Routed differential CAN 2.0B traces with matched 120Ω split termination and common-mode TVS protection (SMBJ24CA).',
+    specs: [
+      { label: 'Layer Stackup', value: '4-Layer (Sig / GND / PWR / Sig)' },
+      { label: 'Isolation Barrier', value: '2.5 kV Galvanic Isolation' },
+      { label: 'Bus Standard', value: 'CAN 2.0B @ 500 kbps' },
+      { label: 'Connector Header', value: 'Automotive Deutsch DT04-12P' },
+      { label: 'Supply Input', value: '18V – 32V Transient Protected' },
+    ],
+    testPoints: [
+      { id: 'tp-iso', x: 50, y: 50, label: 'TP_ISO: Isolation Barrier', desc: 'Optical barrier separating 24V actuator ground from 3.3V logic.' },
+      { id: 'tp-can', x: 82, y: 28, label: 'TP_CAN: Differential Bus', desc: 'CAN_H/CAN_L differential pair terminated with 120Ω ±1% split network.' },
+      { id: 'tp-pwr', x: 22, y: 78, label: 'TP_PWR: Buck Regulator', desc: 'Automotive-grade step-down stage with LC filter generating quiet 5.0V/3.3V.' },
+      { id: 'tp-mcu', x: 38, y: 35, label: 'TP_MCU: Controller Core', desc: 'ARM Cortex M4 with hardware PWM timers and quadrature encoder ISRs.' },
+    ],
+  },
+  {
+    id: 'estop-interlock',
+    name: 'Fail-Safe Hardware E-Stop Interlock Board',
+    subsystem: 'Dual-Channel Emergency Power Severing',
+    project: 'Autonomous aBAJA Vehicle Safety Architecture',
+    projectId: 'abaja',
+    dimensions: '82 mm × 64 mm',
+    layerCount: '2-Layer 2oz Heavy Copper',
+    finish: 'Lead-Free HASL with Conformal Coating',
+    problemSolved: 'Prevented autonomous vehicle runaway in the event of trajectory software faults, communication link loss, or compute freeze during competition trials.',
+    designDecisions: 'Purely hardware-arbitrated dual-channel latching circuit requiring active manual reset. Operates completely independent of microcontroller firmware or software state with sub-5ms relay contact separation.',
+    specs: [
+      { label: 'Relay Configuration', value: 'Dual Form-C Normally Closed' },
+      { label: 'Response Latency', value: '< 5 ms Hardware Trip' },
+      { label: 'Current Rating', value: '40 A Continuous (80 A Peak)' },
+      { label: 'Trigger Channels', value: 'RF Wireless Link + Physical Cockpit Slap' },
+      { label: 'Interlock Logic', value: 'Hardware SCR Latching Relay' },
+    ],
+    testPoints: [
+      { id: 'tp-relay', x: 68, y: 48, label: 'TP_RELAY: Safety Contacts', desc: 'Dual redundant relay contacts switching the high-current battery line.' },
+      { id: 'tp-trip', x: 32, y: 30, label: 'TP_TRIP: Latch Trigger', desc: 'Hardware latch trigger input with optocoupled RC noise debounce.' },
+      { id: 'tp-stat', x: 45, y: 75, label: 'TP_STAT: Telemetry Out', desc: 'Isolated dry-contact feedback to ROS 2 logger indicating safety state.' },
+    ],
+  },
+  {
+    id: 'swarm-node',
+    name: 'Swarm Robotics Mesh & Motor Node',
+    subsystem: 'Distributed Agent Compute & Motor Driver',
+    project: 'Swarm Robotics Platform',
+    projectId: 'swarm-robotics',
+    dimensions: '62 mm × 62 mm',
+    layerCount: '2-Layer FR4 Standard',
+    finish: 'ENIG Gold',
+    problemSolved: 'Packaged dual-core compute, ad-hoc wireless mesh communications, dual H-bridge motor drivers, and 4-channel proximity sensing into a compact mobile agent footprint.',
+    designDecisions: 'Dedicated Core 0 to real-time closed-loop encoder PID and Core 1 to peer-to-peer TCP/IP mesh consensus broadcasts, eliminating latency jitter.',
+    specs: [
+      { label: 'Microcontroller', value: 'Dual-Core ESP32 @ 240 MHz' },
+      { label: 'Motor Drivers', value: 'Dual Integrated Full H-Bridge' },
+      { label: 'RF Interface', value: '2.4 GHz 802.11 b/g/n Mesh' },
+      { label: 'Sensor Headers', value: '4x Time-of-Flight / Proximity' },
+      { label: 'Battery Management', value: 'Single-Cell LiPo Charger & Protection' },
+    ],
+    testPoints: [
+      { id: 'tp-rf', x: 75, y: 22, label: 'TP_RF: Mesh Antenna Trace', desc: 'Pi-matched ceramic inverted-F antenna tuned for 2.4GHz ad-hoc broadcasts.' },
+      { id: 'tp-drv', x: 50, y: 65, label: 'TP_DRV: Dual H-Bridge', desc: 'PWM motor driver outputs with integrated flyback diode protection.' },
+      { id: 'tp-bms', x: 25, y: 42, label: 'TP_BMS: Power Supply Rail', desc: '3.7V LiPo battery management and low-dropout 3.3V linear regulator.' },
+    ],
+  },
+];
+---
+
+<div class="pcb-showcase-container" id="pcbShowcase">
+  <!-- Top Navigation & Artifact Index -->
+  <div class="pcb-header-bar">
+    <div class="pcb-header-left">
+      <span class="pcb-tag mono">[ HARDWARE ARTIFACT INSPECTOR ]</span>
+      <h3 class="pcb-heading">Physical PCB Engineering Showcase</h3>
+    </div>
+
+    <!-- Carousel Controls -->
+    <div class="pcb-nav-controls">
+      <div class="pcb-dots" role="tablist" aria-label="PCB Board Artifacts">
+        {pcbArtifacts.map((board, idx) => (
+          <button
+            class:list={['pcb-dot-btn', { active: idx === 0 }]}
+            id={`pcbDot-${board.id}`}
+            data-index={idx}
+            role="tab"
+            aria-selected={idx === 0 ? "true" : "false"}
+            aria-label={`Select ${board.name}`}
+          >
+            <span class="dot-pip"></span>
+            <span class="dot-label mono">BOARD 0{idx + 1}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="pcb-arrows">
+        <button id="pcbPrevBtn" class="pcb-arrow-btn" aria-label="Previous PCB Board">
+          <span aria-hidden="true">←</span>
+        </button>
+        <button id="pcbNextBtn" class="pcb-arrow-btn" aria-label="Next PCB Board">
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage: Two-Column Interactive Stage (3D Perspective Left, Telemetry Right) -->
+  <div class="pcb-stage-grid">
+    <!-- Left Column: Interactive 3D Artifact Viewport -->
+    <div class="pcb-viewport-wrap" id="pcbViewportWrap">
+      <div class="pcb-perspective-stage" id="pcbStage">
+        <!-- Physical Board Object -->
+        <div class="pcb-board-object" id="pcbBoardObject">
+          <!-- PCB Solder Mask Canvas (Matte Dark Substrate with ENIG Gold and Traces) -->
+          <svg class="pcb-substrate-svg" viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Board Base Plate -->
+            <rect x="10" y="10" width="460" height="320" rx="14" fill="#141E18" stroke="#2D4A38" stroke-width="2.5" />
+            
+            <!-- Mounting Holes (Plated Through-Hole Gold) -->
+            <circle cx="28" cy="28" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
+            <circle cx="452" cy="28" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
+            <circle cx="28" cy="312" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
+            <circle cx="452" cy="312" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
+
+            <!-- Copper Ground Plane Hash & Traces -->
+            <g stroke="#264433" stroke-width="1.2" stroke-linecap="round" opacity="0.8">
+              <path d="M40 70 L140 70 L180 110 L240 110 L260 90 L340 90 L380 130 L440 130" />
+              <path d="M40 150 L120 150 L160 190 L220 190 L250 160 L320 160 L360 200 L440 200" />
+              <path d="M40 230 L100 230 L140 270 L280 270 L310 240 L440 240" />
+              <path d="M90 30 L90 120 L130 160 L130 290" />
+              <path d="M210 30 L210 90 L250 130 L250 310" />
+              <path d="M370 30 L370 110 L330 150 L330 310" />
+            </g>
+
+            <!-- Differential CAN 2.0B Matched Pair (Bright Gold Traces) -->
+            <g stroke="#E5C158" stroke-width="1.8" stroke-linecap="round" opacity="0.95">
+              <path d="M360 40 L390 40 L410 60 L440 60" />
+              <path d="M360 46 L388 46 L408 66 L440 66" />
+            </g>
+
+            <!-- Isolation Barrier Boundary (Dotted Silkscreen) -->
+            <path d="M240 18 L240 322" stroke="#FFFFFF" stroke-dasharray="4 4" stroke-width="1.2" opacity="0.5" />
+
+            <!-- Silkscreen Markings & Component Footprints -->
+            <!-- IC1: Microcontroller QFP Package -->
+            <rect x="140" y="100" width="80" height="80" rx="4" fill="#0C140F" stroke="#E5C158" stroke-width="1.5" />
+            <circle cx="150" cy="110" r="3" fill="#E5C158" />
+            <text x="180" y="145" fill="#C5D1C8" font-size="10" font-family="monospace" text-anchor="middle" font-weight="bold">ARM_M4</text>
+            <text x="180" y="158" fill="#88998D" font-size="7" font-family="monospace" text-anchor="middle">STM32F405</text>
+
+            <!-- IC2: Isolated CAN Transceiver -->
+            <rect x="360" y="80" width="46" height="34" rx="3" fill="#0C140F" stroke="#E5C158" stroke-width="1.2" />
+            <text x="383" y="100" fill="#E5C158" font-size="8" font-family="monospace" text-anchor="middle">ISO1050</text>
+
+            <!-- Power Stage & DC-DC Module -->
+            <rect x="40" y="190" width="70" height="50" rx="4" fill="#0C140F" stroke="#FFFFFF" stroke-width="1.2" opacity="0.8" />
+            <text x="75" y="218" fill="#FFFFFF" font-size="8" font-family="monospace" text-anchor="middle" opacity="0.9">DC-DC 24V/5V</text>
+
+            <!-- Terminal Header J1 (Deutsch Automotive Pin Header) -->
+            <rect x="424" y="90" width="26" height="120" rx="3" fill="#1B1E1C" stroke="#D4AF37" stroke-width="1.5" />
+            <g fill="#D4AF37">
+              <circle cx="437" cy="106" r="3.5" />
+              <circle cx="437" cy="126" r="3.5" />
+              <circle cx="437" cy="146" r="3.5" />
+              <circle cx="437" cy="166" r="3.5" />
+              <circle cx="437" cy="186" r="3.5" />
+            </g>
+
+            <!-- Silkscreen Text Labels -->
+            <text x="30" y="52" fill="#E4EFE8" font-size="9" font-family="monospace" font-weight="bold" opacity="0.85">EQUINOX_ECU_V2.2</text>
+            <text x="246" y="32" fill="#6EE7B7" font-size="7.5" font-family="monospace" opacity="0.75">GALVANIC ISOLATION BARRIER</text>
+            <text x="365" y="135" fill="#E4EFE8" font-size="7" font-family="monospace" opacity="0.7">120R SPLIT_TERM</text>
+          </svg>
+
+          <!-- Interactive Test-Point Pins Overlay -->
+          <div class="test-points-layer" id="testPointsLayer">
+            {pcbArtifacts[0].testPoints.map((tp) => (
+              <button
+                class="tp-pin"
+                data-tp-id={tp.id}
+                style={`left: ${tp.x}%; top: ${tp.y}%;`}
+                aria-label={`Inspect ${tp.label}`}
+              >
+                <span class="tp-ping" aria-hidden="true"></span>
+                <span class="tp-core"></span>
+                <span class="tp-tooltip mono">{tp.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <!-- Specular Lighting Sheen Overlay (Dynamic Pointer Reflection) -->
+          <div class="pcb-sheen" id="pcbSheen" aria-hidden="true"></div>
+        </div>
+
+        <!-- 3D Hint Cue -->
+        <div class="perspective-hint mono" aria-hidden="true">
+          <span class="hint-glyph">⟲</span>
+          <span>INTERACTIVE PERSPECTIVE TILT · HOVER TEST POINTS TO INSPECT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Engineering Metadata & Problem Rationale -->
+    <div class="pcb-telemetry-panel" id="pcbTelemetryPanel" role="region" aria-live="polite">
+      {pcbArtifacts.map((board, idx) => (
+        <article
+          class:list={['pcb-details-card', { active: idx === 0 }]}
+          id={`pcbDetails-${board.id}`}
+          data-board-id={board.id}
+          hidden={idx !== 0}
+        >
+          <!-- Title & Subsystem -->
+          <div class="details-top">
+            <div class="badge-row">
+              <span class="subsystem-badge mono">{board.subsystem}</span>
+              <span class="layer-pill mono">{board.layerCount}</span>
+            </div>
+            <h4 class="board-title">{board.name}</h4>
+            <div class="project-association">
+              <span class="assoc-label mono">PROJECT:</span>
+              <a href={`/projects/${board.projectId}`} class="assoc-link mono">
+                <span>{board.project}</span>
+                <span class="assoc-arrow">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Technical Specs Table -->
+          <div class="specs-grid-section">
+            <span class="section-label mono">FABRICATION & ELECTRICAL PARAMETERS:</span>
+            <div class="specs-mini-table">
+              {board.specs.map((s) => (
+                <div class="spec-row">
+                  <span class="spec-k mono">{s.label}</span>
+                  <span class="spec-v mono">{s.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Physical Engineering Rationale -->
+          <div class="rationale-section">
+            <div class="rationale-block">
+              <div class="rationale-title mono">
+                <span class="dot-warn">●</span>
+                <span>PHYSICAL PROBLEM SOLVED</span>
+              </div>
+              <p class="rationale-text">{board.problemSolved}</p>
+            </div>
+
+            <div class="rationale-block">
+              <div class="rationale-title mono">
+                <span class="dot-accent">●</span>
+                <span>HARDWARE DESIGN DECISIONS &amp; TRADE-OFFS</span>
+              </div>
+              <p class="rationale-text">{board.designDecisions}</p>
+            </div>
+          </div>
+
+          <!-- Live Test Point Inspector Callout (Updated on TP hover) -->
+          <div class="live-tp-callout" id={`tpCallout-${board.id}`}>
+            <div class="tp-callout-header mono">
+              <span class="tp-icon">⌖</span>
+              <span id={`tpCalloutTitle-${board.id}`}>INSPECTION CALLOUT: HOVER PINS ON BOARD</span>
+            </div>
+            <p class="tp-callout-body" id={`tpCalloutDesc-${board.id}`}>
+              Click or hover any glowing gold test point on the physical PCB schematic to read electrical signal parameters and trace routing rationale.
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  import { animate, isReducedMotion } from '../lib/motion';
+
+  let currentBoardIdx = 0;
+  const boardsCount = 3;
+  const boardObject = document.getElementById('pcbBoardObject');
+  const stage = document.getElementById('pcbStage');
+  const sheen = document.getElementById('pcbSheen');
+  const dotBtns = document.querySelectorAll<HTMLButtonElement>('.pcb-dot-btn');
+  const detailCards = document.querySelectorAll<HTMLElement>('.pcb-details-card');
+  const prevBtn = document.getElementById('pcbPrevBtn');
+  const nextBtn = document.getElementById('pcbNextBtn');
+
+  // Switch Active Board
+  function setBoard(index: number) {
+    currentBoardIdx = (index + boardsCount) % boardsCount;
+
+    // Update Dots
+    dotBtns.forEach((dot, idx) => {
+      const isActive = idx === currentBoardIdx;
+      dot.classList.toggle('active', isActive);
+      dot.setAttribute('aria-selected', String(isActive));
+    });
+
+    // Update Cards with clean transition
+    detailCards.forEach((card, idx) => {
+      const isTarget = idx === currentBoardIdx;
+      if (isTarget) {
+        card.hidden = false;
+        card.classList.add('active');
+        animate(card, {
+          opacity: [0.35, 1],
+          y: [8, 0],
+          duration: 280,
+          ease: 'outExpo',
+        });
+      } else {
+        card.hidden = true;
+        card.classList.remove('active');
+      }
+    });
+
+    // Subtle Board Swap Animation
+    if (boardObject) {
+      animate(boardObject, {
+        scale: [0.96, 1],
+        opacity: [0.75, 1],
+        duration: 350,
+        ease: 'outExpo',
+      });
+    }
+  }
+
+  // Prev / Next Listeners
+  prevBtn?.addEventListener('click', () => setBoard(currentBoardIdx - 1));
+  nextBtn?.addEventListener('click', () => setBoard(currentBoardIdx + 1));
+
+  dotBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.index);
+      if (!isNaN(idx)) setBoard(idx);
+    });
+  });
+
+  // Keyboard navigation
+  stage?.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      setBoard(currentBoardIdx - 1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      setBoard(currentBoardIdx + 1);
+    }
+  });
+
+  // Dynamic 3D Drag & Orbital Tilt Interaction
+  if (stage && boardObject && !isReducedMotion()) {
+    const stageEl = stage;
+    const boardEl = boardObject;
+    let isDragging = false;
+    let dragStartX = 0;
+    let currentRotX = 0;
+    let currentRotY = 0;
+    let targetRotX = 0;
+    let targetRotY = 0;
+    let lastX = 0;
+    let lastY = 0;
+    let rafId: number | null = null;
+
+    function updateTransform() {
+      // Damped spring interpolation
+      currentRotX += (targetRotX - currentRotX) * 0.14;
+      currentRotY += (targetRotY - currentRotY) * 0.14;
+
+      boardEl.style.transform = `perspective(1100px) rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg) translateZ(${isDragging ? 24 : 12}px)`;
+
+      if (sheen) {
+        const px = 50 + currentRotY * 2.2;
+        const py = 50 - currentRotX * 2.2;
+        sheen.style.background = `radial-gradient(circle at ${Math.max(10, Math.min(90, px))}% ${Math.max(10, Math.min(90, py))}%, rgba(255, 255, 255, 0.16) 0%, transparent 65%)`;
+      }
+
+      if (Math.abs(targetRotX - currentRotX) > 0.05 || Math.abs(targetRotY - currentRotY) > 0.05 || isDragging) {
+        rafId = requestAnimationFrame(updateTransform);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function startDrag(clientX: number, clientY: number) {
+      isDragging = true;
+      dragStartX = clientX;
+      lastX = clientX;
+      lastY = clientY;
+      stageEl.style.cursor = 'grabbing';
+      if (!rafId) rafId = requestAnimationFrame(updateTransform);
+    }
+
+    function moveDrag(clientX: number, clientY: number) {
+      if (!isDragging) {
+        // Hover tilt when not dragging
+        const rect = stageEl.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        targetRotX = -((clientY - cy) / (rect.height / 2)) * 12;
+        targetRotY = ((clientX - cx) / (rect.width / 2)) * 15;
+      } else {
+        // Active drag rotation with responsive range
+        const dx = clientX - lastX;
+        const dy = clientY - lastY;
+        lastX = clientX;
+        lastY = clientY;
+        targetRotY += dx * 0.35;
+        targetRotX -= dy * 0.35;
+        // Clamp X tilt to realistic inspection bounds
+        targetRotX = Math.max(-28, Math.min(28, targetRotX));
+        targetRotY = Math.max(-45, Math.min(45, targetRotY));
+      }
+      if (!rafId) rafId = requestAnimationFrame(updateTransform);
+    }
+
+    function endDrag(clientX?: number) {
+      if (isDragging && clientX !== undefined) {
+        const totalDx = clientX - dragStartX;
+        if (Math.abs(totalDx) > 55) {
+          if (totalDx > 0) setBoard(currentBoardIdx - 1);
+          else setBoard(currentBoardIdx + 1);
+        }
+      }
+      isDragging = false;
+      stageEl.style.cursor = 'grab';
+      // Return to resting position gently
+      targetRotX = 0;
+      targetRotY = 0;
+      if (!rafId) rafId = requestAnimationFrame(updateTransform);
+    }
+
+    stage.addEventListener('mousedown', (e) => {
+      if ((e.target as HTMLElement).closest('.tp-pin') || (e.target as HTMLElement).closest('button')) return;
+      startDrag(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      moveDrag(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (isDragging) endDrag(e.clientX);
+    });
+
+    stage.addEventListener('mouseleave', () => {
+      if (!isDragging) {
+        targetRotX = 0;
+        targetRotY = 0;
+        if (!rafId) rafId = requestAnimationFrame(updateTransform);
+      }
+    });
+
+    // Touch support with swipe
+    stage.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      startDrag(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    stage.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      moveDrag(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (e) => {
+      const touch = e.changedTouches[0];
+      endDrag(touch.clientX);
+    }, { passive: true });
+  }
+
+  // Test Points Hover Inspection
+  const testPoints = document.querySelectorAll<HTMLButtonElement>('.tp-pin');
+  testPoints.forEach((pin) => {
+    pin.addEventListener('mouseenter', () => {
+      const activeCard = detailCards[currentBoardIdx];
+      if (!activeCard) return;
+      const boardId = activeCard.dataset.boardId;
+      const titleEl = document.getElementById(`tpCalloutTitle-${boardId}`);
+      const descEl = document.getElementById(`tpCalloutDesc-${boardId}`);
+
+      const tpId = pin.dataset.tpId;
+      if (tpId && titleEl && descEl) {
+        const tooltip = pin.querySelector('.tp-tooltip')?.textContent;
+        titleEl.textContent = `INSPECTING: ${tooltip || tpId}`;
+        descEl.textContent = `Verified test point active. Measuring signal impedance and transient protection parameters across this circuit node.`;
+      }
+    });
+  });
+</script>
+
+<style>
+  .pcb-showcase-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-resting);
+    margin-top: var(--space-6);
+  }
+
+  /* Header Bar */
+  .pcb-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-8);
+  }
+
+  .pcb-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .pcb-tag {
+    font-size: var(--text-2xs);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .pcb-heading {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  /* Controls */
+  .pcb-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .pcb-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pcb-dot-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 4px 10px;
+    background: var(--bg-pure);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-xs);
+    cursor: pointer;
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+  }
+
+  .pcb-dot-btn:hover {
+    border-color: var(--cyan);
+    color: var(--text-primary);
+  }
+
+  .pcb-dot-btn.active {
+    background: var(--cyan-light);
+    border-color: var(--cyan);
+    color: var(--cyan-dark);
+    font-weight: 700;
+  }
+
+  .dot-pip {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+
+  .pcb-dot-btn.active .dot-pip {
+    background: var(--cyan);
+  }
+
+  .pcb-arrows {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .pcb-arrow-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--r-sm);
+    background: var(--bg-pure);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+    transition: all 0.2s ease;
+  }
+
+  .pcb-arrow-btn:hover {
+    background: var(--surface);
+    border-color: var(--cyan);
+    color: var(--cyan-dark);
+  }
+
+  /* Stage Grid */
+  .pcb-stage-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  /* 3D Perspective Stage */
+  .pcb-viewport-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pcb-perspective-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.38 / 1;
+    perspective: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #1A2620 0%, #0F1612 85%);
+    border-radius: var(--r-md);
+    border: 1px solid #23352A;
+    overflow: hidden;
+    padding: var(--space-6);
+    cursor: grab;
+  }
+
+  .pcb-perspective-stage:active {
+    cursor: grabbing;
+  }
+
+  .pcb-board-object {
+    position: relative;
+    width: 90%;
+    height: 86%;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+    box-shadow:
+      0 24px 48px -12px rgba(0, 0, 0, 0.45),
+      0 4px 12px rgba(0, 0, 0, 0.25);
+    border-radius: 14px;
+  }
+
+  .pcb-substrate-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 14px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
+  }
+
+  .pcb-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    transition: background 0.1s linear;
+  }
+
+  /* Test Points Pins */
+  .test-points-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+  }
+
+  .tp-pin {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .tp-core {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #D4AF37;
+    border: 1.5px solid #FFFFFF;
+    box-shadow: 0 0 6px rgba(212, 175, 55, 0.9);
+    transition: transform 0.2s ease;
+  }
+
+  .tp-ping {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.4);
+    animation: tpPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes tpPulse {
+    0% { transform: scale(0.6); opacity: 1; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+  .tp-pin:hover .tp-core {
+    transform: scale(1.4);
+    background: #FFE082;
+  }
+
+  .tp-tooltip {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 23, 42, 0.92);
+    color: #F8FAFC;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .tp-pin:hover .tp-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-3px);
+  }
+
+  .perspective-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    color: #88998D;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+  }
+
+  /* Telemetry Panel (Right) */
+  .pcb-telemetry-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pcb-details-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .details-top {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .subsystem-badge {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    color: var(--cyan-dark);
+    letter-spacing: 0.04em;
+  }
+
+  .layer-pill {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    background: var(--bg-pure);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xs);
+    color: var(--text-muted);
+  }
+
+  .board-title {
+    font-size: clamp(1.3rem, 2vw, 1.65rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .project-association {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--text-xs);
+    margin-top: 2px;
+  }
+
+  .assoc-label {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+
+  .assoc-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    transition: color 0.2s ease;
+  }
+
+  .assoc-link:hover {
+    color: var(--cyan-dark);
+  }
+
+  .assoc-arrow {
+    color: var(--cyan);
+  }
+
+  /* Specs Grid */
+  .specs-grid-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .specs-mini-table {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-pure);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .spec-row:last-child {
+    border-bottom: none;
+  }
+
+  .spec-k {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .spec-v {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Rationale */
+  .rationale-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .rationale-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-4);
+    background: var(--bg-pure);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+  }
+
+  .rationale-title {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+
+  .dot-warn {
+    color: #D97706;
+  }
+
+  .dot-accent {
+    color: var(--cyan-dark);
+  }
+
+  .rationale-text {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  /* Live TP Callout */
+  .live-tp-callout {
+    padding: var(--space-4);
+    background: rgba(2, 132, 199, 0.04);
+    border: 1px solid rgba(2, 132, 199, 0.2);
+    border-radius: var(--r-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tp-callout-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--cyan-dark);
+    letter-spacing: 0.04em;
+  }
+
+  .tp-callout-body {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 960px) {
+    .pcb-stage-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

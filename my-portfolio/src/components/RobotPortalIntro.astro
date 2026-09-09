@@ -1,0 +1,136 @@
+---
+// RobotPortalIntro — Cinematic Portal Loading Transition
+// Minimal robot face (eyes + mouth) that reveals the actual website through portal openings
+// The eyes and mouth are transparent cutouts showing the real page underneath
+// No text, no hints, no interaction — pure visual sequence
+---
+
+<div id="robotPortalIntro" class="robot-portal-intro" aria-hidden="true">
+  <div class="portal-overlay" id="portalOverlay">
+    <svg class="robot-face" viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Background rect - this will be masked to show portals -->
+      <rect class="overlay-bg" x="0" y="0" width="320" height="200" fill="var(--portal-bg)" />
+      
+      <!-- LEFT EYE PORTAL - transparent cutout -->
+      <circle class="portal-cutout eye-portal left-eye-portal" cx="100" cy="85" r="28" fill="none" />
+      
+      <!-- RIGHT EYE PORTAL - transparent cutout -->
+      <circle class="portal-cutout eye-portal right-eye-portal" cx="220" cy="85" r="28" fill="none" />
+      
+      <!-- MOUTH PORTAL - transparent cutout (square with rounded corners) -->
+      <rect class="portal-cutout mouth-portal" x="110" y="130" width="100" height="100" rx="12" fill="none" />
+      
+      <!-- Eye pupils (visible on top of overlay) -->
+      <circle class="eye-pupil left-pupil" cx="100" cy="85" r="10" fill="var(--portal-fg)" />
+      <circle class="eye-pupil right-pupil" cx="220" cy="85" r="10" fill="var(--portal-fg)" />
+      
+      <!-- Eye glints -->
+      <circle class="eye-glint left-glint" cx="93" cy="78" r="3" fill="var(--portal-highlight)" opacity="0.9" />
+      <circle class="eye-glint right-glint" cx="213" cy="78" r="3" fill="var(--portal-highlight)" opacity="0.9" />
+    </svg>
+  </div>
+</div>
+
+<script>
+  // Initialize the portal intro animation
+  import { initRobotPortalIntro } from '../lib/animations/robotPortal';
+
+  // Check if this is a repeat visit in the same session
+  const hasSeenIntro = sessionStorage.getItem('robotPortalSeen');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  // Skip intro if reduced motion or repeat visit
+  if (!prefersReduced && !hasSeenIntro) {
+    initRobotPortalIntro();
+  } else {
+    // Immediately remove the overlay if skipping
+    const overlay = document.getElementById('robotPortalIntro');
+    if (overlay) overlay.remove();
+  }
+</script>
+
+<style>
+  .robot-portal-intro {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10000;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .portal-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Mask with portal cutouts - the cutouts reveal the page underneath */
+    -webkit-mask: 
+      radial-gradient(circle at calc(50% - 12vw) 42.5%, transparent 2.5%, #000 3.5%),
+      radial-gradient(circle at calc(50% + 12vw) 42.5%, transparent 2.5%, #000 3.5%),
+      radial-gradient(rounded-rectangle at 50% 65%, transparent 7.8%, #000 9.5%);
+    mask: 
+      radial-gradient(circle at calc(50% - 12vw) 42.5%, transparent 2.5%, #000 3.5%),
+      radial-gradient(circle at calc(50% + 12vw) 42.5%, transparent 2.5%, #000 3.5%),
+      radial-gradient(rounded-rectangle at 50% 65%, transparent 7.8%, #000 9.5%);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    background: var(--portal-bg);
+    will-change: transform, opacity;
+  }
+
+  .robot-face {
+    width: clamp(280px, 50vw, 400px);
+    height: auto;
+    transform-origin: center center;
+    will-change: transform, opacity;
+  }
+
+  .overlay-bg {
+    /* Filled by mask */
+  }
+
+  .portal-cutout {
+    /* These are the transparent holes in the mask */
+  }
+
+  .eye-pupil {
+    transform-origin: center;
+    will-change: cx, cy;
+  }
+
+  .eye-glint {
+    transform-origin: center;
+    will-change: cx, cy;
+  }
+
+  .mouth-portal {
+    transform-origin: center;
+    will-change: width, height, x, y, rx;
+  }
+
+  /* Reduced motion - hide immediately */
+  @media (prefers-reduced-motion: reduce) {
+    .robot-portal-intro {
+      display: none !important;
+    }
+  }
+
+  /* Mobile responsive mask positions */
+  @media (max-width: 768px) {
+    .portal-overlay {
+      -webkit-mask: 
+        radial-gradient(circle at calc(50% - 15vw) 40%, transparent 3%, #000 4%),
+        radial-gradient(circle at calc(50% + 15vw) 40%, transparent 3%, #000 4%),
+        radial-gradient(rounded-rectangle at 50% 70%, transparent 10%, #000 12%);
+      mask: 
+        radial-gradient(circle at calc(50% - 15vw) 40%, transparent 3%, #000 4%),
+        radial-gradient(circle at calc(50% + 15vw) 40%, transparent 3%, #000 4%),
+        radial-gradient(rounded-rectangle at 50% 70%, transparent 10%, #000 12%);
+    }
+  }
+</style>

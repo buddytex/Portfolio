@@ -1,0 +1,610 @@
+---
+// Complete Project Archive: /projects
+// Naveen Shaji George · Robotics & Autonomous Systems Engineer
+// Unified single source of truth consuming src/data/projects.ts
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+import { projects } from '../../data/projects';
+
+const filterCategories = [
+  { id: 'all', label: 'ALL SYSTEMS', count: projects.length },
+  { id: 'autonomous', label: 'AUTONOMOUS VEHICLES', count: projects.filter(p => p.category === 'autonomous' || p.domain.includes('Autonomous')).length },
+  { id: 'robotics', label: 'ROBOTICS & SWARM', count: projects.filter(p => p.category === 'robotics' || p.domain.includes('Robotics')).length },
+  { id: 'vision', label: 'COMPUTER VISION', count: projects.filter(p => p.category === 'vision' || p.domain.includes('Vision')).length },
+  { id: 'embedded', label: 'EMBEDDED & CONTROL', count: projects.filter(p => p.category === 'embedded' || p.domain.includes('Embedded') || p.domain.includes('CAN')).length },
+];
+---
+
+<Layout
+  title="Complete Projects Archive — Naveen Shaji George"
+  description="Comprehensive technical archive of 8 verified robotics systems, autonomous vehicles, computer vision pipelines, custom automotive ECUs, and real-time embedded controllers."
+>
+  <Navigation />
+
+  <main class="archive-page" id="mainContent">
+    <!-- Archive Header -->
+    <header class="archive-header-section">
+      <div class="container">
+        <div class="archive-breadcrumb mono">
+          <a href="/" class="crumb-link">HOME</a>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-current">PROJECTS ARCHIVE</span>
+        </div>
+
+        <div class="archive-title-wrap">
+          <span class="archive-kicker mono">[ 08 VERIFIED REPOSITORY SYSTEMS ]</span>
+          <h1 class="archive-title">Complete Engineering Archive</h1>
+          <p class="archive-lead">
+            Physical autonomous competition platforms, distributed multi-agent swarm meshes, high-throughput edge vision,
+            and real-time closed-loop embedded microcontrollers. Every system verified against hardware constraints.
+          </p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar" role="tablist" aria-label="Filter Projects by Domain">
+          {filterCategories.map((cat, idx) => (
+            <button
+              class:list={['filter-chip mono', { active: idx === 0 }]}
+              data-filter={cat.id}
+              role="tab"
+              aria-selected={idx === 0 ? "true" : "false"}
+            >
+              <span class="filter-label">{cat.label}</span>
+              <span class="filter-count">[{cat.count}]</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <!-- Project List Grid -->
+    <section class="archive-grid-section">
+      <div class="container">
+        <div class="archive-grid" id="archiveGrid">
+          {projects.map((project) => (
+            <article
+              class="archive-card"
+              data-project-id={project.id}
+              data-category={project.category}
+              data-domain={project.domain.toLowerCase()}
+            >
+              <div class="card-topbar">
+                <div class="topbar-left">
+                  <span class="card-num mono">{project.index}</span>
+                  <span class="card-year mono">{project.year}</span>
+                </div>
+                <div class="topbar-right">
+                  {project.featured && (
+                    <span class="featured-badge mono">FEATURED</span>
+                  )}
+                  <span class="status-badge mono">{project.status}</span>
+                </div>
+              </div>
+
+              <!-- Content Body -->
+              <div class="card-body">
+                <span class="card-domain mono">{project.domain}</span>
+                <h2 class="card-title">
+                  <a href={`/projects/${project.id}`} class="title-link">
+                    {project.title}
+                  </a>
+                </h2>
+                <div class="card-subtitle mono">{project.subtitle}</div>
+                <p class="card-summary">{project.summary}</p>
+
+                <!-- Technical Metrics & Specifications -->
+                <div class="specs-block">
+                  <div class="spec-row">
+                    <span class="spec-label mono">ROLE:</span>
+                    <span class="spec-val">{project.role}</span>
+                  </div>
+                  <div class="spec-row">
+                    <span class="spec-label mono">KEY RESULT:</span>
+                    <span class="spec-val highlight">{project.keyResults[0]}</span>
+                  </div>
+                </div>
+
+                <!-- Hardware & Software Tags -->
+                <div class="tag-group">
+                  {project.softwareStack.slice(0, 3).map((tech) => (
+                    <span class="tag sw-tag mono">{tech}</span>
+                  ))}
+                  {project.hardwareStack.slice(0, 2).map((hw) => (
+                    <span class="tag hw-tag mono">{hw}</span>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Card Action Footer -->
+              <div class="card-footer">
+                <a href={`/projects/${project.id}`} class="inspect-btn">
+                  <span>INSPECT CASE STUDY</span>
+                  <span class="btn-arrow" aria-hidden="true">→</span>
+                </a>
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="github-link mono"
+                    aria-label={`View GitHub repository for ${project.title}`}
+                  >
+                    <span>CODE ↗</span>
+                  </a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- No Results Fallback -->
+        <div class="empty-filter-state" id="emptyFilterState" style="display: none;">
+          <span class="empty-icon mono">[ 00 ]</span>
+          <h3 class="empty-title">No projects match the selected domain filter.</h3>
+          <button class="reset-filter-btn mono" id="resetFilterBtn">RESET FILTERS</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { animate, stagger, isReducedMotion } from '../../lib/motion';
+
+  // Client-side domain filtering with Anime.js transitions
+  const filterChips = document.querySelectorAll<HTMLButtonElement>('.filter-chip');
+  const cards = document.querySelectorAll<HTMLElement>('.archive-card');
+  const emptyState = document.getElementById('emptyFilterState');
+
+  // Initial load stagger entrance
+  if (!isReducedMotion()) {
+    animate(cards, {
+      opacity: [0, 1],
+      translateY: [18, 0],
+      duration: 650,
+      delay: stagger(70),
+      ease: 'outExpo',
+    });
+  } else {
+    cards.forEach((c) => {
+      c.style.opacity = '1';
+      c.style.transform = 'none';
+    });
+  }
+
+  function applyFilter(filterId: string) {
+    let visibleCount = 0;
+    const cardsToReveal: HTMLElement[] = [];
+
+    cards.forEach((card) => {
+      const category = card.dataset.category || '';
+      const domain = card.dataset.domain || '';
+
+      let matches = false;
+      if (filterId === 'all') {
+        matches = true;
+      } else if (filterId === 'autonomous') {
+        matches = category === 'autonomous' || domain.includes('autonomous');
+      } else if (filterId === 'robotics') {
+        matches = category === 'robotics' || domain.includes('robotics') || domain.includes('swarm');
+      } else if (filterId === 'vision') {
+        matches = category === 'vision' || domain.includes('vision') || domain.includes('cctv') || domain.includes('yolo');
+      } else if (filterId === 'embedded') {
+        matches = category === 'embedded' || domain.includes('embedded') || domain.includes('can') || domain.includes('ecu') || domain.includes('esp');
+      }
+
+      if (matches) {
+        card.style.display = 'flex';
+        visibleCount++;
+        cardsToReveal.push(card);
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (!isReducedMotion() && cardsToReveal.length > 0) {
+      animate(cardsToReveal, {
+        opacity: [0, 1],
+        translateY: [12, 0],
+        duration: 400,
+        delay: stagger(40),
+        ease: 'outExpo',
+      });
+    }
+
+    if (emptyState) {
+      emptyState.style.display = visibleCount === 0 ? 'flex' : 'none';
+    }
+
+    filterChips.forEach((chip) => {
+      const isActive = chip.dataset.filter === filterId;
+      chip.classList.toggle('active', isActive);
+      chip.setAttribute('aria-selected', String(isActive));
+    });
+  }
+
+  filterChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const filterId = chip.dataset.filter;
+      if (filterId) applyFilter(filterId);
+    });
+  });
+
+  const resetBtn = document.getElementById('resetFilterBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => applyFilter('all'));
+  }
+</script>
+
+<style>
+  .archive-page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+  }
+
+  .archive-header-section {
+    padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-8);
+    border-bottom: 1px solid var(--border-subtle);
+    background: transparent;
+  }
+
+  .archive-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .crumb-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .crumb-link:hover {
+    color: var(--cyan);
+  }
+
+  .crumb-current {
+    color: var(--cyan-dark);
+    font-weight: 700;
+  }
+
+  .archive-kicker {
+    font-size: var(--text-2xs);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .archive-title {
+    font-size: clamp(2rem, 3.8vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin: var(--space-2) 0 var(--space-4);
+    line-height: 1.1;
+  }
+
+  .archive-lead {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    line-height: 1.65;
+    max-width: 780px;
+    margin-bottom: var(--space-8);
+  }
+
+  /* Filter Bar */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 6px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xs);
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+
+  .filter-chip:hover {
+    border-color: var(--cyan);
+    color: var(--text-primary);
+    background: var(--bg-pure);
+  }
+
+  .filter-chip.active {
+    background: var(--cyan-light);
+    border-color: var(--cyan);
+    color: var(--cyan-dark);
+    font-weight: 700;
+  }
+
+  .filter-count {
+    opacity: 0.7;
+  }
+
+  /* Grid */
+  .archive-grid-section {
+    padding: var(--space-12) 0 var(--section-pad);
+  }
+
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+
+  .archive-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--shadow-resting);
+    transition: transform var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out),
+                border-color var(--dur-norm) var(--ease-out);
+    overflow: hidden;
+  }
+
+  .archive-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--cyan);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .card-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-pure);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .card-num {
+    font-size: var(--text-xs);
+    font-weight: 800;
+    color: var(--cyan-dark);
+  }
+
+  .card-year {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .featured-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--cyan-dark);
+    background: var(--cyan-light);
+    border: 1px solid rgba(2, 132, 199, 0.2);
+    padding: 2px 7px;
+    border-radius: var(--r-xs);
+  }
+
+  .status-badge {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-subtle);
+    padding: 2px 7px;
+    border-radius: var(--r-xs);
+  }
+
+  .card-body {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    flex-grow: 1;
+  }
+
+  .card-domain {
+    font-size: 0.6875rem;
+    color: var(--cyan-dark);
+    letter-spacing: 0.04em;
+    font-weight: 600;
+  }
+
+  .card-title {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .title-link {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .title-link:hover {
+    color: var(--cyan);
+  }
+
+  .card-subtitle {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-top: -0.5rem;
+  }
+
+  .card-summary {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .specs-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-pure);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+  }
+
+  .spec-row {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.725rem;
+    line-height: 1.5;
+  }
+
+  .spec-label {
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .spec-val {
+    color: var(--text-secondary);
+  }
+
+  .spec-val.highlight {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .tag-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding-top: var(--space-1);
+  }
+
+  .tag {
+    font-size: 0.6875rem;
+    padding: 2px 8px;
+    border-radius: var(--r-xs);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .sw-tag {
+    background: var(--bg-pure);
+    color: var(--text-muted);
+  }
+
+  .hw-tag {
+    background: rgba(2, 132, 199, 0.04);
+    border-color: rgba(2, 132, 199, 0.18);
+    color: var(--cyan-dark);
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-pure);
+  }
+
+  .inspect-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .inspect-btn:hover {
+    color: var(--cyan);
+  }
+
+  .inspect-btn .btn-arrow {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  .inspect-btn:hover .btn-arrow {
+    transform: translateX(4px);
+  }
+
+  .github-link {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 2px 6px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-xs);
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+
+  .github-link:hover {
+    color: var(--text-primary);
+    border-color: var(--cyan);
+  }
+
+  /* Empty State */
+  .empty-filter-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-16) 0;
+    text-align: center;
+    gap: var(--space-4);
+  }
+
+  .empty-icon {
+    font-size: var(--text-xl);
+    color: var(--text-dim);
+  }
+
+  .empty-title {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+  }
+
+  .reset-filter-btn {
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xs);
+    font-size: var(--text-2xs);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  @media (max-width: 900px) {
+    .archive-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

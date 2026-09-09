@@ -1,24 +1,69 @@
 ---
-// SkillsEvidence Component — Interactive Competency & Artifact Validation Inspector
+// SkillsEvidence Component — Interactive Engineering Competency & Physical Validation Inspector
+// Features:
+// 1. Systems Architecture Pipeline showing interconnections across the robotics stack
+// 2. Interactive split-pane inspector: skill selector left, empirical evidence capsule right
+// 3. Smooth Anime.js transitions, zero continuous canvas loops, full keyboard accessibility
 import { skillsData } from '../data/skills';
+
+// System Architecture Pipeline stages connecting disciplines
+const systemPipeline = [
+  { id: 'pcb-design',            stage: '01', name: 'Physical Systems & ECUs',  sub: 'Custom Hardware & CAN' },
+  { id: 'lidar-perception',      stage: '02', name: 'Sensors & Perception',     sub: '2D/3D LiDAR & Vision' },
+  { id: 'ros2',                  stage: '03', name: 'Robotics Middleware',      sub: 'ROS 2 Humble DDS' },
+  { id: 'autonomous-navigation', stage: '04', name: 'Navigation & Costmaps',    sub: 'Nav2 & SLAM' },
+  { id: 'embedded-systems',      stage: '05', name: 'Real-Time Control',        sub: 'FreeRTOS & Actuation' },
+];
 ---
 
 <section id="skills" class="section skills-section">
-  <div class="container">
+  <div class="container-wide">
     <!-- Header -->
     <div class="section-header reveal">
-      <div class="header-tag mono">02 // SKILLS & VALIDATION EVIDENCE</div>
-      <h2 class="section-title">Technical Competencies<br/><span class="text-cyan">Backed by Physical Evidence</span></h2>
+      <span class="section-eyebrow">Skills &amp; Physical Evidence</span>
+      <h2 class="section-title">Engineering Competencies<br/><span class="accent">Validated by Real Systems</span></h2>
       <p class="section-lead">
         In robotics, claims without empirical validation mean nothing. Select any competency below to inspect
         actual hardware schematics, firmware architecture, design trade-offs, and deployed results.
       </p>
     </div>
 
+    <!-- Systems Architecture Pipeline Banner (Systems Thinking) -->
+    <div class="pipeline-container reveal">
+      <div class="pipeline-header">
+        <span class="pipeline-tag mono">ROBOTICS AUTONOMY STACK // INTERCONNECTED DISCIPLINES</span>
+        <span class="pipeline-hint mono">CLICK STAGE TO INSPECT EVIDENCE</span>
+      </div>
+      <div class="pipeline-flow" role="navigation" aria-label="Robotics Systems Architecture Pipeline">
+        {systemPipeline.map((step, idx) => (
+          <div class="pipeline-step-wrap">
+            <button
+              class:list={['pipeline-step-btn', { active: idx === 0 }]}
+              data-pipeline-target={step.id}
+              aria-label={`Jump to ${step.name}`}
+            >
+              <div class="step-top mono">
+                <span class="step-num">{step.stage}</span>
+                <span class="step-pip" aria-hidden="true"></span>
+              </div>
+              <div class="step-name">{step.name}</div>
+              <div class="step-sub mono">{step.sub}</div>
+            </button>
+            {idx < systemPipeline.length - 1 && (
+              <div class="step-connector" aria-hidden="true">
+                <span class="connector-line"></span>
+                <span class="connector-arrow">→</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+
     <!-- Main Interactive Layout: Skill Selector Left, Evidence Inspector Right -->
     <div class="skills-interactive-wrap reveal">
-      <!-- Left: Interactive Skill Pill List -->
-      <div class="skill-nav-list" role="tablist" aria-label="Engineering Competencies">
+      <!-- Left: Interactive Skill Selector List -->
+      <div class="skill-nav-list" role="tablist" aria-label="Engineering Competencies" id="skillTabList">
         {skillsData.map((skill, index) => (
           <button
             class:list={['skill-btn', { active: index === 0 }]}
@@ -26,26 +71,27 @@ import { skillsData } from '../data/skills';
             data-skill-id={skill.id}
             role="tab"
             aria-selected={index === 0 ? "true" : "false"}
-            aria-controls="evidencePanel"
+            aria-controls={`evidence-${skill.id}`}
+            tabindex={index === 0 ? 0 : -1}
           >
             <div class="skill-btn-top">
               <span class="skill-cat mono">{skill.category}</span>
               <span class="skill-index mono">0{index + 1}</span>
             </div>
             <div class="skill-btn-title">{skill.title}</div>
-            <span class="skill-arrow mono" aria-hidden="true">Inspect Evidence →</span>
+            <span class="skill-arrow" aria-hidden="true">Inspect evidence →</span>
           </button>
         ))}
       </div>
 
       <!-- Right: Live Evidence Inspector Panel -->
-      <div class="evidence-inspector-wrap" id="evidencePanel" role="tabpanel">
+      <div class="evidence-inspector-wrap" id="evidencePanel" role="region" aria-live="polite">
         <div class="inspector-card">
           <!-- Top bar -->
           <div class="inspector-topbar">
-            <div class="inspector-badge mono">
+            <div class="inspector-badge">
               <span class="badge-dot"></span>
-              <span>VERIFIED ENGINEERING EVIDENCE</span>
+              <span>Empirical Evidence Capsule</span>
             </div>
             <span class="inspector-counter mono" id="inspectorSkillIndex">01 / 07</span>
           </div>
@@ -57,6 +103,9 @@ import { skillsData } from '../data/skills';
                 class:list={['evidence-detail-group', { active: index === 0 }]}
                 id={`evidence-${skill.id}`}
                 data-skill={skill.id}
+                role="tabpanel"
+                aria-labelledby={`tab-${skill.id}`}
+                hidden={index !== 0}
               >
                 <div class="evidence-header">
                   <span class="evidence-cat mono">{skill.category}</span>
@@ -64,70 +113,218 @@ import { skillsData } from '../data/skills';
                   <p class="evidence-desc">{skill.shortDesc}</p>
                 </div>
 
-                <!-- Evidence Artifacts List -->
-                <div class="artifacts-list">
-                  {skill.evidenceItems.map((item, aIdx) => (
-                    <div class="artifact-card">
-                      <div class="artifact-top">
-                        <span class="artifact-tag mono">ARTIFACT 0{aIdx + 1}</span>
-                        <h4 class="artifact-name">{item.title}</h4>
+                {skill.id === 'pcb-design' ? (
+                  <div class="pcb-evidence-preview">
+                    <!-- Physical PCB Schematics & Layer Stackup Diagram -->
+                    <div class="skill-diagram-box" aria-label="Automotive Multi-Layer ECU Physical Architecture">
+                      <div class="diagram-top mono">
+                        <span class="diagram-tag">HARDWARE SCHEMATIC // 4-LAYER FR4 VEHICLE ECU</span>
+                        <span class="diagram-rate">2.5 kV ISOLATION · 120Ω SPLIT CAN 2.0B</span>
                       </div>
-                      <p class="artifact-desc">{item.description}</p>
+                      <svg viewBox="0 0 540 190" fill="none" class="diagram-svg" aria-hidden="true">
+                        <!-- 4-Layer Board Stackup Layers -->
+                        <rect x="25" y="18" width="490" height="26" rx="3" fill="#141E18" stroke="#D4AF37" stroke-width="1.5" />
+                        <text x="40" y="35" fill="#E5C158" font-size="8.5" font-family="monospace" font-weight="bold">L1: TOP SIGNAL / ENIG COPPER COMPONENT PADS</text>
 
-                      <!-- Specs Pills -->
-                      <div class="artifact-specs">
-                        <div class="specs-label mono">TECHNICAL SPECIFICATIONS</div>
-                        <div class="specs-tags">
-                          {item.specs.map((spec) => (
-                            <span class="tag">{spec}</span>
-                          ))}
-                        </div>
-                      </div>
+                        <rect x="25" y="52" width="490" height="20" rx="3" fill="#0C140F" stroke="#2D4A38" stroke-width="1" />
+                        <text x="40" y="66" fill="#6EE7B7" font-size="8" font-family="monospace">L2: INTERNAL SOLID GROUND RETURN PLANE (GND_PLANE)</text>
 
-                      <!-- Problem & Decisions Grid -->
-                      <div class="artifact-rationale-grid">
-                        <div class="rationale-box">
-                          <div class="rationale-label mono">PROBLEM SOLVED</div>
-                          <p class="rationale-text">{item.problemSolved}</p>
-                        </div>
-                        <div class="rationale-box">
-                          <div class="rationale-label mono">ENGINEERING DECISIONS</div>
-                          <p class="rationale-text">{item.designDecisions}</p>
-                        </div>
-                      </div>
+                        <rect x="25" y="80" width="490" height="20" rx="3" fill="#0C140F" stroke="#2D4A38" stroke-width="1" />
+                        <text x="40" y="94" fill="#38BDF8" font-size="8" font-family="monospace">L3: SPLIT POWER PLANE (24V HV MOTOR / 5V LOGIC)</text>
 
-                      <!-- Tools Used -->
-                      <div class="artifact-tools">
-                        <span class="tools-label mono">INSTRUMENTS & TOOLS:</span>
-                        <div class="tools-tags">
-                          {item.tools.map((tool) => (
-                            <span class="mono tool-tag">{tool}</span>
-                          ))}
-                        </div>
-                      </div>
+                        <rect x="25" y="108" width="490" height="26" rx="3" fill="#141E18" stroke="#D4AF37" stroke-width="1.5" />
+                        <text x="40" y="125" fill="#E5C158" font-size="8.5" font-family="monospace" font-weight="bold">L4: BOTTOM SIGNAL / CAN DIFFERENTIAL ROUTING</text>
+
+                        <!-- Plated Vias Stitching -->
+                        <line x1="475" y1="18" x2="475" y2="134" stroke="#D4AF37" stroke-width="2" stroke-dasharray="2 2" />
+                        <circle cx="475" cy="18" r="3" fill="#D4AF37" />
+                        <circle cx="475" cy="134" r="3" fill="#D4AF37" />
+                        <text x="465" y="156" fill="#94A3B8" font-size="7.5" font-family="monospace" text-anchor="middle">THERMAL VIAS</text>
+
+                        <!-- Galvanic Barrier -->
+                        <line x1="270" y1="10" x2="270" y2="142" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.75" />
+                        <text x="270" y="165" fill="#F87171" font-size="7.5" font-family="monospace" text-anchor="middle">OPTICAL GALVANIC ISOLATION BOUNDARY</text>
+                      </svg>
                     </div>
-                  ))}
-                </div>
 
-                <!-- Related Projects Links -->
-                <div class="related-projects-box">
-                  <span class="related-label mono">SYSTEMS UTILIZING THIS COMPETENCY:</span>
-                  <div class="related-links">
-                    {skill.relatedProjects.map((proj) => (
-                      <a href={`/projects/${proj.id}`} class="related-link-pill mono">
-                        <span>{proj.name}</span>
-                        <span class="pill-arrow">↗</span>
+                    <!-- Jump Button to 3D Stage -->
+                    <div class="pcb-jump-banner">
+                      <div class="jump-info">
+                        <span class="jump-kicker mono">3D HARDWARE VIEWPORT</span>
+                        <span class="jump-title">Interactive 3D PCB Artifact Inspector</span>
+                      </div>
+                      <a href="#hardware" class="jump-btn mono">
+                        <span>LAUNCH 3D PCB VIEWPORT ↑</span>
                       </a>
-                    ))}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <!-- Technical Schematic Diagram -->
+                    {skill.id === 'lidar-perception' && (
+                      <div class="skill-diagram-box" aria-label="LiDAR Polar Range Scan & Obstacle Clustering">
+                        <div class="diagram-top mono">
+                          <span class="diagram-tag">SENSOR PERCEPTION SCHEMATIC // 360° PLANAR LIDAR SCAN</span>
+                          <span class="diagram-rate">10 Hz SCAN RATE · 0.05m RESOLUTION</span>
+                        </div>
+                        <svg viewBox="0 0 540 220" fill="none" class="diagram-svg" aria-hidden="true">
+                          <!-- Range Rings -->
+                          <circle cx="270" cy="110" r="30" stroke="#2D4A38" stroke-width="1" stroke-dasharray="3 3" />
+                          <circle cx="270" cy="110" r="65" stroke="#2D4A38" stroke-width="1" stroke-dasharray="3 3" />
+                          <circle cx="270" cy="110" r="95" stroke="#2D4A38" stroke-width="1" />
+                          <text x="270" y="75" fill="#6EE7B7" font-size="7" font-family="monospace" text-anchor="middle">1.0 m</text>
+                          <text x="270" y="42" fill="#6EE7B7" font-size="7" font-family="monospace" text-anchor="middle">2.5 m</text>
+                          <text x="270" y="12" fill="#6EE7B7" font-size="7" font-family="monospace" text-anchor="middle">5.0 m RANGE</text>
+                          
+                          <!-- Sensor Origin -->
+                          <circle cx="270" cy="110" r="5" fill="#0EA5E9" />
+                          <path d="M270 110 L270 60" stroke="#0EA5E9" stroke-width="1.5" stroke-dasharray="2 2" />
+                          <polygon points="270,54 266,62 274,62" fill="#0EA5E9" />
+                          <text x="278" y="66" fill="#0EA5E9" font-size="8" font-family="monospace">HEADING</text>
 
-                <!-- Deep-Dive Link -->
-                <div class="evidence-footer-action">
-                  <a href={`/skills/${skill.id}`} class="btn btn-secondary mono">
-                    <span>Explore Full {skill.title} Evidence File ↗</span>
-                  </a>
-                </div>
+                          <!-- Detected Obstacle Point Cloud Cluster -->
+                          <g fill="#EF4444" opacity="0.9">
+                            <circle cx="330" cy="70" r="2.5" /><circle cx="335" cy="72" r="2.5" />
+                            <circle cx="340" cy="68" r="2.5" /><circle cx="332" cy="76" r="2.5" />
+                            <circle cx="338" cy="75" r="2.5" /><circle cx="344" cy="72" r="2.5" />
+                          </g>
+                          <!-- Obstacle Bounding Box -->
+                          <rect x="325" y="64" width="24" height="16" rx="2" fill="none" stroke="#EF4444" stroke-width="1" stroke-dasharray="2 2" />
+                          <text x="353" y="76" fill="#EF4444" font-size="7" font-family="monospace">OBSTACLE_01 [d=1.84m]</text>
+
+                          <!-- Clear Corridor Free-Space Rays -->
+                          <path d="M270 110 L190 40" stroke="#0EA5E9" stroke-width="0.75" opacity="0.4" />
+                          <path d="M270 110 L210 30" stroke="#0EA5E9" stroke-width="0.75" opacity="0.4" />
+                          <path d="M270 110 L240 25" stroke="#0EA5E9" stroke-width="0.75" opacity="0.4" />
+                          <path d="M270 110 L300 25" stroke="#0EA5E9" stroke-width="0.75" opacity="0.4" />
+                          <path d="M270 110 L150 110" stroke="#0EA5E9" stroke-width="0.75" opacity="0.4" />
+                          <path d="M270 110 L390 110" stroke="#0EA5E9" stroke-width="0.75" opacity="0.4" />
+                        </svg>
+                      </div>
+                    )}
+
+                    {skill.id === 'ros2' && (
+                      <div class="skill-diagram-box" aria-label="ROS 2 Humble Computational Node Graph">
+                        <div class="diagram-top mono">
+                          <span class="diagram-tag">ROS 2 HUMBLE ARCHITECTURE // COMPUTATIONAL GRAPH</span>
+                          <span class="diagram-rate">DDS CYCLONE · DETERMINISTIC LIFECYCLE</span>
+                        </div>
+                        <svg viewBox="0 0 540 180" fill="none" class="diagram-svg" aria-hidden="true">
+                          <!-- Nodes -->
+                          <rect x="20" y="40" width="110" height="36" rx="4" fill="#1C2420" stroke="#0EA5E9" stroke-width="1.2" />
+                          <text x="75" y="62" fill="#E2E8F0" font-size="9" font-family="monospace" text-anchor="middle">/lidar_driver</text>
+
+                          <rect x="20" y="110" width="110" height="36" rx="4" fill="#1C2420" stroke="#0EA5E9" stroke-width="1.2" />
+                          <text x="75" y="132" fill="#E2E8F0" font-size="9" font-family="monospace" text-anchor="middle">/wheel_encoder</text>
+
+                          <rect x="210" y="75" width="120" height="42" rx="4" fill="#1C2420" stroke="#10B981" stroke-width="1.5" />
+                          <text x="270" y="96" fill="#10B981" font-size="9" font-family="monospace" text-anchor="middle" font-weight="bold">/slam_toolbox</text>
+                          <text x="270" y="108" fill="#94A3B8" font-size="7" font-family="monospace" text-anchor="middle">EKF Pose Fusion</text>
+
+                          <rect x="400" y="75" width="120" height="42" rx="4" fill="#1C2420" stroke="#F59E0B" stroke-width="1.5" />
+                          <text x="460" y="96" fill="#F59E0B" font-size="9" font-family="monospace" text-anchor="middle" font-weight="bold">/nav2_controller</text>
+                          <text x="460" y="108" fill="#94A3B8" font-size="7" font-family="monospace" text-anchor="middle">cmd_vel Output</text>
+
+                          <!-- Connections -->
+                          <path d="M130 58 L170 58 L170 88 L210 88" stroke="#0EA5E9" stroke-width="1.2" />
+                          <text x="170" y="50" fill="#38BDF8" font-size="7" font-family="monospace">/scan [10Hz]</text>
+
+                          <path d="M130 128 L170 128 L170 102 L210 102" stroke="#0EA5E9" stroke-width="1.2" />
+                          <text x="170" y="140" fill="#38BDF8" font-size="7" font-family="monospace">/odom [50Hz]</text>
+
+                          <path d="M330 96 L400 96" stroke="#10B981" stroke-width="1.5" />
+                          <text x="365" y="88" fill="#6EE7B7" font-size="7" font-family="monospace" text-anchor="middle">/map_to_odom</text>
+                        </svg>
+                      </div>
+                    )}
+
+                    {skill.id === 'can-bus' && (
+                      <div class="skill-diagram-box" aria-label="CAN 2.0B Differential Bus Oscillogram">
+                        <div class="diagram-top mono">
+                          <span class="diagram-tag">CAN 2.0B DIFFERENTIAL SIGNAL // 500 KBPS BUS ARBITRATION</span>
+                          <span class="diagram-rate">V_DIFF = 2.0V · 120Ω SPLIT TERMINATION</span>
+                        </div>
+                        <svg viewBox="0 0 540 160" fill="none" class="diagram-svg" aria-hidden="true">
+                          <!-- Baseline voltage references -->
+                          <line x1="40" y1="40" x2="500" y2="40" stroke="#334155" stroke-width="0.75" stroke-dasharray="2 2" />
+                          <text x="35" y="44" fill="#64748B" font-size="8" font-family="monospace" text-anchor="end">3.5V (CAN_H)</text>
+
+                          <line x1="40" y1="80" x2="500" y2="80" stroke="#334155" stroke-width="0.75" stroke-dasharray="2 2" />
+                          <text x="35" y="84" fill="#64748B" font-size="8" font-family="monospace" text-anchor="end">2.5V (RECESSIVE)</text>
+
+                          <line x1="40" y1="120" x2="500" y2="120" stroke="#334155" stroke-width="0.75" stroke-dasharray="2 2" />
+                          <text x="35" y="124" fill="#64748B" font-size="8" font-family="monospace" text-anchor="end">1.5V (CAN_L)</text>
+
+                          <!-- Differential Waveform -->
+                          <!-- CAN_H (Yellow) -->
+                          <path d="M50 80 L90 80 L90 40 L150 40 L150 80 L200 80 L200 40 L280 40 L280 80 L350 80 L350 40 L440 40 L440 80 L490 80" stroke="#EAB308" stroke-width="2" stroke-linejoin="round" />
+                          <!-- CAN_L (Cyan) -->
+                          <path d="M50 80 L90 80 L90 120 L150 120 L150 80 L200 80 L200 120 L280 120 L280 80 L350 80 L350 120 L440 120 L440 80 L490 80" stroke="#06B6D4" stroke-width="2" stroke-linejoin="round" />
+
+                          <!-- Frame Label -->
+                          <rect x="200" y="10" width="80" height="20" rx="3" fill="#1E293B" stroke="#0EA5E9" stroke-width="1" />
+                          <text x="240" y="24" fill="#38BDF8" font-size="8" font-family="monospace" text-anchor="middle">ID: 0x100 [STEER]</text>
+                        </svg>
+                      </div>
+                    )}
+
+                    <!-- Primary Artifact Block -->
+                    {skill.evidenceItems.map((item) => (
+                      <div class="artifact-card">
+                        <div class="artifact-top">
+                          <span class="artifact-tag mono">Verified Artifact &amp; Engineering Decisions</span>
+                          <h4 class="artifact-name">{item.title}</h4>
+                        </div>
+                        <p class="artifact-desc">{item.description}</p>
+
+                        <div class="artifact-specs">
+                          <div class="specs-label mono">Technical Specifications &amp; Parameters:</div>
+                          <div class="specs-tags">
+                            {item.specs.map((spec) => (
+                              <span class="tag spec-tag">{spec}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div class="artifact-rationale-grid">
+                          <div class="rationale-box">
+                            <div class="rationale-label mono">Physical Problem Solved</div>
+                            <p class="rationale-text">{item.problemSolved}</p>
+                          </div>
+                          <div class="rationale-box">
+                            <div class="rationale-label mono">Engineering Decisions &amp; Trade-offs</div>
+                            <p class="rationale-text">{item.designDecisions}</p>
+                          </div>
+                        </div>
+
+                        <div class="artifact-tools">
+                          <span class="tools-label mono">Verified Instruments &amp; Tools:</span>
+                          <div class="tools-tags">
+                            {item.tools.map((tool) => (
+                              <span class="mono tool-tag">{tool}</span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                <!-- Deployed Systems Utilizing this Competency -->
+                {skill.relatedProjects && skill.relatedProjects.length > 0 && (
+                  <div class="evidence-related-systems">
+                    <span class="related-label mono">DEPLOYED SYSTEMS DEMONSTRATING THIS COMPETENCY:</span>
+                    <div class="related-projects-row">
+                      {skill.relatedProjects.map((proj) => (
+                        <a href={`/projects/${proj.id}`} class="related-proj-pill">
+                          <span class="proj-pip"></span>
+                          <span class="proj-name">{proj.name}</span>
+                          <span class="proj-arrow">→</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -138,180 +335,321 @@ import { skillsData } from '../data/skills';
 </section>
 
 <script>
-  // Interactive Skill Evidence Switcher
-  const skillButtons = document.querySelectorAll('.skill-btn');
-  const detailGroups = document.querySelectorAll('.evidence-detail-group');
-  const indexDisplay = document.getElementById('inspectorSkillIndex');
-  const inspectorPanel = document.getElementById('evidencePanel');
+  import { animate } from '../lib/motion';
 
-  skillButtons.forEach((btn, idx) => {
-    btn.addEventListener('click', () => {
-      const skillId = btn.getAttribute('data-skill-id');
+  const skillTabs = document.querySelectorAll<HTMLButtonElement>('.skill-btn');
+  const evidenceGroups = document.querySelectorAll<HTMLElement>('.evidence-detail-group');
+  const pipelineBtns = document.querySelectorAll<HTMLButtonElement>('.pipeline-step-btn');
+  const counter = document.getElementById('inspectorSkillIndex');
 
-      // Update button active state
-      skillButtons.forEach((b) => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-
-      // Update detail group active state
-      detailGroups.forEach((dg) => {
-        dg.classList.remove('active');
-      });
-
-      const target = document.getElementById(`evidence-${skillId}`);
-      if (target) {
-        target.classList.add('active');
-      }
-
-      if (indexDisplay) {
-        indexDisplay.textContent = `0${idx + 1} / 0${skillButtons.length}`;
-      }
-
-      // Subtle smooth transition
-      if (inspectorPanel) {
-        inspectorPanel.style.opacity = '0.7';
-        setTimeout(() => {
-          inspectorPanel.style.opacity = '1';
-        }, 60);
+  function selectSkill(skillId: string) {
+    // Update tabs
+    skillTabs.forEach((tab, idx) => {
+      const isTarget = tab.dataset.skillId === skillId;
+      tab.classList.toggle('active', isTarget);
+      tab.setAttribute('aria-selected', String(isTarget));
+      tab.setAttribute('tabindex', isTarget ? '0' : '-1');
+      if (isTarget && counter) {
+        counter.textContent = `0${idx + 1} / 07`;
       }
     });
+
+    // Update pipeline buttons
+    pipelineBtns.forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.pipelineTarget === skillId);
+    });
+
+    // Animate evidence group into view
+    evidenceGroups.forEach((group) => {
+      const isTarget = group.dataset.skill === skillId;
+      if (isTarget) {
+        group.hidden = false;
+        group.classList.add('active');
+        animate(group, {
+          opacity: [0.35, 1],
+          y: [6, 0],
+          duration: 260,
+          ease: 'outExpo',
+        });
+      } else {
+        group.hidden = true;
+        group.classList.remove('active');
+      }
+    });
+  }
+
+  // Click on skill tabs
+  skillTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const skillId = tab.dataset.skillId;
+      if (skillId) selectSkill(skillId);
+    });
   });
+
+  // Click on systems pipeline nodes
+  pipelineBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.pipelineTarget;
+      if (target) selectSkill(target);
+    });
+  });
+
+  // Keyboard navigation for tablist (ArrowUp, ArrowDown, Home, End)
+  const tabList = document.getElementById('skillTabList');
+  if (tabList) {
+    tabList.addEventListener('keydown', (e: KeyboardEvent) => {
+      const tabs = Array.from(skillTabs);
+      const currentIdx = tabs.findIndex(t => t.classList.contains('active'));
+      let nextIdx = -1;
+
+      if (e.key === 'ArrowDown') {
+        nextIdx = (currentIdx + 1) % tabs.length;
+      } else if (e.key === 'ArrowUp') {
+        nextIdx = (currentIdx - 1 + tabs.length) % tabs.length;
+      } else if (e.key === 'Home') {
+        nextIdx = 0;
+      } else if (e.key === 'End') {
+        nextIdx = tabs.length - 1;
+      }
+
+      if (nextIdx !== -1) {
+        e.preventDefault();
+        const nextTab = tabs[nextIdx];
+        nextTab.focus();
+        const targetId = nextTab.dataset.skillId;
+        if (targetId) selectSkill(targetId);
+      }
+    });
+  }
 </script>
 
 <style>
   .skills-section {
-    background: var(--bg);
-    border-top: 1px solid var(--border-subtle);
+    padding: var(--section-pad) 0;
+    position: relative;
+    background: transparent;
   }
 
-  .header-tag {
+  /* ==========================================================
+     SYSTEMS ARCHITECTURE PIPELINE BANNER
+     ========================================================== */
+  .pipeline-container {
+    margin-bottom: var(--space-8);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-resting);
+  }
+
+  .pipeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pipeline-tag {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    color: var(--cyan-dark);
+    letter-spacing: 0.08em;
+  }
+
+  .pipeline-hint {
+    font-size: var(--text-2xs);
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .pipeline-flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .pipeline-step-wrap {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .pipeline-step-btn {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg-pure);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+  }
+
+  .pipeline-step-btn:hover {
+    border-color: var(--cyan);
+    background: var(--surface);
+  }
+
+  .pipeline-step-btn.active {
+    background: var(--cyan-light);
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.12);
+  }
+
+  .step-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: var(--text-2xs);
     color: var(--text-muted);
-    letter-spacing: 0.1em;
     font-weight: 600;
-    margin-bottom: var(--space-3);
   }
 
-  /* Interactive Layout Grid */
+  .step-pip {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    transition: background 0.2s ease;
+  }
+
+  .pipeline-step-btn.active .step-pip {
+    background: var(--cyan);
+  }
+
+  .step-name {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .step-sub {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+  }
+
+  .step-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5rem;
+    color: var(--text-dim);
+    font-size: var(--text-sm);
+    flex-shrink: 0;
+  }
+
+  /* ==========================================================
+     INTERACTIVE SPLIT-PANE LAYOUT
+     ========================================================== */
   .skills-interactive-wrap {
     display: grid;
-    grid-template-columns: 0.85fr 1.15fr;
-    gap: var(--space-8);
+    grid-template-columns: 360px 1fr;
+    gap: var(--space-10);
     align-items: start;
-    margin-top: var(--space-6);
   }
 
-  /* Left: Skill Nav List */
+  /* Left: Nav list */
   .skill-nav-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 
   .skill-btn {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    padding: var(--space-5) var(--space-6);
+    gap: 4px;
+    padding: var(--space-4) var(--space-5);
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
-    text-align: left;
-    width: 100%;
     cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    transition: all var(--dur-fast) var(--ease-out);
+    text-align: left;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-resting);
   }
 
   .skill-btn:hover {
-    border-color: var(--border-strong);
-    background: var(--surface-dim);
+    border-color: var(--cyan);
     transform: translateX(3px);
   }
 
   .skill-btn.active {
     border-color: var(--cyan);
-    background: var(--surface);
-    box-shadow: 0 0 0 1px var(--cyan), 0 4px 14px rgba(14, 165, 233, 0.08);
+    background: #FFFFFF;
+    box-shadow: var(--shadow-hover);
+    border-left: 3px solid var(--cyan);
   }
 
   .skill-btn-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-  }
-
-  .skill-cat {
     font-size: var(--text-2xs);
     color: var(--text-muted);
-    letter-spacing: 0.06em;
-  }
-
-  .skill-index {
-    font-size: var(--text-2xs);
-    font-weight: 700;
-    color: var(--text-dim);
-  }
-
-  .skill-btn.active .skill-index {
-    color: var(--cyan-dark);
   }
 
   .skill-btn-title {
-    font-size: var(--text-base);
-    font-weight: 800;
+    font-size: var(--text-sm);
+    font-weight: 700;
     color: var(--text-primary);
-    letter-spacing: -0.01em;
   }
 
   .skill-arrow {
-    font-size: var(--text-2xs);
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-    margin-top: 2px;
-    transition: color var(--dur-fast) var(--ease-out);
+    font-size: 0.7rem;
+    color: var(--cyan-dark);
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.2s ease;
   }
 
   .skill-btn:hover .skill-arrow,
   .skill-btn.active .skill-arrow {
-    color: var(--cyan-dark);
+    opacity: 1;
+    transform: translateX(0);
   }
 
-  /* Right: Evidence Inspector */
+  /* Right: Evidence Inspector Panel */
   .evidence-inspector-wrap {
-    position: sticky;
-    top: calc(var(--nav-height) + 20px);
-    transition: opacity var(--dur-fast) var(--ease-out);
+    position: relative;
   }
 
   .inspector-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    overflow: hidden;
+    padding: var(--space-10);
+    box-shadow: var(--shadow-hover);
   }
 
   .inspector-topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background: var(--surface-dim);
+    padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-6);
   }
 
   .inspector-badge {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: var(--text-2xs);
-    color: var(--cyan-dark);
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    gap: 0.5rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--text-muted);
   }
 
   .badge-dot {
@@ -319,240 +657,333 @@ import { skillsData } from '../data/skills';
     height: 6px;
     border-radius: 50%;
     background: var(--cyan);
-    box-shadow: 0 0 6px var(--cyan-glow);
   }
 
   .inspector-counter {
-    font-size: var(--text-2xs);
-    color: var(--text-muted);
+    font-size: var(--text-xs);
+    color: var(--text-dim);
   }
 
-  .inspector-content {
-    padding: var(--space-8);
-  }
-
-  .evidence-detail-group {
-    display: none;
-    flex-direction: column;
-    gap: var(--space-6);
-  }
-
-  .evidence-detail-group.active {
-    display: flex;
-    animation: fadeIn 0.3s var(--ease-out);
-  }
-
+  /* Evidence details */
   .evidence-header {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid var(--border-subtle);
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
   }
 
   .evidence-cat {
+    font-size: var(--text-xs);
+    color: var(--cyan-dark);
+    font-weight: 600;
+  }
+
+  .evidence-title {
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+  }
+
+  .evidence-desc {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Artifact Card */
+  .artifact-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    background: var(--bg-pure);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .artifact-tag {
     font-size: var(--text-2xs);
     color: var(--cyan-dark);
     font-weight: 700;
     letter-spacing: 0.06em;
   }
 
-  .evidence-title {
-    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
-    font-weight: 900;
+  .artifact-name {
+    font-size: var(--text-lg);
+    font-weight: 800;
     color: var(--text-primary);
-    letter-spacing: -0.02em;
-  }
-
-  .evidence-desc {
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
-    line-height: 1.6;
     margin-top: 2px;
   }
 
-  /* Artifacts */
-  .artifacts-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-  }
-
-  .artifact-card {
-    background: var(--surface-dim);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--r-sm);
-    padding: var(--space-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-
-  .artifact-top {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .artifact-tag {
-    font-size: 0.625rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    font-weight: 700;
-  }
-
-  .artifact-name {
-    font-size: var(--text-base);
-    color: var(--text-primary);
-    font-weight: 800;
-  }
-
   .artifact-desc {
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
     color: var(--text-secondary);
-    line-height: 1.55;
+    line-height: 1.6;
   }
 
   .artifact-specs {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 0.5rem;
   }
 
   .specs-label {
-    font-size: 0.625rem;
+    font-size: var(--text-2xs);
     color: var(--text-muted);
-    letter-spacing: 0.08em;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   .specs-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 0.4rem;
   }
 
+  .spec-tag {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-xs);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* Rationale Grid */
   .artifact-rationale-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-4);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--border-subtle);
   }
 
   .rationale-box {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
+    padding: var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
   }
 
   .rationale-label {
-    font-size: 0.625rem;
-    color: var(--cyan-dark);
+    font-size: var(--text-2xs);
     font-weight: 700;
-    letter-spacing: 0.06em;
+    color: var(--text-muted);
   }
 
   .rationale-text {
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
+    line-height: 1.55;
     color: var(--text-body);
-    line-height: 1.5;
   }
 
+  /* Tools */
   .artifact-tools {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
     flex-wrap: wrap;
-    padding-top: var(--space-3);
+    gap: 0.5rem;
+    padding-top: var(--space-2);
     border-top: 1px solid var(--border-subtle);
   }
 
   .tools-label {
-    font-size: 0.625rem;
+    font-size: var(--text-2xs);
     color: var(--text-muted);
-    font-weight: 700;
   }
 
   .tools-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 0.4rem;
   }
 
   .tool-tag {
-    font-size: 0.625rem;
-    color: var(--text-secondary);
-    background: var(--surface);
-    border: 1px solid var(--border-subtle);
+    font-size: 0.7rem;
     padding: 2px 7px;
+    background: rgba(3, 105, 161, 0.08);
+    color: var(--cyan-dark);
     border-radius: var(--r-xs);
+    font-weight: 600;
   }
 
-  /* Related projects */
-  .related-projects-box {
+  /* Cross-links */
+  .evidence-related-systems {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: 0.6rem;
     padding-top: var(--space-4);
     border-top: 1px solid var(--border-subtle);
   }
 
   .related-label {
-    font-size: 0.625rem;
+    font-size: var(--text-2xs);
     color: var(--text-muted);
-    letter-spacing: 0.08em;
     font-weight: 700;
   }
 
-  .related-links {
+  .related-projects-row {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: 0.6rem;
   }
 
-  .related-link-pill {
+  .related-proj-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    background: var(--bg-pure);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    text-decoration: none;
     font-size: var(--text-xs);
     font-weight: 600;
     color: var(--text-primary);
-    background: var(--surface-dim);
+    transition: all 0.2s ease;
+  }
+
+  .related-proj-pill:hover {
+    border-color: var(--cyan);
+    background: var(--surface);
+    transform: translateY(-1px);
+  }
+
+  .proj-pip {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+  }
+
+  .proj-arrow {
+    color: var(--cyan-dark);
+    transition: transform 0.2s ease;
+  }
+
+  .related-proj-pill:hover .proj-arrow {
+    transform: translateX(2px);
+  }
+
+  /* Embedded PCB Showcase & Technical Diagram Boxes */
+  .pcb-embedded-showcase {
+    margin-bottom: var(--space-6);
+  }
+
+  .skill-diagram-box {
+    background: #0F1713;
+    border: 1px solid #1E2D24;
+    border-radius: var(--r-md);
+    padding: var(--space-5);
+    margin-bottom: var(--space-6);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .diagram-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-3);
+    border-bottom: 1px solid #1E2D24;
+  }
+
+  .diagram-tag {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.06em;
+  }
+
+  .diagram-rate {
+    font-size: 0.65rem;
+    color: #64748B;
+  }
+
+  .diagram-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 220px;
+  }
+
+  /* Responsive */
+  @media (max-width: 960px) {
+    .skills-interactive-wrap {
+      grid-template-columns: 1fr;
+    }
+
+    .artifact-rationale-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .pipeline-step-wrap {
+      min-width: 120px;
+    }
+  }
+
+  /* PCB Evidence Preview & Jump Banner */
+  .pcb-evidence-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .pcb-jump-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    background: var(--bg-pure);
     border: 1px solid var(--border);
-    padding: 6px 12px;
     border-radius: var(--r-sm);
+    flex-wrap: wrap;
+  }
+
+  .jump-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .jump-kicker {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--cyan-dark);
+    letter-spacing: 0.08em;
+  }
+
+  .jump-title {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .jump-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 6px 12px;
+    background: var(--cyan-light);
+    border: 1px solid var(--cyan);
+    border-radius: var(--r-xs);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--cyan-dark);
     text-decoration: none;
     transition: all var(--dur-fast) var(--ease-out);
   }
 
-  .related-link-pill:hover {
-    border-color: var(--cyan);
-    color: var(--cyan-dark);
+  .jump-btn:hover {
+    background: var(--cyan);
+    color: #FFFFFF;
     transform: translateY(-1px);
-  }
-
-  .pill-arrow {
-    color: var(--cyan-dark);
-    font-size: var(--text-2xs);
-  }
-
-  .evidence-footer-action {
-    padding-top: var(--space-4);
-  }
-
-  @media (max-width: 1024px) {
-    .skills-interactive-wrap {
-      grid-template-columns: 1fr;
-    }
-    .evidence-inspector-wrap {
-      position: static;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .artifact-rationale-grid {
-      grid-template-columns: 1fr;
-    }
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
   }
 </style>

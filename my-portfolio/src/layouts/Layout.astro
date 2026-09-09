@@ -1,14 +1,13 @@
 ---
 import '../styles/global.css';
-import SpatialField from '../components/SpatialField.astro';
 
 interface Props {
   title?: string;
   description?: string;
 }
 const {
-  title = "Naveen Shaji George — Robotics Engineer",
-  description = "Robotics engineer specializing in autonomous systems, 3D LiDAR perception, ROS 2, custom embedded ECUs, and vehicle-level hardware-software integration."
+  title = "Naveen Shaji George — Robotics & Autonomous Systems Engineer",
+  description = "Robotics engineer specializing in autonomous systems, 3D LiDAR perception, ROS 2 Humble, custom vehicle ECUs, isolated CAN bus networks, and vehicle-level hardware-software integration."
 } = Astro.props;
 ---
 
@@ -19,7 +18,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="author" content="Naveen Shaji George" />
-    <meta name="theme-color" content="#F8F8F5" />
+    <meta name="theme-color" content="#080909" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
@@ -32,21 +31,74 @@ const {
   </head>
 
   <body>
-    <!-- Scroll progress bar -->
+    <!-- Skip link for accessibility -->
+    <a href="#mainContent" class="skip-link">Skip to main content</a>
+
+    <!-- Top edge scroll progress indicator -->
     <div id="scrollBar" aria-hidden="true"></div>
 
-    <!-- Interactive coordinate grid canvas — full page, behind everything -->
-    <canvas id="gridCanvas" aria-hidden="true"></canvas>
-
-    <!-- Site-wide spatial point cloud perception field -->
-    <SpatialField />
+    <!-- Persistent Visual Anchor: Engineering Datum Spine (Desktop) -->
+    <aside class="datum-spine-wrap" aria-label="Section Navigation Spine">
+      <div class="datum-spine-track" aria-hidden="true">
+        <div class="datum-spine-fill" id="datumSpineFill"></div>
+      </div>
+      <nav class="datum-waypoints" aria-label="Section Milestones">
+        <a href="/#hero" class="datum-node active" data-section="hero" aria-label="00 // Origin (Hero)">
+          <span class="datum-pip"></span>
+          <span class="datum-tag mono">00</span>
+          <span class="datum-label mono">ORIGIN</span>
+        </a>
+        <a href="/#work" class="datum-node" data-section="work" aria-label="01 // Projects">
+          <span class="datum-pip"></span>
+          <span class="datum-tag mono">01</span>
+          <span class="datum-label mono">PROJECTS</span>
+        </a>
+        <a href="/#skills" class="datum-node" data-section="skills" aria-label="02 // Skills & Evidence">
+          <span class="datum-pip"></span>
+          <span class="datum-tag mono">02</span>
+          <span class="datum-label mono">EVIDENCE</span>
+        </a>
+        <a href="/#about" class="datum-node" data-section="about" aria-label="03 // Engineering Chronology">
+          <span class="datum-pip"></span>
+          <span class="datum-tag mono">03</span>
+          <span class="datum-label mono">CHRONOLOGY</span>
+        </a>
+        <a href="/#contact" class="datum-node" data-section="contact" aria-label="04 // Direct Dispatch">
+          <span class="datum-pip"></span>
+          <span class="datum-tag mono">04</span>
+          <span class="datum-label mono">DISPATCH</span>
+        </a>
+      </nav>
+    </aside>
 
     <slot />
 
     <script>
-      // ============================================================
-      // SCROLL PROGRESS
-      // ============================================================
+      import { initScrollTracker, initScrollReveal } from '../lib/motion';
+      import { initSectionTransitions } from '../lib/animations/sectionTransitions';
+
+      // Initialize scroll systems
+      initScrollTracker();
+      initScrollReveal();
+      
+      // Initialize section transitions
+      let sectionTransitionsCleanup: (() => void) | null = null;
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          const cleanup = initSectionTransitions();
+          if (cleanup) sectionTransitionsCleanup = cleanup;
+        });
+      } else {
+        const cleanup = initSectionTransitions();
+        if (cleanup) sectionTransitionsCleanup = cleanup;
+      }
+      
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        if (sectionTransitionsCleanup) sectionTransitionsCleanup();
+      });
+
+      // Top scroll bar progress
       window.addEventListener('scroll', () => {
         const bar = document.getElementById('scrollBar');
         if (!bar) return;
@@ -54,131 +106,173 @@ const {
         bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
       }, { passive: true });
 
-      // ============================================================
-      // SCROLL REVEAL
-      // ============================================================
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Smooth scroll for anchor links
+      (document.querySelectorAll('a[href^="#"], a[href^="/#"]') as NodeListOf<HTMLAnchorElement>).forEach((anchor) => {
+        anchor.addEventListener('click', (e: MouseEvent) => {
+          const rawHref = anchor.getAttribute('href');
+          if (!rawHref) return;
+          const hashIdx = rawHref.indexOf('#');
+          if (hashIdx === -1) return;
+          const targetId = rawHref.substring(hashIdx);
 
-      if (!prefersReduced) {
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach((e) => {
-            if (e.isIntersecting) {
-              e.target.classList.add('is-visible');
-              io.unobserve(e.target);
+          if (window.location.pathname === '/' || window.location.pathname === '') {
+            const target = document.querySelector(targetId) as HTMLElement | null;
+            if (target) {
+              e.preventDefault();
+              history.pushState(null, '', targetId);
+              target.scrollIntoView({ behavior: 'smooth' });
+              target.setAttribute('tabindex', '-1');
+              target.focus({ preventScroll: true });
             }
-          });
-        }, { threshold: 0.07, rootMargin: '0px 0px -32px 0px' });
-
-        document.querySelectorAll('.reveal, .reveal-left, .stagger-children').forEach((el) => io.observe(el));
-      } else {
-        document.querySelectorAll('.reveal, .reveal-left, .stagger-children').forEach((el) => {
-          el.classList.add('is-visible');
+          }
         });
-      }
-
-      // ============================================================
-      // INTERACTIVE GRID — light dot grid with mouse parallax
-      // ============================================================
-      const canvas = document.getElementById('gridCanvas') as HTMLCanvasElement;
-      if (canvas) {
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          const GRID = 52;
-          const mouse = { x: -9999, y: -9999, tx: -9999, ty: -9999 };
-          let w = 0, h = 0;
-
-          function resize() {
-            w = window.innerWidth;
-            h = window.innerHeight;
-            const dpr = Math.min(window.devicePixelRatio || 1, 2);
-            canvas.width = w * dpr;
-            canvas.height = h * dpr;
-            ctx!.scale(dpr, dpr);
-          }
-
-          window.addEventListener('resize', resize);
-          resize();
-
-          if (!prefersReduced) {
-            window.addEventListener('mousemove', (e) => {
-              mouse.tx = e.clientX;
-              mouse.ty = e.clientY;
-            }, { passive: true });
-            window.addEventListener('mouseleave', () => {
-              mouse.tx = -9999;
-              mouse.ty = -9999;
-            });
-          }
-
-          function draw() {
-            if (ctx) {
-              ctx.clearRect(0, 0, w, h);
-
-              // Smooth interpolation
-              mouse.x += (mouse.tx - mouse.x) * 0.07;
-              mouse.y += (mouse.ty - mouse.y) * 0.07;
-
-              const cols = Math.ceil(w / GRID) + 2;
-              const rows = Math.ceil(h / GRID) + 2;
-
-              for (let r = 0; r <= rows; r++) {
-                for (let c = 0; c <= cols; c++) {
-                  const bx = c * GRID;
-                  const by = r * GRID;
-                  let x = bx;
-                  let y = by;
-
-                  // Subtle parallax push toward cursor
-                  if (!prefersReduced && mouse.x > -500) {
-                    const dx = bx - mouse.x;
-                    const dy = by - mouse.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    const radius = 200;
-                    if (dist < radius) {
-                      const t = 1 - dist / radius;
-                      const force = t * t * 5;
-                      const angle = Math.atan2(dy, dx);
-                      x += Math.cos(angle) * force;
-                      y += Math.sin(angle) * force;
-                    }
-                  }
-
-                  // Draw dot
-                  ctx.beginPath();
-                  ctx.arc(x, y, 0.75, 0, Math.PI * 2);
-                  ctx.fillStyle = 'rgba(0,0,0,0.09)';
-                  ctx.fill();
-                }
-              }
-            }
-
-            requestAnimationFrame(draw);
-          }
-
-          draw();
-        }
-      }
+      });
     </script>
   </body>
 </html>
 
 <style is:global>
-  canvas#gridCanvas {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 0;
-  }
-
   #scrollBar {
     position: fixed;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 2px;
     background: var(--cyan);
     transform-origin: 0%;
     transform: scaleX(0);
     z-index: 9999;
+    box-shadow: 0 0 8px var(--cyan-glow);
   }
+
+  /* Universal section anchor offset for sticky nav */
+  section[id] {
+    scroll-margin-top: calc(var(--nav-height) + 1.5rem);
+  }
+
+  /* ==========================================================
+     ENGINEERING DATUM SPINE — PERSISTENT VISUAL ANCHOR
+     ========================================================== */
+  .datum-spine-wrap {
+    position: fixed;
+    left: clamp(1rem, 2.2vw, 2.8rem);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+  }
+
+  .datum-spine-track {
+    position: absolute;
+    left: 4.5px;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .datum-spine-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan-glow);
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 0.1s linear;
+  }
+
+  .datum-waypoints {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .datum-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    color: var(--text-dim);
+    transition: color 0.2s ease;
+    cursor: pointer;
+    padding: 2px 0;
+  }
+
+  .datum-pip {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #111415;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+  }
+
+  .datum-tag {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    transition: color 0.2s ease;
+    letter-spacing: 0.04em;
+  }
+
+  .datum-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    white-space: nowrap;
+    color: var(--text-secondary);
+  }
+
+  .datum-node:hover .datum-label,
+  .datum-node.active .datum-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .datum-node:hover {
+    color: var(--text-primary);
+  }
+
+  .datum-node:hover .datum-pip {
+    border-color: var(--cyan);
+    background: var(--cyan-light);
+  }
+
+  .datum-node.active .datum-pip {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan-glow);
+    transform: scale(1.15);
+  }
+
+  .datum-node.active .datum-tag,
+  .datum-node.active .datum-label {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Hide on screens narrower than 1440px to avoid competing with content */
+  @media (max-width: 1440px) {
+    .datum-spine-wrap {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .datum-spine-fill {
+      transition: none;
+    }
+  }
+
+  /* Reduced motion for portal intro is handled in RobotPortalIntro component */
 </style>

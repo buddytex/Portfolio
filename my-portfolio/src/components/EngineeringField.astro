@@ -1,0 +1,238 @@
+---
+// EngineeringField Component — Subtle Ambient Engineering Field for Non-Hero Sections
+// Minimal circuit geometry that provides continuity without dominating
+// Only active on non-hero sections, fades in after hero transition
+---
+
+<div class="engineering-field-wrap" id="engineeringFieldContainer" aria-hidden="true">
+  <svg
+    id="engineeringFieldSvg"
+    class="engineering-field-svg"
+    viewBox="0 0 1920 1080"
+    preserveAspectRatio="xMidYMid slice"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <!-- Extremely subtle grid -->
+      <pattern id="ambientGrid" width="120" height="120" patternUnits="userSpaceOnUse">
+        <path d="M 120 0 L 0 0 0 120" fill="none" stroke="rgba(0, 174, 239, 0.04)" stroke-width="0.5" />
+      </pattern>
+    </defs>
+
+    <!-- Base Grid Layer -->
+    <rect width="100%" height="100%" fill="url(#ambientGrid)" opacity="0" />
+
+    <!-- Minimal Circuit Traces - only major structural lines -->
+    <g id="ambientTraces" class="ambient-traces" opacity="0">
+      <!-- Vertical spine -->
+      <path d="M 960 0 L 960 1080" stroke="var(--circuit-trace-major)" stroke-width="1" stroke-dasharray="8 16" vector-effect="non-scaling-stroke" />
+      <!-- Horizontal bands at section boundaries -->
+      <path d="M 0 360 L 1920 360" stroke="var(--circuit-trace-secondary)" stroke-width="0.6" stroke-dasharray="12 24" vector-effect="non-scaling-stroke" opacity="0.7" />
+      <path d="M 0 720 L 1920 720" stroke="var(--circuit-trace-secondary)" stroke-width="0.6" stroke-dasharray="12 24" vector-effect="non-scaling-stroke" opacity="0.7" />
+      <!-- Side verticals -->
+      <path d="M 320 0 L 320 1080" stroke="var(--circuit-trace-micro)" stroke-width="0.5" stroke-dasharray="4 12" vector-effect="non-scaling-stroke" opacity="0.5" />
+      <path d="M 1600 0 L 1600 1080" stroke="var(--circuit-trace-micro)" stroke-width="0.5" stroke-dasharray="4 12" vector-effect="non-scaling-stroke" opacity="0.5" />
+    </g>
+
+    <!-- Minimal Nodes -->
+    <g id="ambientNodes" class="ambient-nodes" opacity="0">
+      <circle cx="960" cy="180" r="3" fill="var(--circuit-node-primary)" opacity="0.8" />
+      <circle cx="960" cy="540" r="3" fill="var(--circuit-node-primary)" opacity="0.8" />
+      <circle cx="960" cy="900" r="3" fill="var(--circuit-node-primary)" opacity="0.8" />
+      <circle cx="320" cy="360" r="2" fill="var(--circuit-node-secondary)" opacity="0.6" />
+      <circle cx="1600" cy="360" r="2" fill="var(--circuit-node-secondary)" opacity="0.6" />
+      <circle cx="320" cy="720" r="2" fill="var(--circuit-node-secondary)" opacity="0.6" />
+      <circle cx="1600" cy="720" r="2" fill="var(--circuit-node-secondary)" opacity="0.6" />
+    </g>
+
+    <!-- Pulse Group -->
+    <g id="ambientPulseGroup" class="ambient-pulse-group"></g>
+  </svg>
+</div>
+
+<script>
+  import { animate, createMotionPath, isReducedMotion } from '../lib/motion';
+
+  function setupAmbientField() {
+    const container = document.getElementById('engineeringFieldContainer');
+    if (!container) return;
+
+    const isReduced = isReducedMotion();
+    const svg = container.querySelector<SVGSVGElement>('#engineeringFieldSvg');
+    if (!svg) return;
+
+    const tracesGroup = svg.querySelector<SVGGElement>('#ambientTraces');
+    const nodesGroup = svg.querySelector<SVGGElement>('#ambientNodes');
+    const pulseGroup = svg.querySelector<SVGGElement>('#ambientPulseGroup');
+    const gridRect = svg.querySelector('rect');
+
+    let isVisible = false;
+    let isPaused = true;
+    let pulseTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // Pulse routes for ambient field
+    const pulseRoutes = [
+      'M 960 180 L 960 540',
+      'M 320 360 L 960 360',
+      'M 960 360 L 1600 360',
+      'M 960 540 L 960 900',
+      'M 320 720 L 960 720',
+      'M 960 720 L 1600 720',
+    ];
+
+    function launchAmbientPulse() {
+      if (isPaused || isReduced || !isVisible || !svg) return;
+      const route = pulseRoutes[Math.floor(Math.random() * pulseRoutes.length)];
+      const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pathEl.setAttribute('d', route);
+      pathEl.style.display = 'none';
+      svg.appendChild(pathEl);
+
+      const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      pulse.classList.add('signal-pulse');
+      const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      halo.setAttribute('r', '4');
+      halo.setAttribute('class', 'pulse-halo');
+      const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      core.setAttribute('r', '1.8');
+      core.setAttribute('class', 'pulse-core');
+      pulse.appendChild(halo);
+      pulse.appendChild(core);
+      pulseGroup?.appendChild(pulse);
+
+      try {
+        const motion = createMotionPath(pathEl);
+        animate(pulse, {
+          translateX: motion.translateX,
+          translateY: motion.translateY,
+          duration: 4000,
+          ease: 'linear',
+          onComplete: () => {
+            pulse.remove();
+            pathEl.remove();
+            if (!isPaused && !isReduced && isVisible) {
+              pulseTimer = setTimeout(launchAmbientPulse, 6000 + Math.random() * 8000);
+            }
+          },
+        });
+      } catch {
+        pulse.remove();
+        pathEl.remove();
+      }
+    }
+
+    function showField() {
+      if (isVisible) return;
+      isVisible = true;
+      isPaused = false;
+      
+      if (gridRect) {
+        gridRect.style.transition = 'opacity 2s ease';
+        gridRect.style.opacity = '1';
+      }
+      if (tracesGroup) {
+        tracesGroup.style.transition = 'opacity 2s ease';
+        tracesGroup.style.opacity = '0.3';
+      }
+      if (nodesGroup) {
+        nodesGroup.style.transition = 'opacity 2s ease';
+        nodesGroup.style.opacity = '0.25';
+      }
+      
+      if (!isReduced) {
+        pulseTimer = setTimeout(launchAmbientPulse, 3000);
+      }
+    }
+
+    function hideField() {
+      if (!isVisible) return;
+      isVisible = false;
+      isPaused = true;
+      
+      if (pulseTimer) clearTimeout(pulseTimer);
+      if (pulseGroup) pulseGroup.innerHTML = '';
+      
+      if (gridRect) gridRect.style.opacity = '0';
+      if (tracesGroup) tracesGroup.style.opacity = '0';
+      if (nodesGroup) nodesGroup.style.opacity = '0';
+    }
+
+    // Listen for scroll to determine visibility
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const scrollY = window.scrollY;
+        const heroHeight = document.getElementById('hero')?.offsetHeight || window.innerHeight;
+        const heroBottom = heroHeight;
+        
+        if (scrollY > heroBottom * 0.3) {
+          showField();
+        } else {
+          hideField();
+        }
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Handle visibility change
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isPaused = true;
+        if (pulseTimer) clearTimeout(pulseTimer);
+        if (pulseGroup) pulseGroup.innerHTML = '';
+      } else if (isVisible) {
+        isPaused = false;
+        pulseTimer = setTimeout(launchAmbientPulse, 2000);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupAmbientField);
+  } else {
+    setupAmbientField();
+  }
+</script>
+
+<style>
+  .engineering-field-wrap {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .engineering-field-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .signal-pulse {
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambient-pulse-group {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .ambient-traces,
+    .ambient-nodes {
+      display: none;
+    }
+  }
+</style>

@@ -1,9 +1,9 @@
 ---
 const navItems = [
-  { href: '#work',       label: 'Work' },
-  { href: '#skills',     label: 'Skills & Evidence' },
-  { href: '#about',      label: 'About' },
-  { href: '#contact',    label: 'Contact' },
+  { href: '#work',    label: 'Projects' },
+  { href: '#skills',  label: 'Skills' },
+  { href: '#about',   label: 'About' },
+  { href: '#contact', label: 'Contact' },
 ];
 ---
 
@@ -68,18 +68,66 @@ const navItems = [
   const drawer = document.getElementById('mobileDrawer');
   const mobileLinks = document.querySelectorAll('.mobile-link');
   let open = false;
+  let lastFocusedElement: HTMLElement | null = null;
+
+  function trapFocus(element: HTMLElement) {
+    const focusableElements = element.querySelectorAll<HTMLElement>(
+      'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    function handleTab(e: KeyboardEvent) {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    }
+
+    element.addEventListener('keydown', handleTab);
+    firstElement?.focus();
+
+    return () => element.removeEventListener('keydown', handleTab);
+  }
 
   function setOpen(state: boolean) {
     open = state;
     toggle?.setAttribute('aria-expanded', String(open));
+    toggle?.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     drawer?.setAttribute('aria-hidden', String(!open));
     drawer?.classList.toggle('open', open);
     toggle?.classList.toggle('open', open);
     document.body.style.overflow = open ? 'hidden' : '';
+
+    if (open) {
+      lastFocusedElement = document.activeElement as HTMLElement;
+      const cleanup = trapFocus(drawer!);
+      drawer!.dataset.trapCleanup = 'true';
+      (drawer as any)._trapCleanup = cleanup;
+    } else {
+      const cleanup = (drawer as any)._trapCleanup;
+      if (cleanup) cleanup();
+      lastFocusedElement?.focus();
+    }
   }
 
   toggle?.addEventListener('click', () => setOpen(!open));
   mobileLinks.forEach((l) => l.addEventListener('click', () => setOpen(false)));
+
+  // ESC key to close drawer
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && open) {
+      setOpen(false);
+    }
+  });
 
   // Scroll spy
   const sections = document.querySelectorAll('section[id]');
@@ -109,15 +157,16 @@ const navItems = [
     top: 0;
     z-index: 100;
     height: var(--nav-height);
-    background: rgba(248, 248, 245, 0.9);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--dur-norm) var(--ease-out);
+    background: var(--material-glass-heavy);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: border-color var(--dur-norm) var(--ease-out), box-shadow var(--dur-norm) var(--ease-out);
   }
 
   .nav.scrolled {
     border-bottom-color: var(--border-subtle);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   }
 
   .nav-inner {
@@ -133,8 +182,8 @@ const navItems = [
 
   .brand-name {
     font-size: var(--text-sm);
-    font-weight: 800;
-    letter-spacing: 0.04em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--text-primary);
   }
 
@@ -169,6 +218,15 @@ const navItems = [
   .nav-link:hover::after { width: 100%; }
   .nav-link.active { color: var(--text-primary); }
   .nav-link.active::after { width: 100%; }
+
+  .nav-link:focus-visible,
+  .nav-brand:focus-visible,
+  .nav-icon-btn:focus-visible,
+  .nav-toggle:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+    border-radius: var(--r-xs);
+  }
 
   /* Actions */
   .nav-actions {
@@ -221,12 +279,14 @@ const navItems = [
     top: var(--nav-height);
     inset-inline: 0;
     bottom: 0;
-    background: var(--bg);
+    background: var(--surface);
     padding: var(--space-8) 24px;
     opacity: 0;
     pointer-events: none;
+    z-index: 999;
+    box-shadow: var(--shadow-elevated);
     transition: opacity var(--dur-norm) var(--ease-out);
-    border-top: 1px solid var(--border-subtle);
+    border-top: 1px solid var(--border);
   }
 
   .mobile-drawer.open {

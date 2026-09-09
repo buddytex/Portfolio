@@ -1,0 +1,425 @@
+---
+// EngineeringTimeline Component — Progressive Robotics Engineering Milestones
+// Built with Anime.js v4 · Connected vertical datum line · Verified repository facts
+import { engineeringTimeline } from '../data/timeline';
+---
+
+<div class="engineering-chronology-wrap" id="engineeringTimelineContainer">
+  <div class="chronology-header">
+    <div class="header-left">
+      <span class="chronology-eyebrow mono">[ VERIFIED PROGRESSION ]</span>
+      <h3 class="chronology-title">Engineering Chronology</h3>
+    </div>
+    <div class="chronology-range mono">
+      <span class="range-dot" aria-hidden="true"></span>
+      <span>2023 — 2026 ARCHIVE</span>
+    </div>
+  </div>
+
+  <div class="timeline-tree" id="timelineTree" role="feed" aria-label="Chronological Engineering Milestones">
+    <!-- Continuous Animated Circuit Trace Line (Underlay) -->
+    <div class="timeline-spine-track" aria-hidden="true">
+      <svg class="timeline-spine-svg" width="2" height="100%" viewBox="0 0 2 1000" preserveAspectRatio="none">
+        <path id="chronologySpineSvgPath" d="M 1 0 L 1 1000" stroke="#0EA5E9" stroke-width="2" vector-effect="non-scaling-stroke" />
+      </svg>
+      <div class="timeline-spine-glow" id="timelineSpineGlow"></div>
+    </div>
+
+    {engineeringTimeline.map((item) => (
+      <article
+        class="timeline-milestone"
+        id={`milestone-${item.year}`}
+        data-year={item.year}
+        aria-labelledby={`milestone-role-${item.year}`}
+      >
+        <!-- Marker Node on Circuit Trace -->
+        <div class="milestone-marker" aria-hidden="true">
+          <div class="marker-outer-ring">
+            <div class="marker-dot"></div>
+          </div>
+          <span class="marker-year mono">{item.year}</span>
+        </div>
+
+        <!-- Milestone Card -->
+        <div class="milestone-card">
+          <!-- Card Top Bar: Meta & Role -->
+          <div class="milestone-topbar">
+            <div class="milestone-headline">
+              <div class="milestone-period-wrap mono">
+                <span class="milestone-year-badge">{item.year}</span>
+                <span class="milestone-period">{item.period}</span>
+              </div>
+              <h4 class="milestone-role" id={`milestone-role-${item.year}`}>{item.role}</h4>
+              <span class="milestone-org">{item.organization}</span>
+            </div>
+
+            {item.achievement && (
+              <div class="milestone-badge-wrap">
+                <span class="achievement-badge mono">{item.achievement}</span>
+              </div>
+            )}
+          </div>
+
+          <!-- Structured Progression Blocks: What Was Built & Significance -->
+          <div class="milestone-details">
+            <div class="detail-block">
+              <div class="detail-label mono">
+                <span class="label-icon" aria-hidden="true">↳</span>
+                <span>WHAT I BUILT &amp; INTEGRATED</span>
+              </div>
+              <p class="detail-text">{item.whatIBuilt}</p>
+            </div>
+
+            <div class="detail-block significance-block">
+              <div class="detail-label mono">
+                <span class="label-icon" aria-hidden="true">⚡</span>
+                <span>ENGINEERING SIGNIFICANCE &amp; DEPTH</span>
+              </div>
+              <p class="detail-text">{item.engineeringSignificance}</p>
+            </div>
+          </div>
+
+          <!-- Verified Technology Tags -->
+          <div class="milestone-tags">
+            {item.technologies.map((tech) => (
+              <span class="tag tech-tag mono">{tech}</span>
+            ))}
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</div>
+
+<script>
+  import { initChronologyMotion } from '../lib/animations/chronologyMotion';
+
+  function setupChronology() {
+    const container = document.getElementById('engineeringTimelineContainer');
+    if (container) {
+      initChronologyMotion(container);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupChronology);
+  } else {
+    setupChronology();
+  }
+</script>
+
+<style>
+  .engineering-chronology-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Header */
+  .chronology-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .chronology-eyebrow {
+    font-size: var(--text-2xs);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .chronology-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .chronology-range {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .range-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan-glow);
+  }
+
+  /* Tree & Spine */
+  .timeline-tree {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    position: relative;
+    padding-left: 2.2rem;
+  }
+
+  .timeline-spine-track {
+    position: absolute;
+    left: 11px;
+    top: 14px;
+    bottom: 24px;
+    width: 2px;
+    background: var(--border-subtle);
+  }
+
+  .timeline-spine-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to bottom, var(--cyan) 0%, rgba(2, 132, 199, 0.4) 80%, rgba(2, 132, 199, 0.1) 100%);
+    box-shadow: 0 0 8px var(--cyan-glow);
+    transition: height 0.2s ease;
+  }
+
+  /* Milestone Row */
+  .timeline-milestone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    will-change: transform, opacity;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .timeline-milestone.timeline-milestone-ready {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* Marker Node */
+  .milestone-marker {
+    position: absolute;
+    left: -2.2rem;
+    top: 16px;
+    display: flex;
+    align-items: center;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .marker-outer-ring {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.14);
+    transition: all 0.25s var(--ease-out);
+  }
+
+  .milestone-milestone:hover .marker-outer-ring {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(14, 165, 233, 0.25);
+  }
+
+  .marker-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan-dark);
+  }
+
+  .marker-year {
+    display: none; /* Mobile reference */
+  }
+
+  /* Milestone Card */
+  .milestone-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    box-shadow: var(--shadow-resting);
+    transition: transform var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out),
+                border-color var(--dur-norm) var(--ease-out);
+  }
+
+  .milestone-milestone:hover .milestone-card {
+    transform: translateY(-2px);
+    border-color: var(--cyan);
+    box-shadow: var(--shadow-hover);
+  }
+
+  /* Top Bar */
+  .milestone-topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .milestone-headline {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .milestone-period-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--text-2xs);
+  }
+
+  .milestone-year-badge {
+    background: var(--cyan-light);
+    color: var(--cyan-dark);
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: var(--r-xs);
+    border: 1px solid rgba(2, 132, 199, 0.2);
+  }
+
+  .milestone-period {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .milestone-role {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.015em;
+    margin-top: 2px;
+  }
+
+  .milestone-org {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+  }
+
+  .milestone-badge-wrap {
+    flex-shrink: 0;
+  }
+
+  .achievement-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #166534;
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    letter-spacing: 0.02em;
+    display: inline-block;
+  }
+
+  /* Details Grid */
+  .milestone-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .detail-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: var(--bg-pure);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    padding: var(--space-4);
+  }
+
+  .significance-block {
+    background: rgba(2, 132, 199, 0.025);
+    border-color: rgba(2, 132, 199, 0.15);
+  }
+
+  .detail-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .significance-block .detail-label {
+    color: var(--cyan-dark);
+  }
+
+  .label-icon {
+    font-size: 0.75rem;
+    color: var(--cyan);
+  }
+
+  .detail-text {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Technologies */
+  .milestone-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: var(--space-2);
+  }
+
+  .tech-tag {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    background: var(--bg-pure);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-xs);
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 640px) {
+    .timeline-tree {
+      padding-left: 1.5rem;
+    }
+    .timeline-spine-track {
+      left: 7px;
+    }
+    .milestone-marker {
+      left: -1.5rem;
+    }
+    .marker-outer-ring {
+      width: 14px;
+      height: 14px;
+    }
+    .marker-dot {
+      width: 4px;
+      height: 4px;
+    }
+    .milestone-card {
+      padding: var(--space-4);
+    }
+  }
+</style>

@@ -45,6 +45,6 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(4321, '127.0.0.1', () => {
-  console.log('Static preview server listening on http://127.0.0.1:4321');
+server.listen(4321, '0.0.0.0', () => {
+  console.log('Static preview server listening on http://localhost:4321');
 });

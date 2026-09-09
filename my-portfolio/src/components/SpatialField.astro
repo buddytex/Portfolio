@@ -1,241 +1,418 @@
 ---
-// SpatialField Component — Site-Wide Continuous Perception & Point-Cloud Environment
-// Runs as a persistent background spatial canvas across all sections of the site
-// Reorganizes, morphs, and reacts to the cursor as a physical detected obstacle
+// SpatialField Component — High-Definition Deterministic Engineering Circuit Network
+// Replaces particle dots with an authentic PCB trace & signal routing substrate
+// Aesthetics: Subtle copper/neutral traces, junction nodes/vias, occasional traveling cyan data pulses
+// Performance: 0 allocations in draw loop, fixed pulse pool, pauses when tab hidden, strict reduced-motion support
 ---
 
 <canvas id="spatialFieldCanvas" aria-hidden="true"></canvas>
 
 <script>
-interface Particle {
-  // Base coordinates in normalized 3D space (-1 to 1)
-  nx: number;
-  ny: number;
-  nz: number;
-  // Current rendered screen coordinates
-  x: number;
-  y: number;
-  z: number;
-  // Velocity for spring physics
-  vx: number;
-  vy: number;
-  vz: number;
-  // Visual attributes
-  baseRadius: number;
-  isCyan: boolean;
-  phase: number;
-  speed: number;
+interface CircuitPoint {
+  u: number; // 0 to 1 normalized coordinate
+  v: number;
+}
+
+interface CircuitTrace {
+  points: CircuitPoint[];
+  weight: number;      // line width: 0.8 to 1.5
+  section: number;     // 0: Hero, 1: Projects, 2: Hardware, 3: Skills, 4: About, 5: Contact
+  alpha: number;
+}
+
+interface CircuitNode {
+  u: number;
+  v: number;
+  radius: number;
+  isVia: boolean;
+  glow: number; // 0 to 1 flash on pulse arrival
+}
+
+interface SignalPulse {
+  traceIdx: number;
+  t: number;          // 0 to 1 along trace
+  speed: number;      // rate per frame
+  length: number;     // tail length
+  active: boolean;
+  delay: number;
 }
 
 const canvas = document.getElementById('spatialFieldCanvas') as HTMLCanvasElement;
+
 if (canvas) {
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { alpha: true });
+
   if (ctx) {
-    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.innerWidth < 768;
-    const COUNT = isMobile ? 180 : 380;
-    const particles: Particle[] = [];
-    let W = 0;
-    let H = 0;
-    let time = 0;
-    let scrollProgress = 0; // 0 (top) to 1 (bottom)
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    let dpr = 1;
+    let animId: number | null = null;
+    let isVisible = true;
 
-    // Cursor position in canvas space
-    const cursor = {
-      x: -9999,
-      y: -9999,
-      targetX: -9999,
-      targetY: -9999,
-      active: false,
-    };
+    let currentScroll = 0;
+    let targetScroll = 0;
 
-    // Physics constants
-    const SPRING = 0.035;
-    const DAMP = 0.85;
-    const REPEL_RADIUS = isMobile ? 110 : 160;
-    const REPEL_FORCE = isMobile ? 4.5 : 7.0;
-    const FOCAL_LENGTH = 350;
+    // Deterministic trace network & nodes
+    const traces: CircuitTrace[] = [];
+    const nodes: CircuitNode[] = [];
+    const maxPulses = W < 768 ? 4 : 8;
+    const pulses: SignalPulse[] = [];
 
-    function resize() {
-      W = window.innerWidth;
-      H = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      ctx!.scale(dpr, dpr);
-    }
+    function buildCircuitTopology() {
+      traces.length = 0;
+      nodes.length = 0;
+      pulses.length = 0;
 
-    function initParticles() {
-      particles.length = 0;
-      for (let i = 0; i < COUNT; i++) {
-        // Distribute in a spherical / cylindrical coordinate cloud
-        const theta = Math.random() * Math.PI * 2;
-        const phi = (Math.random() - 0.5) * Math.PI * 0.8;
-        const dist = 0.35 + Math.random() * 0.65;
+      const isMobile = W < 768;
 
-        const nx = Math.cos(theta) * Math.cos(phi) * dist;
-        const ny = Math.sin(phi) * dist;
-        const nz = Math.sin(theta) * Math.cos(phi) * dist;
+      // ========================================================
+      // 1. DENSE CENTRAL ROUTING (Hero Substrate)
+      // ========================================================
+      // Bus lines on left & right gutters with right-angle breaks
+      const heroTraces: CircuitPoint[][] = [
+        // Left bus conduit
+        [{ u: 0.04, v: 0.08 }, { u: 0.12, v: 0.08 }, { u: 0.12, v: 0.28 }, { u: 0.22, v: 0.28 }],
+        [{ u: 0.04, v: 0.12 }, { u: 0.09, v: 0.12 }, { u: 0.09, v: 0.38 }, { u: 0.16, v: 0.38 }],
+        [{ u: 0.06, v: 0.18 }, { u: 0.14, v: 0.18 }, { u: 0.14, v: 0.44 }, { u: 0.25, v: 0.44 }],
+        [{ u: 0.04, v: 0.32 }, { u: 0.18, v: 0.32 }, { u: 0.22, v: 0.36 }, { u: 0.28, v: 0.36 }],
 
-        const isCyan = Math.random() < 0.25; // 25% subtle electric cyan points
+        // Center spine behind portrait
+        [{ u: 0.58, v: 0.06 }, { u: 0.58, v: 0.22 }, { u: 0.64, v: 0.28 }, { u: 0.88, v: 0.28 }],
+        [{ u: 0.62, v: 0.10 }, { u: 0.72, v: 0.10 }, { u: 0.72, v: 0.34 }, { u: 0.92, v: 0.34 }],
+        [{ u: 0.66, v: 0.16 }, { u: 0.78, v: 0.16 }, { u: 0.78, v: 0.42 }, { u: 0.86, v: 0.42 }],
+        [{ u: 0.55, v: 0.30 }, { u: 0.68, v: 0.30 }, { u: 0.74, v: 0.36 }, { u: 0.94, v: 0.36 }],
 
-        particles.push({
-          nx,
-          ny,
-          nz,
-          x: W * 0.5 + nx * W * 0.4,
-          y: H * 0.5 + ny * H * 0.4,
-          z: nz * 300,
-          vx: 0,
-          vy: 0,
-          vz: 0,
-          baseRadius: isCyan ? 1.8 : 1.1,
-          isCyan,
-          phase: Math.random() * Math.PI * 2,
-          speed: 0.3 + Math.random() * 0.5,
+        // Cross-connectors
+        [{ u: 0.12, v: 0.20 }, { u: 0.30, v: 0.20 }, { u: 0.34, v: 0.24 }, { u: 0.48, v: 0.24 }],
+        [{ u: 0.52, v: 0.24 }, { u: 0.65, v: 0.24 }, { u: 0.70, v: 0.19 }, { u: 0.82, v: 0.19 }],
+      ];
+
+      heroTraces.forEach((pts) => {
+        traces.push({ points: pts, weight: 1.0, section: 0, alpha: 0.16 });
+      });
+
+      // ========================================================
+      // 2. LATERAL BRANCHING NETWORK (Projects Gutter & Cards)
+      // ========================================================
+      const projectTraces: CircuitPoint[][] = [
+        [{ u: 0.03, v: 0.25 }, { u: 0.03, v: 0.65 }, { u: 0.08, v: 0.70 }, { u: 0.14, v: 0.70 }],
+        [{ u: 0.06, v: 0.30 }, { u: 0.06, v: 0.55 }, { u: 0.12, v: 0.61 }, { u: 0.20, v: 0.61 }],
+        [{ u: 0.96, v: 0.26 }, { u: 0.96, v: 0.68 }, { u: 0.91, v: 0.73 }, { u: 0.84, v: 0.73 }],
+        [{ u: 0.93, v: 0.32 }, { u: 0.93, v: 0.58 }, { u: 0.88, v: 0.63 }, { u: 0.78, v: 0.63 }],
+        [{ u: 0.48, v: 0.35 }, { u: 0.52, v: 0.39 }, { u: 0.52, v: 0.65 }, { u: 0.45, v: 0.72 }],
+        [{ u: 0.14, v: 0.48 }, { u: 0.32, v: 0.48 }, { u: 0.36, v: 0.52 }, { u: 0.42, v: 0.52 }],
+        [{ u: 0.58, v: 0.52 }, { u: 0.64, v: 0.52 }, { u: 0.68, v: 0.48 }, { u: 0.85, v: 0.48 }],
+      ];
+
+      projectTraces.forEach((pts) => {
+        traces.push({ points: pts, weight: 1.1, section: 1, alpha: 0.15 });
+      });
+
+      // ========================================================
+      // 3. HARDWARE & 3D PCB CONCENTRIC LATTICE
+      // ========================================================
+      const hardwareTraces: CircuitPoint[][] = [
+        [{ u: 0.08, v: 0.40 }, { u: 0.24, v: 0.40 }, { u: 0.28, v: 0.44 }, { u: 0.28, v: 0.56 }, { u: 0.12, v: 0.56 }],
+        [{ u: 0.72, v: 0.42 }, { u: 0.90, v: 0.42 }, { u: 0.90, v: 0.58 }, { u: 0.76, v: 0.58 }],
+        [{ u: 0.20, v: 0.48 }, { u: 0.38, v: 0.48 }, { u: 0.42, v: 0.52 }, { u: 0.58, v: 0.52 }],
+        [{ u: 0.32, v: 0.42 }, { u: 0.48, v: 0.42 }, { u: 0.52, v: 0.46 }, { u: 0.68, v: 0.46 }],
+      ];
+
+      hardwareTraces.forEach((pts) => {
+        traces.push({ points: pts, weight: 1.2, section: 2, alpha: 0.18 });
+      });
+
+      // ========================================================
+      // 4. STRUCTURED SENSOR & BUS MATRIX (Skills Substrate)
+      // ========================================================
+      const skillTraces: CircuitPoint[][] = [
+        [{ u: 0.05, v: 0.52 }, { u: 0.18, v: 0.52 }, { u: 0.18, v: 0.75 }],
+        [{ u: 0.07, v: 0.58 }, { u: 0.22, v: 0.58 }, { u: 0.22, v: 0.82 }],
+        [{ u: 0.05, v: 0.64 }, { u: 0.16, v: 0.64 }, { u: 0.20, v: 0.68 }, { u: 0.20, v: 0.88 }],
+        [{ u: 0.35, v: 0.60 }, { u: 0.50, v: 0.60 }, { u: 0.55, v: 0.65 }, { u: 0.70, v: 0.65 }],
+        [{ u: 0.40, v: 0.68 }, { u: 0.58, v: 0.68 }, { u: 0.62, v: 0.72 }, { u: 0.82, v: 0.72 }],
+        [{ u: 0.82, v: 0.55 }, { u: 0.94, v: 0.55 }, { u: 0.94, v: 0.80 }],
+        [{ u: 0.78, v: 0.62 }, { u: 0.91, v: 0.62 }, { u: 0.91, v: 0.86 }],
+      ];
+
+      skillTraces.forEach((pts) => {
+        traces.push({ points: pts, weight: 1.0, section: 3, alpha: 0.16 });
+      });
+
+      // ========================================================
+      // 5. CALM PARALLEL & CONVERGING TRACES (About & Contact)
+      // ========================================================
+      const aboutTraces: CircuitPoint[][] = [
+        [{ u: 0.04, v: 0.72 }, { u: 0.15, v: 0.72 }, { u: 0.15, v: 0.94 }],
+        [{ u: 0.08, v: 0.78 }, { u: 0.25, v: 0.78 }, { u: 0.30, v: 0.83 }, { u: 0.30, v: 0.95 }],
+        [{ u: 0.92, v: 0.74 }, { u: 0.82, v: 0.74 }, { u: 0.78, v: 0.78 }, { u: 0.78, v: 0.96 }],
+        [{ u: 0.95, v: 0.80 }, { u: 0.86, v: 0.80 }, { u: 0.86, v: 0.96 }],
+        // Contact terminal convergence
+        [{ u: 0.25, v: 0.90 }, { u: 0.42, v: 0.90 }, { u: 0.46, v: 0.94 }, { u: 0.54, v: 0.94 }, { u: 0.58, v: 0.90 }, { u: 0.75, v: 0.90 }],
+        [{ u: 0.32, v: 0.94 }, { u: 0.45, v: 0.94 }, { u: 0.48, v: 0.97 }, { u: 0.52, v: 0.97 }, { u: 0.55, v: 0.94 }, { u: 0.68, v: 0.94 }],
+      ];
+
+      aboutTraces.forEach((pts) => {
+        traces.push({ points: pts, weight: 0.9, section: 4, alpha: 0.14 });
+      });
+
+      // Extract unique nodes (trace endpoints & bends) for via/pad rendering
+      const coordSet = new Set<string>();
+      traces.forEach((trace) => {
+        trace.points.forEach((pt, pIdx) => {
+          const key = `${pt.u.toFixed(3)},${pt.v.toFixed(3)}`;
+          if (!coordSet.has(key)) {
+            coordSet.add(key);
+            const isVia = pIdx === 0 || pIdx === trace.points.length - 1;
+            nodes.push({
+              u: pt.u,
+              v: pt.v,
+              radius: isVia ? (isMobile ? 2.2 : 3.0) : 1.8,
+              isVia,
+              glow: 0,
+            });
+          }
+        });
+      });
+
+      // Initialize Signal Pulse Pool
+      for (let i = 0; i < maxPulses; i++) {
+        pulses.push({
+          traceIdx: i % traces.length,
+          t: (i / maxPulses),
+          speed: 0.0035 + (i % 3) * 0.0015,
+          length: 0.12,
+          active: true,
+          delay: i * 35,
         });
       }
     }
 
-    resize();
-    initParticles();
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    window.addEventListener('resize', () => {
-      resize();
-      initParticles();
-    }, { passive: true });
+      canvas.width = Math.floor(W * dpr);
+      canvas.height = Math.floor(H * dpr);
 
-    // Track scroll progress to continuously morph the spatial field
-    function updateScroll() {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      scrollProgress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
+      ctx!.setTransform(1, 0, 0, 1, 0, 0);
+      ctx!.scale(dpr, dpr);
+
+      buildCircuitTopology();
+
+      if (prefersReduced) {
+        renderStatic();
+      }
     }
-    window.addEventListener('scroll', updateScroll, { passive: true });
-    updateScroll();
 
-    // Mouse movement: treat cursor as an obstacle in the perception field
-    if (!isReduced) {
-      window.addEventListener('mousemove', (e) => {
-        cursor.targetX = e.clientX;
-        cursor.targetY = e.clientY;
-        cursor.active = true;
-      }, { passive: true });
+    function onScroll() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      targetScroll = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 
-      window.addEventListener('mouseleave', () => {
-        cursor.active = false;
-        cursor.targetX = -9999;
-        cursor.targetY = -9999;
+    if (!prefersReduced) {
+      document.addEventListener('visibilitychange', () => {
+        isVisible = !document.hidden;
+        if (isVisible && !animId) {
+          animId = requestAnimationFrame(animate);
+        } else if (!isVisible && animId) {
+          cancelAnimationFrame(animId);
+          animId = null;
+        }
       });
     }
 
-    function animate() {
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+
+    // Static Technical Blueprint Rendering for prefers-reduced-motion
+    function renderStatic() {
       if (!ctx) return;
       ctx.clearRect(0, 0, W, H);
-      time += 0.015;
 
-      // Smooth cursor interpolation
-      cursor.x += (cursor.targetX - cursor.x) * 0.12;
-      cursor.y += (cursor.targetY - cursor.y) * 0.12;
-
-      // CONTINUOUS SCROLL MORPHING:
-      // In Hero (scroll = 0..0.15): cloud centered slightly right
-      // In Work (scroll = 0.15..0.45): cloud shifts to the sides framing content
-      // In Skills (scroll = 0.45..0.7): cloud forms a wider, shallower constellation
-      // In About/Contact (scroll = 0.7..1.0): cloud converges toward center-bottom
-      let centerTargetX = W * 0.5;
-      let centerTargetY = H * 0.5;
-      let spreadX = W * 0.42;
-      let spreadY = H * 0.42;
-
-      if (scrollProgress < 0.2) {
-        // Hero: centered slightly to the right around the name & video
-        centerTargetX = W > 1024 ? W * 0.62 : W * 0.5;
-        centerTargetY = H * 0.46;
-        spreadX = W * 0.42;
-        spreadY = H * 0.38;
-      } else if (scrollProgress < 0.5) {
-        // Work: wide lateral distribution framing the project cards
-        centerTargetX = W * 0.5;
-        centerTargetY = H * 0.48;
-        spreadX = W * 0.48;
-        spreadY = H * 0.44;
-      } else if (scrollProgress < 0.75) {
-        // Skills: structured spatial matrix
-        centerTargetX = W * 0.52;
-        centerTargetY = H * 0.5;
-        spreadX = W * 0.44;
-        spreadY = H * 0.46;
-      } else {
-        // About / Contact: calm ambient constellation
-        centerTargetX = W * 0.5;
-        centerTargetY = H * 0.52;
-        spreadX = W * 0.4;
-        spreadY = H * 0.4;
-      }
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-
-        // Organic sensory drift
-        const wave = Math.sin(time * p.speed + p.phase);
-        const cosWave = Math.cos(time * p.speed * 0.8 + p.phase);
-
-        // Calculate destination based on morph target
-        const targetX = centerTargetX + (p.nx * spreadX) + cosWave * 12;
-        const targetY = centerTargetY + (p.ny * spreadY) + wave * 10;
-        const targetZ = p.nz * 320 + Math.sin(time * 0.4 + p.phase) * 20;
-
-        // Obstacle detection interaction: cursor enters the field
-        if (!isReduced && cursor.active && cursor.x > -500) {
-          const dx = p.x - cursor.x;
-          const dy = p.y - cursor.y;
-          const dist = Math.hypot(dx, dy);
-
-          if (dist < REPEL_RADIUS && dist > 0.001) {
-            const factor = Math.pow(1 - dist / REPEL_RADIUS, 1.8);
-            const force = factor * REPEL_FORCE;
-            const angle = Math.atan2(dy, dx);
-
-            p.vx += Math.cos(angle) * force;
-            p.vy += Math.sin(angle) * force;
-            p.vz += force * 1.5;
-          }
+      // Traces
+      ctx.beginPath();
+      for (let i = 0; i < traces.length; i++) {
+        const tr = traces[i];
+        const pts = tr.points;
+        ctx.moveTo(pts[0].u * W, pts[0].v * H);
+        for (let j = 1; j < pts.length; j++) {
+          ctx.lineTo(pts[j].u * W, pts[j].v * H);
         }
-
-        // Spring physics return
-        p.vx = (p.vx + (targetX - p.x) * SPRING) * DAMP;
-        p.vy = (p.vy + (targetY - p.y) * SPRING) * DAMP;
-        p.vz = (p.vz + (targetZ - p.z) * SPRING) * DAMP;
-
-        p.x += p.vx;
-        p.y += p.vy;
-        p.z += p.vz;
-
-        // Perspective 3D projection
-        const scale = FOCAL_LENGTH / Math.max(10, FOCAL_LENGTH + p.z);
-        const px = p.x;
-        const py = p.y;
-        const pr = Math.max(0.4, p.baseRadius * scale);
-
-        // Alpha depth layering: points in foreground are crisper, background points softer
-        const depthNorm = Math.max(0, Math.min(1, (p.z + 250) / 500));
-        const alpha = 0.15 + 0.65 * depthNorm;
-
-        ctx.beginPath();
-        ctx.arc(px, py, pr, 0, Math.PI * 2);
-
-        if (p.isCyan) {
-          ctx.fillStyle = `rgba(14, 165, 233, ${alpha * 0.85})`;
-        } else {
-          ctx.fillStyle = `rgba(12, 12, 10, ${alpha * 0.22})`;
-        }
-        ctx.fill();
       }
+      ctx.strokeStyle = 'rgba(41, 37, 36, 0.14)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
 
-      requestAnimationFrame(animate);
+      // Vias
+      ctx.beginPath();
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        const x = n.u * W;
+        const y = n.v * H;
+        ctx.moveTo(x + n.radius, y);
+        ctx.arc(x, y, n.radius, 0, Math.PI * 2);
+      }
+      ctx.fillStyle = 'rgba(41, 37, 36, 0.18)';
+      ctx.fill();
     }
 
-    animate();
+    // High-Performance Dynamic Animation Loop (0 Allocations)
+    function animate() {
+      if (!isVisible || !ctx) return;
+
+      // Smooth scroll interpolation
+      currentScroll += (targetScroll - currentScroll) * 0.08;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Section scroll weights (0.0 Hero -> 0.22 Work -> 0.42 Hardware -> 0.65 Skills -> 0.85 About -> 1.0 Contact)
+      const scrollY = currentScroll;
+
+      // 1. Draw Substrate Circuit Traces
+      for (let i = 0; i < traces.length; i++) {
+        const tr = traces[i];
+        const pts = tr.points;
+
+        // Subtle section brightness modulation based on current scroll position
+        let secWeight = 1.0;
+        if (tr.section === 0 && scrollY < 0.25) secWeight = 1.35;
+        else if (tr.section === 1 && scrollY >= 0.15 && scrollY < 0.45) secWeight = 1.4;
+        else if (tr.section === 2 && scrollY >= 0.35 && scrollY < 0.60) secWeight = 1.45;
+        else if (tr.section === 3 && scrollY >= 0.50 && scrollY < 0.80) secWeight = 1.4;
+        else if (tr.section === 4 && scrollY >= 0.70) secWeight = 1.35;
+
+        const effectiveAlpha = Math.min(0.35, tr.alpha * secWeight);
+
+        ctx.beginPath();
+        ctx.moveTo(pts[0].u * W, pts[0].v * H);
+        for (let j = 1; j < pts.length; j++) {
+          ctx.lineTo(pts[j].u * W, pts[j].v * H);
+        }
+        ctx.strokeStyle = `rgba(41, 37, 36, ${effectiveAlpha})`;
+        ctx.lineWidth = tr.weight;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      }
+
+      // 2. Draw Circuit Vias & Junction Pads
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        const nx = n.u * W;
+        const ny = n.v * H;
+
+        // Outer via ring
+        ctx.beginPath();
+        ctx.arc(nx, ny, n.radius, 0, Math.PI * 2);
+        ctx.fillStyle = n.glow > 0.05
+          ? `rgba(14, 165, 233, ${0.4 + n.glow * 0.5})`
+          : 'rgba(41, 37, 36, 0.16)';
+        ctx.fill();
+
+        // Inner plated hole (via center)
+        if (n.isVia) {
+          ctx.beginPath();
+          ctx.arc(nx, ny, Math.max(0.7, n.radius * 0.45), 0, Math.PI * 2);
+          ctx.fillStyle = '#F8F8F5'; // punch through to canvas background
+          ctx.fill();
+        }
+
+        // Decay node activation glow
+        if (n.glow > 0) {
+          n.glow = Math.max(0, n.glow - 0.025);
+        }
+      }
+
+      // 3. Propagate & Render Luminous Cyan Signal Pulses
+      for (let i = 0; i < pulses.length; i++) {
+        const p = pulses[i];
+
+        if (p.delay > 0) {
+          p.delay--;
+          continue;
+        }
+
+        p.t += p.speed;
+
+        if (p.t >= 1.0) {
+          // Reached destination: activate nearby node briefly
+          const tr = traces[p.traceIdx];
+          const lastPt = tr.points[tr.points.length - 1];
+          // Find matching node to glow
+          for (let nIdx = 0; nIdx < nodes.length; nIdx++) {
+            const nd = nodes[nIdx];
+            if (Math.abs(nd.u - lastPt.u) < 0.01 && Math.abs(nd.v - lastPt.v) < 0.01) {
+              nd.glow = 1.0;
+              break;
+            }
+          }
+
+          // Cycle to another trace connected or in the active section
+          p.t = 0;
+          p.traceIdx = (p.traceIdx + 3) % traces.length;
+          p.speed = 0.003 + Math.random() * 0.0025;
+          p.delay = Math.floor(Math.random() * 40);
+          continue;
+        }
+
+        // Interpolate head and tail along piecewise trace segments
+        const tr = traces[p.traceIdx];
+        const pts = tr.points;
+        const totalSegments = pts.length - 1;
+        if (totalSegments <= 0) continue;
+
+        // Head coordinate
+        const headProg = p.t * totalSegments;
+        const headSeg = Math.min(totalSegments - 1, Math.floor(headProg));
+        const headFrac = headProg - headSeg;
+        const hx = (pts[headSeg].u + (pts[headSeg + 1].u - pts[headSeg].u) * headFrac) * W;
+        const hy = (pts[headSeg].v + (pts[headSeg + 1].v - pts[headSeg].v) * headFrac) * H;
+
+        // Tail coordinate (lagging behind)
+        const tailT = Math.max(0, p.t - p.length);
+        const tailProg = tailT * totalSegments;
+        const tailSeg = Math.min(totalSegments - 1, Math.floor(tailProg));
+        const tailFrac = tailProg - tailSeg;
+        const tx = (pts[tailSeg].u + (pts[tailSeg + 1].u - pts[tailSeg].u) * tailFrac) * W;
+        const ty = (pts[tailSeg].v + (pts[tailSeg + 1].v - pts[tailSeg].v) * tailFrac) * H;
+
+        // Draw luminous packet line
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        if (headSeg === tailSeg) {
+          ctx.lineTo(hx, hy);
+        } else {
+          // Pass through intermediate corner point if crossing segments
+          ctx.lineTo(pts[headSeg].u * W, pts[headSeg].v * H);
+          ctx.lineTo(hx, hy);
+        }
+
+        ctx.strokeStyle = 'rgba(14, 165, 233, 0.65)';
+        ctx.lineWidth = 1.8;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Luminous pulse head dot
+        ctx.beginPath();
+        ctx.arc(hx, hy, 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = '#38BDF8';
+        ctx.shadowColor = 'rgba(14, 165, 233, 0.6)';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0; // reset immediately to prevent perf penalty
+      }
+
+      animId = requestAnimationFrame(animate);
+    }
+
+    if (!prefersReduced) {
+      animId = requestAnimationFrame(animate);
+    }
   }
 }
 </script>
@@ -247,6 +424,6 @@ if (canvas) {
     width: 100vw;
     height: 100vh;
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
   }
 </style>
