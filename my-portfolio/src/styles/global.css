@@ -1,81 +1,89 @@
 /* ==========================================================
-   DESIGN SYSTEM — DARK MAXIMALIST ENGINEERING AESTHETIC
+   DESIGN SYSTEM — PRECISION ENGINEERING PORTFOLIO
    Naveen Shaji George · Robotics & Autonomous Systems Engineer
    Philosophy: Advanced robotics laboratory & computational systems
-   Palette: Deep Dark (#080909) + Engineering Cyan (#00AEEF) + High Contrast Light (#F2F3F1)
+   Palette: Graphite (#0D1117) + Warm Ivory (#F5F0E8) + Muted Brass (#C9B037) + Technical Steel (#4A5568)
    ========================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
-  /* === CANVAS & SURFACES (Dark Engineering Foundation) === */
-  --bg:              #080909;       /* Deep lab black canvas */
-  --bg-pure:         #050606;       /* Recessed pure black substrate */
-  --surface:         #111415;       /* Elevated technical surface */
-  --surface-elevated:#151819;       /* Higher card/modal plane */
-  --surface-dim:     #0D0F10;       /* Recessed panel / secondary zone */
+  /* === CANVAS & SURFACES (Precision Engineering Foundation) === */
+  --bg:              #0D1117;       /* Deep graphite canvas */
+  --bg-pure:         #080C10;       /* Recessed pure graphite substrate */
+  --surface:         #161D23;       /* Elevated technical surface */
+  --surface-elevated:#1F2937;       /* Higher card/modal plane */
+  --surface-dim:     #0F1419;       /* Recessed panel / secondary zone */
   
   /* === SECTION-SPECIFIC COLOR CONTINUITY === */
-  --bg-hero:         #080909;       /* Monumental origin */
-  --bg-work:         #0D0F10;       /* Systems & project archive */
-  --bg-hardware:     #0A0C0D;       /* Physical PCB artifact laboratory */
-  --bg-skills:       #090B0C;       /* Interconnected competency matrix */
-  --bg-about:        #0B0D0E;       /* Engineering perspective & chronology */
-  --bg-contact:      #080909;       /* Direct dispatch console */
-
+  --bg-hero:         #0D1117;       /* Monumental origin */
+  --bg-work:         #10181F;       /* Systems & project archive */
+  --bg-hardware:     #0F181A;       /* Physical PCB artifact laboratory */
+  --bg-skills:       #11161C;       /* Interconnected competency matrix */
+  --bg-about:        #131B22;       /* Engineering perspective & chronology */
+  --bg-contact:      #0D1117;       /* Direct dispatch console */
+  
   /* === FROSTED MATERIALS / TECHNICAL GLASS === */
-  --material-glass:        rgba(13, 15, 16, 0.85);
-  --material-glass-subtle: rgba(13, 15, 16, 0.60);
-  --material-glass-heavy:  rgba(8, 9, 9, 0.94);
-  --glass-blur:            blur(20px) saturate(180%);
-  --glass-border:          1px solid rgba(255, 255, 255, 0.08);
-  --glass-border-subtle:   1px solid rgba(255, 255, 255, 0.04);
-
+  --material-glass:        rgba(22, 28, 36, 0.85);
+  --material-glass-subtle: rgba(22, 28, 36, 0.55);
+  --material-glass-heavy:  rgba(13, 17, 23, 0.92);
+  --glass-blur:            blur(24px) saturate(160%);
+  --glass-border:          1px solid rgba(148, 163, 184, 0.12);
+  --glass-border-subtle:   1px solid rgba(148, 163, 184, 0.06);
+  
   /* === TYPOGRAPHY (High Contrast Editorial Hierarchy) === */
-  --text-primary:    #F2F3F1;       /* Crisp laboratory white (16.5:1 contrast) */
-  --text-body:       #D1D5D5;       /* High-clarity technical body */
-  --text-secondary:  #A7ADAD;       /* Neutral secondary descriptive text */
-  --text-muted:      #6F7778;       /* Engineering metadata & specifications */
-  --text-dim:        #454B4C;       /* Low-priority ticks & subtle datum marks */
-
+  --text-primary:    #F5F0E8;       /* Warm ivory — primary text (15.8:1 contrast) */
+  --text-body:       #D4D8DD;       /* High-clarity technical body */
+  --text-secondary:  #94A3B8;       /* Neutral secondary descriptive text */
+  --text-muted:      #64748B;       /* Engineering metadata & specifications */
+  --text-dim:        #475569;       /* Low-priority ticks & subtle datum marks */
+  
   /* === BORDERS & SYSTEM SEPARATORS === */
-  --border:          rgba(255, 255, 255, 0.08); /* Primary dark hairline border */
-  --border-subtle:   rgba(255, 255, 255, 0.04); /* Faint structural dividing line */
-  --border-strong:   rgba(255, 255, 255, 0.16); /* Prominent panel border */
-  --border-cyan:     rgba(0, 174, 239, 0.35);    /* Active engineering circuit trace */
-
-  /* === PRECISION ENGINEERING ACCENTS (Restrained Cyan & Electric Blue) === */
-  --cyan:            #00AEEF;       /* Precision Electric Cyan — active signals & nodes */
-  --cyan-dark:       #0284C7;       /* Deep Sky-600 — links and subdued states */
-  --cyan-electric:   #38BDF8;       /* Concentrated core electrical pulse */
-  --cyan-light:      rgba(0, 174, 239, 0.12);
-  --cyan-glow:       rgba(0, 174, 239, 0.28);
-  --cyan-subtle:     rgba(0, 174, 239, 0.05);
-
-  /* === DEPTH / ELEVATION TOKENS (Dark Ambient Occlusion) === */
-  --shadow-resting:  0 4px 20px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-hover:    0 16px 40px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 174, 239, 0.12);
-  --shadow-active:   0 4px 14px rgba(0, 0, 0, 0.7);
-  --shadow-elevated: 0 24px 60px -12px rgba(0, 0, 0, 0.9), 0 0 1px rgba(255, 255, 255, 0.12);
-
+  --border:          rgba(148, 163, 184, 0.12); /* Primary steel border */
+  --border-subtle:   rgba(148, 163, 184, 0.06); /* Faint structural dividing line */
+  --border-strong:   rgba(148, 163, 184, 0.2);  /* Prominent panel border */
+  --border-brass:    rgba(201, 176, 55, 0.25);   /* Brass accent border */
+  
+  /* === PRECISION ENGINEERING ACCENTS (Muted Brass & Technical Steel) === */
+  --brass:           #C9B037;       /* Muted engineering brass — active signals & nodes */
+  --brass-dark:      #A6942E;       /* Deep brass — links and subdued states */
+  --brass-bright:    #E8D14A;       /* Bright brass — concentrated core pulse */
+  --brass-light:     rgba(201, 176, 55, 0.12);
+  --brass-glow:      rgba(201, 176, 55, 0.22);
+  --brass-subtle:    rgba(201, 176, 55, 0.06);
+  
+  --steel:           #64748B;       /* Technical steel — secondary accents */
+  --steel-dark:      #475569;       /* Deep steel — links and subdued states */
+  --steel-bright:    #94A3B8;       /* Bright steel — concentrated pulse */
+  --steel-light:     rgba(100, 116, 139, 0.12);
+  --steel-glow:      rgba(100, 116, 139, 0.18);
+  --steel-subtle:    rgba(100, 116, 139, 0.05);
+  
+  /* === DEPTH / ELEVATION TOKENS (Engineering Ambient Occlusion) === */
+  --shadow-resting:  0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3);
+  --shadow-hover:    0 20px 48px rgba(0, 0, 0, 0.6), 0 0 20px rgba(201, 176, 55, 0.1);
+  --shadow-active:   0 6px 18px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 32px 72px -16px rgba(0, 0, 0, 0.7), 0 0 2px rgba(245, 240, 232, 0.08);
+  
   /* === FONTS === */
-  --font-sans:       -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  --font-sans:       'Space Grotesk', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
   --font-mono:       'JetBrains Mono', monospace;
-
-  /* === TYPOGRAPHY SCALE (Monumental Maximalism) === */
-  --text-2xs:    0.6875rem;   /* 11px */
-  --text-xs:     0.75rem;     /* 12px */
-  --text-sm:     0.875rem;    /* 14px */
-  --text-base:   1rem;        /* 16px */
-  --text-lg:     1.125rem;    /* 18px */
-  --text-xl:     1.375rem;    /* 22px */
-  --text-2xl:    1.75rem;     /* 28px */
-  --text-3xl:    2.25rem;     /* 36px */
-  --text-4xl:    3rem;        /* 48px */
-  --text-5xl:    4.25rem;     /* 68px */
-  --text-6xl:    5.5rem;      /* 88px */
-  --text-display: clamp(5rem, 12vw, 10rem);
-  --text-display-tight: clamp(4.5rem, 10vw, 8.5rem);
+  --font-display:    'Space Grotesk', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  
+  /* === TYPOGRAPHY SCALE (Precision Engineering Scale) === */
+  --text-2xs:    0.625rem;   /* 10px */
+  --text-xs:     0.6875rem;  /* 11px */
+  --text-sm:     0.8125rem;  /* 13px */
+  --text-base:   0.9375rem;  /* 15px */
+  --text-lg:     1.0625rem;  /* 17px */
+  --text-xl:     1.25rem;    /* 20px */
+  --text-2xl:    1.5625rem;  /* 25px */
+  --text-3xl:    1.9375rem;  /* 31px */
+  --text-4xl:    2.5rem;     /* 40px */
+  --text-5xl:    3.5rem;     /* 56px */
+  --text-6xl:    4.5rem;     /* 72px */
+  --text-display: clamp(4.5rem, 10vw, 8rem);
+  --text-display-tight: clamp(4rem, 9vw, 7rem);
 
   /* === SPACING === */
   --space-1:   0.25rem;
@@ -119,12 +127,27 @@
 
   /* === CIRCUIT FIELD TOKENS === */
   --circuit-trace-major:    rgba(0, 174, 239, 0.35);
-  --circuit-trace-secondary: rgba(0, 174, 239, 0.18);
-  --circuit-trace-micro:    rgba(0, 174, 239, 0.1);
-  --circuit-node-primary:   #00AEEF;
-  --circuit-node-secondary: #38BDF8;
-  --circuit-pulse-core:     #38BDF8;
-  --circuit-pulse-halo:     rgba(0, 174, 239, 0.35);
+  --circuit-trace-major:     rgba(201, 176, 55, 0.35);
+  --circuit-trace-secondary: rgba(201, 176, 55, 0.18);
+  --circuit-trace-micro:     rgba(201, 176, 55, 0.1);
+  --circuit-node-primary:    #C9B037;
+  --circuit-node-secondary:  #E8D14A;
+  --circuit-pulse-core:      #E8D14A;
+  --circuit-pulse-halo:      rgba(201, 176, 55, 0.35);
+  
+  /* === PCB COMPONENT TOKENS === */
+  --pcb-substrate:        #141E18;
+  --pcb-trace:            #264433;
+  --pcb-trace-gold:       #E5C158;
+  --pcb-solder:           #0C140F;
+  --pcb-via:              #D4AF37;
+  --pcb-mounting:         #243328;
+  --pcb-component:        #1B1E1C;
+  --pcb-pin:              #D4AF37;
+  --pcb-silkscreen:       #E4EFE8;
+  --pcb-label:            #6EE7B7;
+  --pcb-copper:           #D4AF37;
+  --pcb-isolation:        #FFFFFF;
 }
 
 /* ==========================================================
