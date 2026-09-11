@@ -3,97 +3,7 @@
 // Interactive 3D Perspective Tilt, Horizontally Swipable/Draggable Boards,
 // Test-Point Telemetry Inspection, and Deep Hardware Rationale
 // Performance: Pure CSS/SVG vector graphics + Anime.js v4 transitions (No WebGL bloat)
-
-interface PCBArtifact {
-  id: string;
-  name: string;
-  subsystem: string;
-  project: string;
-  projectId: string;
-  dimensions: string;
-  layerCount: string;
-  finish: string;
-  problemSolved: string;
-  designDecisions: string;
-  specs: { label: string; value: string }[];
-  testPoints: { id: string; x: number; y: number; label: string; desc: string }[];
-}
-
-const pcbArtifacts: PCBArtifact[] = [
-  {
-    id: 'vehicle-ecu',
-    name: 'Custom Multi-Layer Vehicle ECU',
-    subsystem: 'Steer-by-Wire & Isolated CAN Gateway',
-    project: 'Autonomous aBAJA Vehicle (AIR 7 & AIR 11)',
-    projectId: 'abaja',
-    dimensions: '120 mm × 85 mm',
-    layerCount: '4-Layer FR4 (1.6mm)',
-    finish: 'ENIG (Electroless Nickel Immersion Gold)',
-    problemSolved: 'Eliminated high-current electromagnetic interference (EMI) and 24V servo inductive kickback that caused logic microcontrollers to brown out during rapid full-lock steering on rough off-road terrain.',
-    designDecisions: 'Physically separated power and logic planes via optocoupled galvanic isolation. Routed differential CAN 2.0B traces with matched 120Ω split termination and common-mode TVS protection (SMBJ24CA).',
-    specs: [
-      { label: 'Layer Stackup', value: '4-Layer (Sig / GND / PWR / Sig)' },
-      { label: 'Isolation Barrier', value: '2.5 kV Galvanic Isolation' },
-      { label: 'Bus Standard', value: 'CAN 2.0B @ 500 kbps' },
-      { label: 'Connector Header', value: 'Automotive Deutsch DT04-12P' },
-      { label: 'Supply Input', value: '18V – 32V Transient Protected' },
-    ],
-    testPoints: [
-      { id: 'tp-iso', x: 50, y: 50, label: 'TP_ISO: Isolation Barrier', desc: 'Optical barrier separating 24V actuator ground from 3.3V logic.' },
-      { id: 'tp-can', x: 82, y: 28, label: 'TP_CAN: Differential Bus', desc: 'CAN_H/CAN_L differential pair terminated with 120Ω ±1% split network.' },
-      { id: 'tp-pwr', x: 22, y: 78, label: 'TP_PWR: Buck Regulator', desc: 'Automotive-grade step-down stage with LC filter generating quiet 5.0V/3.3V.' },
-      { id: 'tp-mcu', x: 38, y: 35, label: 'TP_MCU: Controller Core', desc: 'ARM Cortex M4 with hardware PWM timers and quadrature encoder ISRs.' },
-    ],
-  },
-  {
-    id: 'estop-interlock',
-    name: 'Fail-Safe Hardware E-Stop Interlock Board',
-    subsystem: 'Dual-Channel Emergency Power Severing',
-    project: 'Autonomous aBAJA Vehicle Safety Architecture',
-    projectId: 'abaja',
-    dimensions: '82 mm × 64 mm',
-    layerCount: '2-Layer 2oz Heavy Copper',
-    finish: 'Lead-Free HASL with Conformal Coating',
-    problemSolved: 'Prevented autonomous vehicle runaway in the event of trajectory software faults, communication link loss, or compute freeze during competition trials.',
-    designDecisions: 'Purely hardware-arbitrated dual-channel latching circuit requiring active manual reset. Operates completely independent of microcontroller firmware or software state with sub-5ms relay contact separation.',
-    specs: [
-      { label: 'Relay Configuration', value: 'Dual Form-C Normally Closed' },
-      { label: 'Response Latency', value: '< 5 ms Hardware Trip' },
-      { label: 'Current Rating', value: '40 A Continuous (80 A Peak)' },
-      { label: 'Trigger Channels', value: 'RF Wireless Link + Physical Cockpit Slap' },
-      { label: 'Interlock Logic', value: 'Hardware SCR Latching Relay' },
-    ],
-    testPoints: [
-      { id: 'tp-relay', x: 68, y: 48, label: 'TP_RELAY: Safety Contacts', desc: 'Dual redundant relay contacts switching the high-current battery line.' },
-      { id: 'tp-trip', x: 32, y: 30, label: 'TP_TRIP: Latch Trigger', desc: 'Hardware latch trigger input with optocoupled RC noise debounce.' },
-      { id: 'tp-stat', x: 45, y: 75, label: 'TP_STAT: Telemetry Out', desc: 'Isolated dry-contact feedback to ROS 2 logger indicating safety state.' },
-    ],
-  },
-  {
-    id: 'swarm-node',
-    name: 'Swarm Robotics Mesh & Motor Node',
-    subsystem: 'Distributed Agent Compute & Motor Driver',
-    project: 'Swarm Robotics Platform',
-    projectId: 'swarm-robotics',
-    dimensions: '62 mm × 62 mm',
-    layerCount: '2-Layer FR4 Standard',
-    finish: 'ENIG Gold',
-    problemSolved: 'Packaged dual-core compute, ad-hoc wireless mesh communications, dual H-bridge motor drivers, and 4-channel proximity sensing into a compact mobile agent footprint.',
-    designDecisions: 'Dedicated Core 0 to real-time closed-loop encoder PID and Core 1 to peer-to-peer TCP/IP mesh consensus broadcasts, eliminating latency jitter.',
-    specs: [
-      { label: 'Microcontroller', value: 'Dual-Core ESP32 @ 240 MHz' },
-      { label: 'Motor Drivers', value: 'Dual Integrated Full H-Bridge' },
-      { label: 'RF Interface', value: '2.4 GHz 802.11 b/g/n Mesh' },
-      { label: 'Sensor Headers', value: '4x Time-of-Flight / Proximity' },
-      { label: 'Battery Management', value: 'Single-Cell LiPo Charger & Protection' },
-    ],
-    testPoints: [
-      { id: 'tp-rf', x: 75, y: 22, label: 'TP_RF: Mesh Antenna Trace', desc: 'Pi-matched ceramic inverted-F antenna tuned for 2.4GHz ad-hoc broadcasts.' },
-      { id: 'tp-drv', x: 50, y: 65, label: 'TP_DRV: Dual H-Bridge', desc: 'PWM motor driver outputs with integrated flyback diode protection.' },
-      { id: 'tp-bms', x: 25, y: 42, label: 'TP_BMS: Power Supply Rail', desc: '3.7V LiPo battery management and low-dropout 3.3V linear regulator.' },
-    ],
-  },
-];
+import { pcbArtifacts } from '../data/pcbArtifacts';
 ---
 
 <div class="pcb-showcase-container" id="pcbShowcase">
@@ -224,7 +134,21 @@ const pcbArtifacts: PCBArtifact[] = [
         <!-- 3D Hint Cue -->
         <div class="perspective-hint mono" aria-hidden="true">
           <span class="hint-glyph">⟲</span>
-          <span>INTERACTIVE PERSPECTIVE TILT · HOVER TEST POINTS TO INSPECT</span>
+          <span>DRAG TO ROTATE · ARROW KEYS TO SWITCH BOARDS · R TO RESET</span>
+        </div>
+        
+        <!-- Accessible Rotation Controls -->
+        <div class="pcb-rotation-controls" aria-label="PCB rotation controls">
+          <button id="pcbRotateLeft" class="pcb-ctrl-btn" aria-label="Rotate left" title="Rotate Left (←)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          </button>
+          <button id="pcbResetRotation" class="pcb-ctrl-btn pcb-ctrl-reset" aria-label="Reset rotation" title="Reset View (R)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            <span class="ctrl-label">RESET</span>
+          </button>
+          <button id="pcbRotateRight" class="pcb-ctrl-btn" aria-label="Rotate right" title="Rotate Right (→)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 9A9 9 0 0 0 18.31 3.68L23 10"></path></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -304,6 +228,7 @@ const pcbArtifacts: PCBArtifact[] = [
 
 <script>
   import { animate, isReducedMotion } from '../lib/motion';
+  import { pcbArtifacts } from '../data/pcbArtifacts';
 
   let currentBoardIdx = 0;
   const boardsCount = 3;
@@ -314,6 +239,9 @@ const pcbArtifacts: PCBArtifact[] = [
   const detailCards = document.querySelectorAll<HTMLElement>('.pcb-details-card');
   const prevBtn = document.getElementById('pcbPrevBtn');
   const nextBtn = document.getElementById('pcbNextBtn');
+  const rotateLeftBtn = document.getElementById('pcbRotateLeft');
+  const rotateRightBtn = document.getElementById('pcbRotateRight');
+  const resetBtn = document.getElementById('pcbResetRotation');
 
   // Switch Active Board
   function setBoard(index: number) {
@@ -325,6 +253,9 @@ const pcbArtifacts: PCBArtifact[] = [
       dot.classList.toggle('active', isActive);
       dot.setAttribute('aria-selected', String(isActive));
     });
+
+    // Update Test Points Layer
+    updateTestPoints();
 
     // Update Cards with clean transition
     detailCards.forEach((card, idx) => {
@@ -355,6 +286,42 @@ const pcbArtifacts: PCBArtifact[] = [
     }
   }
 
+  // Update Test Points for Current Board
+  function updateTestPoints() {
+    const layer = document.getElementById('testPointsLayer');
+    if (!layer) return;
+    const board = pcbArtifacts[currentBoardIdx];
+    layer.innerHTML = board.testPoints.map((tp: { id: string; x: number; y: number; label: string }) => `
+      <button
+        class="tp-pin"
+        data-tp-id="${tp.id}"
+        style="left: ${tp.x}%; top: ${tp.y}%;"
+        aria-label="Inspect ${tp.label}"
+      >
+        <span class="tp-ping" aria-hidden="true"></span>
+        <span class="tp-core"></span>
+        <span class="tp-tooltip mono">${tp.label}</span>
+      </button>
+    `).join('');
+    
+    // Re-attach hover listeners
+    layer.querySelectorAll<HTMLButtonElement>('.tp-pin').forEach((pin) => {
+      pin.addEventListener('mouseenter', () => {
+        const activeCard = detailCards[currentBoardIdx];
+        if (!activeCard) return;
+        const boardId = activeCard.dataset.boardId;
+        const titleEl = document.getElementById(`tpCalloutTitle-${boardId}`);
+        const descEl = document.getElementById(`tpCalloutDesc-${boardId}`);
+        const tpId = pin.dataset.tpId;
+        if (tpId && titleEl && descEl) {
+          const tooltip = pin.querySelector('.tp-tooltip')?.textContent;
+          titleEl.textContent = `INSPECTING: ${tooltip || tpId}`;
+          descEl.textContent = `Verified test point active. Measuring signal impedance and transient protection parameters across this circuit node.`;
+        }
+      });
+    });
+  }
+
   // Prev / Next Listeners
   prevBtn?.addEventListener('click', () => setBoard(currentBoardIdx - 1));
   nextBtn?.addEventListener('click', () => setBoard(currentBoardIdx + 1));
@@ -366,106 +333,131 @@ const pcbArtifacts: PCBArtifact[] = [
     });
   });
 
-  // Keyboard navigation
-  stage?.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      setBoard(currentBoardIdx - 1);
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      setBoard(currentBoardIdx + 1);
+  // Rotation Control Buttons
+  let rotationStep = 0;
+  const maxRotationStep = 6; // ~90 degrees total each direction
+  const stepDegrees = 15;
+
+  function rotateLeft() {
+    if (rotationStep > -maxRotationStep) {
+      rotationStep--;
+      applyRotation();
+    }
+  }
+
+  function rotateRight() {
+    if (rotationStep < maxRotationStep) {
+      rotationStep++;
+      applyRotation();
+    }
+  }
+
+  function resetRotation() {
+    rotationStep = 0;
+    applyRotation();
+  }
+
+  function applyRotation() {
+    if (!boardObject) return;
+    const rotY = rotationStep * stepDegrees;
+    boardObject.style.transform = `perspective(1100px) rotateX(0deg) rotateY(${rotY}deg) translateZ(12px)`;
+    if (sheen) {
+      const px = 50 + rotY * 2.2;
+      sheen.style.background = `radial-gradient(circle at ${Math.max(10, Math.min(90, px))}% 50%, rgba(255, 255, 255, 0.16) 0%, transparent 65%)`;
+    }
+  }
+
+  rotateLeftBtn?.addEventListener('click', rotateLeft);
+  rotateRightBtn?.addEventListener('click', rotateRight);
+  resetBtn?.addEventListener('click', resetRotation);
+
+  // Keyboard Navigation
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    // Only handle keys when PCB section is in view or focused
+    const pcbSection = document.getElementById('hardware');
+    if (!pcbSection) return;
+    const rect = pcbSection.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    
+    if (!inView && document.activeElement !== stage) return;
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        // If focus is on stage or controls, rotate; otherwise switch board
+        if (document.activeElement === stage || document.activeElement === rotateLeftBtn || document.activeElement === rotateRightBtn || document.activeElement === resetBtn) {
+          rotateLeft();
+        } else {
+          setBoard(currentBoardIdx - 1);
+        }
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        if (document.activeElement === stage || document.activeElement === rotateLeftBtn || document.activeElement === rotateRightBtn || document.activeElement === resetBtn) {
+          rotateRight();
+        } else {
+          setBoard(currentBoardIdx + 1);
+        }
+        break;
+      case 'r':
+      case 'R':
+        e.preventDefault();
+        resetRotation();
+        break;
     }
   });
 
-  // Dynamic 3D Drag & Orbital Tilt Interaction
+  // Make stage focusable for keyboard
+  stage?.setAttribute('tabindex', '0');
+
+  // Deliberate Drag-to-Rotate Interaction (NO cursor-follow)
   if (stage && boardObject && !isReducedMotion()) {
     const stageEl = stage;
-    const boardEl = boardObject;
     let isDragging = false;
     let dragStartX = 0;
-    let currentRotX = 0;
-    let currentRotY = 0;
-    let targetRotX = 0;
-    let targetRotY = 0;
     let lastX = 0;
-    let lastY = 0;
-    let rafId: number | null = null;
 
-    function updateTransform() {
-      // Damped spring interpolation
-      currentRotX += (targetRotX - currentRotX) * 0.14;
-      currentRotY += (targetRotY - currentRotY) * 0.14;
-
-      boardEl.style.transform = `perspective(1100px) rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg) translateZ(${isDragging ? 24 : 12}px)`;
-
-      if (sheen) {
-        const px = 50 + currentRotY * 2.2;
-        const py = 50 - currentRotX * 2.2;
-        sheen.style.background = `radial-gradient(circle at ${Math.max(10, Math.min(90, px))}% ${Math.max(10, Math.min(90, py))}%, rgba(255, 255, 255, 0.16) 0%, transparent 65%)`;
-      }
-
-      if (Math.abs(targetRotX - currentRotX) > 0.05 || Math.abs(targetRotY - currentRotY) > 0.05 || isDragging) {
-        rafId = requestAnimationFrame(updateTransform);
-      } else {
-        rafId = null;
-      }
-    }
-
-    function startDrag(clientX: number, clientY: number) {
+    function startDrag(clientX: number) {
       isDragging = true;
       dragStartX = clientX;
       lastX = clientX;
-      lastY = clientY;
       stageEl.style.cursor = 'grabbing';
-      if (!rafId) rafId = requestAnimationFrame(updateTransform);
+      stageEl.classList.add('is-dragging');
     }
 
-    function moveDrag(clientX: number, clientY: number) {
-      if (!isDragging) {
-        // Hover tilt when not dragging
-        const rect = stageEl.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        targetRotX = -((clientY - cy) / (rect.height / 2)) * 12;
-        targetRotY = ((clientX - cx) / (rect.width / 2)) * 15;
-      } else {
-        // Active drag rotation with responsive range
-        const dx = clientX - lastX;
-        const dy = clientY - lastY;
-        lastX = clientX;
-        lastY = clientY;
-        targetRotY += dx * 0.35;
-        targetRotX -= dy * 0.35;
-        // Clamp X tilt to realistic inspection bounds
-        targetRotX = Math.max(-28, Math.min(28, targetRotX));
-        targetRotY = Math.max(-45, Math.min(45, targetRotY));
-      }
-      if (!rafId) rafId = requestAnimationFrame(updateTransform);
+    function moveDrag(clientX: number) {
+      if (!isDragging) return;
+      const dx = clientX - lastX;
+      lastX = clientX;
+      // Rotate based on drag delta
+      rotationStep = Math.max(-maxRotationStep, Math.min(maxRotationStep, rotationStep + dx * 0.15));
+      applyRotation();
     }
 
     function endDrag(clientX?: number) {
       if (isDragging && clientX !== undefined) {
         const totalDx = clientX - dragStartX;
-        if (Math.abs(totalDx) > 55) {
+        // Swipe threshold to switch boards
+        if (Math.abs(totalDx) > 80) {
           if (totalDx > 0) setBoard(currentBoardIdx - 1);
           else setBoard(currentBoardIdx + 1);
         }
       }
       isDragging = false;
       stageEl.style.cursor = 'grab';
-      // Return to resting position gently
-      targetRotX = 0;
-      targetRotY = 0;
-      if (!rafId) rafId = requestAnimationFrame(updateTransform);
+      stageEl.classList.remove('is-dragging');
+      // Gentle return to nearest step
+      rotationStep = Math.round(rotationStep);
+      applyRotation();
     }
 
     stage.addEventListener('mousedown', (e) => {
       if ((e.target as HTMLElement).closest('.tp-pin') || (e.target as HTMLElement).closest('button')) return;
-      startDrag(e.clientX, e.clientY);
+      startDrag(e.clientX);
     });
 
     window.addEventListener('mousemove', (e) => {
-      moveDrag(e.clientX, e.clientY);
+      moveDrag(e.clientX);
     });
 
     window.addEventListener('mouseup', (e) => {
@@ -473,22 +465,18 @@ const pcbArtifacts: PCBArtifact[] = [
     });
 
     stage.addEventListener('mouseleave', () => {
-      if (!isDragging) {
-        targetRotX = 0;
-        targetRotY = 0;
-        if (!rafId) rafId = requestAnimationFrame(updateTransform);
-      }
+      if (isDragging) endDrag();
     });
 
     // Touch support with swipe
     stage.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
-      startDrag(touch.clientX, touch.clientY);
+      startDrag(touch.clientX);
     }, { passive: true });
 
     stage.addEventListener('touchmove', (e) => {
       const touch = e.touches[0];
-      moveDrag(touch.clientX, touch.clientY);
+      moveDrag(touch.clientX);
     }, { passive: true });
 
     stage.addEventListener('touchend', (e) => {
@@ -497,24 +485,8 @@ const pcbArtifacts: PCBArtifact[] = [
     }, { passive: true });
   }
 
-  // Test Points Hover Inspection
-  const testPoints = document.querySelectorAll<HTMLButtonElement>('.tp-pin');
-  testPoints.forEach((pin) => {
-    pin.addEventListener('mouseenter', () => {
-      const activeCard = detailCards[currentBoardIdx];
-      if (!activeCard) return;
-      const boardId = activeCard.dataset.boardId;
-      const titleEl = document.getElementById(`tpCalloutTitle-${boardId}`);
-      const descEl = document.getElementById(`tpCalloutDesc-${boardId}`);
-
-      const tpId = pin.dataset.tpId;
-      if (tpId && titleEl && descEl) {
-        const tooltip = pin.querySelector('.tp-tooltip')?.textContent;
-        titleEl.textContent = `INSPECTING: ${tooltip || tpId}`;
-        descEl.textContent = `Verified test point active. Measuring signal impedance and transient protection parameters across this circuit node.`;
-      }
-    });
-  });
+  // Initialize test points for first board
+  updateTestPoints();
 </script>
 
 <style>
@@ -984,6 +956,74 @@ const pcbArtifacts: PCBArtifact[] = [
   @media (max-width: 960px) {
     .pcb-stage-grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  /* PCB Rotation Controls */
+  .pcb-rotation-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--r-md);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .pcb-ctrl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-sm);
+    background: var(--bg-pure);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+
+  .pcb-ctrl-btn:hover {
+    background: var(--surface);
+    border-color: var(--cyan);
+    color: var(--cyan-dark);
+  }
+
+  .pcb-ctrl-btn:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+
+  .pcb-ctrl-reset {
+    flex: 1;
+    max-width: 120px;
+    gap: var(--space-2);
+  }
+
+  .ctrl-label {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  .pcb-ctrl-reset:hover .ctrl-label {
+    color: var(--cyan-dark);
+  }
+
+  .pcb-perspective-stage.is-dragging {
+    cursor: grabbing;
+  }
+
+  @media (max-width: 640px) {
+    .pcb-rotation-controls {
+      width: 100%;
+      justify-content: center;
+    }
+    .pcb-ctrl-reset {
+      max-width: none;
     }
   }
 </style>

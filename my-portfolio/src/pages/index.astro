@@ -5,10 +5,10 @@ import Layout from '../layouts/Layout.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
 import EngineeringField from '../components/EngineeringField.astro';
+import EngineeringBackground from '../components/EngineeringBackground.astro';
 import ProjectIndex from '../components/ProjectIndex.astro';
 import PCBShowcase from '../components/PCBShowcase.astro';
 import SkillsEvidence from '../components/SkillsEvidence.astro';
-import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 ---
@@ -27,21 +27,21 @@ import Footer from '../components/Footer.astro';
     <!-- Hero: Monumental Typography + Large Portrait + Dense Circuit Network -->
     <Hero />
 
+    <!-- 02 // Engineering Background: Chronology + Philosophy -->
+    <EngineeringBackground />
+
     <!-- 01 // Selected Work: Interactive Editorial Entry Cards -->
     <ProjectIndex />
 
-    <!-- 02 // Physical Hardware: Interactive 3D PCB Artifact Inspector -->
+    <!-- 03 // Skills & Evidence: Compact Skill Index -->
+    <SkillsEvidence />
+
+    <!-- 04 // Physical Hardware: Interactive 3D PCB Artifact Inspector -->
     <section id="hardware" class="section hardware-section" aria-label="Physical PCB Engineering Showcase">
       <div class="container">
         <PCBShowcase />
       </div>
     </section>
-
-    <!-- 03 // Skills & Evidence: Interactive Artifact Validation Inspector -->
-    <SkillsEvidence />
-
-    <!-- 04 // About: Engineering Perspective, Academic Foundation & Chronology -->
-    <About />
 
     <!-- 05 // Contact: Direct Communication & Verified Channels -->
     <Contact />

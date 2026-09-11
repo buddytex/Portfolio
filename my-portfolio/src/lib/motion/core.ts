@@ -144,7 +144,7 @@ export function animateSectionTitle(element: HTMLElement, options: {
 /**
  * Animate a section header with coordinated animation
  */
-export function animateSectionHeader(headerElement: HTMLElement, options: {
+export async function animateSectionHeader(headerElement: HTMLElement, options: {
   delay?: number;
   duration?: number;
   ease?: string;
@@ -196,5 +196,5 @@ export function animateSectionHeader(headerElement: HTMLElement, options: {
     }));
   }
   
-  return Promise.all(animations).then(() => {});
+  await Promise.all(animations);
 }

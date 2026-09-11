@@ -363,51 +363,64 @@ main#mainContent {
 }
 
 /* ==========================================================
-   VIEWPORT-AWARE SECTION COMPOSITION
-   Each major section uses viewport-aware sizing
+   FULL-SCREEN SECTION COMPOSITION
+   Each major section occupies exactly one viewport
    ========================================================== */
 
 .section {
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
+  min-height: 100svh;
+  position: relative;
 }
 
-/* Allow content to grow naturally when needed */
-.section > .container {
+/* Allow content to grow but stay within viewport */
+.section > .container,
+.section > .container-wide,
+.section > .container-content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  min-height: 0;
 }
 
-/* Hero section - full viewport */
+/* Hero section - full viewport for monumental presence */
 #hero.section {
   min-height: 100svh;
+  padding: 0;
 }
 
-/* Work section - full viewport with sticky header */
-#work.section {
-  min-height: 100svh;
-}
-
-/* Hardware section */
-#hardware.section {
-  min-height: 100svh;
-}
-
-/* Skills section */
-#skills.section {
-  min-height: 100svh;
-}
-
-/* About section */
-#about.section {
-  min-height: 100svh;
-}
-
-/* Contact section */
+/* All major sections - exactly one viewport */
+#background.section,
+#work.section,
+#skills.section,
+#hardware.section,
 #contact.section {
   min-height: 100svh;
+  padding: var(--section-pad) 0;
+  box-sizing: border-box;
+}
+
+/* Ensure content doesn't overflow viewport */
+.section > * {
+  max-height: 100%;
+  overflow: hidden;
+}
+
+/* Sticky section headers work within viewport */
+.section-header {
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 20;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding-left: var(--space-1);
+  padding-right: var(--space-1);
 }
 
 /* Mobile adjustments for viewport composition */
@@ -429,6 +442,11 @@ main#mainContent {
 @media (prefers-reduced-motion: reduce) {
   .section {
     min-height: auto;
+  }
+  .section-header {
+    position: static;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }
 

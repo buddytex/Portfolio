@@ -352,13 +352,13 @@ export const SignalField: React.FC<SignalFieldProps> = ({ className = '' }) => {
           });
         }
 
-        nodeLayers.slice(1).forEach(layer => {
+nodeLayers.slice(1).forEach(layer => {
           layer.elements.forEach(el => {
             el.style.opacity = (layer.baseOpacity * intensity * (1 - fadeProgress * 1.8)).toString();
           });
-        }
+        });
 
-        const computedOpacity = (intensity * (1 - fadeProgress)).toString();
+        const computedOpacity: string = (intensity * (1 - fadeProgress)).toString();
         pulseGroup.style.opacity = computedOpacity;
 
         traceLayers[0].elements.forEach(el => {

@@ -2,7 +2,7 @@
 const navItems = [
   { href: '#work',    label: 'Projects' },
   { href: '#skills',  label: 'Skills' },
-  { href: '#about',   label: 'About' },
+  { href: '#hardware', label: 'PCB' },
   { href: '#contact', label: 'Contact' },
 ];
 ---
@@ -36,7 +36,7 @@ const navItems = [
       </a>
 
       <a
-        href="/Naveen_Shaji_George_CV.pdf"
+        href="/CV_1.pdf"
         class="nav-resume btn btn-secondary"
         download
       >
@@ -56,7 +56,7 @@ const navItems = [
       {navItems.map((item) => (
         <a href={item.href} class="mobile-link">{item.label}</a>
       ))}
-      <a href="/Naveen_Shaji_George_CV.pdf" class="mobile-link mobile-resume" download>
+      <a href="/CV_1.pdf" class="mobile-link mobile-resume" download>
         Resume ↓
       </a>
     </nav>

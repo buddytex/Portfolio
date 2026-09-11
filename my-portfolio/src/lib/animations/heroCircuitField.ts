@@ -46,6 +46,11 @@ interface NodeLayer {
   baseRadius: number;
 }
 
+interface ComponentLayer {
+  elements: SVGGElement[];
+  baseOpacity: number;
+}
+
 export async function initHeroCircuitField(container: HTMLElement): Promise<HeroCircuitController | null> {
   if (typeof window === 'undefined') return null;
 
@@ -199,6 +204,32 @@ export async function initHeroCircuitField(container: HTMLElement): Promise<Hero
     nodeLayers.push({ elements: microNodes, baseOpacity: 0.3, baseRadius: 1 });
   }
 
+  // LAYER 7: Hardware Components - ICs, SMD parts, LEDs, connectors
+  const componentLayers: ComponentLayer[] = [];
+  if (!isMobile) {
+    const componentGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    componentGroup.classList.add('component-layer');
+    const componentElements: SVGGElement[] = [];
+    
+    // Generate components that align with existing trace geometry
+    const components = generateHardwareComponents(nodes, traces);
+    components.forEach(comp => {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('class', `hw-component hw-${comp.type}`);
+      g.setAttribute('data-component-type', comp.type);
+      g.style.opacity = '0';
+      g.style.transition = 'opacity 1s ease, filter 0.3s ease';
+      g.innerHTML = comp.svg;
+      // Position the component
+      g.setAttribute('transform', `translate(${comp.x}, ${comp.y})`);
+      componentGroup.appendChild(g);
+      componentElements.push(g);
+    });
+    
+    svg.appendChild(componentGroup);
+    componentLayers.push({ elements: componentElements, baseOpacity: 0.4 });
+  }
+
   // Pulse group
   const pulseGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   pulseGroup.classList.add('pulse-group');
@@ -221,6 +252,11 @@ export async function initHeroCircuitField(container: HTMLElement): Promise<Hero
         });
       });
       nodeLayers.forEach(layer => {
+        layer.elements.forEach(el => {
+          el.style.opacity = (layer.baseOpacity * 0.8).toString();
+        });
+      });
+      componentLayers.forEach(layer => {
         layer.elements.forEach(el => {
           el.style.opacity = (layer.baseOpacity * 0.8).toString();
         });
@@ -380,6 +416,13 @@ export async function initHeroCircuitField(container: HTMLElement): Promise<Hero
         });
       });
 
+      // Component layers fade
+      componentLayers.forEach(layer => {
+        layer.elements.forEach(el => {
+          el.style.opacity = (layer.baseOpacity * intensity * (1 - fadeProgress * 1.5)).toString();
+        });
+      });
+
       // Pulse intensity reduces
       pulseGroup.style.opacity = (intensity * (1 - fadeProgress)).toString();
 
@@ -408,6 +451,11 @@ export async function initHeroCircuitField(container: HTMLElement): Promise<Hero
         });
       });
       nodeLayers.forEach(layer => {
+        layer.elements.forEach(el => {
+          el.style.opacity = (layer.baseOpacity * intensity).toString();
+        });
+      });
+      componentLayers.forEach(layer => {
         layer.elements.forEach(el => {
           el.style.opacity = (layer.baseOpacity * intensity).toString();
         });
@@ -729,4 +777,331 @@ function generateCircuitGeometry(isMobile: boolean) {
   }
 
   return { traces, nodes };
+}
+
+// ============================================================
+// HARDWARE COMPONENTS — PCB Component Primitives
+// Minimalist SVG representations of electronic components
+// Positioned to align with existing trace/node geometry
+// ============================================================
+
+interface HardwareComponent {
+  type: 'mcu' | 'ic' | 'resistor' | 'capacitor' | 'inductor' | 'led' | 'connector' | 'sensor' | 'transistor' | 'pmic';
+  x: number;
+  y: number;
+  svg: string;
+}
+
+function generateHardwareComponents(
+  nodes: { primary: { x: number; y: number }[]; secondary: { x: number; y: number }[]; micro: { x: number; y: number }[] },
+  _traces: { major: string[]; secondary: string[]; micro: string[] }
+): HardwareComponent[] {
+  const components: HardwareComponent[] = [];
+
+  // Helper to create IC/MCU package
+  function createIC(_x: number, _y: number, label: string, pinCount: number = 8): string {
+    const width = pinCount * 6 + 8;
+    const height = 24;
+    const pinSpacing = 6;
+    let pins = '';
+    for (let i = 0; i < pinCount; i++) {
+      const py = -height/2 + 6 + i * pinSpacing;
+      pins += `<line x1="${-width/2}" y1="${py}" x2="${-width/2 - 4}" y2="${py}" stroke="var(--circuit-trace-major)" stroke-width="0.8"/>`;
+      pins += `<line x1="${width/2}" y1="${py}" x2="${width/2 + 4}" y2="${py}" stroke="var(--circuit-trace-major)" stroke-width="0.8"/>`;
+    }
+    return `
+      <rect x="${-width/2}" y="${-height/2}" width="${width}" height="${height}" rx="2" fill="#141E18" stroke="#E5C158" stroke-width="1.2"/>
+      <text x="0" y="4" fill="#E5C158" font-size="7" font-family="monospace" text-anchor="middle" font-weight="bold">${label}</text>
+      ${pins}
+      <circle cx="${-width/2 + 3}" cy="${-height/2 + 3}" r="1.5" fill="#E5C158"/>
+    `;
+  }
+
+  // Helper to create SMD resistor
+  function createResistor(_x: number, _y: number, rotation: number = 0): string {
+    return `
+      <g transform="rotate(${rotation})">
+        <rect x="-10" y="-3" width="20" height="6" rx="1" fill="#141E18" stroke="#88998D" stroke-width="0.8"/>
+        <rect x="-4" y="-4" width="8" height="8" fill="none" stroke="#D4AF37" stroke-width="1.5"/>
+      </g>
+    `;
+  }
+
+  // Helper to create SMD capacitor
+  function createCapacitor(_x: number, _y: number, rotation: number = 0): string {
+    return `
+      <g transform="rotate(${rotation})">
+        <rect x="-6" y="-5" width="5" height="10" fill="#141E18" stroke="#88998D" stroke-width="0.8"/>
+        <rect x="1" y="-5" width="5" height="10" fill="#141E18" stroke="#88998D" stroke-width="0.8"/>
+        <line x1="-6" y1="0" x2="6" y2="0" stroke="var(--circuit-trace-secondary)" stroke-width="0.5"/>
+      </g>
+    `;
+  }
+
+  // Helper to create SMD inductor
+  function createInductor(_x: number, _y: number, rotation: number = 0): string {
+    let arcs = '';
+    for (let i = 0; i < 3; i++) {
+      const cx = -10 + i * 6.6;
+      arcs += `<path d="M ${cx - 2.5} -4 Q ${cx} 0 ${cx - 2.5} 4" fill="none" stroke="#88998D" stroke-width="0.8"/>`;
+    }
+    return `
+      <g transform="rotate(${rotation})">
+        ${arcs}
+        <line x1="-10" y1="-5" x2="-10" y2="5" stroke="var(--circuit-trace-secondary)" stroke-width="0.5"/>
+        <line x1="10" y1="-5" x2="10" y2="5" stroke="var(--circuit-trace-secondary)" stroke-width="0.5"/>
+      </g>
+    `;
+  }
+
+  // Helper to create SMD LED
+  function createLED(_x: number, _y: number): string {
+    return `
+      <polygon points="0,-5 4,0 0,5 -4,0" fill="none" stroke="#0EA5E9" stroke-width="1.2" opacity="0.4"/>
+      <polygon points="0,-3 2,0 0,3 -2,0" fill="#0EA5E9" opacity="0.3" class="led-core"/>
+      <line x1="0" y1="5" x2="0" y2="8" stroke="var(--circuit-trace-secondary)" stroke-width="0.5"/>
+      <line x1="0" y1="-5" x2="0" y2="-8" stroke="var(--circuit-trace-secondary)" stroke-width="0.5"/>
+    `;
+  }
+
+  // Helper to create pin header / connector
+  function createConnector(_x: number, _y: number, pinCount: number = 6, vertical: boolean = true): string {
+    const pitch = 6;
+    const width = vertical ? 12 : pinCount * pitch + 4;
+    const height = vertical ? pinCount * pitch + 4 : 12;
+    let pins = '';
+    if (vertical) {
+      for (let i = 0; i < pinCount; i++) {
+        const py = -height/2 + pitch + i * pitch;
+        pins += `<circle cx="0" cy="${py}" r="2" fill="#D4AF37"/>`;
+      }
+    } else {
+      for (let i = 0; i < pinCount; i++) {
+        const px = -width/2 + pitch + i * pitch;
+        pins += `<circle cx="${px}" cy="0" r="2" fill="#D4AF37"/>`;
+      }
+    }
+    return `
+      <rect x="${-width/2}" y="${-height/2}" width="${width}" height="${height}" rx="1" fill="#1B1E1C" stroke="#D4AF37" stroke-width="1"/>
+      ${pins}
+    `;
+  }
+
+  // Helper to create sensor IC (smaller package)
+  function createSensor(_x: number, _y: number, label: string): string {
+    const width = 18;
+    const height = 18;
+    return `
+      <rect x="${-width/2}" y="${-height/2}" width="${width}" height="${height}" rx="2" fill="#141E18" stroke="#38BDF8" stroke-width="1"/>
+      <text x="0" y="3" fill="#38BDF8" font-size="5" font-family="monospace" text-anchor="middle" font-weight="bold">${label}</text>
+      <circle cx="${-width/2 + 2}" cy="${-height/2 + 2}" r="1" fill="#38BDF8"/>
+    `;
+  }
+
+  // Helper to create transistor/MOSFET
+  function createTransistor(_x: number, _y: number, rotation: number = 0): string {
+    return `
+      <g transform="rotate(${rotation})">
+        <circle cx="0" cy="0" r="8" fill="none" stroke="#88998D" stroke-width="0.8"/>
+        <line x1="0" y1="-8" x2="0" y2="8" stroke="#88998D" stroke-width="1"/>
+        <polygon points="0,-12 -4,-4 4,-4" fill="#88998D"/>
+        <line x1="-8" y1="0" x2="-14" y2="0" stroke="var(--circuit-trace-major)" stroke-width="0.8"/>
+        <line x1="8" y1="0" x2="14" y2="0" stroke="var(--circuit-trace-major)" stroke-width="0.8"/>
+        <line x1="0" y1="-12" x2="0" y2="-18" stroke="var(--circuit-trace-major)" stroke-width="0.8"/>
+      </g>
+    `;
+  }
+
+  // ===== COMPONENT PLACEMENT =====
+  // Place components at strategic node positions along the trace network
+
+  // MCU / Controller Cluster (near center spine, upper area)
+  components.push({
+    type: 'mcu',
+    x: 960,
+    y: 200,
+    svg: createIC(960, 200, 'MCU', 16)
+  });
+
+  // IMU Sensor (near center spine, mid area)
+  components.push({
+    type: 'sensor',
+    x: 960,
+    y: 400,
+    svg: createSensor(960, 400, 'IMU')
+  });
+
+  // PMIC / Power Management (near center spine, lower area)
+  components.push({
+    type: 'pmic',
+    x: 960,
+    y: 600,
+    svg: createIC(960, 600, 'PMIC', 12)
+  });
+
+  // Left-side MCU (near left vertical trace)
+  components.push({
+    type: 'mcu',
+    x: 200,
+    y: 350,
+    svg: createIC(200, 350, 'CTRL', 14)
+  });
+
+  // Right-side IC (near right vertical trace)
+  components.push({
+    type: 'ic',
+    x: 1300,
+    y: 300,
+    svg: createIC(1300, 300, 'DSP', 10)
+  });
+
+  // SMD Resistor clusters along horizontal traces
+  // Top horizontal bus (left section)
+  components.push({
+    type: 'resistor',
+    x: 250,
+    y: 140,
+    svg: createResistor(250, 140, 0)
+  });
+  components.push({
+    type: 'resistor',
+    x: 350,
+    y: 140,
+    svg: createResistor(350, 140, 0)
+  });
+
+  // Bottom horizontal feed
+  components.push({
+    type: 'resistor',
+    x: 300,
+    y: 500,
+    svg: createResistor(300, 500, 0)
+  });
+  components.push({
+    type: 'capacitor',
+    x: 400,
+    y: 500,
+    svg: createCapacitor(400, 500, 0)
+  });
+
+  // Left vertical ascent
+  components.push({
+    type: 'inductor',
+    x: 100,
+    y: 480,
+    svg: createInductor(100, 480, 90)
+  });
+  components.push({
+    type: 'capacitor',
+    x: 100,
+    y: 550,
+    svg: createCapacitor(100, 550, 90)
+  });
+
+  // Right-side passive cluster
+  components.push({
+    type: 'capacitor',
+    x: 1400,
+    y: 280,
+    svg: createCapacitor(1400, 280, 90)
+  });
+  components.push({
+    type: 'resistor',
+    x: 1300,
+    y: 380,
+    svg: createResistor(1300, 380, 90)
+  });
+
+  // Status LEDs (connected to MCU cluster)
+  components.push({
+    type: 'led',
+    x: 920,
+    y: 200,
+    svg: createLED(920, 200)
+  });
+  components.push({
+    type: 'led',
+    x: 960,
+    y: 170,
+    svg: createLED(960, 170)
+  });
+  components.push({
+    type: 'led',
+    x: 1000,
+    y: 200,
+    svg: createLED(1000, 200)
+  });
+
+  // LED near IMU
+  components.push({
+    type: 'led',
+    x: 960,
+    y: 360,
+    svg: createLED(960, 360)
+  });
+
+  // LED near PMIC
+  components.push({
+    type: 'led',
+    x: 1000,
+    y: 580,
+    svg: createLED(1000, 580)
+  });
+
+  // Pin header connectors (board edges)
+  components.push({
+    type: 'connector',
+    x: 100,
+    y: 100,
+    svg: createConnector(100, 100, 4, false)
+  });
+  components.push({
+    type: 'connector',
+    x: 1820,
+    y: 100,
+    svg: createConnector(1820, 100, 4, false)
+  });
+  components.push({
+    type: 'connector',
+    x: 100,
+    y: 980,
+    svg: createConnector(100, 980, 4, false)
+  });
+  components.push({
+    type: 'connector',
+    x: 1820,
+    y: 980,
+    svg: createConnector(1820, 980, 4, false)
+  });
+
+  // Transistor/MOSFET near power sections
+  components.push({
+    type: 'transistor',
+    x: 400,
+    y: 450,
+    svg: createTransistor(400, 450, 0)
+  });
+  components.push({
+    type: 'transistor',
+    x: 1100,
+    y: 480,
+    svg: createTransistor(1100, 480, 0)
+  });
+
+  // Additional small passive clusters at secondary nodes
+  nodes.secondary.forEach((node, i) => {
+    if (i % 3 === 0) {
+      // Alternate resistor/capacitor at some secondary nodes
+      components.push({
+        type: i % 2 === 0 ? 'resistor' : 'capacitor',
+        x: node.x,
+        y: node.y,
+        svg: i % 2 === 0 
+          ? createResistor(node.x, node.y, Math.random() > 0.5 ? 0 : 90)
+          : createCapacitor(node.x, node.y, Math.random() > 0.5 ? 0 : 90)
+      });
+    }
+  });
+
+  return components;
 }
