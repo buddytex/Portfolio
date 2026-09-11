@@ -43,40 +43,35 @@ const {
         <div class="datum-spine-fill" id="datumSpineFill"></div>
       </div>
       <nav class="datum-waypoints" aria-label="Section Milestones">
-        <a href="/#hero" class="datum-node active" data-section="hero" aria-label="00 // Origin (Hero)">
-          <span class="datum-pip"></span>
-          <span class="datum-tag mono">00</span>
-          <span class="datum-label mono">ORIGIN</span>
-        </a>
-        <a href="/#background" class="datum-node" data-section="background" aria-label="01 // Engineering Background">
+        <a href="/#hero" class="datum-node active" data-section="hero" aria-label="01 // Hero">
           <span class="datum-pip"></span>
           <span class="datum-tag mono">01</span>
-          <span class="datum-label mono">ENGINEERING</span>
+          <span class="datum-label mono">HERO</span>
         </a>
-        <a href="/#work" class="datum-node" data-section="work" aria-label="02 // Projects">
+        <a href="/#background" class="datum-node" data-section="background" aria-label="02 // Engineering Background">
           <span class="datum-pip"></span>
           <span class="datum-tag mono">02</span>
-          <span class="datum-label mono">PROJECTS</span>
+          <span class="datum-label mono">BACKGROUND</span>
         </a>
-        <a href="/#skills" class="datum-node" data-section="skills" aria-label="03 // Skills & Evidence">
+        <a href="/#work" class="datum-node" data-section="work" aria-label="03 // Projects">
           <span class="datum-pip"></span>
           <span class="datum-tag mono">03</span>
-          <span class="datum-label mono">EVIDENCE</span>
+          <span class="datum-label mono">PROJECTS</span>
         </a>
-        <a href="/#hardware" class="datum-node" data-section="hardware" aria-label="04 // PCB Lab">
+        <a href="/#skills" class="datum-node" data-section="skills" aria-label="04 // Skills & Evidence">
           <span class="datum-pip"></span>
           <span class="datum-tag mono">04</span>
-          <span class="datum-label mono">PCB LAB</span>
+          <span class="datum-label mono">SKILLS</span>
         </a>
-        <a href="/#about" class="datum-node" data-section="about" aria-label="05 // Engineering Perspective">
+        <a href="/#hardware" class="datum-node" data-section="hardware" aria-label="05 // PCB Lab">
           <span class="datum-pip"></span>
           <span class="datum-tag mono">05</span>
-          <span class="datum-label mono">PERSPECTIVE</span>
+          <span class="datum-label mono">PCB LAB</span>
         </a>
-        <a href="/#contact" class="datum-node" data-section="contact" aria-label="06 // Direct Dispatch">
+        <a href="/#contact" class="datum-node" data-section="contact" aria-label="06 // Contact">
           <span class="datum-pip"></span>
           <span class="datum-tag mono">06</span>
-          <span class="datum-label mono">DISPATCH</span>
+          <span class="datum-label mono">CONTACT</span>
         </a>
       </nav>
     </aside>
@@ -124,11 +119,11 @@ const {
     left: 0;
     right: 0;
     height: 2px;
-    background: var(--cyan);
+    background: var(--accent-primary);
     transform-origin: 0%;
     transform: scaleX(0);
     z-index: 9999;
-    box-shadow: 0 0 8px var(--cyan-glow);
+    box-shadow: 0 0 8px var(--accent-glow);
   }
 
   /* Universal section anchor offset for sticky nav */
@@ -156,7 +151,7 @@ const {
     top: 12px;
     bottom: 12px;
     width: 1px;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(241, 238, 230, 0.08);
   }
 
   .datum-spine-fill {
@@ -165,8 +160,8 @@ const {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--cyan);
-    box-shadow: 0 0 6px var(--cyan-glow);
+    background: var(--accent-primary);
+    box-shadow: 0 0 6px var(--accent-glow);
     transform-origin: top;
     transform: scaleY(0);
     transition: transform 0.1s linear;
@@ -230,14 +225,14 @@ const {
   }
 
   .datum-node:hover .datum-pip {
-    border-color: var(--cyan);
-    background: var(--cyan-light);
+    border-color: var(--accent-primary);
+    background: var(--accent-muted);
   }
 
   .datum-node.active .datum-pip {
-    background: var(--cyan);
-    border-color: var(--cyan);
-    box-shadow: 0 0 10px var(--cyan-glow);
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 10px var(--accent-glow);
     transform: scale(1.15);
   }
 

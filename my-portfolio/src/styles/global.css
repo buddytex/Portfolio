@@ -1,76 +1,72 @@
 /* ==========================================================
    DESIGN SYSTEM — PRECISION ENGINEERING PORTFOLIO
    Naveen Shaji George · Robotics & Autonomous Systems Engineer
-   Philosophy: Advanced robotics laboratory & computational systems
-   Palette: Graphite (#0D1117) + Warm Ivory (#F5F0E8) + Muted Brass (#C9B037) + Technical Steel (#4A5568)
+   Philosophy: Machined Metal + Engineering Laboratory + PCB Hardware
+   Palette: Graphite + Warm White + Muted Brass + Technical Signal Green
    ========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
-  /* === CANVAS & SURFACES (Precision Engineering Foundation) === */
-  --bg:              #0D1117;       /* Deep graphite canvas */
-  --bg-pure:         #080C10;       /* Recessed pure graphite substrate */
-  --surface:         #161D23;       /* Elevated technical surface */
-  --surface-elevated:#1F2937;       /* Higher card/modal plane */
-  --surface-dim:     #0F1419;       /* Recessed panel / secondary zone */
+  /* === CANVAS & SURFACES (Machined Metal Foundation) === */
+  --bg-primary:      #10110f;
+  --bg-secondary:    #151613;
+  --bg-tertiary:     #191a17;
+  --surface:         #1d1e1b;
+  --surface-elevated:#232421;
+  --surface-dim:     #141512;
   
-  /* === SECTION-SPECIFIC COLOR CONTINUITY === */
-  --bg-hero:         #0D1117;       /* Monumental origin */
-  --bg-work:         #10181F;       /* Systems & project archive */
-  --bg-hardware:     #0F181A;       /* Physical PCB artifact laboratory */
-  --bg-skills:       #11161C;       /* Interconnected competency matrix */
-  --bg-about:        #131B22;       /* Engineering perspective & chronology */
-  --bg-contact:      #0D1117;       /* Direct dispatch console */
-  
-  /* === FROSTED MATERIALS / TECHNICAL GLASS === */
-  --material-glass:        rgba(22, 28, 36, 0.85);
-  --material-glass-subtle: rgba(22, 28, 36, 0.55);
-  --material-glass-heavy:  rgba(13, 17, 23, 0.92);
-  --glass-blur:            blur(24px) saturate(160%);
-  --glass-border:          1px solid rgba(148, 163, 184, 0.12);
-  --glass-border-subtle:   1px solid rgba(148, 163, 184, 0.06);
-  
-  /* === TYPOGRAPHY (High Contrast Editorial Hierarchy) === */
-  --text-primary:    #F5F0E8;       /* Warm ivory — primary text (15.8:1 contrast) */
-  --text-body:       #D4D8DD;       /* High-clarity technical body */
-  --text-secondary:  #94A3B8;       /* Neutral secondary descriptive text */
-  --text-muted:      #64748B;       /* Engineering metadata & specifications */
-  --text-dim:        #475569;       /* Low-priority ticks & subtle datum marks */
-  
-  /* === BORDERS & SYSTEM SEPARATORS === */
-  --border:          rgba(148, 163, 184, 0.12); /* Primary steel border */
-  --border-subtle:   rgba(148, 163, 184, 0.06); /* Faint structural dividing line */
-  --border-strong:   rgba(148, 163, 184, 0.2);  /* Prominent panel border */
-  --border-brass:    rgba(201, 176, 55, 0.25);   /* Brass accent border */
-  
-  /* === PRECISION ENGINEERING ACCENTS (Muted Brass & Technical Steel) === */
-  --brass:           #C9B037;       /* Muted engineering brass — active signals & nodes */
-  --brass-dark:      #A6942E;       /* Deep brass — links and subdued states */
-  --brass-bright:    #E8D14A;       /* Bright brass — concentrated core pulse */
-  --brass-light:     rgba(201, 176, 55, 0.12);
-  --brass-glow:      rgba(201, 176, 55, 0.22);
-  --brass-subtle:    rgba(201, 176, 55, 0.06);
-  
-  --steel:           #64748B;       /* Technical steel — secondary accents */
-  --steel-dark:      #475569;       /* Deep steel — links and subdued states */
-  --steel-bright:    #94A3B8;       /* Bright steel — concentrated pulse */
-  --steel-light:     rgba(100, 116, 139, 0.12);
-  --steel-glow:      rgba(100, 116, 139, 0.18);
-  --steel-subtle:    rgba(100, 116, 139, 0.05);
-  
-  /* === DEPTH / ELEVATION TOKENS (Engineering Ambient Occlusion) === */
+  /* === SECTION-SPECIFIC BACKGROUNDS === */
+  --bg-hero:         #10110f;
+  --bg-work:         #131411;
+  --bg-hardware:     #121311;
+  --bg-skills:       #111210;
+  --bg-contact:      #10110f;
+
+  /* === TYPOGRAPHY (High Contrast Editorial) === */
+  --text-primary:    #f1eee6;
+  --text-secondary:  #aaa79e;
+  --text-muted:      #73736d;
+  --text-dim:        #4a4a45;
+
+  /* === BORDERS & SEPARATORS === */
+  --border:          rgba(241, 238, 230, 0.10);
+  --border-subtle:   rgba(241, 238, 230, 0.05);
+  --border-strong:   rgba(241, 238, 230, 0.18);
+  --border-brass:    rgba(184, 154, 97, 0.35);
+
+  /* === ACCENTS (Muted Brass & Technical Signal) === */
+  --accent-primary:  #b89a61;
+  --accent-bright:   #d0b477;
+  --accent-muted:    rgba(184, 154, 97, 0.12);
+  --accent-glow:     rgba(184, 154, 97, 0.18);
+  --accent-subtle:   rgba(184, 154, 97, 0.06);
+
+  --signal:          #7e9d8b;
+  --signal-bright:   #93b8a0;
+  --signal-dim:      rgba(126, 157, 139, 0.35);
+  --signal-glow:     rgba(126, 157, 139, 0.15);
+
+  /* === LEGACY CYAN (for backward compatibility) === */
+  --cyan:            #00aeef;
+  --cyan-dark:       #0284c7;
+  --cyan-light:      #7dd3fc;
+  --cyan-electric:   #22d3ee;
+  --cyan-subtle:     rgba(0, 174, 239, 0.08);
+  --cyan-glow:       rgba(0, 174, 239, 0.35);
+
+  /* === DEPTH / ELEVATION === */
   --shadow-resting:  0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3);
-  --shadow-hover:    0 20px 48px rgba(0, 0, 0, 0.6), 0 0 20px rgba(201, 176, 55, 0.1);
+  --shadow-hover:    0 20px 48px rgba(0, 0, 0, 0.6), 0 0 20px rgba(184, 154, 97, 0.1);
   --shadow-active:   0 6px 18px rgba(0, 0, 0, 0.5);
-  --shadow-elevated: 0 32px 72px -16px rgba(0, 0, 0, 0.7), 0 0 2px rgba(245, 240, 232, 0.08);
-  
+  --shadow-elevated: 0 32px 72px -16px rgba(0, 0, 0, 0.7), 0 0 2px rgba(241, 238, 230, 0.08);
+
   /* === FONTS === */
   --font-sans:       'Space Grotesk', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
   --font-mono:       'JetBrains Mono', monospace;
   --font-display:    'Space Grotesk', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
-  
-  /* === TYPOGRAPHY SCALE (Precision Engineering Scale) === */
+
+  /* === TYPOGRAPHY SCALE (Controlled Hierarchy) === */
   --text-2xs:    0.625rem;   /* 10px */
   --text-xs:     0.6875rem;  /* 11px */
   --text-sm:     0.8125rem;  /* 13px */
@@ -82,8 +78,9 @@
   --text-4xl:    2.5rem;     /* 40px */
   --text-5xl:    3.5rem;     /* 56px */
   --text-6xl:    4.5rem;     /* 72px */
-  --text-display: clamp(4.5rem, 10vw, 8rem);
-  --text-display-tight: clamp(4rem, 9vw, 7rem);
+  --text-display:      clamp(3.5rem, 7vw, 6.5rem);
+  --text-display-tight: clamp(3rem, 6vw, 5.5rem);
+  --text-section:      clamp(1.8rem, 3.5vw, 3.2rem);
 
   /* === SPACING === */
   --space-1:   0.25rem;
@@ -100,54 +97,56 @@
   --space-20:  5rem;
   --space-24:  6rem;
   --space-32:  8rem;
-  --section-pad: clamp(5.5rem, 11vh, 9.5rem);
+  --section-pad: clamp(4.5rem, 9vh, 7.5rem);
 
   /* === LAYOUT === */
-  --max-width:    1320px;
-  --max-width-wide: 1600px;
-  --max-width-content: 1040px;
-  --max-width-reading: 820px;
-  --nav-height:   64px;
-  --content-max:  820px;
+  --max-width:         1320px;
+  --max-width-wide:    1520px;
+  --max-width-content: 980px;
+  --max-width-reading: 780px;
+  --nav-height:        56px;
+  --content-max:       780px;
 
-  /* === MOTION === */
-  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --dur-fast:    150ms;
-  --dur-norm:    240ms;
-  --dur-slow:    450ms;
+  /* === MOTION (Fast, Precise, Mechanical) === */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:       cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out:   cubic-bezier(0.87, 0, 0.13, 1);
+  --ease-spring:   cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast:      140ms;
+  --dur-norm:      240ms;
+  --dur-slow:      380ms;
+  --dur-section:   480ms;
+  --dur-reveal:    420ms;
 
   /* === RADII === */
   --r-xs:   4px;
   --r-sm:   8px;
   --r-md:   12px;
-  --r-card: 18px;
-  --r-card-lg: 24px;
+  --r-card: 16px;
+  --r-card-lg: 22px;
   --r-pill: 9999px;
 
-  /* === CIRCUIT FIELD TOKENS === */
-  --circuit-trace-major:    rgba(0, 174, 239, 0.35);
-  --circuit-trace-major:     rgba(201, 176, 55, 0.35);
-  --circuit-trace-secondary: rgba(201, 176, 55, 0.18);
-  --circuit-trace-micro:     rgba(201, 176, 55, 0.1);
-  --circuit-node-primary:    #C9B037;
-  --circuit-node-secondary:  #E8D14A;
-  --circuit-pulse-core:      #E8D14A;
-  --circuit-pulse-halo:      rgba(201, 176, 55, 0.35);
-  
-  /* === PCB COMPONENT TOKENS === */
-  --pcb-substrate:        #141E18;
-  --pcb-trace:            #264433;
-  --pcb-trace-gold:       #E5C158;
-  --pcb-solder:           #0C140F;
-  --pcb-via:              #D4AF37;
-  --pcb-mounting:         #243328;
-  --pcb-component:        #1B1E1C;
-  --pcb-pin:              #D4AF37;
-  --pcb-silkscreen:       #E4EFE8;
-  --pcb-label:            #6EE7B7;
-  --pcb-copper:           #D4AF37;
-  --pcb-isolation:        #FFFFFF;
+  /* === CIRCUIT / PCB TOKENS === */
+  --circuit-trace-major:     rgba(184, 154, 97, 0.35);
+  --circuit-trace-secondary: rgba(184, 154, 97, 0.18);
+  --circuit-trace-micro:     rgba(184, 154, 97, 0.08);
+  --circuit-node-primary:    #b89a61;
+  --circuit-node-secondary:  #d0b477;
+  --circuit-pulse-core:      #d0b477;
+  --circuit-pulse-halo:      rgba(184, 154, 97, 0.28);
+
+  --pcb-substrate:   #0f1410;
+  --pcb-trace:       #1a2e23;
+  --pcb-trace-gold:  #c8a64a;
+  --pcb-solder:      #0a110c;
+  --pcb-via:         #c8a64a;
+  --pcb-mounting:    #1e2d22;
+  --pcb-component:   #151816;
+  --pcb-pin:         #c8a64a;
+  --pcb-silkscreen:  #d4e8dc;
+  --pcb-label:       #6ee7b7;
+  --pcb-copper:      #c8a64a;
+  --pcb-isolation:   #ffffff;
 }
 
 /* ==========================================================
@@ -164,16 +163,16 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg);
-  color: var(--text-body);
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
 }
 
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: 1.65;
-  color: var(--text-body);
-  background-color: var(--bg);
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
   min-height: 100vh;
   isolation: isolate;
   overflow-x: hidden;
@@ -184,13 +183,26 @@ a {
   text-decoration: none;
   transition: color var(--dur-fast) var(--ease-out);
 }
-button { font-family: inherit; border: none; background: none; cursor: pointer; }
-img, svg { display: block; max-width: 100%; }
-ul, ol { list-style: none; }
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+ul, ol {
+  list-style: none;
+}
 
 /* === ACCESSIBLE FOCUS RINGS === */
 :focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--accent-primary);
   outline-offset: 3px;
 }
 
@@ -201,7 +213,7 @@ ul, ol { list-style: none; }
   left: 50%;
   transform: translateX(-50%);
   background: var(--text-primary);
-  color: var(--bg);
+  color: var(--bg-primary);
   padding: var(--space-3) var(--space-6);
   border-radius: var(--r-md);
   font-size: var(--text-sm);
@@ -209,9 +221,10 @@ ul, ol { list-style: none; }
   z-index: 10000;
   transition: top var(--dur-fast) var(--ease-out);
 }
+
 .skip-link:focus {
   top: var(--space-4);
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
@@ -226,7 +239,6 @@ ul, ol { list-style: none; }
   z-index: 1;
 }
 
-/* Container variants for different content types */
 .container-wide {
   width: min(100% - 48px, var(--max-width-wide));
   margin-inline: auto;
@@ -259,13 +271,13 @@ ul, ol { list-style: none; }
 #work { background-color: var(--bg-work); }
 #hardware { background-color: var(--bg-hardware); }
 #skills { background-color: var(--bg-skills); }
-#about { background-color: var(--bg-about); }
 #contact { background-color: var(--bg-contact); }
 
 /* ==========================================================
    STICKY HERO / SECTION OVERLAY EFFECT
    Hero stays fixed while subsequent sections slide over it
    ========================================================== */
+
 #hero {
   position: sticky;
   top: 0;
@@ -279,26 +291,23 @@ ul, ol { list-style: none; }
   box-shadow: var(--shadow-elevated);
 }
 
-/* Ensure main content is above hero */
 main#mainContent {
   position: relative;
   z-index: 5;
 }
 
-/* Subtle gradient fade at hero bottom for smooth transition */
 #hero::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 120px;
+  height: 100px;
   background: linear-gradient(180deg, transparent 0%, var(--bg-hero) 100%);
   pointer-events: none;
   z-index: 2;
 }
 
-/* Disable sticky on mobile for performance */
 @media (max-width: 768px) {
   #hero {
     position: relative;
@@ -311,7 +320,6 @@ main#mainContent {
   }
 }
 
-/* Reduced motion - disable sticky overlay */
 @media (prefers-reduced-motion: reduce) {
   #hero {
     position: relative;
@@ -330,7 +338,6 @@ main#mainContent {
 
 /* ==========================================================
    STICKY SECTION TITLES
-   Section titles remain sticky within their section bounds
    ========================================================== */
 
 .section-header {
@@ -340,14 +347,13 @@ main#mainContent {
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
-  background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, transparent 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding-left: var(--space-1);
   padding-right: var(--space-1);
 }
 
-/* Section title transition states */
 .section-header {
   opacity: 1;
   transform: translateY(0);
@@ -370,7 +376,6 @@ main#mainContent {
   transform: translateY(0);
 }
 
-/* Reduced motion for section headers */
 @media (prefers-reduced-motion: reduce) {
   .section-header {
     position: static;
@@ -387,7 +392,6 @@ main#mainContent {
 
 /* ==========================================================
    FULL-SCREEN SECTION COMPOSITION
-   Each major section occupies exactly one viewport
    ========================================================== */
 
 .section {
@@ -397,7 +401,6 @@ main#mainContent {
   position: relative;
 }
 
-/* Allow content to grow but stay within viewport */
 .section > .container,
 .section > .container-wide,
 .section > .container-content {
@@ -408,50 +411,29 @@ main#mainContent {
   min-height: 0;
 }
 
-/* Hero section - full viewport for monumental presence */
 #hero.section {
   min-height: 100svh;
   padding: 0;
 }
 
-/* All major sections - exactly one viewport */
-#background.section,
 #work.section,
-#skills.section,
 #hardware.section,
+#skills.section,
 #contact.section {
   min-height: 100svh;
   padding: var(--section-pad) 0;
   box-sizing: border-box;
 }
 
-/* Ensure content doesn't overflow viewport */
 .section > * {
   max-height: 100%;
   overflow: hidden;
 }
 
-/* Sticky section headers work within viewport */
-.section-header {
-  position: sticky;
-  top: var(--nav-height);
-  z-index: 20;
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-4);
-  border-bottom: 1px solid var(--border-subtle);
-  background: linear-gradient(180deg, var(--bg) 0%, transparent 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding-left: var(--space-1);
-  padding-right: var(--space-1);
-}
-
-/* Mobile adjustments for viewport composition */
 @media (max-width: 768px) {
   .section {
     min-height: auto;
   }
-  
   .section-header {
     position: static;
     backdrop-filter: none;
@@ -461,7 +443,6 @@ main#mainContent {
   }
 }
 
-/* Reduced motion for viewport composition */
 @media (prefers-reduced-motion: reduce) {
   .section {
     min-height: auto;
@@ -474,20 +455,21 @@ main#mainContent {
 }
 
 /* ==========================================================
-   TYPOGRAPHY (Monumental Clarity & Precision)
+   TYPOGRAPHY (Controlled, Precise, Editorial)
    ========================================================== */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
   font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
   color: var(--text-primary);
 }
-h1 { font-size: var(--text-display); letter-spacing: -0.05em; line-height: 0.92; }
-h2 { font-size: clamp(1.8rem, 3.5vw, 3.5rem); letter-spacing: -0.035em; line-height: 1.08; }
-h3 { font-size: var(--text-3xl); letter-spacing: -0.02em; line-height: 1.15; }
-h4 { font-size: var(--text-2xl); letter-spacing: -0.015em; line-height: 1.2; }
+
+h1 { font-size: var(--text-display); letter-spacing: -0.05em; line-height: 0.9; }
+h2 { font-size: var(--text-section); letter-spacing: -0.035em; line-height: 1.05; }
+h3 { font-size: var(--text-3xl); letter-spacing: -0.02em; line-height: 1.12; }
+h4 { font-size: var(--text-2xl); letter-spacing: -0.015em; line-height: 1.18; }
 p  { color: var(--text-secondary); line-height: 1.7; }
 
 .mono { font-family: var(--font-mono); }
@@ -500,20 +482,22 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   font-weight: 700;
-  color: var(--cyan);
-  letter-spacing: 0.12em;
+  color: var(--accent-primary);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   margin-bottom: var(--space-3);
 }
+
 .section-eyebrow::before {
   content: '';
-  width: 12px;
+  width: 10px;
   height: 1px;
-  background: linear-gradient(90deg, var(--cyan), transparent);
+  background: linear-gradient(90deg, var(--accent-primary), transparent);
 }
+
 .section-title { 
   font-size: clamp(1.8rem, 3.5vw, 3rem);
   font-weight: 800;
@@ -522,6 +506,7 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   margin-bottom: var(--space-4); 
   color: var(--text-primary); 
 }
+
 .section-lead {
   font-size: var(--text-base);
   color: var(--text-secondary);
@@ -529,8 +514,8 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   max-width: 720px;
 }
 
-/* Accent for emphasis */
-.accent { color: var(--cyan); }
+.accent { color: var(--accent-primary); }
+.signal { color: var(--signal); }
 
 /* ==========================================================
    BUTTONS (Technical Minimalist & Tactile)
@@ -542,7 +527,7 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   gap: var(--space-2);
   font-size: var(--text-sm);
   font-weight: 600;
-  padding: 12px 24px;
+  padding: 11px 22px;
   border-radius: var(--r-sm);
   transition: all var(--dur-norm) var(--ease-out);
   cursor: pointer;
@@ -553,13 +538,14 @@ p  { color: var(--text-secondary); line-height: 1.7; }
 
 .btn-primary {
   background: var(--text-primary);
-  color: #080909;
+  color: var(--bg-primary);
   border: 1px solid transparent;
 }
+
 .btn-primary:hover {
-  background: #FFFFFF;
+  background: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(242, 243, 241, 0.2);
+  box-shadow: 0 8px 24px rgba(241, 238, 230, 0.15);
 }
 
 .btn-secondary {
@@ -567,36 +553,51 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   color: var(--text-primary);
   border: 1px solid var(--border);
 }
+
 .btn-secondary:hover {
-  border-color: var(--cyan);
+  border-color: var(--accent-primary);
   background: var(--surface-elevated);
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
 
 .btn-glass {
-  background: var(--material-glass);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: rgba(29, 30, 27, 0.85);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
   color: var(--text-primary);
-  border: var(--glass-border);
+  border: 1px solid var(--border);
 }
+
 .btn-glass:hover {
-  background: var(--material-glass-heavy);
-  border-color: var(--cyan);
+  background: rgba(20, 21, 18, 0.95);
+  border-color: var(--accent-primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
 
-.btn-cyan {
-  background: var(--cyan);
-  color: #080909;
+.btn-accent {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
   border: 1px solid transparent;
 }
-.btn-cyan:hover {
-  background: var(--cyan-electric);
+
+.btn-accent:hover {
+  background: var(--accent-bright);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--cyan-glow);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.btn-signal {
+  background: var(--signal);
+  color: var(--bg-primary);
+  border: 1px solid transparent;
+}
+
+.btn-signal:hover {
+  background: var(--signal-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--signal-glow);
 }
 
 /* ==========================================================
@@ -610,17 +611,29 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   font-size: var(--text-xs);
   font-weight: 500;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  padding: 3px 9px;
   border-radius: var(--r-xs);
   white-space: nowrap;
+  transition: all var(--dur-fast) var(--ease-out);
 }
 
-.tag-cyan {
-  color: var(--cyan);
-  background: var(--cyan-subtle);
-  border-color: rgba(0, 174, 239, 0.25);
+.tag:hover {
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.tag-accent {
+  color: var(--accent-primary);
+  background: var(--accent-muted);
+  border-color: rgba(184, 154, 97, 0.25);
+}
+
+.tag-signal {
+  color: var(--signal);
+  background: rgba(126, 157, 139, 0.1);
+  border-color: rgba(126, 157, 139, 0.2);
 }
 
 /* ==========================================================
@@ -628,10 +641,10 @@ p  { color: var(--text-secondary); line-height: 1.7; }
    ========================================================== */
 
 .glass-panel {
-  background: var(--material-glass);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
+  background: rgba(29, 30, 27, 0.85);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border);
   border-radius: var(--r-card);
   box-shadow: var(--shadow-elevated);
 }
@@ -645,25 +658,26 @@ p  { color: var(--text-secondary); line-height: 1.7; }
               box-shadow var(--dur-norm) var(--ease-out),
               border-color var(--dur-norm) var(--ease-out);
 }
+
 .card-dark:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-hover);
-  border-color: var(--border-cyan);
+  border-color: var(--border-brass);
 }
 
 /* ==========================================================
-   SCROLLBAR (High Precision Dark)
+   SCROLLBAR
    ========================================================== */
 
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.14); border-radius: var(--r-pill); }
-::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: rgba(241, 238, 230, 0.12); border-radius: var(--r-pill); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
 /* Selection highlight */
 ::selection {
-  background: rgba(0, 174, 239, 0.35);
-  color: #FFFFFF;
+  background: rgba(184, 154, 97, 0.35);
+  color: var(--text-primary);
 }
 
 /* ==========================================================
@@ -672,22 +686,24 @@ p  { color: var(--text-secondary); line-height: 1.7; }
 
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  transform: translateY(16px);
+  transition: opacity var(--dur-reveal) var(--ease-out), transform var(--dur-reveal) var(--ease-out);
 }
+
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 .stagger-children > * {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(14px);
   transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
 }
+
 .stagger-children.is-visible > *:nth-child(1)  { opacity: 1; transform: none; transition-delay: 0ms; }
-.stagger-children.is-visible > *:nth-child(2)  { opacity: 1; transform: none; transition-delay: 70ms; }
-.stagger-children.is-visible > *:nth-child(3)  { opacity: 1; transform: none; transition-delay: 140ms; }
-.stagger-children.is-visible > *:nth-child(4)  { opacity: 1; transform: none; transition-delay: 210ms; }
-.stagger-children.is-visible > *:nth-child(5)  { opacity: 1; transform: none; transition-delay: 280ms; }
-.stagger-children.is-visible > *:nth-child(n+6){ opacity: 1; transform: none; transition-delay: 350ms; }
+.stagger-children.is-visible > *:nth-child(2)  { opacity: 1; transform: none; transition-delay: 60ms; }
+.stagger-children.is-visible > *:nth-child(3)  { opacity: 1; transform: none; transition-delay: 120ms; }
+.stagger-children.is-visible > *:nth-child(4)  { opacity: 1; transform: none; transition-delay: 180ms; }
+.stagger-children.is-visible > *:nth-child(5)  { opacity: 1; transform: none; transition-delay: 240ms; }
+.stagger-children.is-visible > *:nth-child(n+6){ opacity: 1; transform: none; transition-delay: 300ms; }
 
 /* ==========================================================
    REDUCED MOTION COMPLIANCE
@@ -710,7 +726,7 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   }
 }
 
-/* Smooth section boundary blending */
+/* Section boundary blending */
 .section::before {
   content: '';
   position: absolute;
@@ -722,28 +738,25 @@ p  { color: var(--text-secondary); line-height: 1.7; }
 }
 
 /* ==========================================================
-   MAXIMALIST UTILITY CLASSES
+   UTILITY CLASSES
    ========================================================== */
 
-.text-display { font-size: var(--text-display); letter-spacing: -0.05em; line-height: 0.92; font-weight: 800; }
+.text-display { font-size: var(--text-display); letter-spacing: -0.05em; line-height: 0.9; font-weight: 800; }
 .text-display-tight { font-size: var(--text-display-tight); letter-spacing: -0.04em; line-height: 0.95; font-weight: 800; }
 .text-6xl { font-size: var(--text-6xl); letter-spacing: -0.04em; line-height: 0.98; font-weight: 800; }
 .text-5xl { font-size: var(--text-5xl); letter-spacing: -0.035em; line-height: 1.0; font-weight: 800; }
 
 .mono { font-family: var(--font-mono); }
 
-/* Layered depth utilities */
-.layer-bg { background: var(--bg); }
+.layer-bg { background: var(--bg-primary); }
 .layer-surface { background: var(--surface); }
 .layer-surface-elevated { background: var(--surface-elevated); }
 .layer-surface-dim { background: var(--surface-dim); }
 
-/* Circuit trace visual weights */
 .trace-major { stroke: var(--circuit-trace-major); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .trace-secondary { stroke: var(--circuit-trace-secondary); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .trace-micro { stroke: var(--circuit-trace-micro); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
 
-/* Pulse visual */
 .pulse-core { fill: var(--circuit-pulse-core); r: 2.2; }
 .pulse-halo { fill: var(--circuit-pulse-halo); r: 5; }
 
@@ -754,9 +767,12 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  opacity: 0.015;
+  opacity: 0.012;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  @media (prefers-reduced-motion: reduce) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain-overlay::before { display: none; }
 }
 
 /* ==========================================================
@@ -805,7 +821,7 @@ p  { color: var(--text-secondary); line-height: 1.7; }
     display: none !important;
   }
   .circuit-field-svg .trace-path {
-    opacity: 0.15 !important;
+    opacity: 0.12 !important;
   }
 }
 
@@ -819,16 +835,16 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   }
 }
 
-/* Hero circuit scroll transition */
-.hero-circuit-active .circuit-field-svg .trace-major { opacity: 0.25; }
+/* Hero circuit scroll transition states */
+.hero-circuit-active .circuit-field-svg .trace-major { opacity: 0.22; }
 .hero-circuit-fading .circuit-field-svg .trace-secondary { opacity: 0; }
 .hero-circuit-fading .circuit-field-svg .trace-micro { opacity: 0; }
 .hero-circuit-fading .circuit-field-svg .node-micro { opacity: 0; }
 .hero-circuit-fading .circuit-field-svg .signal-pulse { opacity: 0; }
-.hero-circuit-gone .circuit-field-svg .trace-major { opacity: 0.05; }
+.hero-circuit-gone .circuit-field-svg .trace-major { opacity: 0.04; }
 .hero-circuit-gone .circuit-field-svg .signal-pulse { display: none; }
 
 @media (max-width: 768px) {
   .container { width: min(100% - 32px, var(--max-width)); }
-  .section { padding: clamp(3.5rem, 7vh, 5.5rem) 0; }
+  .section { padding: clamp(3rem, 7vh, 5rem) 0; }
 }

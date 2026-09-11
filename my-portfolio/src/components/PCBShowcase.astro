@@ -1,13 +1,11 @@
 ---
 // PCBShowcase Component — Physical Engineering Artifact Inspector
-// Interactive 3D Perspective Tilt, Horizontally Swipable/Draggable Boards,
-// Test-Point Telemetry Inspection, and Deep Hardware Rationale
-// Performance: Pure CSS/SVG vector graphics + Anime.js v4 transitions (No WebGL bloat)
+// Uses React Three Fiber with OrbitControls for proper 3D interaction
 import { pcbArtifacts } from '../data/pcbArtifacts';
+import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
 ---
 
 <div class="pcb-showcase-container" id="pcbShowcase">
-  <!-- Top Navigation & Artifact Index -->
   <div class="pcb-header-bar">
     <div class="pcb-header-left">
       <span class="pcb-tag mono">[ HARDWARE ARTIFACT INSPECTOR ]</span>
@@ -43,114 +41,11 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     </div>
   </div>
 
-  <!-- Stage: Two-Column Interactive Stage (3D Perspective Left, Telemetry Right) -->
+  <!-- Stage: Two-Column Interactive Stage (3D Viewport Left, Telemetry Right) -->
   <div class="pcb-stage-grid">
     <!-- Left Column: Interactive 3D Artifact Viewport -->
     <div class="pcb-viewport-wrap" id="pcbViewportWrap">
-      <div class="pcb-perspective-stage" id="pcbStage">
-        <!-- Physical Board Object -->
-        <div class="pcb-board-object" id="pcbBoardObject">
-          <!-- PCB Solder Mask Canvas (Matte Dark Substrate with ENIG Gold and Traces) -->
-          <svg class="pcb-substrate-svg" viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <!-- Board Base Plate -->
-            <rect x="10" y="10" width="460" height="320" rx="14" fill="#141E18" stroke="#2D4A38" stroke-width="2.5" />
-            
-            <!-- Mounting Holes (Plated Through-Hole Gold) -->
-            <circle cx="28" cy="28" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
-            <circle cx="452" cy="28" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
-            <circle cx="28" cy="312" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
-            <circle cx="452" cy="312" r="9" fill="#243328" stroke="#D4AF37" stroke-width="2.5" />
-
-            <!-- Copper Ground Plane Hash & Traces -->
-            <g stroke="#264433" stroke-width="1.2" stroke-linecap="round" opacity="0.8">
-              <path d="M40 70 L140 70 L180 110 L240 110 L260 90 L340 90 L380 130 L440 130" />
-              <path d="M40 150 L120 150 L160 190 L220 190 L250 160 L320 160 L360 200 L440 200" />
-              <path d="M40 230 L100 230 L140 270 L280 270 L310 240 L440 240" />
-              <path d="M90 30 L90 120 L130 160 L130 290" />
-              <path d="M210 30 L210 90 L250 130 L250 310" />
-              <path d="M370 30 L370 110 L330 150 L330 310" />
-            </g>
-
-            <!-- Differential CAN 2.0B Matched Pair (Bright Gold Traces) -->
-            <g stroke="#E5C158" stroke-width="1.8" stroke-linecap="round" opacity="0.95">
-              <path d="M360 40 L390 40 L410 60 L440 60" />
-              <path d="M360 46 L388 46 L408 66 L440 66" />
-            </g>
-
-            <!-- Isolation Barrier Boundary (Dotted Silkscreen) -->
-            <path d="M240 18 L240 322" stroke="#FFFFFF" stroke-dasharray="4 4" stroke-width="1.2" opacity="0.5" />
-
-            <!-- Silkscreen Markings & Component Footprints -->
-            <!-- IC1: Microcontroller QFP Package -->
-            <rect x="140" y="100" width="80" height="80" rx="4" fill="#0C140F" stroke="#E5C158" stroke-width="1.5" />
-            <circle cx="150" cy="110" r="3" fill="#E5C158" />
-            <text x="180" y="145" fill="#C5D1C8" font-size="10" font-family="monospace" text-anchor="middle" font-weight="bold">ARM_M4</text>
-            <text x="180" y="158" fill="#88998D" font-size="7" font-family="monospace" text-anchor="middle">STM32F405</text>
-
-            <!-- IC2: Isolated CAN Transceiver -->
-            <rect x="360" y="80" width="46" height="34" rx="3" fill="#0C140F" stroke="#E5C158" stroke-width="1.2" />
-            <text x="383" y="100" fill="#E5C158" font-size="8" font-family="monospace" text-anchor="middle">ISO1050</text>
-
-            <!-- Power Stage & DC-DC Module -->
-            <rect x="40" y="190" width="70" height="50" rx="4" fill="#0C140F" stroke="#FFFFFF" stroke-width="1.2" opacity="0.8" />
-            <text x="75" y="218" fill="#FFFFFF" font-size="8" font-family="monospace" text-anchor="middle" opacity="0.9">DC-DC 24V/5V</text>
-
-            <!-- Terminal Header J1 (Deutsch Automotive Pin Header) -->
-            <rect x="424" y="90" width="26" height="120" rx="3" fill="#1B1E1C" stroke="#D4AF37" stroke-width="1.5" />
-            <g fill="#D4AF37">
-              <circle cx="437" cy="106" r="3.5" />
-              <circle cx="437" cy="126" r="3.5" />
-              <circle cx="437" cy="146" r="3.5" />
-              <circle cx="437" cy="166" r="3.5" />
-              <circle cx="437" cy="186" r="3.5" />
-            </g>
-
-            <!-- Silkscreen Text Labels -->
-            <text x="30" y="52" fill="#E4EFE8" font-size="9" font-family="monospace" font-weight="bold" opacity="0.85">EQUINOX_ECU_V2.2</text>
-            <text x="246" y="32" fill="#6EE7B7" font-size="7.5" font-family="monospace" opacity="0.75">GALVANIC ISOLATION BARRIER</text>
-            <text x="365" y="135" fill="#E4EFE8" font-size="7" font-family="monospace" opacity="0.7">120R SPLIT_TERM</text>
-          </svg>
-
-          <!-- Interactive Test-Point Pins Overlay -->
-          <div class="test-points-layer" id="testPointsLayer">
-            {pcbArtifacts[0].testPoints.map((tp) => (
-              <button
-                class="tp-pin"
-                data-tp-id={tp.id}
-                style={`left: ${tp.x}%; top: ${tp.y}%;`}
-                aria-label={`Inspect ${tp.label}`}
-              >
-                <span class="tp-ping" aria-hidden="true"></span>
-                <span class="tp-core"></span>
-                <span class="tp-tooltip mono">{tp.label}</span>
-              </button>
-            ))}
-          </div>
-
-          <!-- Specular Lighting Sheen Overlay (Dynamic Pointer Reflection) -->
-          <div class="pcb-sheen" id="pcbSheen" aria-hidden="true"></div>
-        </div>
-
-        <!-- 3D Hint Cue -->
-        <div class="perspective-hint mono" aria-hidden="true">
-          <span class="hint-glyph">⟲</span>
-          <span>DRAG TO ROTATE · ARROW KEYS TO SWITCH BOARDS · R TO RESET</span>
-        </div>
-        
-        <!-- Accessible Rotation Controls -->
-        <div class="pcb-rotation-controls" aria-label="PCB rotation controls">
-          <button id="pcbRotateLeft" class="pcb-ctrl-btn" aria-label="Rotate left" title="Rotate Left (←)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-          </button>
-          <button id="pcbResetRotation" class="pcb-ctrl-btn pcb-ctrl-reset" aria-label="Reset rotation" title="Reset View (R)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-            <span class="ctrl-label">RESET</span>
-          </button>
-          <button id="pcbRotateRight" class="pcb-ctrl-btn" aria-label="Rotate right" title="Rotate Right (→)">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 9A9 9 0 0 0 18.31 3.68L23 10"></path></svg>
-          </button>
-        </div>
-      </div>
+      <PCBShowcaseReact client:visible />
     </div>
 
     <!-- Right Column: Engineering Metadata & Problem Rationale -->
@@ -204,7 +99,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
             <div class="rationale-block">
               <div class="rationale-title mono">
                 <span class="dot-accent">●</span>
-                <span>HARDWARE DESIGN DECISIONS &amp; TRADE-OFFS</span>
+                <span>HARDWARE DESIGN DECISIONS & TRADE-OFFS</span>
               </div>
               <p class="rationale-text">{board.designDecisions}</p>
             </div>
@@ -214,7 +109,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
           <div class="live-tp-callout" id={`tpCallout-${board.id}`}>
             <div class="tp-callout-header mono">
               <span class="tp-icon">⌖</span>
-              <span id={`tpCalloutTitle-${board.id}`}>INSPECTION CALLOUT: HOVER PINS ON BOARD</span>
+              <span id={`tpCalloutTitle-${board.id}`}>INSPECTION CALLOUT: HOVER TEST POINTS ON BOARD</span>
             </div>
             <p class="tp-callout-body" id={`tpCalloutDesc-${board.id}`}>
               Click or hover any glowing gold test point on the physical PCB schematic to read electrical signal parameters and trace routing rationale.
@@ -232,16 +127,10 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
 
   let currentBoardIdx = 0;
   const boardsCount = 3;
-  const boardObject = document.getElementById('pcbBoardObject');
-  const stage = document.getElementById('pcbStage');
-  const sheen = document.getElementById('pcbSheen');
   const dotBtns = document.querySelectorAll<HTMLButtonElement>('.pcb-dot-btn');
   const detailCards = document.querySelectorAll<HTMLElement>('.pcb-details-card');
   const prevBtn = document.getElementById('pcbPrevBtn');
   const nextBtn = document.getElementById('pcbNextBtn');
-  const rotateLeftBtn = document.getElementById('pcbRotateLeft');
-  const rotateRightBtn = document.getElementById('pcbRotateRight');
-  const resetBtn = document.getElementById('pcbResetRotation');
 
   // Switch Active Board
   function setBoard(index: number) {
@@ -253,9 +142,6 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
       dot.classList.toggle('active', isActive);
       dot.setAttribute('aria-selected', String(isActive));
     });
-
-    // Update Test Points Layer
-    updateTestPoints();
 
     // Update Cards with clean transition
     detailCards.forEach((card, idx) => {
@@ -275,51 +161,8 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
       }
     });
 
-    // Subtle Board Swap Animation
-    if (boardObject) {
-      animate(boardObject, {
-        scale: [0.96, 1],
-        opacity: [0.75, 1],
-        duration: 350,
-        ease: 'outExpo',
-      });
-    }
-  }
-
-  // Update Test Points for Current Board
-  function updateTestPoints() {
-    const layer = document.getElementById('testPointsLayer');
-    if (!layer) return;
-    const board = pcbArtifacts[currentBoardIdx];
-    layer.innerHTML = board.testPoints.map((tp: { id: string; x: number; y: number; label: string }) => `
-      <button
-        class="tp-pin"
-        data-tp-id="${tp.id}"
-        style="left: ${tp.x}%; top: ${tp.y}%;"
-        aria-label="Inspect ${tp.label}"
-      >
-        <span class="tp-ping" aria-hidden="true"></span>
-        <span class="tp-core"></span>
-        <span class="tp-tooltip mono">${tp.label}</span>
-      </button>
-    `).join('');
-    
-    // Re-attach hover listeners
-    layer.querySelectorAll<HTMLButtonElement>('.tp-pin').forEach((pin) => {
-      pin.addEventListener('mouseenter', () => {
-        const activeCard = detailCards[currentBoardIdx];
-        if (!activeCard) return;
-        const boardId = activeCard.dataset.boardId;
-        const titleEl = document.getElementById(`tpCalloutTitle-${boardId}`);
-        const descEl = document.getElementById(`tpCalloutDesc-${boardId}`);
-        const tpId = pin.dataset.tpId;
-        if (tpId && titleEl && descEl) {
-          const tooltip = pin.querySelector('.tp-tooltip')?.textContent;
-          titleEl.textContent = `INSPECTING: ${tooltip || tpId}`;
-          descEl.textContent = `Verified test point active. Measuring signal impedance and transient protection parameters across this circuit node.`;
-        }
-      });
-    });
+    // Notify React component to switch board
+    window.dispatchEvent(new CustomEvent('pcb-board-change', { detail: { index: currentBoardIdx } }));
   }
 
   // Prev / Next Listeners
@@ -333,160 +176,26 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     });
   });
 
-  // Rotation Control Buttons
-  let rotationStep = 0;
-  const maxRotationStep = 6; // ~90 degrees total each direction
-  const stepDegrees = 15;
-
-  function rotateLeft() {
-    if (rotationStep > -maxRotationStep) {
-      rotationStep--;
-      applyRotation();
-    }
-  }
-
-  function rotateRight() {
-    if (rotationStep < maxRotationStep) {
-      rotationStep++;
-      applyRotation();
-    }
-  }
-
-  function resetRotation() {
-    rotationStep = 0;
-    applyRotation();
-  }
-
-  function applyRotation() {
-    if (!boardObject) return;
-    const rotY = rotationStep * stepDegrees;
-    boardObject.style.transform = `perspective(1100px) rotateX(0deg) rotateY(${rotY}deg) translateZ(12px)`;
-    if (sheen) {
-      const px = 50 + rotY * 2.2;
-      sheen.style.background = `radial-gradient(circle at ${Math.max(10, Math.min(90, px))}% 50%, rgba(255, 255, 255, 0.16) 0%, transparent 65%)`;
-    }
-  }
-
-  rotateLeftBtn?.addEventListener('click', rotateLeft);
-  rotateRightBtn?.addEventListener('click', rotateRight);
-  resetBtn?.addEventListener('click', resetRotation);
-
   // Keyboard Navigation
   document.addEventListener('keydown', (e: KeyboardEvent) => {
-    // Only handle keys when PCB section is in view or focused
     const pcbSection = document.getElementById('hardware');
     if (!pcbSection) return;
     const rect = pcbSection.getBoundingClientRect();
     const inView = rect.top < window.innerHeight && rect.bottom > 0;
     
-    if (!inView && document.activeElement !== stage) return;
+    if (!inView) return;
 
     switch (e.key) {
       case 'ArrowLeft':
         e.preventDefault();
-        // If focus is on stage or controls, rotate; otherwise switch board
-        if (document.activeElement === stage || document.activeElement === rotateLeftBtn || document.activeElement === rotateRightBtn || document.activeElement === resetBtn) {
-          rotateLeft();
-        } else {
-          setBoard(currentBoardIdx - 1);
-        }
+        setBoard(currentBoardIdx - 1);
         break;
       case 'ArrowRight':
         e.preventDefault();
-        if (document.activeElement === stage || document.activeElement === rotateLeftBtn || document.activeElement === rotateRightBtn || document.activeElement === resetBtn) {
-          rotateRight();
-        } else {
-          setBoard(currentBoardIdx + 1);
-        }
-        break;
-      case 'r':
-      case 'R':
-        e.preventDefault();
-        resetRotation();
+        setBoard(currentBoardIdx + 1);
         break;
     }
   });
-
-  // Make stage focusable for keyboard
-  stage?.setAttribute('tabindex', '0');
-
-  // Deliberate Drag-to-Rotate Interaction (NO cursor-follow)
-  if (stage && boardObject && !isReducedMotion()) {
-    const stageEl = stage;
-    let isDragging = false;
-    let dragStartX = 0;
-    let lastX = 0;
-
-    function startDrag(clientX: number) {
-      isDragging = true;
-      dragStartX = clientX;
-      lastX = clientX;
-      stageEl.style.cursor = 'grabbing';
-      stageEl.classList.add('is-dragging');
-    }
-
-    function moveDrag(clientX: number) {
-      if (!isDragging) return;
-      const dx = clientX - lastX;
-      lastX = clientX;
-      // Rotate based on drag delta
-      rotationStep = Math.max(-maxRotationStep, Math.min(maxRotationStep, rotationStep + dx * 0.15));
-      applyRotation();
-    }
-
-    function endDrag(clientX?: number) {
-      if (isDragging && clientX !== undefined) {
-        const totalDx = clientX - dragStartX;
-        // Swipe threshold to switch boards
-        if (Math.abs(totalDx) > 80) {
-          if (totalDx > 0) setBoard(currentBoardIdx - 1);
-          else setBoard(currentBoardIdx + 1);
-        }
-      }
-      isDragging = false;
-      stageEl.style.cursor = 'grab';
-      stageEl.classList.remove('is-dragging');
-      // Gentle return to nearest step
-      rotationStep = Math.round(rotationStep);
-      applyRotation();
-    }
-
-    stage.addEventListener('mousedown', (e) => {
-      if ((e.target as HTMLElement).closest('.tp-pin') || (e.target as HTMLElement).closest('button')) return;
-      startDrag(e.clientX);
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      moveDrag(e.clientX);
-    });
-
-    window.addEventListener('mouseup', (e) => {
-      if (isDragging) endDrag(e.clientX);
-    });
-
-    stage.addEventListener('mouseleave', () => {
-      if (isDragging) endDrag();
-    });
-
-    // Touch support with swipe
-    stage.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      startDrag(touch.clientX);
-    }, { passive: true });
-
-    stage.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
-      moveDrag(touch.clientX);
-    }, { passive: true });
-
-    stage.addEventListener('touchend', (e) => {
-      const touch = e.changedTouches[0];
-      endDrag(touch.clientX);
-    }, { passive: true });
-  }
-
-  // Initialize test points for first board
-  updateTestPoints();
 </script>
 
 <style>
@@ -519,7 +228,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
 
   .pcb-tag {
     font-size: var(--text-2xs);
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
     font-weight: 700;
     letter-spacing: 0.08em;
   }
@@ -549,7 +258,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     align-items: center;
     gap: 0.4rem;
     padding: 4px 10px;
-    background: var(--bg-pure);
+    background: var(--bg-primary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--r-xs);
     cursor: pointer;
@@ -559,14 +268,14 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
   }
 
   .pcb-dot-btn:hover {
-    border-color: var(--cyan);
+    border-color: var(--accent-primary);
     color: var(--text-primary);
   }
 
   .pcb-dot-btn.active {
-    background: var(--cyan-light);
-    border-color: var(--cyan);
-    color: var(--cyan-dark);
+    background: var(--accent-muted);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
     font-weight: 700;
   }
 
@@ -574,11 +283,11 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--border-strong);
+    background: var(--border);
   }
 
   .pcb-dot-btn.active .dot-pip {
-    background: var(--cyan);
+    background: var(--accent-primary);
   }
 
   .pcb-arrows {
@@ -593,7 +302,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     align-items: center;
     justify-content: center;
     border-radius: var(--r-sm);
-    background: var(--bg-pure);
+    background: var(--bg-primary);
     border: 1px solid var(--border);
     cursor: pointer;
     color: var(--text-primary);
@@ -603,8 +312,8 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
 
   .pcb-arrow-btn:hover {
     background: var(--surface);
-    border-color: var(--cyan);
-    color: var(--cyan-dark);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
   }
 
   /* Stage Grid */
@@ -622,140 +331,10 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     align-items: center;
   }
 
-  .pcb-perspective-stage {
-    position: relative;
+  .pcb-viewport-wrap > div {
     width: 100%;
     aspect-ratio: 1.38 / 1;
-    perspective: 1200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at center, #1A2620 0%, #0F1612 85%);
-    border-radius: var(--r-md);
-    border: 1px solid #23352A;
-    overflow: hidden;
-    padding: var(--space-6);
-    cursor: grab;
-  }
-
-  .pcb-perspective-stage:active {
-    cursor: grabbing;
-  }
-
-  .pcb-board-object {
-    position: relative;
-    width: 90%;
-    height: 86%;
-    transform-style: preserve-3d;
-    transition: transform 0.15s ease-out;
-    box-shadow:
-      0 24px 48px -12px rgba(0, 0, 0, 0.45),
-      0 4px 12px rgba(0, 0, 0, 0.25);
-    border-radius: 14px;
-  }
-
-  .pcb-substrate-svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-    border-radius: 14px;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
-  }
-
-  .pcb-sheen {
-    position: absolute;
-    inset: 0;
-    border-radius: 14px;
-    pointer-events: none;
-    mix-blend-mode: overlay;
-    transition: background 0.1s linear;
-  }
-
-  /* Test Points Pins */
-  .test-points-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: auto;
-  }
-
-  .tp-pin {
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    transform: translate(-50%, -50%);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-  }
-
-  .tp-core {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #D4AF37;
-    border: 1.5px solid #FFFFFF;
-    box-shadow: 0 0 6px rgba(212, 175, 55, 0.9);
-    transition: transform 0.2s ease;
-  }
-
-  .tp-ping {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: rgba(212, 175, 55, 0.4);
-    animation: tpPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-
-  @keyframes tpPulse {
-    0% { transform: scale(0.6); opacity: 1; }
-    100% { transform: scale(2.2); opacity: 0; }
-  }
-
-  .tp-pin:hover .tp-core {
-    transform: scale(1.4);
-    background: #FFE082;
-  }
-
-  .tp-tooltip {
-    position: absolute;
-    bottom: 22px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(15, 23, 42, 0.92);
-    color: #F8FAFC;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  .tp-pin:hover .tp-tooltip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(-3px);
-  }
-
-  .perspective-hint {
-    position: absolute;
-    bottom: 10px;
-    left: 14px;
-    right: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    font-size: 0.65rem;
-    color: #88998D;
-    letter-spacing: 0.05em;
-    pointer-events: none;
+    max-width: 720px;
   }
 
   /* Telemetry Panel (Right) */
@@ -788,14 +367,14 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
   .subsystem-badge {
     font-size: var(--text-2xs);
     font-weight: 700;
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
     letter-spacing: 0.04em;
   }
 
   .layer-pill {
     font-size: 0.65rem;
     padding: 2px 6px;
-    background: var(--bg-pure);
+    background: var(--bg-primary);
     border: 1px solid var(--border);
     border-radius: var(--r-xs);
     color: var(--text-muted);
@@ -833,11 +412,11 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
   }
 
   .assoc-link:hover {
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
   }
 
   .assoc-arrow {
-    color: var(--cyan);
+    color: var(--accent-primary);
   }
 
   /* Specs Grid */
@@ -857,7 +436,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
   .specs-mini-table {
     display: flex;
     flex-direction: column;
-    background: var(--bg-pure);
+    background: var(--bg-primary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--r-sm);
     overflow: hidden;
@@ -897,7 +476,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     flex-direction: column;
     gap: 4px;
     padding: var(--space-4);
-    background: var(--bg-pure);
+    background: var(--bg-primary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--r-sm);
   }
@@ -917,7 +496,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
   }
 
   .dot-accent {
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
   }
 
   .rationale-text {
@@ -929,8 +508,8 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
   /* Live TP Callout */
   .live-tp-callout {
     padding: var(--space-4);
-    background: rgba(2, 132, 199, 0.04);
-    border: 1px solid rgba(2, 132, 199, 0.2);
+    background: var(--accent-muted);
+    border: 1px solid rgba(184, 154, 97, 0.2);
     border-radius: var(--r-sm);
     display: flex;
     flex-direction: column;
@@ -943,7 +522,7 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     gap: 0.4rem;
     font-size: 0.65rem;
     font-weight: 700;
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
     letter-spacing: 0.04em;
   }
 
@@ -957,73 +536,16 @@ import { pcbArtifacts } from '../data/pcbArtifacts';
     .pcb-stage-grid {
       grid-template-columns: 1fr;
     }
-  }
-
-  /* PCB Rotation Controls */
-  .pcb-rotation-controls {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin-top: var(--space-4);
-    padding: var(--space-3);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: var(--r-md);
-    border: 1px solid var(--border-subtle);
-  }
-
-  .pcb-ctrl-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--r-sm);
-    background: var(--bg-pure);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all var(--dur-fast) var(--ease-out);
-  }
-
-  .pcb-ctrl-btn:hover {
-    background: var(--surface);
-    border-color: var(--cyan);
-    color: var(--cyan-dark);
-  }
-
-  .pcb-ctrl-btn:focus-visible {
-    outline: 2px solid var(--cyan);
-    outline-offset: 2px;
-  }
-
-  .pcb-ctrl-reset {
-    flex: 1;
-    max-width: 120px;
-    gap: var(--space-2);
-  }
-
-  .ctrl-label {
-    font-size: var(--text-2xs);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--text-muted);
-  }
-
-  .pcb-ctrl-reset:hover .ctrl-label {
-    color: var(--cyan-dark);
-  }
-
-  .pcb-perspective-stage.is-dragging {
-    cursor: grabbing;
+    
+    .pcb-viewport-wrap > div {
+      max-width: 100%;
+    }
   }
 
   @media (max-width: 640px) {
-    .pcb-rotation-controls {
+    .pcb-nav-controls {
       width: 100%;
-      justify-content: center;
-    }
-    .pcb-ctrl-reset {
-      max-width: none;
+      justify-content: space-between;
     }
   }
 </style>

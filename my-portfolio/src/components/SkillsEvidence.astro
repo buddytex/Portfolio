@@ -56,6 +56,26 @@ import { skillsData } from '../data/skills';
     font-size: clamp(1.6rem, 2.6vw, 2.4rem);
   }
 
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--accent-primary);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    width: 10px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-primary), transparent);
+  }
+
   /* Skill Chip Grid - ~3 rows on desktop */
   .skill-index-wrap {
     margin-top: var(--space-4);
@@ -85,14 +105,14 @@ import { skillsData } from '../data/skills';
 
   .skill-chip:hover,
   .skill-chip:focus-visible {
-    border-color: var(--cyan);
+    border-color: var(--accent-primary);
     transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
     background: var(--surface-elevated);
   }
 
   .skill-chip:focus-visible {
-    outline: 2px solid var(--cyan);
+    outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
   }
 
@@ -106,7 +126,7 @@ import { skillsData } from '../data/skills';
 
   .chip-category {
     font-size: var(--text-2xs);
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
     font-weight: 500;
     letter-spacing: 0.04em;
   }
@@ -121,7 +141,7 @@ import { skillsData } from '../data/skills';
 
   .skill-chip:hover .chip-arrow,
   .skill-chip:focus-visible .chip-arrow {
-    color: var(--cyan);
+    color: var(--accent-primary);
     transform: translateX(4px);
   }
 
@@ -137,7 +157,7 @@ import { skillsData } from '../data/skills';
     gap: var(--space-2);
     padding: var(--space-4) var(--space-8);
     background: var(--text-primary);
-    color: var(--bg);
+    color: var(--bg-primary);
     border-radius: var(--r-sm);
     font-weight: 600;
     font-size: var(--text-sm);
@@ -147,8 +167,8 @@ import { skillsData } from '../data/skills';
   }
 
   .skills-cta-btn:hover {
-    background: var(--cyan-dark);
-    color: #FFFFFF;
+    background: var(--accent-primary);
+    color: var(--bg-primary);
     transform: translateY(-2px);
     box-shadow: var(--shadow-hover);
   }

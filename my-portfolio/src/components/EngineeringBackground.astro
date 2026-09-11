@@ -87,7 +87,7 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
 <style>
   .background-section {
     padding: var(--section-pad) 0;
-    background: var(--bg-about);
+    background: var(--bg-work);
     border-top: 1px solid var(--border-subtle);
     min-height: 100svh;
   }
@@ -95,6 +95,14 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
   /* Reduced section title for this section (subordinate to Hero) */
   .background-section .section-title {
     font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  }
+
+  .header-kicker {
+    font-size: var(--text-2xs);
+    color: var(--accent-primary);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
   }
 
   /* Two-column grid: Left (Journey + Philosophy), Right (Timeline) */
@@ -223,7 +231,7 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
 
   .philosophy-text p {
     font-size: var(--text-sm);
-    line-height: 1.5;
+    line-height: 1.55;
     color: var(--text-secondary);
     margin: 0;
   }

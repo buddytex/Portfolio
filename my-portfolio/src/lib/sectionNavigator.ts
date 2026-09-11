@@ -38,11 +38,11 @@ export class SectionNavigator {
   constructor(options: Partial<NavOptions> = {}) {
     this.options = {
       sections: [],
-      duration: 700,
+      duration: 480,
       ease: 'outExpo',
-      wheelThreshold: 40,
+      wheelThreshold: 45,
       touchThreshold: 50,
-      lockDuration: 800,
+      lockDuration: 480,
       reducedMotionDuration: 0,
       ...options,
     };
@@ -252,6 +252,7 @@ export class SectionNavigator {
     if (index < 0 || index >= this.sections.length) return;
 
     this.isTransitioning = true;
+    const previousIndex = this.currentIndex;
     this.currentIndex = index;
 
     const section = this.sections[index];
@@ -262,7 +263,7 @@ export class SectionNavigator {
     }
 
     // Animate transition
-    await this.animateTransition(index);
+    await this.animateTransition(previousIndex, index);
 
     // Update indicator
     this.updateIndicator();
@@ -277,47 +278,57 @@ export class SectionNavigator {
     }, this.options.lockDuration);
   }
 
-  private async animateTransition(targetIndex: number): Promise<void> {
+  private async animateTransition(fromIndex: number, toIndex: number): Promise<void> {
     const reduced = isReducedMotion();
     const duration = reduced ? this.options.reducedMotionDuration : this.options.duration;
 
-    const currentSection = this.sections[this.currentIndex === targetIndex ? 
-      (targetIndex > 0 ? targetIndex - 1 : targetIndex + 1) : this.currentIndex];
-    const targetSection = this.sections[targetIndex];
+    const fromSection = this.sections[fromIndex];
+    const toSection = this.sections[toIndex];
+    const direction = toIndex > fromIndex ? 'down' : 'up';
 
     if (reduced) {
       // Instant transition for reduced motion
-      if (currentSection) {
-        currentSection.element.style.opacity = '0';
-        currentSection.element.style.pointerEvents = 'none';
+      if (fromSection) {
+        fromSection.element.style.opacity = '0';
+        fromSection.element.style.pointerEvents = 'none';
       }
-      targetSection.element.style.opacity = '1';
-      targetSection.element.style.pointerEvents = 'auto';
-      this.scrollToSection(targetIndex, false);
+      toSection.element.style.opacity = '1';
+      toSection.element.style.pointerEvents = 'auto';
+      this.scrollToSection(toIndex, false);
       return;
     }
 
-    // Fade out current, fade in target
+    // Fade out current, fade in target with slight slide
+    const translateAmount = direction === 'down' ? 24 : -24;
+
     const fadeOutPromise = new Promise<void>(resolve => {
-      if (!currentSection) {
+      if (!fromSection) {
         resolve();
         return;
       }
-      animate(currentSection.element, {
+      animate(fromSection.element, {
         opacity: [1, 0],
-        translateY: [0, targetIndex > this.currentIndex ? 30 : -30],
-        duration: duration * 0.5,
+        translateY: [0, -translateAmount],
+        duration: duration * 0.45,
         ease: 'inExpo',
-        onComplete: () => resolve(),
+        onComplete: () => {
+          fromSection.element.style.pointerEvents = 'none';
+          resolve();
+        },
       });
     });
 
     const fadeInPromise = new Promise<void>(resolve => {
-      animate(targetSection.element, {
+      // Start target at offset position
+      toSection.element.style.opacity = '0';
+      toSection.element.style.transform = `translateY(${translateAmount}px)`;
+      toSection.element.style.pointerEvents = 'auto';
+      
+      animate(toSection.element, {
         opacity: [0, 1],
-        translateY: [targetIndex > this.currentIndex ? 30 : -30, 0],
+        translateY: [translateAmount, 0],
         duration: duration,
-        delay: duration * 0.2,
+        delay: duration * 0.15,
         ease: this.options.ease,
         onComplete: () => resolve(),
       });
@@ -325,7 +336,7 @@ export class SectionNavigator {
 
     await Promise.all([fadeOutPromise, fadeInPromise]);
 
-    this.scrollToSection(targetIndex, false);
+    this.scrollToSection(toIndex, false);
   }
 
   scrollToSection(index: number, smooth = true) {
@@ -386,11 +397,11 @@ export function initSectionNavigator() {
   if (sections.length === 0) return null;
 
   const navigator = new SectionNavigator({
-    duration: 700,
+    duration: 480,
     ease: 'outExpo',
-    wheelThreshold: 40,
+    wheelThreshold: 45,
     touchThreshold: 50,
-    lockDuration: 800,
+    lockDuration: 480,
     reducedMotionDuration: 0,
   });
 

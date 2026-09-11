@@ -134,7 +134,7 @@ import { engineeringTimeline } from '../data/timeline';
 
   .chronology-eyebrow {
     font-size: var(--text-2xs);
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
     font-weight: 700;
     letter-spacing: 0.08em;
   }
@@ -159,8 +159,8 @@ import { engineeringTimeline } from '../data/timeline';
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--cyan);
-    box-shadow: 0 0 6px var(--cyan-glow);
+    background: var(--accent-primary);
+    box-shadow: 0 0 6px var(--accent-glow);
   }
 
   /* Tree & Spine */
@@ -187,8 +187,8 @@ import { engineeringTimeline } from '../data/timeline';
     left: 0;
     width: 100%;
     height: 0%;
-    background: linear-gradient(to bottom, var(--cyan) 0%, rgba(2, 132, 199, 0.4) 80%, rgba(2, 132, 199, 0.1) 100%);
-    box-shadow: 0 0 8px var(--cyan-glow);
+    background: linear-gradient(to bottom, var(--accent-primary) 0%, rgba(184, 154, 97, 0.4) 80%, rgba(184, 154, 97, 0.1) 100%);
+    box-shadow: 0 0 8px var(--accent-glow);
     transition: height 0.2s ease;
   }
 
@@ -224,24 +224,24 @@ import { engineeringTimeline } from '../data/timeline';
     height: 18px;
     border-radius: 50%;
     background: var(--surface);
-    border: 2px solid var(--cyan);
+    border: 2px solid var(--accent-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.14);
+    box-shadow: 0 0 0 4px rgba(184, 154, 97, 0.14);
     transition: all 0.25s var(--ease-out);
   }
 
   .milestone-milestone:hover .marker-outer-ring {
     transform: scale(1.2);
-    box-shadow: 0 0 0 6px rgba(14, 165, 233, 0.25);
+    box-shadow: 0 0 0 6px rgba(184, 154, 97, 0.25);
   }
 
   .marker-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--cyan-dark);
+    background: var(--accent-primary);
   }
 
   .marker-year {
@@ -265,7 +265,7 @@ import { engineeringTimeline } from '../data/timeline';
 
   .milestone-milestone:hover .milestone-card {
     transform: translateY(-2px);
-    border-color: var(--cyan);
+    border-color: var(--accent-primary);
     box-shadow: var(--shadow-hover);
   }
 
@@ -324,7 +324,7 @@ import { engineeringTimeline } from '../data/timeline';
     flex-shrink: 0;
   }
 
-  .achievement-badge {
+.achievement-badge {
     font-size: 0.7rem;
     font-weight: 700;
     color: #166534;
@@ -354,8 +354,8 @@ import { engineeringTimeline } from '../data/timeline';
   }
 
   .significance-block {
-    background: rgba(2, 132, 199, 0.025);
-    border-color: rgba(2, 132, 199, 0.15);
+    background: rgba(184, 154, 97, 0.035);
+    border-color: rgba(184, 154, 97, 0.18);
   }
 
   .detail-label {
@@ -369,12 +369,12 @@ import { engineeringTimeline } from '../data/timeline';
   }
 
   .significance-block .detail-label {
-    color: var(--cyan-dark);
+    color: var(--accent-primary);
   }
 
   .label-icon {
     font-size: 0.75rem;
-    color: var(--cyan);
+    color: var(--accent-primary);
   }
 
   .detail-text {

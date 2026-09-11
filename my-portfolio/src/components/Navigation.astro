@@ -2,7 +2,7 @@
 const navItems = [
   { href: '#work',    label: 'Projects' },
   { href: '#skills',  label: 'Skills' },
-  { href: '#hardware', label: 'PCB' },
+  { href: '#hardware', label: 'PCB Lab' },
   { href: '#contact', label: 'Contact' },
 ];
 ---
@@ -210,20 +210,20 @@ const navItems = [
     left: 0;
     width: 0;
     height: 1.5px;
-    background: var(--cyan);
+    background: var(--accent-primary);
     transition: width var(--dur-fast) var(--ease-out);
   }
 
   .nav-link:hover { color: var(--text-primary); }
-  .nav-link:hover::after { width: 100%; }
+  .nav-link:hover::after { width: 100%; background: var(--accent-primary); }
   .nav-link.active { color: var(--text-primary); }
-  .nav-link.active::after { width: 100%; }
+  .nav-link.active::after { width: 100%; background: var(--accent-primary); }
 
   .nav-link:focus-visible,
   .nav-brand:focus-visible,
   .nav-icon-btn:focus-visible,
   .nav-toggle:focus-visible {
-    outline: 2px solid var(--cyan);
+    outline: 2px solid var(--accent-primary);
     outline-offset: 3px;
     border-radius: var(--r-xs);
   }

@@ -1,5 +1,5 @@
 ---
-// EngineeringField Component — Subtle Ambient Engineering Field for Non-Hero Sections
+// EngineeringField Component — Sophisticated Living PCB Background
 // Minimal circuit geometry that provides continuity without dominating
 // Only active on non-hero sections, fades in after hero transition
 ---
@@ -15,8 +15,8 @@
   >
     <defs>
       <!-- Extremely subtle grid -->
-      <pattern id="ambientGrid" width="120" height="120" patternUnits="userSpaceOnUse">
-        <path d="M 120 0 L 0 0 0 120" fill="none" stroke="rgba(0, 174, 239, 0.04)" stroke-width="0.5" />
+      <pattern id="ambientGrid" width="100" height="100" patternUnits="userSpaceOnUse">
+        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(184, 154, 97, 0.04)" stroke-width="0.5" />
       </pattern>
     </defs>
 
@@ -133,11 +133,11 @@
       }
       if (tracesGroup) {
         tracesGroup.style.transition = 'opacity 2s ease';
-        tracesGroup.style.opacity = '0.3';
+        tracesGroup.style.opacity = '0.25';
       }
       if (nodesGroup) {
         nodesGroup.style.transition = 'opacity 2s ease';
-        nodesGroup.style.opacity = '0.25';
+        nodesGroup.style.opacity = '0.2';
       }
       
       if (!isReduced) {
