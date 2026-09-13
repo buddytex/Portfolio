@@ -1,0 +1,379 @@
+---
+// CircuitBoard Component — Cursor-Reactive PCB Trace Network
+// Ported from circuit-hover-demo.html reference implementation
+// Organic node placement, strict Manhattan routing, cursor proximity charging, pulse travel
+// Performance: DPR capped at 2, layout only on resize, 0 allocations in draw loop
+---
+
+<canvas id="circuitBoardCanvas" aria-hidden="true"></canvas>
+
+<script>
+  const canvas = document.getElementById('circuitBoardCanvas') as HTMLCanvasElement;
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let W = 0;
+      let H = 0;
+      let DPR = 1;
+
+      // ---- Data structures (rebuilt on resize) ----
+      interface BoardNode {
+        x: number;
+        y: number;
+        r: number;
+        shape: 'dot' | 'pad' | 'ic';
+        idx: number;
+      }
+
+      interface BoardEdge {
+        a: BoardNode;
+        b: BoardNode;
+        bends: { x: number; y: number }[];
+        width: number;
+        kind: 'local' | 'jump';
+        midX: number;
+        midY: number;
+      }
+
+      interface Pulse {
+        e: BoardEdge;
+        t0: number;
+        dur: number;
+      }
+
+      let nodes: BoardNode[] = [];
+      let edges: BoardEdge[] = [];
+      let pulses: Pulse[] = [];
+
+      const mouse = { x: -9999, y: -9999, active: false };
+
+      // ---- Helpers ----
+      function rand(min: number, max: number): number {
+        return min + Math.random() * (max - min);
+      }
+      function snap(v: number, step: number): number {
+        return Math.round(v / step) * step;
+      }
+      function pick<T>(arr: T[]): T {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+      function dist(x1: number, y1: number, x2: number, y2: number): number {
+        return Math.hypot(x1 - x2, y1 - y2);
+      }
+
+      // ---- Build organic PCB layout ----
+      function buildBoard(): void {
+        nodes = [];
+        edges = [];
+        pulses = [];
+
+        const GRID = 6; // fine snap grid
+        const cellW = rand(70, 95);
+        const cellH = rand(70, 95);
+        const cols = Math.ceil(W / cellW) + 1;
+        const rows = Math.ceil(H / cellH) + 1;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (Math.random() < 0.22) continue; // skip cells → uneven density
+            let x = c * cellW + rand(-cellW * 0.4, cellW * 0.4);
+            let y = r * cellH + rand(-cellH * 0.4, cellH * 0.4);
+            x = snap(x, GRID);
+            y = snap(y, GRID);
+            if (x < 10 || x > W - 10 || y < 10 || y > H - 10) continue;
+
+            const roll = Math.random();
+            let shape: 'dot' | 'pad' | 'ic' = 'dot';
+            let size = 1.5;
+            if (roll > 0.94) {
+              shape = 'ic';
+              size = pick([6, 7, 8]);
+            } else if (roll > 0.8) {
+              shape = 'pad';
+              size = pick([2.5, 3, 3.5]);
+            } else {
+              size = pick([1, 1.5, 2]);
+            }
+
+            nodes.push({ x, y, r: size, shape, idx: nodes.length });
+          }
+        }
+
+        // Local connections: 1-3 nearest neighbors, thinned randomly
+        for (const n of nodes) {
+          const neighbors = nodes
+            .filter(m => m !== n)
+            .map(m => ({ m, d: Math.hypot(m.x - n.x, m.y - n.y) }))
+            .filter(o => o.d < Math.max(cellW, cellH) * 1.9)
+            .sort((a, b) => a.d - b.d)
+            .slice(0, Math.random() < 0.3 ? 3 : (Math.random() < 0.6 ? 2 : 1));
+
+          for (const { m } of neighbors) {
+            if (Math.random() < 0.5) continue; // thin further for irregularity
+            addEdge(n, m, false);
+          }
+        }
+
+        // Occasional long jump traces across the board
+        const jumps = Math.floor(nodes.length * 0.03);
+        for (let i = 0; i < jumps; i++) {
+          const a = nodes[Math.floor(Math.random() * nodes.length)];
+          const b = nodes[Math.floor(Math.random() * nodes.length)];
+          if (a === b) continue;
+          if (Math.hypot(a.x - b.x, a.y - b.y) < 160) continue;
+          addEdge(a, b, true);
+        }
+      }
+
+      // Strict Manhattan routing: clean 90° corners only
+      function addEdge(a: BoardNode, b: BoardNode, longRoute: boolean): void {
+        const twoBend = longRoute ? Math.random() < 0.5 : Math.random() < 0.35;
+        const bends: { x: number; y: number }[] = [];
+
+        if (twoBend) {
+          const midX = snap((a.x + b.x) / 2, 6);
+          bends.push({ x: midX, y: a.y });
+          bends.push({ x: midX, y: b.y });
+        } else {
+          const horizFirst = Math.random() < 0.5;
+          bends.push(horizFirst ? { x: b.x, y: a.y } : { x: a.x, y: b.y });
+        }
+
+        // Compute midpoint for proximity checks
+        const pts = [a, ...bends, b];
+        const midX = pts.reduce((s, p) => s + p.x, 0) / pts.length;
+        const midY = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+
+        edges.push({
+          a, b, bends,
+          width: Math.random() < 0.15 ? 2 : 1, // two trace classes: signal / power
+          kind: longRoute ? 'jump' : 'local',
+          midX, midY,
+        });
+      }
+
+      // ---- Resize handler ----
+      function resize(): void {
+        DPR = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx!.setTransform(DPR, 0, 0, DPR, 0, 0);
+        buildBoard();
+
+        if (prefersReduced) {
+          renderStatic();
+        }
+      }
+
+      // ---- Static render for reduced motion ----
+      function renderStatic(): void {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = '#F7F5F0';
+        ctx.fillRect(0, 0, W, H);
+
+        // Draw edges at base alpha
+        for (const e of edges) {
+          ctx.beginPath();
+          ctx.moveTo(e.a.x, e.a.y);
+          for (const p of e.bends) ctx.lineTo(p.x, p.y);
+          ctx.lineTo(e.b.x, e.b.y);
+          ctx.strokeStyle = `rgba(184,146,74,${e.kind === 'jump' ? 0.09 : 0.15})`;
+          ctx.lineWidth = e.width;
+          ctx.lineJoin = 'miter';
+          ctx.stroke();
+        }
+
+        // Draw nodes
+        for (const n of nodes) {
+          ctx.fillStyle = `rgba(184,146,74,${n.shape === 'ic' ? 0.18 : 0.25})`;
+          if (n.shape === 'ic') {
+            ctx.strokeStyle = ctx.fillStyle;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(n.x - n.r, n.y - n.r, n.r * 2, n.r * 2);
+            for (let i = -1; i <= 1; i++) {
+              ctx.fillRect(n.x - n.r - 3, n.y + i * n.r * 0.6 - 0.6, 3, 1.2);
+              ctx.fillRect(n.x + n.r, n.y + i * n.r * 0.6 - 0.6, 3, 1.2);
+            }
+          } else {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      // ---- Animated draw loop ----
+      function draw(t: number): void {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, W, H);
+        // Don't fill background — let CSS background show through (canvas is transparent)
+
+        const RADIUS = 190; // proximity influence radius
+
+        // Draw edges
+        for (let i = 0; i < edges.length; i++) {
+          const e = edges[i];
+          const d = mouse.active ? dist(mouse.x, mouse.y, e.midX, e.midY) : 9999;
+          const proximity = Math.max(0, 1 - d / RADIUS);
+
+          const baseAlpha = e.kind === 'jump' ? 0.09 : 0.15;
+          const alpha = baseAlpha + proximity * 0.75;
+
+          ctx.beginPath();
+          ctx.moveTo(e.a.x, e.a.y);
+          for (const p of e.bends) ctx.lineTo(p.x, p.y);
+          ctx.lineTo(e.b.x, e.b.y);
+
+          ctx.strokeStyle = `rgba(184,146,74,${alpha})`;
+          ctx.lineWidth = e.width + proximity * 1.4;
+          ctx.lineJoin = 'miter';
+
+          if (proximity > 0.4) {
+            ctx.shadowColor = 'rgba(228,200,122,0.55)';
+            ctx.shadowBlur = 6 * proximity;
+          } else {
+            ctx.shadowBlur = 0;
+          }
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+
+          // Spawn pulse on hot edges
+          if (proximity > 0.55 && Math.random() < 0.012) {
+            pulses.push({
+              e,
+              t0: t,
+              dur: (e.kind === 'jump' ? 1000 : 600) + Math.random() * 400,
+            });
+          }
+        }
+
+        // Draw nodes
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i];
+          const d = mouse.active ? dist(mouse.x, mouse.y, n.x, n.y) : 9999;
+          const proximity = Math.max(0, 1 - d / RADIUS);
+          const rr = n.r + proximity * 2.2;
+          const fillA = n.shape === 'ic' ? (0.18 + proximity * 0.65) : (0.25 + proximity * 0.7);
+
+          ctx.fillStyle = `rgba(184,146,74,${fillA})`;
+
+          if (n.shape === 'ic') {
+            ctx.strokeStyle = `rgba(184,146,74,${fillA})`;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(n.x - rr, n.y - rr, rr * 2, rr * 2);
+            for (let j = -1; j <= 1; j++) {
+              ctx.fillRect(n.x - rr - 3, n.y + j * rr * 0.6 - 0.6, 3, 1.2);
+              ctx.fillRect(n.x + rr, n.y + j * rr * 0.6 - 0.6, 3, 1.2);
+            }
+          } else {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, rr, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Proximity ring on highly charged nodes
+          if (proximity > 0.5) {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, rr + 3, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(228,200,122,${(proximity - 0.5) * 0.6})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+
+        // Draw + advance pulses along their full bent path
+        pulses = pulses.filter(p => (t - p.t0) < p.dur);
+        for (const p of pulses) {
+          const { a, b, bends } = p.e;
+          const pts = [a, ...bends, b];
+          const f = Math.min(1, (t - p.t0) / p.dur);
+
+          // Walk along the polyline by total length fraction f
+          const segLens: number[] = [];
+          let total = 0;
+          for (let i = 0; i < pts.length - 1; i++) {
+            const l = Math.hypot(pts[i + 1].x - pts[i].x, pts[i + 1].y - pts[i].y);
+            segLens.push(l);
+            total += l;
+          }
+
+          let target = f * total;
+          let px = pts[0].x;
+          let py = pts[0].y;
+          for (let i = 0; i < segLens.length; i++) {
+            if (target <= segLens[i]) {
+              const sf = segLens[i] === 0 ? 0 : target / segLens[i];
+              px = pts[i].x + (pts[i + 1].x - pts[i].x) * sf;
+              py = pts[i].y + (pts[i + 1].y - pts[i].y) * sf;
+              break;
+            }
+            target -= segLens[i];
+            px = pts[i + 1].x;
+            py = pts[i + 1].y;
+          }
+
+          ctx.beginPath();
+          ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(228,200,122,${1 - f})`;
+          ctx.shadowColor = 'rgba(228,200,122,0.8)';
+          ctx.shadowBlur = 8;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      // ---- Event listeners ----
+      // Use document-level mousemove since canvas is pointer-events:none
+      document.addEventListener('mousemove', (e: MouseEvent) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+      });
+
+      document.addEventListener('mouseleave', () => {
+        mouse.active = false;
+      });
+
+      // Touch support
+      document.addEventListener('touchmove', (e: TouchEvent) => {
+        const touch = e.touches[0];
+        mouse.x = touch.clientX;
+        mouse.y = touch.clientY;
+        mouse.active = true;
+      }, { passive: true });
+
+      document.addEventListener('touchend', () => {
+        mouse.active = false;
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        resize();
+      }, { passive: true });
+
+      // Initialize
+      resize();
+      if (!prefersReduced) {
+        requestAnimationFrame(draw);
+      }
+    }
+  }
+</script>
+
+<style>
+  #circuitBoardCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+  }
+</style>

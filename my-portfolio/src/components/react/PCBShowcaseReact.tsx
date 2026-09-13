@@ -39,12 +39,12 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
       style={{ width: '100%', height: '100%', display: 'block' }}
       onCreated={({ gl }) => {
         gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-        gl.setClearColor(0x0f1410, 1);
+        gl.setClearColor(0xf7f5f0, 1);
       }}
     >
       <PerspectiveCamera makeDefault position={[0, 0, 3.5]} fov={45} />
       
-      <ambientLight intensity={0.6} />
+      <ambientLight intensity={0.8} />
       <directionalLight position={[2, 3, 2]} intensity={1.2} />
       <directionalLight position={[-2, -1, 1.5]} intensity={0.4} />
       
@@ -66,7 +66,7 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
         panSpeed={0.8}
       />
       
-      <gridHelper args={[4, 4, 0x264433, 0x141e18]} />
+      <gridHelper args={[4, 4, 0xd0cbbe, 0xe5e1d7]} />
     </Canvas>
   );
 }

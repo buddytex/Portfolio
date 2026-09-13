@@ -20,7 +20,7 @@ import { engineeringTimeline } from '../data/timeline';
     <!-- Continuous Animated Circuit Trace Line (Underlay) -->
     <div class="timeline-spine-track" aria-hidden="true">
       <svg class="timeline-spine-svg" width="2" height="100%" viewBox="0 0 2 1000" preserveAspectRatio="none">
-        <path id="chronologySpineSvgPath" d="M 1 0 L 1 1000" stroke="#0EA5E9" stroke-width="2" vector-effect="non-scaling-stroke" />
+        <path id="chronologySpineSvgPath" d="M 1 0 L 1 1000" stroke="#B8924A" stroke-width="2" vector-effect="non-scaling-stroke" />
       </svg>
       <div class="timeline-spine-glow" id="timelineSpineGlow"></div>
     </div>
@@ -134,7 +134,7 @@ import { engineeringTimeline } from '../data/timeline';
 
   .chronology-eyebrow {
     font-size: var(--text-2xs);
-    color: var(--accent-primary);
+    color: var(--color-muted);
     font-weight: 700;
     letter-spacing: 0.08em;
   }
@@ -159,8 +159,7 @@ import { engineeringTimeline } from '../data/timeline';
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--accent-primary);
-    box-shadow: 0 0 6px var(--accent-glow);
+    background: var(--color-muted);
   }
 
   /* Tree & Spine */
@@ -294,12 +293,12 @@ import { engineeringTimeline } from '../data/timeline';
   }
 
   .milestone-year-badge {
-    background: var(--cyan-light);
-    color: var(--cyan-dark);
+    background: rgba(20, 24, 34, 0.04);
+    color: var(--text-primary);
     font-weight: 700;
     padding: 2px 7px;
     border-radius: var(--r-xs);
-    border: 1px solid rgba(2, 132, 199, 0.2);
+    border: 1px solid var(--border);
   }
 
   .milestone-period {
@@ -347,7 +346,7 @@ import { engineeringTimeline } from '../data/timeline';
     display: flex;
     flex-direction: column;
     gap: 5px;
-    background: var(--bg-pure);
+    background: var(--surface-dim);
     border: 1px solid var(--border-subtle);
     border-radius: var(--r-sm);
     padding: var(--space-4);
@@ -369,12 +368,12 @@ import { engineeringTimeline } from '../data/timeline';
   }
 
   .significance-block .detail-label {
-    color: var(--accent-primary);
+    color: var(--color-muted);
   }
 
   .label-icon {
     font-size: 0.75rem;
-    color: var(--accent-primary);
+    color: var(--color-muted);
   }
 
   .detail-text {
@@ -394,7 +393,7 @@ import { engineeringTimeline } from '../data/timeline';
   .tech-tag {
     font-size: 0.7rem;
     padding: 3px 8px;
-    background: var(--bg-pure);
+    background: var(--surface-dim);
     border: 1px solid var(--border-subtle);
     border-radius: var(--r-xs);
     color: var(--text-muted);

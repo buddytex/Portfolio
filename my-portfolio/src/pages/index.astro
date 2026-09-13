@@ -4,7 +4,7 @@
 import Layout from '../layouts/Layout.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
-import EngineeringField from '../components/EngineeringField.astro';
+import CircuitBoard from '../components/CircuitBoard.astro';
 import EngineeringBackground from '../components/EngineeringBackground.astro';
 import ProjectIndex from '../components/ProjectIndex.astro';
 import PCBShowcase from '../components/PCBShowcase.astro';
@@ -20,8 +20,8 @@ import Footer from '../components/Footer.astro';
   <!-- Minimalist Editorial Navigation -->
   <Navigation />
 
-  <!-- Ambient Engineering Field (non-hero sections) -->
-  <EngineeringField />
+  <!-- Cursor-Reactive Circuit Board Background -->
+  <CircuitBoard />
 
   <main id="mainContent">
     <!-- 01 HERO: Monumental Typography + Large Portrait + Dense Circuit Network -->
@@ -38,7 +38,7 @@ import Footer from '../components/Footer.astro';
 
     <!-- 05 PCB LAB: Interactive 3D PCB Artifact Inspector -->
     <section id="hardware" class="section hardware-section" aria-label="Physical PCB Engineering Showcase">
-      <div class="container">
+      <div class="container-wide">
         <PCBShowcase />
       </div>
     </section>

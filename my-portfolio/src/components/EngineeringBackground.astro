@@ -7,12 +7,12 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
 <section id="background" class="section background-section" aria-labelledby="backgroundTitle">
   <div class="container-wide">
     <!-- Section Header (Sticky: only kicker + title) -->
-    <header class="section-header reveal">
+    <header class="section-header">
       <span class="header-kicker mono">[ 02 // ENGINEERING BACKGROUND ]</span>
       <h2 id="backgroundTitle" class="section-title">Engineering<br/><span class="accent">Background</span></h2>
     </header>
 
-    <div class="background-grid reveal">
+    <div class="background-grid">
       <!-- Left Column: Journey & Philosophy -->
       <div class="background-left">
         <!-- Journey & Origin -->
@@ -87,7 +87,7 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
 <style>
   .background-section {
     padding: var(--section-pad) 0;
-    background: var(--bg-work);
+    background: transparent;
     border-top: 1px solid var(--border-subtle);
     min-height: 100svh;
   }
@@ -99,7 +99,7 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
 
   .header-kicker {
     font-size: var(--text-2xs);
-    color: var(--accent-primary);
+    color: var(--color-muted);
     font-weight: 700;
     letter-spacing: 0.08em;
     margin-bottom: 0.4rem;
@@ -180,7 +180,7 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
     flex-direction: column;
     gap: var(--space-2);
     padding: var(--space-3);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(20, 24, 34, 0.02);
     border: 1px solid var(--border-subtle);
     border-radius: var(--r-md);
   }

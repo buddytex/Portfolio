@@ -8,52 +8,39 @@ Source: `src/styles/global.css`, `src/components/*.astro`, `src/layouts/Layout.a
 
 ---
 
-## Color System
+## Color System (6-Token Architecture)
+
+### Primary Palette
+| Token | Hex | Role | Contrast on `--color-paper` |
+|-------|-----|------|-----------------------------|
+| `--color-ink` | `#141822` | Headings, nav brand, primary text, dark fills | 14.5:1 (AAA) |
+| `--color-gold` | `#B8924A` | Interactive elements ONLY (links, active buttons, circuit traces) | 3.5:1 (AA Large) |
+| `--color-gold-hi` | `#E4C87A` | Hover/charged states only, pulse glows — never static | 1.8:1 (Decor/Glow) |
+| `--color-paper` | `#F7F5F0` | Warm off-white base canvas | Base |
+| `--color-body` | `#3A3F4A` | Body copy, secondary reading text | 8.1:1 (AAA) |
+| `--color-muted` | `#6B7280` | Captions, metadata, eyebrows, tags, timestamps | 4.8:1 (AA) |
 
 ### Canvas & Surfaces
 | Token | Value | Role |
 |-------|-------|------|
-| `--bg` | `#F8F8F5` | Primary background (warm off-white) |
-| `--bg-pure` | `#FAFAF8` | Pure background for layered surfaces |
-| `--surface` | `#FFFFFF` | Solid cards, containers |
-| `--surface-dim` | `#F3F3F0` | Subtle alternate surfaces |
+| `--bg-primary` | `var(--color-paper)` (`#F7F5F0`) | Primary viewport background |
+| `--bg-secondary` | `#F3F0EA` | Secondary surface backdrop |
+| `--bg-tertiary` | `#EEEAE3` | Tertiary surface backdrop |
+| `--surface` | `#FFFFFF` | Solid cards, containers, elevation |
+| `--surface-elevated` | `#F0EDE5` | Elevated card fill, hover layers |
+| `--surface-dim` | `#F5F2EC` | Inset wells, recessed sections |
 
-### Glass / Frosted Materials
+### Borders & Separators
 | Token | Value | Role |
 |-------|-------|------|
-| `--material-glass` | `rgba(255,255,255,0.76)` | Standard frosted panels |
-| `--material-glass-subtle` | `rgba(255,255,255,0.52)` | Lighter frost |
-| `--material-glass-heavy` | `rgba(255,255,255,0.90)` | Nearly opaque frost |
-| `--glass-blur` | `blur(20px) saturate(180%)` | Backdrop filter |
-| `--glass-border` | `1px solid rgba(0,0,0,0.06)` | Glass border |
-| `--glass-border-subtle` | `1px solid rgba(0,0,0,0.04)` | Subtle glass border |
+| `--border` | `rgba(20, 24, 34, 0.10)` | Card and section borders |
+| `--border-subtle` | `rgba(20, 24, 34, 0.05)` | Hairline dividers |
+| `--border-strong` | `rgba(20, 24, 34, 0.18)` | Prominent boundaries |
 
-### Typography Colors
-| Token | Value | Contrast on `--bg` | Role |
-|-------|-------|-------------------|------|
-| `--text-primary` | `#111110` | 17:1 (AAA) | Headings, primary content |
-| `--text-body` | `#1F1F1D` | 13:1 (AAA) | Body text |
-| `--text-secondary` | `#4B4B47` | 7.2:1 (AAA) | Secondary copy |
-| `--text-muted` | `#6B7280` | 4.8:1 (AA) | Metadata, labels |
-| `--text-dim` | `#9CA3AF` | 3.1:1 (AA large) | Faint captions |
-
-### Borders
-| Token | Value | Role |
-|-------|-------|------|
-| `--border` | `#E2E2DE` | Primary borders |
-| `--border-subtle` | `#EAEAE6` | Hairline dividers |
-| `--border-strong` | `#C8C8C3` | Visible separators |
-
-### Cyan Accent (Reserved for Actionable Items)
-| Token | Value | Contrast | Role |
-|-------|-------|----------|------|
-| `--cyan` | `#0EA5E9` | — | Focus rings, active states |
-| `--cyan-dark` | `#0369A1` | 5.59:1 (AA) | Link/button text |
-| `--cyan-light` | `rgba(14,165,233,0.08)` | — | Subtle backgrounds |
-| `--cyan-glow` | `rgba(14,165,233,0.18)` | — | Glow effects |
-| `--cyan-subtle` | `rgba(14,165,233,0.05)` | — | Tag backgrounds |
-
-**Rule**: Cyan used ONLY for interactive/actionable elements. Never decorative.
+### Gold Usage Rules
+1. **Interactive Elements Only**: Gold (`--color-gold`) is strictly reserved for actionable or reactive items — text links, active tab/dot indicators, button hover states, and interactive circuit traces.
+2. **Never for Static Decoration**: Eyebrows, static badges, pill tags, section lines, corner brackets, and non-interactive text use `--color-muted` or neutral ink borders.
+3. **`--color-gold-hi`**: Used solely for cursor-proximity charged states, hot edge glows, and pulse heads in the interactive canvas. Never used as a static color.
 
 ---
 
