@@ -55,30 +55,28 @@ export function initChronologyMotion(container: HTMLElement | null): (() => void
       });
     }
 
-    // 2. Sequentially activate nodes & reveal milestone cards
+    // 2. Sequentially reveal milestone nodes with opacity-only fade (§2 spec: 180ms, 40ms stagger, no translate)
     milestones.forEach((m, idx) => {
       m.classList.add('is-revealed');
       const marker = m.querySelector<HTMLElement>('.milestone-marker');
       const card = m.querySelector<HTMLElement>('.milestone-card');
 
-      const delay = 200 + idx * 180;
+      const delay = idx * 40;
 
       if (marker) {
         animate(marker, {
           opacity: [0, 1],
-          scale: [0.6, 1],
-          duration: 650,
+          duration: 180,
           delay,
-          ease: 'outBack(1.4)',
+          ease: 'outExpo',
         });
       }
 
       if (card) {
         animate(card, {
           opacity: [0, 1],
-          translateX: [18, 0],
-          duration: 750,
-          delay: delay + 60,
+          duration: 180,
+          delay,
           ease: 'outExpo',
         });
       }

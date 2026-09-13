@@ -47,6 +47,8 @@
       let pulses: Pulse[] = [];
 
       const mouse = { x: -9999, y: -9999, active: false };
+      let lastMouseMoveTime = performance.now();
+      let lastIdleSpawnTime = 0;
 
       // ---- Helpers ----
       function rand(min: number, max: number): number {
@@ -253,6 +255,19 @@
           }
         }
 
+        // Idle drift (§4 spec): when cursor is inactive for ~4s, spawn slow sparse phantom pulse
+        if (t - lastMouseMoveTime > 4000) {
+          if (t - lastIdleSpawnTime > 3500 && edges.length > 0 && pulses.length < 3) {
+            lastIdleSpawnTime = t;
+            const randomEdge = pick(edges);
+            pulses.push({
+              e: randomEdge,
+              t0: t,
+              dur: 1400 + Math.random() * 600,
+            });
+          }
+        }
+
         // Draw nodes
         for (let i = 0; i < nodes.length; i++) {
           const n = nodes[i];
@@ -336,6 +351,7 @@
         mouse.x = e.clientX;
         mouse.y = e.clientY;
         mouse.active = true;
+        lastMouseMoveTime = performance.now();
       });
 
       document.addEventListener('mouseleave', () => {
@@ -348,6 +364,7 @@
         mouse.x = touch.clientX;
         mouse.y = touch.clientY;
         mouse.active = true;
+        lastMouseMoveTime = performance.now();
       }, { passive: true });
 
       document.addEventListener('touchend', () => {

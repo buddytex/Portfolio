@@ -123,79 +123,136 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
 
 <script>
   import { animate, isReducedMotion } from '../lib/motion';
-  import { pcbArtifacts } from '../data/pcbArtifacts';
 
-  let currentBoardIdx = 0;
-  const boardsCount = 3;
-  const dotBtns = document.querySelectorAll<HTMLButtonElement>('.pcb-dot-btn');
-  const detailCards = document.querySelectorAll<HTMLElement>('.pcb-details-card');
-  const prevBtn = document.getElementById('pcbPrevBtn');
-  const nextBtn = document.getElementById('pcbNextBtn');
+  function initPCBShowcase() {
+    let currentBoardIdx = 0;
+    const boardsCount = 3;
+    const dotBtns = document.querySelectorAll<HTMLButtonElement>('.pcb-dot-btn');
+    const detailCards = document.querySelectorAll<HTMLElement>('.pcb-details-card');
+    const prevBtn = document.getElementById('pcbPrevBtn');
+    const nextBtn = document.getElementById('pcbNextBtn');
 
-  // Switch Active Board
-  function setBoard(index: number) {
-    currentBoardIdx = (index + boardsCount) % boardsCount;
+    if (!dotBtns.length || !detailCards.length) return;
 
-    // Update Dots
-    dotBtns.forEach((dot, idx) => {
-      const isActive = idx === currentBoardIdx;
-      dot.classList.toggle('active', isActive);
-      dot.setAttribute('aria-selected', String(isActive));
-    });
+    // Switch Active Board with Sequenced Gap (§6 Spec)
+    function setBoard(index: number) {
+      const nextIdx = (index + boardsCount) % boardsCount;
+      if (nextIdx === currentBoardIdx) return;
 
-    // Update Cards with clean transition
-    detailCards.forEach((card, idx) => {
-      const isTarget = idx === currentBoardIdx;
-      if (isTarget) {
-        card.hidden = false;
-        card.classList.add('active');
-        animate(card, {
-          opacity: [0.35, 1],
-          y: [8, 0],
-          duration: 280,
+      const outgoingCard = detailCards[currentBoardIdx];
+      const incomingCard = detailCards[nextIdx];
+      currentBoardIdx = nextIdx;
+
+      // Update Dots
+      dotBtns.forEach((dot, idx) => {
+        const isActive = idx === currentBoardIdx;
+        dot.classList.toggle('active', isActive);
+        dot.setAttribute('aria-selected', String(isActive));
+      });
+
+      if (isReducedMotion()) {
+        detailCards.forEach((c, idx) => {
+          c.hidden = idx !== currentBoardIdx;
+          c.classList.toggle('active', idx === currentBoardIdx);
+          c.style.opacity = '1';
+        });
+        window.dispatchEvent(new CustomEvent('pcb-board-change', { detail: { index: currentBoardIdx } }));
+        return;
+      }
+
+      // Outgoing content fades out 100ms before incoming content fades in (no simultaneous crossfade)
+      if (outgoingCard) {
+        animate(outgoingCard, {
+          opacity: [1, 0],
+          duration: 100,
+          ease: 'inQuart',
+          onComplete: () => {
+            outgoingCard.hidden = true;
+            outgoingCard.classList.remove('active');
+
+            if (incomingCard) {
+              incomingCard.hidden = false;
+              incomingCard.classList.add('active');
+              incomingCard.style.opacity = '0';
+              animate(incomingCard, {
+                opacity: [0, 1],
+                duration: 150,
+                ease: 'outExpo',
+              });
+            }
+          }
+        });
+      } else if (incomingCard) {
+        incomingCard.hidden = false;
+        incomingCard.classList.add('active');
+        incomingCard.style.opacity = '0';
+        animate(incomingCard, {
+          opacity: [0, 1],
+          duration: 150,
           ease: 'outExpo',
         });
-      } else {
-        card.hidden = true;
-        card.classList.remove('active');
+      }
+
+      // Notify React component to switch board
+      window.dispatchEvent(new CustomEvent('pcb-board-change', { detail: { index: currentBoardIdx } }));
+    }
+
+    // Prev / Next Listeners
+    prevBtn?.addEventListener('click', () => setBoard(currentBoardIdx - 1));
+    nextBtn?.addEventListener('click', () => setBoard(currentBoardIdx + 1));
+
+    dotBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.index);
+        if (!isNaN(idx)) setBoard(idx);
+      });
+    });
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      const pcbSection = document.getElementById('hardware');
+      if (!pcbSection) return;
+      const rect = pcbSection.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      
+      if (!inView) return;
+
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          setBoard(currentBoardIdx - 1);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          setBoard(currentBoardIdx + 1);
+          break;
       }
     });
 
-    // Notify React component to switch board
-    window.dispatchEvent(new CustomEvent('pcb-board-change', { detail: { index: currentBoardIdx } }));
+    // Handle 3D PCB Test Point Hover Events (§3 Spec)
+    window.addEventListener('pcb-tp-hover', (e: Event) => {
+      const customEvent = e as CustomEvent<{ tp: { id: string; label: string; desc: string }; hovered: boolean }>;
+      const { tp, hovered } = customEvent.detail;
+      const activeCard = document.querySelector<HTMLElement>('.pcb-details-card.active');
+      if (!activeCard) return;
+
+      const callout = activeCard.querySelector<HTMLElement>('.live-tp-callout');
+      const titleEl = activeCard.querySelector<HTMLElement>('[id^="tpCalloutTitle-"]');
+      const descEl = activeCard.querySelector<HTMLElement>('[id^="tpCalloutDesc-"]');
+
+      if (hovered && tp) {
+        if (titleEl) titleEl.textContent = `TEST POINT ${tp.label} // ACTIVE`;
+        if (descEl) descEl.textContent = tp.desc;
+        callout?.classList.add('is-active');
+      } else {
+        if (titleEl) titleEl.textContent = 'INSPECTION CALLOUT: HOVER TEST POINTS ON BOARD';
+        if (descEl) descEl.textContent = 'Click or hover any glowing gold test point on the physical PCB schematic to read electrical signal parameters and trace routing rationale.';
+        callout?.classList.remove('is-active');
+      }
+    });
   }
 
-  // Prev / Next Listeners
-  prevBtn?.addEventListener('click', () => setBoard(currentBoardIdx - 1));
-  nextBtn?.addEventListener('click', () => setBoard(currentBoardIdx + 1));
-
-  dotBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const idx = Number(btn.dataset.index);
-      if (!isNaN(idx)) setBoard(idx);
-    });
-  });
-
-  // Keyboard Navigation
-  document.addEventListener('keydown', (e: KeyboardEvent) => {
-    const pcbSection = document.getElementById('hardware');
-    if (!pcbSection) return;
-    const rect = pcbSection.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight && rect.bottom > 0;
-    
-    if (!inView) return;
-
-    switch (e.key) {
-      case 'ArrowLeft':
-        e.preventDefault();
-        setBoard(currentBoardIdx - 1);
-        break;
-      case 'ArrowRight':
-        e.preventDefault();
-        setBoard(currentBoardIdx + 1);
-        break;
-    }
-  });
+  document.addEventListener('astro:page-load', initPCBShowcase);
 </script>
 
 <style>
@@ -264,12 +321,15 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     cursor: pointer;
     font-size: var(--text-2xs);
     color: var(--text-muted);
-    transition: all 0.2s ease;
+    transition: all 120ms var(--ease-standard);
   }
 
-  .pcb-dot-btn:hover {
+  .pcb-dot-btn:hover,
+  .pcb-dot-btn:focus-visible {
     border-color: var(--accent-primary);
     color: var(--text-primary);
+    outline: none;
+    transition: all var(--dur-micro) var(--ease-standard);
   }
 
   .pcb-dot-btn.active {
@@ -284,10 +344,12 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     height: 6px;
     border-radius: 50%;
     background: var(--border);
+    transition: background 120ms var(--ease-standard), box-shadow 120ms var(--ease-standard);
   }
 
   .pcb-dot-btn.active .dot-pip {
     background: var(--accent-primary);
+    box-shadow: 0 0 8px var(--accent-glow);
   }
 
   .pcb-arrows {
@@ -307,13 +369,16 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     cursor: pointer;
     color: var(--text-primary);
     font-size: var(--text-sm);
-    transition: all 0.2s ease;
+    transition: all 120ms var(--ease-standard);
   }
 
-  .pcb-arrow-btn:hover {
+  .pcb-arrow-btn:hover,
+  .pcb-arrow-btn:focus-visible {
     background: var(--surface);
     border-color: var(--accent-primary);
     color: var(--accent-primary);
+    outline: none;
+    transition: all var(--dur-micro) var(--ease-standard);
   }
 
   /* Stage Grid */
@@ -505,7 +570,7 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     line-height: 1.55;
   }
 
-  /* Live TP Callout */
+  /* Live TP Callout — Asymmetric Timing (§3 Spec: 100ms in with 4px rise / 80ms out no rise) */
   .live-tp-callout {
     padding: var(--space-4);
     background: rgba(20, 24, 34, 0.03);
@@ -514,6 +579,25 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     display: flex;
     flex-direction: column;
     gap: 4px;
+    opacity: 0.85;
+    transform: translateY(0);
+    transition: opacity 80ms var(--ease-standard),
+                transform 80ms var(--ease-standard),
+                border-color 80ms var(--ease-standard),
+                background 80ms var(--ease-standard);
+  }
+
+  .live-tp-callout.is-active,
+  .live-tp-callout:hover {
+    opacity: 1;
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
+    background: var(--surface-elevated);
+    box-shadow: 0 4px 14px var(--accent-glow);
+    transition: opacity 100ms var(--ease-out-expo),
+                transform 100ms var(--ease-out-expo),
+                border-color 100ms var(--ease-out-expo),
+                background 100ms var(--ease-out-expo);
   }
 
   .tp-callout-header {

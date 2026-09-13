@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Circuit Hover Demo — Gold on Graphite</title>
+<style>
+  :root{
+    --ink:#141822;
+    --gold:#B8924A;
+    --gold-hi:#E4C87A;
+    --paper:#F7F5F0;
+    --muted:#6B7280;
+  }
+  html,body{margin:0;height:100%;background:var(--ink);overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+  #stage{position:relative;width:100%;height:100vh;}
+  canvas{display:block;width:100%;height:100%;}
+  .caption{
+    position:absolute;top:32px;left:32px;color:var(--paper);
+    max-width:420px;
+  }
+  .caption h1{
+    font-size:15px;letter-spacing:.02em;font-weight:600;margin:0 0 6px;color:var(--paper);
+  }
+  .caption p{
+    font-size:13px;line-height:1.5;color:var(--muted);margin:0;
+  }
+  .caption .gold{color:var(--gold-hi);}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div class="caption">
+    <h1>Move your cursor across the board</h1>
+    <p>Traces sit dim by default (<span class="gold">≈15% gold</span>). Proximity to the cursor charges the nearest paths and sends a pulse toward the connected node — one reactive moment instead of hover effects on every element.</p>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H, DPR;
+
+function resize(){
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener('resize', ()=>{ resize(); buildBoard(); });
+resize();
+
+// ---- Build an organic, non-grid circuit layout ----
+// Nodes are scattered via loose jittered cells (not a visible grid), with
+// density varying across the board, plus a mix of short local traces and
+// occasional long "jump" traces routed with 1-3 bends like a real board.
+let nodes = [];
+let edges = []; // { a, b, bends: [{x,y},...], width, kind }
+
+function rand(min,max){ return min + Math.random()*(max-min); }
+function snap(v, step){ return Math.round(v/step)*step; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function buildBoard(){
+  nodes = []; edges = [];
+
+  const GRID = 6; // fine snap grid — keeps everything metric/precise even though placement is organic
+  const cellW = rand(70,95), cellH = rand(70,95);
+  const cols = Math.ceil(W/cellW)+1, rows = Math.ceil(H/cellH)+1;
+
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      if (Math.random() < 0.22) continue; // skip cells -> uneven density
+      let x = c*cellW + rand(-cellW*0.4, cellW*0.4);
+      let y = r*cellH + rand(-cellH*0.4, cellH*0.4);
+      x = snap(x, GRID); y = snap(y, GRID);
+      if (x < 10 || x > W-10 || y < 10 || y > H-10) continue;
+
+      const roll = Math.random();
+      let shape = 'dot', size = 1.5;
+      if (roll > 0.94){ shape='ic'; size = pick([6,7,8]); }       // rare IC pad, discrete sizes
+      else if (roll > 0.8){ shape='pad'; size = pick([2.5,3,3.5]); } // via/pad, discrete sizes
+      else { size = pick([1,1.5,2]); }
+
+      nodes.push({ x, y, r: size, shape, idx: nodes.length });
+    }
+  }
+
+  // local connections: link each node to 1-3 nearby neighbors (not just grid-adjacent)
+  for(const n of nodes){
+    const neighbors = nodes
+      .filter(m => m!==n)
+      .map(m => ({ m, d: Math.hypot(m.x-n.x, m.y-n.y) }))
+      .filter(o => o.d < Math.max(cellW,cellH)*1.9)
+      .sort((a,b)=>a.d-b.d)
+      .slice(0, Math.random()<0.3 ? 3 : (Math.random()<0.6 ? 2 : 1));
+
+    for(const {m} of neighbors){
+      if (Math.random() < 0.5) continue; // thin out further for irregularity
+      addEdge(n, m);
+    }
+  }
+
+  // occasional long jump traces across the board (still clean right angles)
+  const jumps = Math.floor(nodes.length * 0.03);
+  for(let i=0;i<jumps;i++){
+    const a = nodes[Math.floor(Math.random()*nodes.length)];
+    const b = nodes[Math.floor(Math.random()*nodes.length)];
+    if (a===b) continue;
+    if (Math.hypot(a.x-b.x,a.y-b.y) < 160) continue;
+    addEdge(a,b,true);
+  }
+}
+
+// Strict Manhattan routing: every bend is a clean 90° corner, no scatter —
+// this is what makes the board read as engineered rather than hand-drawn.
+function addEdge(a,b,longRoute){
+  const twoBend = longRoute ? Math.random()<0.5 : Math.random()<0.35;
+  const bends = [];
+  if (twoBend){
+    // route out horizontally then vertically then horizontally (or the mirror),
+    // picked so the two elbows land on a shared axis — a real trace corridor
+    const midX = snap((a.x+b.x)/2, 6);
+    bends.push({x: midX, y: a.y});
+    bends.push({x: midX, y: b.y});
+  } else {
+    const horizFirst = Math.random() < 0.5;
+    bends.push(horizFirst ? {x: b.x, y: a.y} : {x: a.x, y: b.y});
+  }
+  edges.push({
+    a, b, bends,
+    width: Math.random()<0.15 ? 2 : 1, // exactly two trace classes: signal / power
+    kind: longRoute ? 'jump' : 'local'
+  });
+}
+
+buildBoard();
+
+// midpoint of each edge (used for proximity + pulses) — average of path points
+function edgeMid(e){
+  const pts = [e.a, ...e.bends, e.b];
+  const mx = pts.reduce((s,p)=>s+p.x,0)/pts.length;
+  const my = pts.reduce((s,p)=>s+p.y,0)/pts.length;
+  return { x: mx, y: my };
+}
+
+let mouse = { x: -9999, y: -9999, active:false };
+canvas.addEventListener('mousemove', e=>{
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+  mouse.active = true;
+});
+canvas.addEventListener('mouseleave', ()=>{ mouse.active = false; });
+
+// pulses: traveling charge along an edge, spawned when a node gets "hot"
+let pulses = [];
+let lastSpawn = 0;
+
+function dist(x1,y1,x2,y2){ return Math.hypot(x1-x2, y1-y2); }
+
+function draw(t){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#141822';
+  ctx.fillRect(0,0,W,H);
+
+  const RADIUS = 190; // proximity influence radius
+
+  // draw edges
+  for(const e of edges){
+    const { a, b, bends, width } = e;
+    const mid = edgeMid(e);
+    const d = mouse.active ? dist(mouse.x, mouse.y, mid.x, mid.y) : 9999;
+    const proximity = Math.max(0, 1 - d / RADIUS); // 0..1
+
+    const baseAlpha = e.kind === 'jump' ? 0.09 : 0.15;
+    const alpha = baseAlpha + proximity * 0.75;
+
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    for(const p of bends) ctx.lineTo(p.x, p.y);
+    ctx.lineTo(b.x, b.y);
+
+    ctx.strokeStyle = `rgba(184,146,74,${alpha})`;
+    ctx.lineWidth = width + proximity*1.4;
+    ctx.lineJoin = 'miter';
+    if (proximity > 0.4){
+      ctx.shadowColor = 'rgba(228,200,122,0.55)';
+      ctx.shadowBlur = 6 * proximity;
+    } else {
+      ctx.shadowBlur = 0;
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // occasionally spawn a pulse on hot edges
+    if (proximity > 0.55 && Math.random() < 0.012){
+      pulses.push({ e, t0: t, dur: (e.kind==='jump' ? 1000 : 600) + Math.random()*400 });
+    }
+  }
+
+  // draw nodes (dots, vias/pads, occasional IC squares)
+  for(const n of nodes){
+    const d = mouse.active ? dist(mouse.x, mouse.y, n.x, n.y) : 9999;
+    const proximity = Math.max(0, 1 - d / RADIUS);
+    const rr = n.r + proximity*2.2;
+    const fillA = n.shape==='ic' ? (0.18 + proximity*0.65) : (0.25 + proximity*0.7);
+
+    ctx.fillStyle = `rgba(184,146,74,${fillA})`;
+    if (n.shape === 'ic'){
+      ctx.strokeStyle = `rgba(184,146,74,${fillA})`;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(n.x-rr, n.y-rr, rr*2, rr*2);
+      // pins
+      for(let i=-1;i<=1;i++){
+        ctx.fillRect(n.x-rr-3, n.y+i*rr*0.6-0.6, 3, 1.2);
+        ctx.fillRect(n.x+rr, n.y+i*rr*0.6-0.6, 3, 1.2);
+      }
+    } else {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, rr, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    if (proximity > 0.5){
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, rr+3, 0, Math.PI*2);
+      ctx.strokeStyle = `rgba(228,200,122,${(proximity-0.5)*0.6})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+
+  // draw + advance pulses along their full bent path
+  pulses = pulses.filter(p => (t - p.t0) < p.dur);
+  for(const p of pulses){
+    const { a, b, bends } = p.e;
+    const pts = [a, ...bends, b];
+    const f = Math.min(1, (t - p.t0)/p.dur);
+    // walk along the polyline by total length fraction f
+    const segLens = [];
+    let total = 0;
+    for(let i=0;i<pts.length-1;i++){
+      const l = Math.hypot(pts[i+1].x-pts[i].x, pts[i+1].y-pts[i].y);
+      segLens.push(l); total += l;
+    }
+    let target = f*total, px=pts[0].x, py=pts[0].y;
+    for(let i=0;i<segLens.length;i++){
+      if (target <= segLens[i]){
+        const sf = segLens[i] === 0 ? 0 : target/segLens[i];
+        px = pts[i].x + (pts[i+1].x-pts[i].x)*sf;
+        py = pts[i].y + (pts[i+1].y-pts[i].y)*sf;
+        break;
+      }
+      target -= segLens[i];
+      px = pts[i+1].x; py = pts[i+1].y;
+    }
+
+    ctx.beginPath();
+    ctx.arc(px, py, 2.2, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(228,200,122,${1-f})`;
+    ctx.shadowColor = 'rgba(228,200,122,0.8)';
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+// cursor-follow soft radial vignette so the "board under inspection" area reads clearly
+</script>
+</body>
+</html>

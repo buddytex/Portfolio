@@ -252,18 +252,29 @@ function TestPoint({ tp }: TestPointProps) {
     <mesh
       ref={meshRef}
       position={[x, y, 0.25]}
-      onPointerOver={() => setIsHovered(true)}
-      onPointerOut={() => setIsHovered(false)}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setIsHovered(true);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('pcb-tp-hover', { detail: { tp, hovered: true } }));
+        }
+      }}
+      onPointerOut={() => {
+        setIsHovered(false);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('pcb-tp-hover', { detail: { tp, hovered: false } }));
+        }
+      }}
     >
       {/* Test point core */}
       <mesh>
         <cylinderGeometry args={[0.08, 0.08, 0.1, 12]} />
         <meshStandardMaterial 
-          color={0xd4af37} 
+          color={isHovered ? 0xe4c87a : 0xb8924a} 
           roughness={0.15} 
           metalness={0.95}
-          emissive={0xd4af37}
-          emissiveIntensity={isHovered ? 0.3 : 0.1}
+          emissive={isHovered ? 0xe4c87a : 0xb8924a}
+          emissiveIntensity={isHovered ? 0.9 : 0.15}
         />
       </mesh>
       
@@ -271,15 +282,13 @@ function TestPoint({ tp }: TestPointProps) {
       <mesh position={[0, 0, 0.06]}>
         <ringGeometry args={[0.08, 0.15, 16]} />
         <meshBasicMaterial 
-          color={0xd4af37} 
+          color={isHovered ? 0xe4c87a : 0xb8924a} 
           transparent 
-          opacity={0.4} 
+          opacity={isHovered ? 0.8 : 0.4} 
           side={THREE.DoubleSide}
           depthWrite={false}
         />
       </mesh>
-      
-      {/* Tooltip would be handled by HTML overlay in production */}
     </mesh>
   );
 }

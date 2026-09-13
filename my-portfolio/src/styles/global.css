@@ -94,16 +94,23 @@
   --nav-height:        56px;
   --content-max:       780px;
 
-  /* === MOTION (Fast, Precise, Mechanical) === */
-  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in:       cubic-bezier(0.7, 0, 0.84, 0);
-  --ease-in-out:   cubic-bezier(0.87, 0, 0.13, 1);
-  --ease-spring:   cubic-bezier(0.22, 1, 0.36, 1);
-  --dur-fast:      140ms;
-  --dur-norm:      240ms;
-  --dur-slow:      380ms;
-  --dur-section:   480ms;
-  --dur-reveal:    420ms;
+  /* === MOTION TOKENS (§0 SPEC) === */
+  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);  /* Entrances — fast start, soft landing */
+  --ease-in-quart:   cubic-bezier(0.5, 0, 0.75, 0);  /* Exits/leaving — quick, decisive */
+  --ease-standard:   cubic-bezier(0.4, 0, 0.2, 1);   /* State toggles, tab switches */
+  --dur-micro:       150ms;                          /* Hover, focus, button press */
+  --dur-reveal:      450ms;                          /* The one hero sequence only */
+  --dur-page:        480ms;                          /* Page-to-page transitions */
+  --dur-pulse:       800ms;                          /* Circuit pulse travel */
+
+  /* Compatibility aliases */
+  --ease-out:        var(--ease-out-expo);
+  --ease-in:         var(--ease-in-quart);
+  --ease-in-out:     var(--ease-standard);
+  --dur-fast:        var(--dur-micro);
+  --dur-norm:        240ms;
+  --dur-slow:        380ms;
+  --dur-section:     var(--dur-page);
 
   /* === RADII === */
   --r-xs:   4px;
@@ -451,21 +458,37 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   font-weight: 600;
   padding: 11px 22px;
   border-radius: var(--r-sm);
-  transition: all var(--dur-norm) var(--ease-out);
+  transition: background 120ms var(--ease-standard),
+              border-color 120ms var(--ease-standard),
+              color 120ms var(--ease-standard),
+              transform 120ms var(--ease-standard),
+              box-shadow 120ms var(--ease-standard);
   cursor: pointer;
   white-space: nowrap;
   letter-spacing: -0.01em;
   box-shadow: var(--shadow-resting);
 }
 
+.btn:hover,
+.btn:focus-visible {
+  transition: background var(--dur-micro) var(--ease-standard),
+              border-color var(--dur-micro) var(--ease-standard),
+              color var(--dur-micro) var(--ease-standard),
+              transform var(--dur-micro) var(--ease-standard),
+              box-shadow var(--dur-micro) var(--ease-standard);
+  outline: none;
+}
+
 .btn-primary {
-  background: var(--text-primary);
+  background: var(--color-ink);
   color: var(--bg-primary);
   border: 1px solid transparent;
 }
 
-.btn-primary:hover {
-  background: var(--color-body);
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background: var(--color-gold-hi);
+  color: var(--color-ink);
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
@@ -476,7 +499,8 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   border: 1px solid var(--border);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
   border-color: var(--accent-primary);
   background: var(--surface-elevated);
   transform: translateY(-2px);
@@ -491,7 +515,8 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   border: 1px solid var(--border);
 }
 
-.btn-glass:hover {
+.btn-glass:hover,
+.btn-glass:focus-visible {
   background: rgba(255, 255, 255, 0.95);
   border-color: var(--accent-primary);
   transform: translateY(-2px);
@@ -504,8 +529,10 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   border: 1px solid transparent;
 }
 
-.btn-accent:hover {
+.btn-accent:hover,
+.btn-accent:focus-visible {
   background: var(--accent-bright);
+  color: var(--color-ink);
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
@@ -677,4 +704,21 @@ p  { color: var(--text-secondary); line-height: 1.7; }
 @media (max-width: 768px) {
   .container { width: min(100% - 32px, var(--max-width)); }
   .section { padding: clamp(3rem, 7vh, 5rem) 0; }
+}
+
+/* ==========================================================
+   ASTRO VIEW TRANSITIONS (§5 SPEC)
+   ========================================================== */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-page);
+  animation-timing-function: var(--ease-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
 }

@@ -43,7 +43,7 @@ const { project } = Astro.props;
       <!-- Header Block -->
       <header class="project-hero">
         <div class="project-domain mono">{project.domain}</div>
-        <h1 class="project-title">{project.title}</h1>
+        <h1 class="project-title" transition:name={`project-title-${project.id}`}>{project.title}</h1>
         <p class="project-subtitle">{project.subtitle}</p>
 
         <div class="project-attributes mono">
@@ -61,6 +61,61 @@ const { project } = Astro.props;
           </div>
         </div>
       </header>
+
+      <!-- Primary Hardware/Architecture Hero Visual Stage -->
+      <div class="project-hero-visual" transition:name={`project-visual-${project.id}`}>
+        {project.imagePath ? (
+          <img
+            src={project.imagePath}
+            alt={`${project.title} Architecture Schematic`}
+            class="project-hero-img"
+            loading="eager"
+          />
+        ) : project.id === 'hospital-amr' ? (
+          <div class="project-hardware-blueprint" aria-label="LiDAR SLAM Navigation Testbed Schematic">
+            <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
+              <circle cx="190" cy="110" r="35" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.4" />
+              <circle cx="190" cy="110" r="75" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.3" />
+              <circle cx="190" cy="110" r="105" stroke="#0EA5E9" stroke-width="1" opacity="0.2" />
+              <rect x="175" y="95" width="30" height="30" rx="4" fill="#0EA5E9" fill-opacity="0.25" stroke="#0EA5E9" stroke-width="1.5" />
+              <circle cx="190" cy="110" r="4" fill="#38BDF8" />
+              <path d="M190 110 L190 65" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" />
+              <polygon points="190,58 186,67 194,67" fill="#38BDF8" />
+              <line x1="40" y1="30" x2="340" y2="30" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
+              <line x1="40" y1="190" x2="340" y2="190" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
+              <g fill="#38BDF8" opacity="0.8">
+                <circle cx="80" cy="30" r="2" /><circle cx="130" cy="30" r="2" /><circle cx="240" cy="30" r="2" /><circle cx="300" cy="30" r="2" />
+                <circle cx="90" cy="190" r="2" /><circle cx="150" cy="190" r="2" /><circle cx="230" cy="190" r="2" /><circle cx="290" cy="190" r="2" />
+              </g>
+              <path d="M190 110 L110 40 M190 110 L150 32 M190 110 L230 32 M190 110 L270 40" stroke="#0EA5E9" stroke-width="0.8" opacity="0.45" />
+              <text x="190" y="145" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">NAV2 COSTMAP // 360° PLANAR LIDAR</text>
+            </svg>
+          </div>
+        ) : (
+          <div class="project-hardware-blueprint" aria-label="Decentralized Swarm Robotics Mesh Schematic">
+            <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
+              <line x1="90" y1="70" x2="190" y2="50" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+              <line x1="190" y1="50" x2="290" y2="80" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+              <line x1="90" y1="70" x2="140" y2="150" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+              <line x1="140" y1="150" x2="240" y2="160" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+              <line x1="240" y1="160" x2="290" y2="80" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+              <line x1="190" y1="50" x2="240" y2="160" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.4" />
+              <g fill="#10B981">
+                <circle cx="90" cy="70" r="7" /><circle cx="190" cy="50" r="7" /><circle cx="290" cy="80" r="7" />
+                <circle cx="140" cy="150" r="7" /><circle cx="240" cy="160" r="7" />
+              </g>
+              <g fill="#FFFFFF" font-size="7" font-family="monospace" text-anchor="middle" font-weight="bold">
+                <text x="90" y="73">01</text><text x="190" y="53">02</text><text x="290" y="83">03</text>
+                <text x="140" y="153">04</text><text x="240" y="163">05</text>
+              </g>
+              <circle cx="190" cy="105" r="4" fill="#F59E0B" />
+              <circle cx="190" cy="105" r="16" stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2" opacity="0.7" />
+              <text x="190" y="130" fill="#FBBF24" font-size="7" font-family="monospace" text-anchor="middle">VIRTUAL TARGET ATTRACTOR</text>
+              <text x="190" y="195" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">ESP32 AD-HOC TCP/IP MESH // CONSENSUS</text>
+            </svg>
+          </div>
+        )}
+      </div>
 
       <!-- Executive Summary -->
       <section class="case-section summary-section">
@@ -125,19 +180,6 @@ const { project } = Astro.props;
           </ul>
         </section>
       </div>
-
-      <!-- Primary Hardware/Architecture Schematic (if available) -->
-      {project.imagePath && (
-        <section class="case-section schematic-section">
-          <div class="schematic-head">
-            <h2 class="section-kicker mono">PRIMARY PHYSICAL SCHEMATIC &amp; ARCHITECTURE</h2>
-            <span class="mono text-xs text-muted">VERIFIED ENGINEERING ARTIFACT</span>
-          </div>
-          <div class="schematic-frame">
-            <img src={project.imagePath} alt={`${project.title} Schematic & Pipeline`} class="schematic-img" loading="eager" />
-          </div>
-        </section>
-      )}
 
       <!-- Research Notebook: Failures, Physical Noise & Iterative Resolutions -->
       {project.failuresAndIterations && project.failuresAndIterations.length > 0 && (
@@ -467,39 +509,48 @@ const { project } = Astro.props;
     flex-wrap: wrap;
   }
 
-  /* Schematic & Architecture Stage */
-  .schematic-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-
-  .schematic-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .schematic-frame {
+  /* Hero Hardware/Architecture Visual Stage (Shared Element Transition) */
+  .project-hero-visual {
     width: 100%;
-    background: #141416;
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-resting);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: clamp(1rem, 2vw, 2rem);
-  }
-
-  .schematic-img {
-    width: 100%;
+    min-height: 280px;
     max-height: 520px;
-    object-fit: contain;
-    border-radius: var(--r-xs);
+    background: #EEEAE3;
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-resting);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .project-hero-img {
+    width: 100%;
+    height: 100%;
+    max-height: 520px;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.96) contrast(1.04);
+  }
+
+  .project-hardware-blueprint {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #E8E4DC 0%, #DDD8CE 80%);
+    padding: var(--space-8);
+  }
+
+  .blueprint-svg {
+    width: 100%;
+    max-width: 620px;
+    height: auto;
+    display: block;
   }
 
   /* Research Notebook (Failures & Iterations) */

@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -28,6 +29,7 @@ const {
     <meta property="og:type" content="website" />
 
     <title>{title}</title>
+    <ClientRouter />
   </head>
 
   <body>
@@ -82,26 +84,20 @@ const {
       import { initScrollTracker } from '../lib/motion/scroll';
       import { initScrollReveal } from '../lib/motion';
 
-      // Initialize scroll reveal
-      initScrollReveal();
-
-      // Passive scroll tracker for datum spine navigation and progress
       let trackerCleanup: (() => void) | undefined;
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          trackerCleanup = initScrollTracker();
-        });
-      } else {
+
+      function setupPageMotion() {
+        if (trackerCleanup) {
+          trackerCleanup();
+          trackerCleanup = undefined;
+        }
+        initScrollReveal();
         trackerCleanup = initScrollTracker();
       }
-      
-      // Cleanup on page unload
-      window.addEventListener('beforeunload', () => {
-        if (trackerCleanup) trackerCleanup();
-      });
 
-      // Top scroll bar progress (deprecated - now section-based)
-      // Kept for backward compatibility
+      document.addEventListener('astro:page-load', setupPageMotion);
+
+      // Top scroll bar progress
       window.addEventListener('scroll', () => {
         const bar = document.getElementById('scrollBar');
         if (!bar) return;
