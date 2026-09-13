@@ -11,11 +11,12 @@ export interface SectionWaypoint {
 }
 
 export const WAYPOINTS: SectionWaypoint[] = [
-  { id: 'hero',    label: 'Origin',      code: '00 // ORG', selector: '#hero' },
-  { id: 'work',    label: 'Projects',    code: '01 // SYS', selector: '#work' },
-  { id: 'skills',  label: 'Competencies',code: '02 // EVD', selector: '#skills' },
-  { id: 'about',   label: 'Chronology',  code: '03 // BIO', selector: '#about' },
-  { id: 'contact', label: 'Dispatch',    code: '04 // COM', selector: '#contact' },
+  { id: 'hero',       label: 'Hero',       code: '01 // HERO', selector: '#hero' },
+  { id: 'background', label: 'Background', code: '02 // BG',   selector: '#background' },
+  { id: 'work',       label: 'Projects',   code: '03 // PROJ', selector: '#work' },
+  { id: 'skills',     label: 'Skills',     code: '04 // SKL',  selector: '#skills' },
+  { id: 'hardware',   label: 'PCB Lab',    code: '05 // PCB',  selector: '#hardware' },
+  { id: 'contact',    label: 'Contact',    code: '06 // CON',  selector: '#contact' },
 ];
 
 export function initScrollTracker(onSectionChange?: (activeId: string, progress: number) => void) {

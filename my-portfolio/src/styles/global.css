@@ -147,7 +147,6 @@ body {
   color: var(--text-secondary);
   background-color: var(--bg-primary);
   min-height: 100vh;
-  isolation: isolate;
   overflow-x: hidden;
 }
 
@@ -239,74 +238,24 @@ ul, ol {
   border-top: 1px solid var(--border-subtle);
 }
 
-/* All sections share the paper background */
-#hero,
-#work,
-#hardware,
-#skills,
-#contact { background-color: var(--color-paper); }
-
-/* ==========================================================
-   STICKY HERO / SECTION OVERLAY EFFECT
-   Hero stays fixed while subsequent sections slide over it
-   ========================================================== */
-
-#hero {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  min-height: 100vh;
+/* All sections transparent so circuit canvas shows through */
+.section {
+  padding: var(--section-pad) 0;
+  position: relative;
+  background: transparent;
+  border-top: 1px solid var(--border-subtle);
 }
 
-.section:not(#hero) {
+#hero {
   position: relative;
-  z-index: 10;
-  box-shadow: var(--shadow-elevated);
+  min-height: 100vh;
+  background: transparent;
 }
 
 main#mainContent {
   position: relative;
-  z-index: 5;
-}
-
-#hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background: linear-gradient(180deg, transparent 0%, var(--color-paper) 100%);
-  pointer-events: none;
-  z-index: 2;
-}
-
-@media (max-width: 768px) {
-  #hero {
-    position: relative;
-  }
-  .section:not(#hero) {
-    box-shadow: none;
-  }
-  #hero::after {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #hero {
-    position: relative;
-  }
-  .section:not(#hero) {
-    box-shadow: none;
-    z-index: auto;
-  }
-  #hero::after {
-    display: none;
-  }
-  main#mainContent {
-    z-index: auto;
-  }
+  z-index: 1;
+  background: transparent;
 }
 
 /* ==========================================================

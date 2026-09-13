@@ -79,25 +79,25 @@ const {
     <slot />
 
     <script>
-      import { initSectionNavigator } from '../lib/sectionNavigator';
+      import { initScrollTracker } from '../lib/motion/scroll';
       import { initScrollReveal } from '../lib/motion';
 
-      // Initialize scroll reveal (for non-nav elements)
+      // Initialize scroll reveal
       initScrollReveal();
 
-      // Initialize section navigator
-      let sectionNavigator: { destroy: () => void } | null = null;
+      // Passive scroll tracker for datum spine navigation and progress
+      let trackerCleanup: (() => void) | undefined;
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-          sectionNavigator = initSectionNavigator();
+          trackerCleanup = initScrollTracker();
         });
       } else {
-        sectionNavigator = initSectionNavigator();
+        trackerCleanup = initScrollTracker();
       }
       
       // Cleanup on page unload
       window.addEventListener('beforeunload', () => {
-        if (sectionNavigator) sectionNavigator.destroy();
+        if (trackerCleanup) trackerCleanup();
       });
 
       // Top scroll bar progress (deprecated - now section-based)
