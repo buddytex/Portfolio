@@ -6,10 +6,10 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
 
 <section id="background" class="section background-section" aria-labelledby="backgroundTitle">
   <div class="container-wide">
-    <!-- Section Header (Sticky: only kicker + title) -->
+    <!-- Section Header -->
     <header class="section-header">
       <span class="header-kicker mono">[ 02 // ENGINEERING BACKGROUND ]</span>
-      <h2 id="backgroundTitle" class="section-title">Engineering<br/><span class="accent">Background</span></h2>
+      <h2 id="backgroundTitle" class="section-title">Engineering <span class="accent">Background</span></h2>
     </header>
 
     <div class="background-grid">
@@ -89,12 +89,6 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
     padding: var(--section-pad) 0;
     background: transparent;
     border-top: 1px solid var(--border-subtle);
-    min-height: 100svh;
-  }
-
-  /* Reduced section title for this section (subordinate to Hero) */
-  .background-section .section-title {
-    font-size: clamp(1.6rem, 2.6vw, 2.4rem);
   }
 
   .header-kicker {
@@ -102,7 +96,7 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
     color: var(--color-muted);
     font-weight: 700;
     letter-spacing: 0.08em;
-    margin-bottom: 0.4rem;
+    margin-bottom: var(--space-2);
   }
 
   /* Two-column grid: Left (Journey + Philosophy), Right (Timeline) */
@@ -111,15 +105,13 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
     grid-template-columns: 1fr 1.3fr;
     gap: var(--space-8);
     align-items: start;
-    height: calc(100svh - var(--section-pad) * 2 - 80px);
   }
 
   /* Left Column */
   .background-left {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    overflow: hidden;
+    gap: var(--space-6);
   }
 
   .bio-card,
@@ -127,13 +119,11 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
     background: var(--surface);
     border: 1px solid var(--border-subtle);
     border-radius: var(--r-card);
-    padding: var(--space-5);
+    padding: var(--space-6);
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
     box-shadow: var(--shadow-resting);
-    flex: 1;
-    overflow: hidden;
   }
 
   .card-kicker {
@@ -156,9 +146,7 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
   .bio-text {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    overflow-y: auto;
-    max-height: 60%;
+    gap: var(--space-3);
   }
 
   .bio-text p {
@@ -224,24 +212,20 @@ import EngineeringTimeline from './EngineeringTimeline.astro';
   .philosophy-text {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    overflow-y: auto;
-    max-height: 60%;
+    gap: var(--space-3);
   }
 
   .philosophy-text p {
     font-size: var(--text-sm);
-    line-height: 1.55;
+    line-height: 1.6;
     color: var(--text-secondary);
     margin: 0;
   }
 
   /* Right Column - Timeline */
   .background-right {
-    position: sticky;
-    top: calc(var(--nav-height) + 24px);
-    max-height: calc(100svh - var(--nav-height) - 48px);
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   @media (max-width: 1024px) {

@@ -9,17 +9,15 @@ const featuredProjects = projects.filter(p => p.featured);
 
 <section id="work" class="section work-section">
   <div class="container-wide">
-    <!-- Section Header (Sticky: only kicker + title) -->
+    <!-- Section Header -->
     <div class="section-header">
       <div class="header-kicker mono">[ 03 // SELECTED SYSTEMS ]</div>
-      <h2 class="section-title">Autonomous Machines Built for the<br/><span class="accent">Physical World</span></h2>
+      <h2 class="section-title">Autonomous Machines Built for the <span class="accent">Physical World</span></h2>
+      <p class="section-lead">
+        Physical autonomous platforms, high-throughput perception pipelines, custom vehicle ECUs, and real-time control algorithms.
+        Each project represents verified systems engineered to solve physical constraints.
+      </p>
     </div>
-
-    <!-- Section Description (Normal document flow, not sticky) -->
-    <p class="section-lead">
-      Physical autonomous platforms, high-throughput perception pipelines, custom vehicle ECUs, and real-time control algorithms.
-      Each project represents verified systems engineered to solve physical constraints.
-    </p>
 
     <!-- Interactive Projects Grid (2x2 Balanced Layout) -->
     <div class="projects-grid" id="featuredGrid" role="feed" aria-label="Selected Robotics Projects">
@@ -215,12 +213,6 @@ const featuredProjects = projects.filter(p => p.featured);
     border-top: 1px solid var(--border-subtle);
     padding: var(--section-pad) 0;
     background: transparent;
-    min-height: 100svh;
-  }
-
-  /* Reduced section title for this section (subordinate to Hero) */
-  .work-section .section-title {
-    font-size: clamp(1.6rem, 2.6vw, 2.4rem);
   }
 
   .header-kicker {
@@ -228,14 +220,19 @@ const featuredProjects = projects.filter(p => p.featured);
     color: var(--accent-primary);
     font-weight: 700;
     letter-spacing: 0.08em;
-    margin-bottom: 0.4rem;
+    margin-bottom: var(--space-2);
   }
 
-  /* Section lead in normal flow */
+  .work-section .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    margin-bottom: var(--space-3);
+  }
+
   .work-section .section-lead {
-    margin-top: var(--space-2);
-    margin-bottom: var(--space-4);
     font-size: var(--text-sm);
+    color: var(--text-secondary);
+    max-width: 680px;
+    line-height: 1.65;
   }
 
   /* 2x2 Balanced Projects Grid - tighter gap */
