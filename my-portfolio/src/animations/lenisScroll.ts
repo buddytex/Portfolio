@@ -25,13 +25,13 @@ export function initSmoothScroll(): Lenis | null {
   if (lenisInstance) return lenisInstance;
 
   lenisInstance = new Lenis({
-    duration: 1.15,
+    duration: 0.85,
     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     orientation: 'vertical',
     gestureOrientation: 'vertical',
     smoothWheel: true,
     touchMultiplier: 1.0,
-    wheelMultiplier: 0.9,
+    wheelMultiplier: 1.0,
   });
 
   function raf(time: number) {

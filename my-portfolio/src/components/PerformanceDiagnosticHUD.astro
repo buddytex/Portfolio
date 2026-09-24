@@ -1,0 +1,178 @@
+---
+// Development-only Performance Diagnostic HUD
+// Activates ONLY in dev mode when ?debug=performance is present in URL
+---
+
+{import.meta.env.DEV && (
+  <div id="perfDebugHud" style="display: none;" aria-hidden="true">
+    <div class="perf-hud-header">
+      <span class="perf-hud-title">PERF METRICS</span>
+      <span id="perfFps" class="perf-metric-val">-- FPS</span>
+    </div>
+    <div class="perf-hud-grid">
+      <div class="perf-row">
+        <span>Frame Time:</span>
+        <span id="perfFrameTime">-- ms</span>
+      </div>
+      <div class="perf-row">
+        <span>Hero 3D:</span>
+        <span id="perfHero3d" class="perf-status">SLEEP</span>
+      </div>
+      <div class="perf-row">
+        <span>Circuit Canvas:</span>
+        <span id="perfCircuit" class="perf-status">SLEEP</span>
+      </div>
+      <div class="perf-row">
+        <span>PCB 3D (R3F):</span>
+        <span id="perfPcb3d" class="perf-status">SLEEP</span>
+      </div>
+      <div class="perf-row">
+        <span>DPR:</span>
+        <span id="perfDpr">1.0</span>
+      </div>
+    </div>
+  </div>
+)}
+
+{import.meta.env.DEV && (
+  <script>
+    declare global {
+      interface Window {
+        __PERF_METRICS__?: {
+          hero3dRunning?: boolean;
+          circuitRunning?: boolean;
+          pcb3dRunning?: boolean;
+          heroFps?: number;
+        };
+      }
+    }
+
+    function initPerfHud() {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has('debug') && !params.has('perf')) return;
+
+      const hud = document.getElementById('perfDebugHud');
+      if (!hud) return;
+      hud.style.display = 'block';
+
+      window.__PERF_METRICS__ = window.__PERF_METRICS__ || {
+        hero3dRunning: false,
+        circuitRunning: false,
+        pcb3dRunning: false,
+      };
+
+      const fpsEl = document.getElementById('perfFps');
+      const frameTimeEl = document.getElementById('perfFrameTime');
+      const hero3dEl = document.getElementById('perfHero3d');
+      const circuitEl = document.getElementById('perfCircuit');
+      const pcb3dEl = document.getElementById('perfPcb3d');
+      const dprEl = document.getElementById('perfDpr');
+
+      if (dprEl) dprEl.textContent = window.devicePixelRatio ? window.devicePixelRatio.toFixed(1) : '1.0';
+
+      let frames = 0;
+      let lastTime = performance.now();
+      let maxDelta = 0;
+
+      function updateHud(now: number) {
+        frames++;
+        const delta = now - lastTime;
+        if (delta > maxDelta && frames > 2) maxDelta = delta;
+
+        if (delta >= 500) {
+          const fps = Math.round((frames * 1000) / delta);
+          if (fpsEl) {
+            fpsEl.textContent = `${fps} FPS`;
+            fpsEl.style.color = fps >= 55 ? '#4ade80' : fps >= 40 ? '#facc15' : '#f87171';
+          }
+          if (frameTimeEl) {
+            frameTimeEl.textContent = `${maxDelta.toFixed(1)} ms`;
+          }
+
+          const m = window.__PERF_METRICS__;
+          if (hero3dEl && m) {
+            hero3dEl.textContent = m.hero3dRunning ? 'ACTIVE' : 'PAUSED';
+            hero3dEl.className = 'perf-status ' + (m.hero3dRunning ? 'active' : 'paused');
+          }
+          if (circuitEl && m) {
+            circuitEl.textContent = m.circuitRunning ? 'ACTIVE' : 'PAUSED';
+            circuitEl.className = 'perf-status ' + (m.circuitRunning ? 'active' : 'paused');
+          }
+          if (pcb3dEl && m) {
+            pcb3dEl.textContent = m.pcb3dRunning ? 'ACTIVE' : 'PAUSED';
+            pcb3dEl.className = 'perf-status ' + (m.pcb3dRunning ? 'active' : 'paused');
+          }
+
+          frames = 0;
+          maxDelta = 0;
+          lastTime = now;
+        }
+
+        requestAnimationFrame(updateHud);
+      }
+
+      requestAnimationFrame(updateHud);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPerfHud);
+    } else {
+      initPerfHud();
+    }
+  </script>
+)}
+
+<style>
+  #perfDebugHud {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 99999;
+    background: rgba(15, 18, 26, 0.92);
+    border: 1px solid rgba(184, 146, 74, 0.35);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #e5e7eb;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    min-width: 170px;
+    backdrop-filter: blur(8px);
+  }
+  .perf-hud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+  }
+  .perf-hud-title {
+    font-weight: 700;
+    color: #d4af37;
+    letter-spacing: 0.05em;
+  }
+  .perf-metric-val {
+    font-weight: 700;
+  }
+  .perf-hud-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .perf-row {
+    display: flex;
+    justify-content: space-between;
+    color: #9ca3af;
+  }
+  .perf-status {
+    font-weight: 600;
+  }
+  .perf-status.active {
+    color: #4ade80;
+  }
+  .perf-status.paused {
+    color: #6b7280;
+  }
+</style>

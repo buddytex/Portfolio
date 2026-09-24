@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 
 import ImageLightbox from '../components/ImageLightbox.astro';
+import PerformanceDiagnosticHUD from '../components/PerformanceDiagnosticHUD.astro';
 
 interface Props {
   title?: string;
@@ -100,6 +101,7 @@ const {
 
     <!-- Global Image Lightbox Modal for Uncropped Technical Evidence Inspection -->
     <ImageLightbox />
+    <PerformanceDiagnosticHUD />
 
     <script>
       import {
@@ -151,12 +153,29 @@ const {
         setupPageMotion();
       }
 
-      // Top scroll bar progress
+      // Top scroll bar progress (RAF throttled with cached height)
+      let scrollBarEl: HTMLElement | null = null;
+      let scrollTicking = false;
+      let cachedMaxScroll = 0;
+
+      function updateMaxScroll() {
+        cachedMaxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      }
+      window.addEventListener('resize', updateMaxScroll, { passive: true });
+
       window.addEventListener('scroll', () => {
-        const bar = document.getElementById('scrollBar');
-        if (!bar) return;
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        bar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+        if (!scrollTicking) {
+          scrollTicking = true;
+          requestAnimationFrame(() => {
+            if (!scrollBarEl) scrollBarEl = document.getElementById('scrollBar');
+            if (scrollBarEl) {
+              if (cachedMaxScroll <= 0) updateMaxScroll();
+              const progress = cachedMaxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / cachedMaxScroll)) : 0;
+              scrollBarEl.style.transform = `scaleX(${progress})`;
+            }
+            scrollTicking = false;
+          });
+        }
       }, { passive: true });
     </script>
   </body>

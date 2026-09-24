@@ -163,16 +163,16 @@ import CircuitBoard from './CircuitBoard.astro';
     const width = 1040;
     const height = 920;
 
-    // Renderer setup with preserveDrawingBuffer to ensure persistent compositor frames
+    // High-performance WebGL renderer with hardware compositor blitting
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
       antialias: true,
-      preserveDrawingBuffer: true,
+      preserveDrawingBuffer: false,
       powerPreference: 'high-performance',
     });
     renderer.setSize(width, height, false);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
     renderer.setClearColor(0x000000, 0);
 
     // Scene & Camera: 40 deg FOV with deep perspective
@@ -410,11 +410,40 @@ import CircuitBoard from './CircuitBoard.astro';
     }, { passive: true });
 
     let clock = new THREE.Clock();
+    let isVisible = true;
+    let isDocumentVisible = !document.hidden;
+
+    function startLoop() {
+      if (hero3dRunning) return;
+      hero3dRunning = true;
+      if (window.__PERF_METRICS__) window.__PERF_METRICS__.hero3dRunning = true;
+      clock.start();
+      hero3dCancelId = requestAnimationFrame(animate);
+    }
+
+    function stopLoop() {
+      if (!hero3dRunning) return;
+      hero3dRunning = false;
+      if (window.__PERF_METRICS__) window.__PERF_METRICS__.hero3dRunning = false;
+      if (hero3dCancelId) {
+        cancelAnimationFrame(hero3dCancelId);
+        hero3dCancelId = null;
+      }
+      clock.stop();
+    }
+
+    function checkVisibility() {
+      if (isVisible && isDocumentVisible && !prefersReduced) {
+        startLoop();
+      } else {
+        stopLoop();
+      }
+    }
 
     function animate() {
-      requestAnimationFrame(animate);
+      if (!hero3dRunning) return;
 
-      const delta = clock.getDelta();
+      const delta = Math.min(clock.getDelta(), 0.1);
       const time = clock.getElapsedTime();
 
       if (!prefersReduced) {
@@ -455,8 +484,26 @@ import CircuitBoard from './CircuitBoard.astro';
       hero3dCancelId = requestAnimationFrame(animate);
     }
 
+    // Viewport IntersectionObserver: strictly pauses Three.js when scrolled out of view
+    let heroObserver: IntersectionObserver | null = null;
+    const heroSectionEl = document.getElementById('hero');
+    if (heroSectionEl && 'IntersectionObserver' in window) {
+      heroObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          isVisible = entry.isIntersecting;
+          checkVisibility();
+        });
+      }, { threshold: 0.05 });
+      heroObserver.observe(heroSectionEl);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      isDocumentVisible = !document.hidden;
+      checkVisibility();
+    });
+
     if (hero3dCancelId) cancelAnimationFrame(hero3dCancelId);
-    animate();
+    checkVisibility();
   }
 
   // Run on page load

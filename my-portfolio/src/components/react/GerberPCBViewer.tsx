@@ -148,6 +148,29 @@ export default function GerberPCBViewer({
   const [cameraPreset, setCameraPreset] = useState<'isometric' | 'top' | 'bottom'>('isometric');
   const [presetTrigger, setPresetTrigger] = useState(0);
 
+  // Viewport IntersectionObserver to pause R3F render loop when offscreen
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting;
+      setIsInView(visible);
+      if (typeof window !== 'undefined' && (window as any).__PERF_METRICS__) {
+        (window as any).__PERF_METRICS__.pcb3dRunning = visible;
+      }
+    }, { threshold: 0.05 });
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // Load PCB data
   useEffect(() => {
     let cancelled = false;
@@ -189,7 +212,7 @@ export default function GerberPCBViewer({
   }) : [];
 
   return (
-    <div className="gerber-viewer-container" style={{
+    <div ref={containerRef} className="gerber-viewer-container" style={{
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
@@ -376,10 +399,11 @@ export default function GerberPCBViewer({
 
         {pcbData && (
           <Canvas
-            gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
+            frameloop={isInView ? 'always' : 'never'}
+            gl={{ antialias: true, alpha: false, preserveDrawingBuffer: false }}
             style={{ width: '100%', height: '100%' }}
             onCreated={({ gl }) => {
-              gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+              gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
               gl.setClearColor(0x0E1117, 1);
               gl.toneMapping = THREE.ACESFilmicToneMapping;
               gl.toneMappingExposure = 1.05;

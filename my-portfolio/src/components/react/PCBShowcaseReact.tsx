@@ -26,6 +26,28 @@ interface PCBShowcaseReactProps {
 export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseReactProps) {
   const [currentBoardIndex, setCurrentBoardIndex] = useState(initialBoardIndex);
   const currentBoard = pcbArtifacts[currentBoardIndex];
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting;
+      setIsInView(visible);
+      if (typeof window !== 'undefined' && (window as any).__PERF_METRICS__) {
+        (window as any).__PERF_METRICS__.pcb3dRunning = visible;
+      }
+    }, { threshold: 0.05 });
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   
   // Listen for board change events from parent
   useEffect(() => {
@@ -65,13 +87,14 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
 
   // Showcase mode — decorative PCB view
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
       <Canvas
+        frameloop={isInView ? 'always' : 'never'}
         camera={{ position: [0, 0, 3.5], fov: 42 }}
         gl={{ antialias: true, alpha: false, preserveDrawingBuffer: false }}
         style={{ width: '100%', height: '100%', display: 'block', minHeight: '440px' }}
         onCreated={({ gl }) => {
-          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
           gl.setClearColor(0x0E1117, 1);
         }}
       >

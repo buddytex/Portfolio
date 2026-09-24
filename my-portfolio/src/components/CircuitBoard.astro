@@ -331,18 +331,168 @@
     // Mouse coordinates relative to Hero canvas
     const mouse = { x: -9999, y: -9999, active: false };
 
+    // Offscreen caching for static PCB elements (hairlines, base copper, markers, default vias)
+    let staticCanvas: HTMLCanvasElement | null = null;
+    let staticCtx: CanvasRenderingContext2D | null = null;
+
+    function renderStaticLayers() {
+      if (!staticCanvas) {
+        staticCanvas = document.createElement('canvas');
+      }
+      staticCanvas.width = Math.floor(W * DPR);
+      staticCanvas.height = Math.floor(H * DPR);
+      staticCtx = staticCanvas.getContext('2d');
+      if (!staticCtx) return;
+      staticCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      staticCtx.clearRect(0, 0, W, H);
+      staticCtx.lineCap = 'round';
+      staticCtx.lineJoin = 'round';
+
+      // 1. Subtle Hairlines
+      rawTraces.forEach((trace) => {
+        if (trace.tier !== 'hairline') return;
+        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+        staticCtx!.beginPath();
+        staticCtx!.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          staticCtx!.lineTo(pts[i].x, pts[i].y);
+        }
+        staticCtx!.strokeStyle = '#D8BE8A';
+        staticCtx!.globalAlpha = 0.18;
+        staticCtx!.lineWidth = 0.85;
+        staticCtx!.stroke();
+      });
+
+      // 2. Base Medium Traces
+      rawTraces.forEach((trace) => {
+        if (trace.tier !== 'medium') return;
+        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+        staticCtx!.beginPath();
+        staticCtx!.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          staticCtx!.lineTo(pts[i].x, pts[i].y);
+        }
+        staticCtx!.strokeStyle = '#C5A059';
+        staticCtx!.globalAlpha = 0.38;
+        staticCtx!.lineWidth = 1.35;
+        staticCtx!.stroke();
+      });
+
+      // 3. Base Highway Traces
+      rawTraces.forEach((trace) => {
+        if (trace.tier !== 'highway') return;
+        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+        staticCtx!.beginPath();
+        staticCtx!.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          staticCtx!.lineTo(pts[i].x, pts[i].y);
+        }
+        staticCtx!.strokeStyle = '#B8924A';
+        staticCtx!.globalAlpha = 0.78;
+        staticCtx!.lineWidth = 2.4;
+        staticCtx!.stroke();
+      });
+
+      // 4. Technical Markers
+      rawMarkers.forEach((m) => {
+        const x = m.u * W;
+        const y = m.v * H;
+        staticCtx!.globalAlpha = 0.35;
+
+        if (m.type === 'cross') {
+          staticCtx!.strokeStyle = '#B8924A';
+          staticCtx!.lineWidth = 1.0;
+          staticCtx!.beginPath();
+          staticCtx!.moveTo(x - 5, y);
+          staticCtx!.lineTo(x + 5, y);
+          staticCtx!.moveTo(x, y - 5);
+          staticCtx!.lineTo(x, y + 5);
+          staticCtx!.stroke();
+        } else if (m.type === 'dot_matrix') {
+          staticCtx!.fillStyle = '#C5A059';
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              staticCtx!.beginPath();
+              staticCtx!.arc(x + dx * 5, y + dy * 5, 0.9, 0, Math.PI * 2);
+              staticCtx!.fill();
+            }
+          }
+        }
+      });
+
+      // 5. Base PCB Nodes
+      rawNodes.forEach((node) => {
+        const x = node.u * W;
+        const y = node.v * H;
+
+        if (node.shape === 'glow_via') {
+          const haloRad = staticCtx!.createRadialGradient(x, y, 1, x, y, node.size * 3.8);
+          haloRad.addColorStop(0, 'rgba(230, 186, 92, 0.55)');
+          haloRad.addColorStop(0.5, 'rgba(230, 186, 92, 0.20)');
+          haloRad.addColorStop(1, 'rgba(230, 186, 92, 0)');
+          staticCtx!.fillStyle = haloRad;
+          staticCtx!.globalAlpha = 0.85;
+          staticCtx!.beginPath();
+          staticCtx!.arc(x, y, node.size * 3.8, 0, Math.PI * 2);
+          staticCtx!.fill();
+
+          staticCtx!.beginPath();
+          staticCtx!.arc(x, y, node.size, 0, Math.PI * 2);
+          staticCtx!.fillStyle = '#B8924A';
+          staticCtx!.globalAlpha = 0.95;
+          staticCtx!.fill();
+
+          staticCtx!.beginPath();
+          staticCtx!.arc(x, y, node.size * 0.38, 0, Math.PI * 2);
+          staticCtx!.fillStyle = '#222834';
+          staticCtx!.fill();
+        } else if (node.shape === 'via') {
+          staticCtx!.beginPath();
+          staticCtx!.arc(x, y, node.size, 0, Math.PI * 2);
+          staticCtx!.fillStyle = '#C5A059';
+          staticCtx!.globalAlpha = 0.70;
+          staticCtx!.fill();
+
+          staticCtx!.beginPath();
+          staticCtx!.arc(x, y, node.size * 0.45, 0, Math.PI * 2);
+          staticCtx!.fillStyle = '#F7F5F0';
+          staticCtx!.fill();
+        } else if (node.shape === 'ic') {
+          const s = node.size;
+          staticCtx!.fillStyle = 'rgba(28, 33, 44, 0.85)';
+          staticCtx!.globalAlpha = 0.85;
+          staticCtx!.fillRect(x - s / 2, y - s / 2, s, s);
+
+          staticCtx!.strokeStyle = '#B8924A';
+          staticCtx!.lineWidth = 1;
+          staticCtx!.strokeRect(x - s / 2, y - s / 2, s, s);
+
+          staticCtx!.fillStyle = '#E5C678';
+          const pins = 3;
+          for (let p = 0; p < pins; p++) {
+            const py = y - s / 2 + (s / (pins + 1)) * (p + 1);
+            staticCtx!.fillRect(x - s / 2 - 3, py - 1, 3, 2);
+            staticCtx!.fillRect(x + s / 2, py - 1, 3, 2);
+          }
+        }
+      });
+      staticCtx.globalAlpha = 1.0;
+    }
+
     function resize() {
       // Size canvas to Hero parent container (NOT entire window!)
       const parent = canvas.parentElement || heroSection || document.body;
       W = parent.clientWidth;
       H = parent.clientHeight;
-      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      DPR = Math.min(window.devicePixelRatio || 1, 1.75);
 
       canvas.width = Math.floor(W * DPR);
       canvas.height = Math.floor(H * DPR);
       canvas.style.width = `${W}px`;
       canvas.style.height = `${H}px`;
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      renderStaticLayers();
 
       waveDistTravelled = 0;
       wavePauseTimer = 0.2;
@@ -388,89 +538,46 @@
     function drawFrame(now: number, dt: number) {
       ctx.clearRect(0, 0, W, H);
 
-      // 1. Draw Subtle Background Hairlines (70%)
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      // Fast-path: Draw cached static PCB topology in 1 single GPU blit
+      if (staticCanvas) {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(staticCanvas, 0, 0);
+        ctx.restore();
+      }
 
-      rawTraces.forEach((trace) => {
-        if (trace.tier !== 'hairline') return;
-        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
-
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length; i++) {
-          ctx.lineTo(pts[i].x, pts[i].y);
-        }
-        ctx.strokeStyle = '#D8BE8A';
-        ctx.globalAlpha = 0.18;
-        ctx.lineWidth = 0.85;
-        ctx.stroke();
-      });
-
-      // 2. Draw Medium Signal Traces (20%)
-      rawTraces.forEach((trace) => {
-        if (trace.tier !== 'medium') return;
-        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
-
-        // Check cursor proximity
-        let proximityBoost = 0;
-        if (mouse.active) {
+      // If mouse is active near Hero, draw dynamic proximity glow overlay
+      if (mouse.active) {
+        rawTraces.forEach((trace) => {
+          if (trace.tier === 'hairline') return;
+          const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+          let proximityBoost = 0;
           for (const p of pts) {
             const d = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-            if (d < 160) {
-              proximityBoost = Math.max(proximityBoost, 1 - d / 160);
+            const maxD = trace.tier === 'highway' ? 200 : 160;
+            if (d < maxD) {
+              proximityBoost = Math.max(proximityBoost, 1 - d / maxD);
             }
           }
-        }
-
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length; i++) {
-          ctx.lineTo(pts[i].x, pts[i].y);
-        }
-        ctx.strokeStyle = '#C5A059';
-        ctx.globalAlpha = 0.38 + proximityBoost * 0.35;
-        ctx.lineWidth = 1.35 + proximityBoost * 0.5;
-        ctx.stroke();
-      });
-
-      // 3. Draw Hero Highway Traces (10%): Warm Champagne Gold Embossed Lines
-      rawTraces.forEach((trace) => {
-        if (trace.tier !== 'highway') return;
-        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
-
-        let proximityBoost = 0;
-        if (mouse.active) {
-          for (const p of pts) {
-            const d = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-            if (d < 200) {
-              proximityBoost = Math.max(proximityBoost, 1 - d / 200);
+          if (proximityBoost > 0.05) {
+            ctx.beginPath();
+            ctx.moveTo(pts[0].x, pts[0].y);
+            for (let i = 1; i < pts.length; i++) {
+              ctx.lineTo(pts[i].x, pts[i].y);
             }
+            if (trace.tier === 'highway') {
+              ctx.strokeStyle = '#E5C678';
+              ctx.globalAlpha = proximityBoost * 0.45;
+              ctx.lineWidth = 2.4 + proximityBoost * 0.8;
+            } else {
+              ctx.strokeStyle = '#D8BE8A';
+              ctx.globalAlpha = proximityBoost * 0.35;
+              ctx.lineWidth = 1.35 + proximityBoost * 0.5;
+            }
+            ctx.stroke();
           }
-        }
-
-        // Drop shadow / relief under-trace for embossed physical PCB effect
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x + 1.2, pts[0].y + 1.2);
-        for (let i = 1; i < pts.length; i++) {
-          ctx.lineTo(pts[i].x + 1.2, pts[i].y + 1.2);
-        }
-        ctx.strokeStyle = '#8E733D';
-        ctx.globalAlpha = 0.16;
-        ctx.lineWidth = 2.4;
-        ctx.stroke();
-
-        // Main highway copper trace
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length; i++) {
-          ctx.lineTo(pts[i].x, pts[i].y);
-        }
-        ctx.strokeStyle = '#B8924A';
-        ctx.globalAlpha = 0.78 + proximityBoost * 0.22;
-        ctx.lineWidth = 2.4 + proximityBoost * 0.8;
-        ctx.stroke();
-      });
+        });
+      }
 
       // 4. Draw Traveling Pulse along Current Highway (Deterministic Sequential Propagation)
       if (!prefersReduced) {
@@ -626,6 +733,10 @@
 
       drawFrame(now, dt);
 
+      if (window.__PERF_METRICS__) {
+        window.__PERF_METRICS__.circuitRunning = isCircuitVisible && !prefersReduced;
+      }
+
       if (!prefersReduced && isCircuitVisible) {
         circuitLoopId = requestAnimationFrame(loop);
       }
@@ -634,10 +745,16 @@
     // Connect Anime.js visibility lifecycle
     currentCircuitController = registerCircuitVisibility(canvas, (visible) => {
       isCircuitVisible = visible;
+      if (window.__PERF_METRICS__) {
+        window.__PERF_METRICS__.circuitRunning = visible && !prefersReduced;
+      }
       if (visible && !prefersReduced) {
         lastTime = performance.now();
         if (circuitLoopId) cancelAnimationFrame(circuitLoopId);
         circuitLoopId = requestAnimationFrame(loop);
+      } else if (circuitLoopId) {
+        cancelAnimationFrame(circuitLoopId);
+        circuitLoopId = null;
       }
     });
 
