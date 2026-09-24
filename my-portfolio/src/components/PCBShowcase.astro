@@ -15,19 +15,28 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     <!-- Carousel Controls -->
     <div class="pcb-nav-controls">
       <div class="pcb-dots" role="tablist" aria-label="PCB Board Artifacts">
-        {pcbArtifacts.map((board, idx) => (
-          <button
-            class:list={['pcb-dot-btn', { active: idx === 0 }]}
-            id={`pcbDot-${board.id}`}
-            data-index={idx}
-            role="tab"
-            aria-selected={idx === 0 ? "true" : "false"}
-            aria-label={`Select ${board.name}`}
-          >
-            <span class="dot-pip"></span>
-            <span class="dot-label mono">BOARD 0{idx + 1}</span>
-          </button>
-        ))}
+        {pcbArtifacts.map((board, idx) => {
+          const tabLabel = idx === 0 
+            ? '★ BACK-BOX ECU (2026)' 
+            : idx === 1 
+            ? 'FRONT-BOX ECU (2026)' 
+            : idx === 2 
+            ? 'E-STOP SAFETY' 
+            : 'SWARM NODE';
+          return (
+            <button
+              class:list={['pcb-dot-btn', { active: idx === 0 }]}
+              id={`pcbDot-${board.id}`}
+              data-index={idx}
+              role="tab"
+              aria-selected={idx === 0 ? "true" : "false"}
+              aria-label={`Select ${board.name}`}
+            >
+              <span class="dot-pip"></span>
+              <span class="dot-label mono">{tabLabel}</span>
+            </button>
+          );
+        })}
       </div>
 
       <div class="pcb-arrows">
@@ -45,7 +54,7 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
   <div class="pcb-stage-grid">
     <!-- Left Column: Interactive 3D Artifact Viewport -->
     <div class="pcb-viewport-wrap" id="pcbViewportWrap">
-      <PCBShowcaseReact client:visible />
+      <PCBShowcaseReact client:load />
     </div>
 
     <!-- Right Column: Engineering Metadata & Problem Rationale -->
@@ -105,6 +114,77 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
             </div>
           </div>
 
+          <!-- Physical Build Verification (Photographic & Live Test Proof) -->
+          {board.id === 'vehicle-ecu' && (
+            <div class="physical-proof-strip">
+              <div class="proof-header">
+                <div class="proof-title-wrap">
+                  <span class="proof-pip" aria-hidden="true">●</span>
+                  <span class="proof-label mono">PHYSICAL FABRICATION &amp; BENCH VERIFICATION</span>
+                </div>
+                <button type="button" class="btn-toggle-proof mono" id="btnToggleProof" aria-expanded="false">
+                  <span>[ View Real Enclosure Photo ]</span>
+                </button>
+              </div>
+
+              <div class="proof-drawer" id="proofDrawer" hidden>
+                <div class="proof-media-row">
+                  <div 
+                    class="proof-img-card img-expandable" 
+                    data-lightbox="/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg"
+                    data-title="Custom Equinox Back-Box ECU Assembled in Chassis Enclosure"
+                    data-badge="PHYSICAL PROOF"
+                    data-caption="Custom multi-layer Back-Box ECU with galvanic isolation barrier and screw terminal interface, photographed mounted inside the competition vehicle sealed chassis enclosure."
+                    title="Click to view full resolution photograph"
+                  >
+                    <img
+                      src="/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg"
+                      alt="Custom Equinox Back-Box ECU Assembled in Chassis Enclosure"
+                      class="proof-thumb-img img-contain"
+                      loading="lazy"
+                    />
+                    <span class="proof-tag mono">ASSEMBLED ECU IN VEHICLE ↗</span>
+                  </div>
+                  <div class="proof-desc-block">
+                    <p class="proof-text">
+                      Custom multi-layer Back-Box ECU with galvanic isolation barrier and screw terminal interface, photographed mounted inside the competition vehicle sealed chassis enclosure.
+                    </p>
+                    <a href="/projects/baja-2026#engineeringDossier" class="proof-link mono">
+                      <span>Inspect Live Power-On Testing Video</span>
+                      <span aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <!-- Gerber Actions -->
+          {(board.gerberArchive || board.gerberDataFile) && (
+            <div class="gerber-actions-strip">
+              {board.gerberDataFile && (
+                <button
+                  type="button"
+                  class="btn-view-gerber3d mono"
+                  data-board-index={idx}
+                  aria-label={`View real 3D PCB for ${board.name}`}
+                >
+                  <span class="gerber-icon">⬡</span>
+                  <span>VIEW REAL PCB</span>
+                </button>
+              )}
+              {board.gerberArchive && (
+                <a
+                  href={`/media/${board.gerberArchive}`}
+                  download
+                  class="btn-download-gerbers mono"
+                >
+                  <span>↓ DOWNLOAD GERBERS</span>
+                </a>
+              )}
+            </div>
+          )}
+
           <!-- Live Test Point Inspector Callout (Updated on TP hover) -->
           <div class="live-tp-callout" id={`tpCallout-${board.id}`}>
             <div class="tp-callout-header mono">
@@ -122,11 +202,11 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
 </div>
 
 <script>
-  import { animate, isReducedMotion } from '../lib/motion';
+  import { animate, isReducedMotion } from '../animations';
 
   function initPCBShowcase() {
     let currentBoardIdx = 0;
-    const boardsCount = 3;
+    const boardsCount = document.querySelectorAll('.pcb-dot-btn').length || 4;
     const dotBtns = document.querySelectorAll<HTMLButtonElement>('.pcb-dot-btn');
     const detailCards = document.querySelectorAll<HTMLElement>('.pcb-details-card');
     const prevBtn = document.getElementById('pcbPrevBtn');
@@ -250,9 +330,33 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
         callout?.classList.remove('is-active');
       }
     });
+
+    // VIEW REAL PCB buttons — dispatch event to React component
+    document.querySelectorAll<HTMLButtonElement>('.btn-view-gerber3d').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const boardIndex = parseInt(btn.dataset.boardIndex || '0', 10);
+        window.dispatchEvent(new CustomEvent('pcb-view-gerber3d', { detail: { boardIndex } }));
+      });
+    });
+
+    // Toggle Real Physical Build Proof Drawer
+    const toggleProofBtn = document.getElementById('btnToggleProof');
+    const proofDrawer = document.getElementById('proofDrawer');
+    if (toggleProofBtn && proofDrawer) {
+      toggleProofBtn.addEventListener('click', () => {
+        const isHidden = proofDrawer.hidden;
+        proofDrawer.hidden = !isHidden;
+        toggleProofBtn.setAttribute('aria-expanded', String(isHidden));
+        const span = toggleProofBtn.querySelector('span');
+        if (span) {
+          span.textContent = isHidden ? '[ Hide Enclosure Photo ]' : '[ View Real Enclosure Photo ]';
+        }
+      });
+    }
   }
 
   document.addEventListener('astro:page-load', initPCBShowcase);
+  document.addEventListener('DOMContentLoaded', initPCBShowcase);
 </script>
 
 <style>
@@ -394,12 +498,15 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
   }
 
-  .pcb-viewport-wrap > div {
+  .pcb-viewport-wrap :global(astro-island),
+  .pcb-viewport-wrap > div,
+  .pcb-viewport-wrap :global(.gerber-viewer-container) {
     width: 100%;
-    aspect-ratio: 1.38 / 1;
     max-width: 720px;
+    display: block;
   }
 
   /* Telemetry Panel (Right) */
@@ -412,6 +519,10 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
+  }
+
+  .pcb-details-card[hidden] {
+    display: none !important;
   }
 
   .details-top {
@@ -616,12 +727,150 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     line-height: 1.5;
   }
 
+  /* Physical Build Proof Strip */
+  .physical-proof-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.85rem;
+    background: #FFFFFF;
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    border-radius: var(--r-sm, 6px);
+    box-shadow: 0 1px 4px rgba(20, 24, 34, 0.03);
+  }
+
+  .proof-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .proof-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .proof-pip {
+    color: #B8924A;
+    font-size: 0.65rem;
+  }
+
+  .proof-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #8C6A28;
+    letter-spacing: 0.06em;
+  }
+
+  .btn-toggle-proof {
+    background: none;
+    border: none;
+    color: var(--color-ink, #141822);
+    font-size: 0.68rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-toggle-proof:hover {
+    color: #B8924A;
+    background: rgba(184, 146, 74, 0.08);
+  }
+
+  .proof-drawer {
+    animation: fadeIn 0.25s ease;
+  }
+
+  .proof-drawer[hidden] {
+    display: none;
+  }
+
+  .proof-media-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 0.85rem;
+    align-items: center;
+    padding-top: 0.5rem;
+    border-top: 1px dashed rgba(20, 24, 34, 0.1);
+  }
+
+  .proof-img-card {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    background: #0E121A;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: zoom-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .proof-thumb-img {
+    width: 100%;
+    height: auto;
+    max-height: 120px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .proof-tag {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    background: rgba(20, 24, 34, 0.85);
+    color: #E5C378;
+    font-size: 0.45rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 1px 2px;
+    border-radius: 2px;
+  }
+
+  .proof-desc-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .proof-text {
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .proof-link {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #8C6A28;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    transition: color 0.2s ease;
+  }
+
+  .proof-link:hover {
+    color: var(--color-ink, #141822);
+  }
+
   @media (max-width: 960px) {
     .pcb-stage-grid {
       grid-template-columns: 1fr;
     }
     
-    .pcb-viewport-wrap > div {
+    .pcb-viewport-wrap :global(astro-island),
+    .pcb-viewport-wrap > div,
+    .pcb-viewport-wrap :global(.gerber-viewer-container) {
       max-width: 100%;
     }
   }
@@ -631,5 +880,67 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
       width: 100%;
       justify-content: space-between;
     }
+  }
+
+  /* ── Gerber Action Buttons ── */
+  .gerber-actions-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .btn-view-gerber3d {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    background: var(--color-gold);
+    border: none;
+    border-radius: var(--r-xs);
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.15s var(--ease-standard);
+    box-shadow: 0 2px 8px rgba(184, 146, 74, 0.3);
+  }
+
+  .btn-view-gerber3d:hover,
+  .btn-view-gerber3d:focus-visible {
+    background: var(--color-gold-hi);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(184, 146, 74, 0.4);
+    outline: none;
+  }
+
+  .gerber-icon {
+    font-size: 0.75rem;
+  }
+
+  .btn-download-gerbers {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xs);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: all 0.15s var(--ease-standard);
+  }
+
+  .btn-download-gerbers:hover,
+  .btn-download-gerbers:focus-visible {
+    color: var(--text-primary);
+    border-color: var(--accent-primary);
+    outline: none;
   }
 </style>

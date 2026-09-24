@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { animate, createMotionPath, createDrawable, isReducedMotion } from '../../lib/motion';
+import { animate, createMotionPath, createDrawable, isReducedMotion } from '../../animations';
 
 interface TraceLayer {
   elements: SVGPathElement[];

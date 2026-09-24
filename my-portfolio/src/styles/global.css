@@ -1,6 +1,6 @@
 /* ==========================================================
    DESIGN SYSTEM — PRECISION ENGINEERING PORTFOLIO
-   Naveen Shaji George · Robotics & Autonomous Systems Engineer
+   Naveen Shaji George · Robotics and Automation Engineer
    Philosophy: Machined Metal + Engineering Laboratory + PCB Hardware
    Palette: Graphite + Warm White + Muted Brass + Technical Signal Green
    ========================================================== */
@@ -599,5 +599,139 @@ p  { color: var(--text-secondary); line-height: 1.7; }
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================
+   GLOBAL IMAGE PRESENTATION SYSTEM (§1-29 SPEC)
+   "SHOW THE IMAGE — DON'T CUT THE IMAGE"
+   Default for content/engineering images: contain & natural aspect ratio
+   ========================================================== */
+
+/* Universal Image Presentation Rules */
+.img-frame {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, #171C26 0%, #0F131C 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+/* Natural aspect ratio: container adapts to image dimensions */
+.img-natural, .img-variant-natural {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Contained presentation: complete image visible inside bounding frame (certificates, schematics, full PCBs) */
+.img-contain, .img-variant-contain {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Controlled cover presentation: fills the container without empty margins for cards, editorial and hero visuals */
+.img-cover, .img-variant-cover, .img-cover-controlled {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Intentional focal point utilities to prevent awkward cropping */
+.focal-top { object-position: center top !important; }
+.focal-bottom { object-position: center bottom !important; }
+.focal-center { object-position: center center !important; }
+.focal-portrait { object-position: center 8% !important; }
+.focal-vehicle-car { object-position: center 38% !important; }
+.focal-robotics { object-position: center 28% !important; }
+
+/* Interactive click-to-expand indication */
+.img-expandable {
+  cursor: zoom-in;
+  transition: transform 0.25s var(--ease-standard), filter 0.25s var(--ease-standard);
+}
+
+.img-expandable:hover {
+  filter: brightness(1.04) contrast(1.02);
+}
+
+/* Dark Engineering Canvas for Hardware / Vehicle / Robot Artifacts */
+.technical-canvas {
+  background: radial-gradient(circle at center, #181E2A 0%, #0E121A 100%);
+  border: 1px solid rgba(184, 146, 74, 0.25);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Light / Warm Paper Canvas for Documents & Schematics */
+.document-canvas {
+  background: #F3EFE6;
+  border: 1px solid rgba(20, 24, 34, 0.12);
+}
+
+/* ==========================================================
+   PRECISION ENGINEERING CUSTOM CURSOR
+   Desktop-only; bypassed on mobile, touch, and reduced-motion
+   ========================================================== */
+.portfolio-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.cursor-dot {
+  position: fixed;
+  top: -2.5px;
+  left: -2.5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: -14px;
+  left: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(184, 146, 74, 0.45);
+  background: rgba(184, 146, 74, 0.04);
+  pointer-events: none;
+  will-change: transform;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.cursor-ring.is-hovered {
+  border-color: rgba(184, 146, 74, 0.9);
+  background: rgba(184, 146, 74, 0.09);
+}
+
+@media (pointer: coarse), (max-width: 1024px) {
+  .portfolio-cursor {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-cursor {
+    display: none !important;
   }
 }

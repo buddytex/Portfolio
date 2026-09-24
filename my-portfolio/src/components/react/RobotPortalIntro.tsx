@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { animate, isReducedMotion } from '../../lib/motion';
+import { animate, isReducedMotion } from '../../animations';
 
 export interface RobotPortalIntroProps {
   onComplete?: () => void;

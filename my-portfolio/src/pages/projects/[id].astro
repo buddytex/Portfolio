@@ -22,6 +22,7 @@ const { project } = Astro.props;
 <Layout
   title={`${project.title} — Architectural Case Study | Naveen Shaji George`}
   description={project.summary}
+  showSpine={false}
 >
   <Navigation />
 
@@ -36,7 +37,7 @@ const { project } = Astro.props;
         <div class="project-meta-pill mono">
           <span>{project.index}</span>
           <span>/</span>
-          <span>04</span>
+          <span>{String(projects.filter(p => p.featured).length).padStart(2, '0')}</span>
         </div>
       </div>
 
@@ -63,12 +64,20 @@ const { project } = Astro.props;
       </header>
 
       <!-- Primary Hardware/Architecture Hero Visual Stage -->
-      <div class="project-hero-visual" transition:name={`project-visual-${project.id}`}>
+      <div 
+        class="project-hero-visual" 
+        transition:name={`project-visual-${project.id}`}
+        data-lightbox={project.imagePath}
+        data-title={project.title}
+        data-badge="PROJECT HERO ARTIFACT"
+        data-caption={project.subtitle}
+        title={project.imagePath ? "Click to view full uncropped photograph" : undefined}
+      >
         {project.imagePath ? (
           <img
             src={project.imagePath}
             alt={`${project.title} Architecture Schematic`}
-            class="project-hero-img"
+            class="project-hero-img img-expandable"
             loading="eager"
           />
         ) : project.id === 'hospital-amr' ? (
@@ -123,6 +132,24 @@ const { project } = Astro.props;
         <p class="summary-lead">{project.summary}</p>
       </section>
 
+      {project.attribution && (
+        <aside class="project-attribution-panel" aria-label="Open-Source Attribution">
+          <div class="attr-panel-header">
+            <span class="attr-pip" aria-hidden="true"></span>
+            <span class="attr-kicker mono">[ OPEN-SOURCE PLATFORM REFERENCE &amp; EXPERIMENTAL STUDY ]</span>
+          </div>
+          <div class="attr-panel-body">
+            <p class="attr-details">
+              <strong>Source Framework:</strong> {project.attribution.project} developed by <a href={project.attribution.website} target="_blank" rel="noopener noreferrer" class="attr-link">{project.attribution.source}</a>. 
+              Repository: <a href={project.attribution.repository} target="_blank" rel="noopener noreferrer" class="attr-link mono">{project.attribution.repository.replace('https://github.com/', '')}</a> · License: <span class="mono attr-license">{project.attribution.license}</span>.
+            </p>
+            <p class="attr-disclaimer">
+              <em>Note: This architectural study and simulation benchmarking was conducted utilizing the open-source HeRo Common platform. All platform hardware and simulation imagery are respectfully attributed to VeRLab / UFMG.</em>
+            </p>
+          </div>
+        </aside>
+      )}
+
       <!-- Two-Column Problem & Approach -->
       <div class="problem-approach-grid">
         <section class="case-section col-box">
@@ -135,6 +162,62 @@ const { project } = Astro.props;
           <p class="col-text">{project.approach}</p>
         </section>
       </div>
+
+      <!-- My Role & Personal Engineering Contributions -->
+      {project.personalContributions && project.personalContributions.length > 0 && (
+        <section class="case-section contributions-section">
+          <div class="section-kicker mono">
+            <span class="accent-glyph">⚡</span>
+            <span>MY ROLE &amp; DIRECT TECHNICAL CONTRIBUTIONS</span>
+          </div>
+          <div class="contributions-card">
+            <div class="contributions-lead mono">
+              <span>DESIGNED &amp; BUILT BY NAVEEN SHAJI GEORGE // {project.shortRole.toUpperCase()}</span>
+            </div>
+            <ul class="contributions-list">
+              {project.personalContributions.map((contrib) => (
+                <li class="contribution-item">
+                  <span class="contrib-bullet mono">▸</span>
+                  <span class="contrib-text">{contrib}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      <!-- Architectural Decisions & Engineering Constraints -->
+      {project.engineeringDecisions && project.engineeringDecisions.length > 0 && (
+        <section class="case-section decisions-section">
+          <div class="section-kicker mono">
+            <span class="accent-glyph">⚖</span>
+            <span>CRITICAL ARCHITECTURAL DECISIONS &amp; TRADE-OFFS</span>
+          </div>
+          <div class="decisions-grid">
+            {project.engineeringDecisions.map((decision, dIdx) => (
+              <div class="decision-card">
+                <span class="decision-num mono">DECISION 0{dIdx + 1}</span>
+                <p class="decision-text">{decision}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Skills & Disciplines Validated -->
+      {project.skillsUsed && project.skillsUsed.length > 0 && (
+        <section class="case-section skills-applied-section">
+          <div class="section-kicker mono">COMPETENCIES APPLIED &amp; VALIDATED</div>
+          <div class="skills-applied-chips mono">
+            {project.skillsUsed.map((skillName) => (
+              <a href="/#skills" class="skill-applied-chip" title="Inspect competency in Skills Network">
+                <span class="chip-dot"></span>
+                <span>{skillName}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       <!-- System Architecture Breakdown -->
       <section class="case-section architecture-section">
@@ -180,6 +263,114 @@ const { project } = Astro.props;
           </ul>
         </section>
       </div>
+
+      <!-- Physical Engineering Artifacts & Live Testing Dossier -->
+      {project.mediaGalleries && project.mediaGalleries.length > 0 && (
+        <section class="case-section dossier-section" id="engineeringDossier">
+          <div class="dossier-head">
+            <div class="dossier-eyebrow-wrap">
+              <span class="dossier-badge mono">[ EMPIRICAL PROOF ]</span>
+              <span class="dossier-pip" aria-hidden="true"></span>
+              <span class="dossier-count mono">{project.mediaGalleries.reduce((acc, g) => acc + g.items.length, 0)} ARTIFACTS VERIFIED</span>
+            </div>
+            <h2 class="dossier-title">Physical Hardware, Field Verification &amp; Testing Dossier</h2>
+            <p class="dossier-subtitle">
+              Authentic multi-discipline documentation, high-resolution hardware photography, and live execution videos from vehicle and lab testbeds.
+            </p>
+
+            <!-- Interactive Tab Selector -->
+            <div class="dossier-tabs" role="tablist" aria-label="Engineering Artifact Categories">
+              {project.mediaGalleries.map((gallery, gIdx) => (
+                <button
+                  type="button"
+                  class:list={['dossier-tab-btn mono', { active: gIdx === 0 }]}
+                  id={`tab-btn-${gallery.id}`}
+                  data-gallery-id={gallery.id}
+                  role="tab"
+                  aria-selected={gIdx === 0 ? "true" : "false"}
+                  aria-controls={`panel-${gallery.id}`}
+                >
+                  <span class="tab-idx">0{gIdx + 1}</span>
+                  <span class="tab-title">{gallery.title}</span>
+                  <span class="tab-count mono">({gallery.items.length})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Gallery Panels -->
+          <div class="dossier-panels">
+            {project.mediaGalleries.map((gallery, gIdx) => (
+              <div
+                class:list={['dossier-panel', { active: gIdx === 0 }]}
+                id={`panel-${gallery.id}`}
+                role="tabpanel"
+                aria-labelledby={`tab-btn-${gallery.id}`}
+                hidden={gIdx !== 0}
+              >
+                <div class="dossier-grid">
+                  {gallery.items.map((item, itemIdx) => (
+                    <article 
+                      class="artifact-tile" 
+                      data-item-type={item.type}
+                      data-lightbox={item.type !== 'video' ? item.path : undefined}
+                      data-title={item.title}
+                      data-caption={item.caption}
+                      data-badge={item.badge || `ARTIFACT 0${itemIdx + 1}`}
+                      title={item.type !== 'video' ? "Click to view full uncropped photograph" : undefined}
+                    >
+                      <div class="tile-media-stage">
+                        {item.type === 'video' ? (
+                          <div class="video-container">
+                            <video
+                              src={item.path}
+                              poster={item.poster}
+                              controls
+                              preload="metadata"
+                              playsinline
+                              muted
+                              class="artifact-video"
+                            ></video>
+                            <span class="video-pill mono">
+                              <span class="video-pulse">●</span>
+                              <span>LIVE TEST VIDEO</span>
+                            </span>
+                          </div>
+                        ) : (() => {
+                          const isTechnicalDoc = (item.badge && /(CERT|DOC|SCHEMATIC|CAD|LAYER|DIAGRAM|PCB)/i.test(item.badge)) ||
+                                                 (item.title && /(certificate|schematic|diagram|drawing|gerber)/i.test(item.title)) ||
+                                                 (item.path && /(certificate|schematic|diagram|drawing)/i.test(item.path));
+                          return (
+                            <div class:list={["image-container", { "is-contain-box": isTechnicalDoc, "is-cover-box": !isTechnicalDoc }]}>
+                              <img
+                                src={item.path}
+                                alt={item.title}
+                                class:list={["artifact-img", isTechnicalDoc ? "img-contain" : "img-cover"]}
+                                loading="lazy"
+                              />
+                              {item.badge && (
+                                <span class="tile-badge mono">{item.badge}</span>
+                              )}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                      <div class="tile-caption-block">
+                        <div class="tile-meta-row">
+                          <span class="tile-num mono">ARTIFACT 0{itemIdx + 1}</span>
+                          <span class="tile-type mono">[{item.type.toUpperCase()}]</span>
+                        </div>
+                        <h4 class="tile-title">{item.title}</h4>
+                        {item.caption && <p class="tile-caption">{item.caption}</p>}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <!-- Research Notebook: Failures, Physical Noise & Iterative Resolutions -->
       {project.failuresAndIterations && project.failuresAndIterations.length > 0 && (
@@ -383,6 +574,137 @@ const { project } = Astro.props;
     line-height: 1.7;
   }
 
+  /* Contributions Section */
+  .contributions-section {
+    background: var(--surface);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--r-md);
+    padding: var(--space-8);
+    box-shadow: 0 8px 24px -8px rgba(184, 146, 74, 0.15);
+  }
+
+  .accent-glyph {
+    color: var(--accent-primary);
+    margin-right: 0.35rem;
+  }
+
+  .contributions-lead {
+    font-size: var(--text-2xs);
+    color: var(--accent-primary);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .contributions-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contribution-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  .contrib-bullet {
+    color: var(--accent-primary);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Architectural Decisions Grid */
+  .decisions-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-8);
+  }
+
+  .decisions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .decision-card {
+    background: var(--surface-dim);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .decision-num {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    color: var(--accent-primary);
+    letter-spacing: 0.06em;
+  }
+
+  .decision-text {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Skills Applied Section */
+  .skills-applied-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-6) var(--space-8);
+  }
+
+  .skills-applied-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-3);
+  }
+
+  .skill-applied-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 5px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    font-size: 0.72rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+
+  .skill-applied-chip:hover {
+    border-color: var(--accent-primary);
+    background: var(--surface-elevated);
+    color: var(--accent-primary);
+    transform: translateY(-1px);
+  }
+
+  .chip-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+  }
+
   /* Architecture Flow */
   .architecture-section {
     background: var(--surface);
@@ -512,27 +834,48 @@ const { project } = Astro.props;
   /* Hero Hardware/Architecture Visual Stage (Shared Element Transition) */
   .project-hero-visual {
     width: 100%;
-    min-height: 280px;
-    max-height: 520px;
-    background: #EEEAE3;
-    border: 1px solid var(--border);
+    min-height: 340px;
+    max-height: 600px;
+    background: radial-gradient(circle at center, #191E2B 0%, #0F131D 100%);
+    border: 1px solid rgba(184, 146, 74, 0.25);
     border-radius: var(--r-card);
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--shadow-resting);
+    box-shadow: var(--shadow-resting), inset 0 0 40px rgba(0, 0, 0, 0.45);
     margin-top: var(--space-4);
     margin-bottom: var(--space-6);
+    position: relative;
+    cursor: zoom-in;
+  }
+
+  .project-hero-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
   }
 
   .project-hero-img {
     width: 100%;
     height: 100%;
-    max-height: 520px;
+    max-height: 640px;
     object-fit: cover;
-    object-position: center;
-    filter: brightness(0.96) contrast(1.04);
+    object-position: center 35%;
+    filter: brightness(0.98) contrast(1.04);
+    position: relative;
+    z-index: 1;
+    transition: transform 0.4s var(--ease-standard);
+  }
+
+  .project-hero-visual:hover .project-hero-img {
+    transform: scale(1.015);
   }
 
   .project-hardware-blueprint {
@@ -637,6 +980,364 @@ const { project } = Astro.props;
     font-weight: 600;
   }
 
+  /* ------------------------------------------------------------
+     Engineering Evidence Dossier Styles
+     ------------------------------------------------------------ */
+  .dossier-section {
+    background: #FFFFFF;
+    border: 1px solid rgba(20, 24, 34, 0.1);
+    border-radius: var(--r-md, 8px);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    box-shadow: 0 2px 12px rgba(20, 24, 34, 0.04);
+  }
+
+  .dossier-head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(20, 24, 34, 0.08);
+    padding-bottom: 1.5rem;
+  }
+
+  .dossier-eyebrow-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .dossier-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #8C6A28;
+    letter-spacing: 0.08em;
+  }
+
+  .dossier-pip {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #B8924A;
+  }
+
+  .dossier-count {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-ink-muted, #767571);
+    letter-spacing: 0.06em;
+  }
+
+  .dossier-title {
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    font-weight: 800;
+    color: var(--color-ink, #141822);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .dossier-subtitle {
+    font-size: 0.92rem;
+    color: var(--color-ink-light, #5A5955);
+    line-height: 1.55;
+    margin: 0;
+    max-width: 800px;
+  }
+
+  .dossier-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .dossier-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 7px 14px;
+    background: var(--color-paper, #F7F5F0);
+    border: 1px solid rgba(20, 24, 34, 0.12);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-ink-light, #484743);
+    cursor: pointer;
+    transition: all 0.22s ease;
+  }
+
+  .dossier-tab-btn:hover {
+    border-color: #B8924A;
+    color: var(--color-ink, #141822);
+  }
+
+  .dossier-tab-btn.active {
+    background: #141822;
+    color: #F7F5F0;
+    border-color: #141822;
+  }
+
+  .dossier-tab-btn.active .tab-idx,
+  .dossier-tab-btn.active .tab-count {
+    color: #E5C378;
+  }
+
+  .tab-idx {
+    color: #8C6A28;
+    font-weight: 700;
+  }
+
+  .tab-count {
+    opacity: 0.7;
+    font-size: 0.65rem;
+  }
+
+  .dossier-panel {
+    display: none;
+  }
+
+  .dossier-panel.active {
+    display: block;
+    animation: fadeIn 0.35s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dossier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .artifact-tile {
+    background: var(--surface, #FFFFFF);
+    border: 1px solid rgba(20, 24, 34, 0.09);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.2s ease;
+    cursor: zoom-in;
+  }
+
+  .artifact-tile[data-item-type="video"] {
+    cursor: default;
+  }
+
+  .artifact-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(20, 24, 34, 0.08);
+    border-color: rgba(184, 146, 74, 0.45);
+  }
+
+  .tile-media-stage {
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+    height: 290px;
+    background: radial-gradient(circle at center, #191E2B 0%, #0E121A 100%);
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .artifact-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+
+  .artifact-img.img-cover {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .artifact-img.img-contain {
+    object-fit: contain;
+    object-position: center;
+    padding: 10px;
+    background: radial-gradient(circle at center, #151923 0%, #0B0E14 100%);
+  }
+
+  .artifact-tile:hover .artifact-img {
+    transform: scale(1.02);
+  }
+
+  .tile-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(20, 24, 34, 0.85);
+    color: #E5C378;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(184, 146, 74, 0.3);
+    font-size: 0.58rem;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+  }
+
+  .artifact-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .video-pill {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(20, 24, 34, 0.85);
+    color: #FFFFFF;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    pointer-events: none;
+  }
+
+  .video-pulse {
+    color: #EF4444;
+    font-size: 0.6rem;
+    animation: blink 1.2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .tile-caption-block {
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+  }
+
+  .tile-meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: var(--color-ink-muted, #767571);
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+
+  .tile-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-ink, #141822);
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  .tile-caption {
+    font-size: 0.78rem;
+    color: var(--color-ink-light, #5A5955);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Open-Source Attribution Banner */
+  .project-attribution-panel {
+    background: rgba(184, 146, 74, 0.04);
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    border-radius: var(--r-card, 6px);
+    padding: var(--space-4) var(--space-5);
+    margin-bottom: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .attr-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .attr-pip {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #B8924A;
+    box-shadow: 0 0 6px rgba(184, 146, 74, 0.5);
+  }
+
+  .attr-kicker {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: #8C6A28;
+    letter-spacing: 0.08em;
+  }
+
+  .attr-panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .attr-details {
+    font-size: var(--text-sm);
+    color: var(--color-ink, #141822);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .attr-link {
+    color: #8C6A28;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.15s ease;
+  }
+
+  .attr-link:hover {
+    color: var(--color-ink, #141822);
+  }
+
+  .attr-license {
+    background: rgba(20, 24, 34, 0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: var(--text-xs);
+  }
+
+  .attr-disclaimer {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted, #767571);
+    line-height: 1.5;
+    margin: 0;
+  }
+
   @media (max-width: 900px) {
     .problem-approach-grid,
     .stack-grid {
@@ -647,5 +1348,54 @@ const { project } = Astro.props;
       grid-template-columns: 1fr;
       gap: var(--space-2);
     }
+
+    .dossier-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
+
+<script>
+  import { initProjectDetailAnimation } from '../../animations';
+
+  let detailCleanup: (() => void) | null = null;
+
+  function initDossierTabs() {
+    const tabs = document.querySelectorAll<HTMLButtonElement>('.dossier-tab-btn');
+    const panels = document.querySelectorAll<HTMLElement>('.dossier-panel');
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.dataset.galleryId;
+        tabs.forEach((t) => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach((p) => {
+          p.classList.remove('active');
+          p.hidden = true;
+        });
+
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        const activePanel = document.getElementById(`panel-${targetId}`);
+        if (activePanel) {
+          activePanel.classList.add('active');
+          activePanel.hidden = false;
+        }
+      });
+    });
+  }
+
+  function setupPage() {
+    if (detailCleanup) {
+      detailCleanup();
+      detailCleanup = null;
+    }
+    initDossierTabs();
+    detailCleanup = initProjectDetailAnimation();
+  }
+
+  document.addEventListener('DOMContentLoaded', setupPage);
+  document.addEventListener('astro:page-load', setupPage);
+</script>

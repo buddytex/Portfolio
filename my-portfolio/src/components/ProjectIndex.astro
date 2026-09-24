@@ -1,10 +1,13 @@
 ---
 // ProjectIndex Component — Interactive Robotics Engineering Project Index
-// Presents 4 authentic engineering systems in an interactive, responsive grid
-// Hover: subtle elevation, image/diagram scale, typography accent, telemetry reveal
-// Click: smooth expansion before navigating to dedicated /projects/[id] route
+// Visual-Dominant Editorial Layout: 75–80% image area, 20–25% metadata
+// Asymmetrical layout: Flagship monumental aBAJA card, balanced featured duo, supporting trio
+// Hover: subtle zoom, dark glass overlay with role, key technical areas, and inspect CTA
 import { projects } from '../data/projects';
 const featuredProjects = projects.filter(p => p.featured);
+const bajaProjects = featuredProjects.filter(p => p.id === 'baja-2025' || p.id === 'baja-2026');
+const duoProjects = featuredProjects.filter(p => p.id === 'hospital-amr' || p.id === 'smart-cctv');
+const trioProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.id === 'surgical-robotics' || p.id === 'swarm-robotics');
 ---
 
 <section id="work" class="section work-section">
@@ -14,138 +17,334 @@ const featuredProjects = projects.filter(p => p.featured);
       <div class="header-kicker mono">[ 03 // SELECTED SYSTEMS ]</div>
       <h2 class="section-title">Autonomous Machines Built for the <span class="accent">Physical World</span></h2>
       <p class="section-lead">
-        Physical autonomous platforms, high-throughput perception pipelines, custom vehicle ECUs, and real-time control algorithms.
-        Each project represents verified systems engineered to solve physical constraints.
+        Physical autonomous platforms, high-throughput edge perception, custom vehicle ECUs, and real-time control algorithms.
+        Engineered to operate reliably under real physical constraints.
       </p>
     </div>
 
-    <!-- Interactive Projects Grid (2x2 Balanced Layout) -->
-    <div class="projects-grid" id="featuredGrid" role="feed" aria-label="Selected Robotics Projects">
-      {featuredProjects.map((project) => (
-        <article class="project-card" id={`card-${project.id}`} data-project-id={project.id}>
-          <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
-            
-            <!-- Hardware Photo / Blueprint Artifact Stage -->
-            <div class="card-visual-wrap" transition:name={`project-visual-${project.id}`}>
-              <div class="card-media-stage">
-                {project.imagePath ? (
-                  <img
-                    src={project.imagePath}
-                    alt={`${project.title} Architecture Schematic`}
-                    class="project-real-img"
-                    loading="lazy"
-                  />
-                ) : project.id === 'hospital-amr' ? (
-                  <div class="project-hardware-blueprint" aria-label="LiDAR SLAM Navigation Testbed Schematic">
-                    <!-- Laser Radar Scan Rings -->
-                    <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
-                      <circle cx="190" cy="110" r="35" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.4" />
-                      <circle cx="190" cy="110" r="75" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.3" />
-                      <circle cx="190" cy="110" r="105" stroke="#0EA5E9" stroke-width="1" opacity="0.2" />
-
-                      <!-- Mobile Robot Chassis Silhouette -->
-                      <rect x="175" y="95" width="30" height="30" rx="4" fill="#0EA5E9" fill-opacity="0.25" stroke="#0EA5E9" stroke-width="1.5" />
-                      <circle cx="190" cy="110" r="4" fill="#38BDF8" />
-                      <!-- Heading Vector -->
-                      <path d="M190 110 L190 65" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" />
-                      <polygon points="190,58 186,67 194,67" fill="#38BDF8" />
-
-                      <!-- Wall Corridors & Laser Hits -->
-                      <line x1="40" y1="30" x2="340" y2="30" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
-                      <line x1="40" y1="190" x2="340" y2="190" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
-
-                      <!-- Laser Hit Points -->
-                      <g fill="#38BDF8" opacity="0.8">
-                        <circle cx="80" cy="30" r="2" /><circle cx="130" cy="30" r="2" /><circle cx="240" cy="30" r="2" /><circle cx="300" cy="30" r="2" />
-                        <circle cx="90" cy="190" r="2" /><circle cx="150" cy="190" r="2" /><circle cx="230" cy="190" r="2" /><circle cx="290" cy="190" r="2" />
-                      </g>
-
-                      <!-- Laser Scan Fan Arc -->
-                      <path d="M190 110 L110 40 M190 110 L150 32 M190 110 L230 32 M190 110 L270 40" stroke="#0EA5E9" stroke-width="0.8" opacity="0.45" />
-                      <text x="190" y="145" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">NAV2 COSTMAP // 360° PLANAR LIDAR</text>
-                    </svg>
-                  </div>
-                ) : (
-                  <div class="project-hardware-blueprint" aria-label="Decentralized Swarm Robotics Mesh Schematic">
-                    <!-- Decentralized Swarm Mesh Topology -->
-                    <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
-                      <!-- Peer-to-Peer Links -->
-                      <line x1="90" y1="70" x2="190" y2="50" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
-                      <line x1="190" y1="50" x2="290" y2="80" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
-                      <line x1="90" y1="70" x2="140" y2="150" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
-                      <line x1="140" y1="150" x2="240" y2="160" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
-                      <line x1="240" y1="160" x2="290" y2="80" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
-                      <line x1="190" y1="50" x2="240" y2="160" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.4" />
-
-                      <!-- Swarm Nodes -->
-                      <g fill="#10B981">
-                        <circle cx="90" cy="70" r="7" /><circle cx="190" cy="50" r="7" /><circle cx="290" cy="80" r="7" />
-                        <circle cx="140" cy="150" r="7" /><circle cx="240" cy="160" r="7" />
-                      </g>
-                      <g fill="#FFFFFF" font-size="7" font-family="monospace" text-anchor="middle" font-weight="bold">
-                        <text x="90" y="73">01</text><text x="190" y="53">02</text><text x="290" y="83">03</text>
-                        <text x="140" y="153">04</text><text x="240" y="163">05</text>
-                      </g>
-
-                      <!-- Consensus Potential Vector -->
-                      <circle cx="190" cy="105" r="4" fill="#F59E0B" />
-                      <circle cx="190" cy="105" r="16" stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2" opacity="0.7" />
-                      <text x="190" y="130" fill="#FBBF24" font-size="7" font-family="monospace" text-anchor="middle">VIRTUAL TARGET ATTRACTOR</text>
-                      <text x="190" y="195" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">ESP32 AD-HOC TCP/IP MESH // CONSENSUS</text>
-                    </svg>
-                  </div>
-                )}
+    <!-- Editorial Projects Layout -->
+    <div class="editorial-projects-wrap" id="featuredGrid" role="feed" aria-label="Selected Engineering Projects">
+      
+      <!-- 01 & 02. DUAL BAJA SAEINDIA CAMPAIGN ROW: 2025 (Car A12) & 2026 (Car A18) -->
+      <div class="baja-grid-row">
+        {bajaProjects.map((project) => (
+          <article 
+            class="project-card card-baja" 
+            id={`card-${project.id}`} 
+            data-project-id={project.id}
+          >
+            <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
               
-                <!-- Top index and status badge -->
-                <div class="card-visual-top">
-                  <span class="visual-index mono">{project.index}</span>
-                  <span class="visual-status tag">{project.status}</span>
+              <!-- Dominant Visual Stage (75-80% area) -->
+              <div class="card-visual-wrap baja-visual" transition:name={`project-visual-${project.id}`}>
+                <div class="card-media-stage">
+                  <div class="project-img-dual">
+                    <img
+                      src={project.imagePath}
+                      alt={`${project.title} Primary Artifact`}
+                      class="project-real-img img-primary"
+                      loading="eager"
+                      decoding="async"
+                    />
+                    {project.secondaryImage && (
+                      <img
+                        src={project.secondaryImage}
+                        alt={`${project.title} Secondary Artifact`}
+                        class="project-real-img img-secondary"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    )}
+                  </div>
+
+                  <!-- Visual Status Badges & Hardware Stamp -->
+                  <div class="card-visual-top">
+                    <span class="visual-index mono">{project.index} // {project.year === '2025' ? 'AIR 7 NATIONAL' : 'AIR 11 NATIONAL'}</span>
+                    <span class="visual-status tag status-flagship">{project.status}</span>
+                  </div>
+
+                  <!-- Precision Corner Hardware Ticks -->
+                  <div class="card-corner corner-tl" aria-hidden="true"></div>
+                  <div class="card-corner corner-tr" aria-hidden="true"></div>
+                  <div class="card-corner corner-bl" aria-hidden="true"></div>
+                  <div class="card-corner corner-br" aria-hidden="true"></div>
+
+                  <!-- Hover Glassmorphic Overlay: Revealed on intentional hover -->
+                  <div class="card-hover-overlay" aria-hidden="true">
+                    <div class="hover-overlay-content">
+                      <div class="hover-header-row mono">
+                        <span class="hover-category">{project.domain.split('/')[0].trim()}</span>
+                        <span class="hover-year">{project.year}</span>
+                      </div>
+                      <h4 class="hover-title">{project.title}</h4>
+                      <div class="hover-role-tag mono">
+                        <span class="role-icon">⚡</span>
+                        <span>{project.shortRole}</span>
+                      </div>
+                      <div class="hover-areas-list mono">
+                        {project.keyAreas.slice(0, 4).map((area) => (
+                          <span class="area-chip">{area}</span>
+                        ))}
+                      </div>
+                      <div class="hover-cta-row">
+                        <span class="inspect-btn mono">INSPECT CASE STUDY ↗</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                <!-- Subtle corner ticks for hardware precision feel -->
-                <div class="card-corner corner-tl" aria-hidden="true"></div>
-                <div class="card-corner corner-tr" aria-hidden="true"></div>
-                <div class="card-corner corner-bl" aria-hidden="true"></div>
-                <div class="card-corner corner-br" aria-hidden="true"></div>
               </div>
-            </div>
 
-            <!-- Content Area -->
-            <div class="card-content">
-              <div class="card-header">
-                <div class="card-domain-row mono">
-                  <span class="card-domain">{project.domain.split('/')[0].trim()}</span>
-                  <span class="card-year">{project.year}</span>
+              <!-- Resting Card Footer: Clean, Minimal, Non-Bloated (20-25% area) -->
+              <div class="card-footer-minimal">
+                <div class="footer-primary-col">
+                  <div class="card-domain-row mono">
+                    <span class="card-domain">{project.domain.split('/')[0].trim()}</span>
+                    <span class="card-year mono">{project.year}</span>
+                  </div>
+                  <h3 class="card-title" transition:name={`project-title-${project.id}`}>{project.title}</h3>
+                  <div class="card-subtitle mono">{project.subtitle}</div>
                 </div>
-                <h3 class="card-title" transition:name={`project-title-${project.id}`}>{project.title}</h3>
-                <div class="card-subtitle mono">{project.subtitle}</div>
-              </div>
-
-              <p class="card-summary">{project.summary}</p>
-
-              <!-- Hardware / Software Tags -->
-              <div class="card-tags">
-                {project.softwareStack.slice(0, 3).map((tech) => (
-                  <span class="tag tech-tag mono">{tech}</span>
-                ))}
-                {project.hardwareStack.slice(0, 2).map((hw) => (
-                  <span class="tag hw-tag mono">{hw}</span>
-                ))}
-              </div>
-
-              <!-- Action Link & Telemetry Reveal -->
-              <div class="card-footer">
-                <div class="card-cta">
-                  <span>Explore system architecture</span>
-                  <span class="cta-arrow" aria-hidden="true">→</span>
+                <div class="footer-secondary-col">
+                  <span class="role-badge mono">{project.shortRole}</span>
+                  <div class="card-arrow-circle" aria-hidden="true">→</div>
                 </div>
-                <span class="card-inspect-pill mono">INSPECT CASE STUDY ↗</span>
               </div>
-            </div>
 
-          </a>
-        </article>
-      ))}
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <!-- 02. BALANCED FEATURED DUO: Smart CCTV & Hospital AMR -->
+      <div class="duo-grid-row">
+        {duoProjects.map((project) => (
+          <article 
+            class="project-card card-duo" 
+            id={`card-${project.id}`} 
+            data-project-id={project.id}
+          >
+            <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
+              
+              <!-- Dominant Visual Stage (75-80% area) -->
+              <div class="card-visual-wrap duo-visual" transition:name={`project-visual-${project.id}`}>
+                <div class="card-media-stage">
+                  {project.imagePath ? (
+                    <div class="project-img-dual">
+                      <img
+                        src={project.imagePath}
+                        alt={`${project.title} Primary Artifact`}
+                        class="project-real-img img-primary"
+                        loading="eager"
+                        decoding="async"
+                      />
+                      {project.secondaryImage && (
+                        <img
+                          src={project.secondaryImage}
+                          alt={`${project.title} Secondary Artifact`}
+                          class="project-real-img img-secondary"
+                          loading="eager"
+                          decoding="async"
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div class="project-hardware-blueprint" aria-label="LiDAR SLAM Navigation Testbed Schematic">
+                      <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
+                        <circle cx="190" cy="110" r="35" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.4" />
+                        <circle cx="190" cy="110" r="75" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.3" />
+                        <circle cx="190" cy="110" r="105" stroke="#0EA5E9" stroke-width="1" opacity="0.2" />
+                        <rect x="175" y="95" width="30" height="30" rx="4" fill="#0EA5E9" fill-opacity="0.25" stroke="#0EA5E9" stroke-width="1.5" />
+                        <circle cx="190" cy="110" r="4" fill="#38BDF8" />
+                        <path d="M190 110 L190 65" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" />
+                        <polygon points="190,58 186,67 194,67" fill="#38BDF8" />
+                        <line x1="40" y1="30" x2="340" y2="30" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
+                        <line x1="40" y1="190" x2="340" y2="190" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
+                        <g fill="#38BDF8" opacity="0.8">
+                          <circle cx="80" cy="30" r="2" /><circle cx="130" cy="30" r="2" /><circle cx="240" cy="30" r="2" /><circle cx="300" cy="30" r="2" />
+                          <circle cx="90" cy="190" r="2" /><circle cx="150" cy="190" r="2" /><circle cx="230" cy="190" r="2" /><circle cx="290" cy="190" r="2" />
+                        </g>
+                        <path d="M190 110 L110 40 M190 110 L150 32 M190 110 L230 32 M190 110 L270 40" stroke="#0EA5E9" stroke-width="0.8" opacity="0.45" />
+                        <text x="190" y="145" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">NAV2 COSTMAP // 360° PLANAR LIDAR</text>
+                      </svg>
+                    </div>
+                  )}
+
+                  <!-- Top Index & Status Badges -->
+                  <div class="card-visual-top">
+                    <span class="visual-index mono">{project.index}</span>
+                    <span class="visual-status tag">{project.status}</span>
+                  </div>
+
+                  <!-- Precision Corner Ticks -->
+                  <div class="card-corner corner-tl" aria-hidden="true"></div>
+                  <div class="card-corner corner-tr" aria-hidden="true"></div>
+                  <div class="card-corner corner-bl" aria-hidden="true"></div>
+                  <div class="card-corner corner-br" aria-hidden="true"></div>
+
+                  <!-- Hover Glassmorphic Overlay -->
+                  <div class="card-hover-overlay" aria-hidden="true">
+                    <div class="hover-overlay-content">
+                      <div class="hover-header-row mono">
+                        <span class="hover-category">{project.domain.split('/')[0].trim()}</span>
+                        <span class="hover-year">{project.year}</span>
+                      </div>
+                      <h4 class="hover-title">{project.title}</h4>
+                      <div class="hover-role-tag mono">
+                        <span class="role-icon">⚡</span>
+                        <span>{project.shortRole}</span>
+                      </div>
+                      <div class="hover-areas-list mono">
+                        {project.keyAreas.slice(0, 3).map((area) => (
+                          <span class="area-chip">{area}</span>
+                        ))}
+                      </div>
+                      <div class="hover-cta-row">
+                        <span class="inspect-btn mono">INSPECT CASE STUDY ↗</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Resting Card Footer -->
+              <div class="card-footer-minimal">
+                <div class="footer-primary-col">
+                  <div class="card-domain-row mono">
+                    <span class="card-domain">{project.domain.split('/')[0].trim()}</span>
+                    <span class="card-year mono">{project.year}</span>
+                  </div>
+                  <h3 class="card-title" transition:name={`project-title-${project.id}`}>{project.title}</h3>
+                  <div class="card-subtitle mono">{project.subtitle}</div>
+                </div>
+                <div class="footer-secondary-col">
+                  <span class="role-badge mono">{project.shortRole}</span>
+                  <div class="card-arrow-circle" aria-hidden="true">→</div>
+                </div>
+              </div>
+
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <!-- 03. SUPPORTING SYSTEMS TRIO: RailGuard AI, Surgical Robotics, Swarm Robotics -->
+      <div class="trio-grid-row">
+        {trioProjects.map((project) => (
+          <article 
+            class="project-card card-trio" 
+            id={`card-${project.id}`} 
+            data-project-id={project.id}
+          >
+            <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
+              
+              <!-- Dominant Visual Stage (75-80% area) -->
+              <div class="card-visual-wrap trio-visual" transition:name={`project-visual-${project.id}`}>
+                <div class="card-media-stage">
+                  {project.imagePath ? (
+                    <div class="project-img-dual">
+                      <img
+                        src={project.imagePath}
+                        alt={`${project.title} Primary Artifact`}
+                        class="project-real-img img-primary"
+                        loading="eager"
+                        decoding="async"
+                      />
+                      {project.secondaryImage && (
+                        <img
+                          src={project.secondaryImage}
+                          alt={`${project.title} Secondary Artifact`}
+                          class="project-real-img img-secondary"
+                          loading="eager"
+                          decoding="async"
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div class="project-hardware-blueprint" aria-label="Decentralized Swarm Robotics Mesh Schematic">
+                      <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
+                        <line x1="90" y1="70" x2="190" y2="50" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+                        <line x1="190" y1="50" x2="290" y2="80" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+                        <line x1="90" y1="70" x2="140" y2="150" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+                        <line x1="140" y1="150" x2="240" y2="160" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+                        <line x1="240" y1="160" x2="290" y2="80" stroke="#0EA5E9" stroke-width="1.2" stroke-dasharray="2 2" opacity="0.6" />
+                        <g fill="#10B981">
+                          <circle cx="90" cy="70" r="7" /><circle cx="190" cy="50" r="7" /><circle cx="290" cy="80" r="7" />
+                          <circle cx="140" cy="150" r="7" /><circle cx="240" cy="160" r="7" />
+                        </g>
+                        <g fill="#FFFFFF" font-size="7" font-family="monospace" text-anchor="middle" font-weight="bold">
+                          <text x="90" y="73">01</text><text x="190" y="53">02</text><text x="290" y="83">03</text>
+                          <text x="140" y="153">04</text><text x="240" y="163">05</text>
+                        </g>
+                        <circle cx="190" cy="105" r="4" fill="#F59E0B" />
+                        <circle cx="190" cy="105" r="16" stroke="#F59E0B" stroke-width="1" stroke-dasharray="2 2" opacity="0.7" />
+                        <text x="190" y="130" fill="#FBBF24" font-size="7" font-family="monospace" text-anchor="middle">VIRTUAL TARGET ATTRACTOR</text>
+                        <text x="190" y="195" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">ESP32 AD-HOC TCP/IP MESH // CONSENSUS</text>
+                      </svg>
+                    </div>
+                  )}
+
+                  <!-- Top Index & Badges -->
+                  <div class="card-visual-top">
+                    <span class="visual-index mono">{project.index}</span>
+                    {project.attribution ? (
+                      <span class="card-attr-badge">OPEN-SOURCE STUDY</span>
+                    ) : (
+                      <span class="visual-status tag">{project.status}</span>
+                    )}
+                  </div>
+
+                  <!-- Precision Corner Ticks -->
+                  <div class="card-corner corner-tl" aria-hidden="true"></div>
+                  <div class="card-corner corner-tr" aria-hidden="true"></div>
+                  <div class="card-corner corner-bl" aria-hidden="true"></div>
+                  <div class="card-corner corner-br" aria-hidden="true"></div>
+
+                  <!-- Hover Glassmorphic Overlay -->
+                  <div class="card-hover-overlay" aria-hidden="true">
+                    <div class="hover-overlay-content">
+                      <div class="hover-header-row mono">
+                        <span class="hover-category">{project.domain.split('/')[0].trim()}</span>
+                        <span class="hover-year">{project.year}</span>
+                      </div>
+                      <h4 class="hover-title">{project.title}</h4>
+                      <div class="hover-role-tag mono">
+                        <span class="role-icon">⚡</span>
+                        <span>{project.shortRole}</span>
+                      </div>
+                      <div class="hover-areas-list mono">
+                        {project.keyAreas.slice(0, 3).map((area) => (
+                          <span class="area-chip">{area}</span>
+                        ))}
+                      </div>
+                      <div class="hover-cta-row">
+                        <span class="inspect-btn mono">INSPECT CASE STUDY ↗</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Resting Card Footer -->
+              <div class="card-footer-minimal">
+                <div class="footer-primary-col">
+                  <div class="card-domain-row mono">
+                    <span class="card-domain">{project.domain.split('/')[0].trim()}</span>
+                    <span class="card-year mono">{project.year}</span>
+                  </div>
+                  <h3 class="card-title" transition:name={`project-title-${project.id}`}>{project.title}</h3>
+                  <div class="card-subtitle mono">{project.subtitle}</div>
+                </div>
+                <div class="footer-secondary-col">
+                  <span class="role-badge mono">{project.shortRole}</span>
+                  <div class="card-arrow-circle" aria-hidden="true">→</div>
+                </div>
+              </div>
+
+            </a>
+          </article>
+        ))}
+      </div>
+
     </div>
 
     <!-- All Projects Archive Action Banner -->
@@ -158,7 +357,7 @@ const featuredProjects = projects.filter(p => p.featured);
           </div>
           <h3 class="archive-heading">Explore All {projects.length} Engineering Projects</h3>
           <p class="archive-summary">
-            Including RailGuard AI track inspection, inverted pendulum control, and industrial AGV multi-sensor fusion testbeds.
+            Including inverted pendulum balance robotics, multi-sensor AGV EKF navigation, and real-time highway lane tracking testbeds.
           </p>
         </div>
 
@@ -175,37 +374,27 @@ const featuredProjects = projects.filter(p => p.featured);
 </section>
 
 <script>
-  function initProjectEntrance() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll<HTMLElement>('.project-card').forEach(c => c.classList.add('is-revealed'));
-      return;
+  import { initProjectCardsAnimation } from '../animations';
+
+  let projectCleanup: (() => void) | null = null;
+
+  function initProjects() {
+    if (projectCleanup) {
+      projectCleanup();
+      projectCleanup = null;
     }
-
-    const cards = document.querySelectorAll<HTMLElement>('.project-card');
-    if (!cards.length) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          cards.forEach((card, idx) => {
-            setTimeout(() => {
-              card.classList.add('is-revealed');
-            }, idx * 40);
-          });
-          observer.disconnect();
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const grid = document.getElementById('featuredGrid');
-    if (grid) {
-      observer.observe(grid);
-    } else {
-      cards.forEach(c => c.classList.add('is-revealed'));
+    const workSection = document.getElementById('work');
+    if (workSection) {
+      projectCleanup = initProjectCardsAnimation(workSection);
     }
   }
 
-  document.addEventListener('astro:page-load', initProjectEntrance);
+  document.addEventListener('astro:page-load', initProjects);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProjects);
+  } else {
+    initProjects();
+  }
 </script>
 
 <style>
@@ -235,10 +424,32 @@ const featuredProjects = projects.filter(p => p.featured);
     line-height: 1.65;
   }
 
-  /* 2x2 Balanced Projects Grid - tighter gap */
-  .projects-grid {
+  /* Editorial Projects Wrap */
+  .editorial-projects-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .flagship-row {
+    width: 100%;
+  }
+
+  .baja-grid-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  .duo-grid-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  .trio-grid-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--space-5);
   }
 
@@ -250,14 +461,13 @@ const featuredProjects = projects.filter(p => p.featured);
     box-shadow: var(--shadow-resting);
     position: relative;
     cursor: pointer;
-    min-height: 360px;
     display: flex;
     flex-direction: column;
-    opacity: 0;
-    transition: opacity 180ms var(--ease-standard),
-                transform 120ms var(--ease-standard),
-                border-color 120ms var(--ease-standard),
-                box-shadow 120ms var(--ease-standard);
+    opacity: 1;
+    transition: opacity 220ms var(--ease-standard),
+                transform 180ms var(--ease-standard),
+                border-color 180ms var(--ease-standard),
+                box-shadow 180ms var(--ease-standard);
     will-change: transform, opacity;
   }
 
@@ -267,12 +477,9 @@ const featuredProjects = projects.filter(p => p.featured);
 
   .project-card:hover,
   .project-card:focus-within {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     border-color: var(--accent-primary);
-    box-shadow: var(--shadow-hover);
-    transition: transform var(--dur-micro) var(--ease-standard),
-                border-color var(--dur-micro) var(--ease-standard),
-                box-shadow var(--dur-micro) var(--ease-standard);
+    box-shadow: 0 16px 36px -12px rgba(184, 146, 74, 0.22), 0 8px 20px -8px rgba(20, 24, 34, 0.12);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -292,16 +499,31 @@ const featuredProjects = projects.filter(p => p.featured);
     border-radius: var(--r-card);
   }
 
-  /* Hardware Photo / Blueprint Artifact Stage - reduced height */
+  /* Hardware Photo / Blueprint Artifact Stage: Visual-Dominant (75–80%) */
   .card-visual-wrap {
     position: relative;
     width: 100%;
-    height: 170px;
     background: #EEEAE3;
     border-bottom: 1px solid var(--border);
     overflow: hidden;
     border-top-left-radius: var(--r-card);
     border-top-right-radius: var(--r-card);
+  }
+
+  .flagship-visual {
+    height: 440px;
+  }
+
+  .baja-visual {
+    height: 380px;
+  }
+
+  .duo-visual {
+    height: 340px;
+  }
+
+  .trio-visual {
+    height: 300px;
   }
 
   .card-media-stage {
@@ -311,6 +533,32 @@ const featuredProjects = projects.filter(p => p.featured);
     display: flex;
     align-items: center;
     justify-content: center;
+    background: radial-gradient(circle at center, #191E2B 0%, #0F131D 100%);
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+  }
+
+  .card-media-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .project-img-dual {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 1;
   }
 
   .project-real-img {
@@ -318,12 +566,62 @@ const featuredProjects = projects.filter(p => p.featured);
     height: 100%;
     object-fit: cover;
     object-position: center;
-    transition: transform 0.55s var(--ease-out);
-    filter: brightness(0.95) contrast(1.05);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+    filter: brightness(0.98) contrast(1.04);
   }
 
-  .project-card:hover .project-real-img {
-    transform: scale(1.04);
+  /* Intelligent focal positions per engineering artifact so vehicles, hardware, and teams fill the frame without clipping */
+  #card-baja-2025 .project-real-img {
+    object-position: center 42%;
+  }
+
+  #card-baja-2026 .project-real-img {
+    object-position: center 32%;
+  }
+
+  #card-hospital-amr .project-real-img {
+    object-position: center 25%;
+  }
+
+  #card-smart-cctv .project-real-img {
+    object-position: center 22%;
+  }
+
+  #card-railguard-ai .project-real-img {
+    object-position: center 30%;
+  }
+
+  #card-surgical-robotics .project-real-img {
+    object-position: center 35%;
+  }
+
+  #card-swarm-robotics .project-real-img {
+    object-position: center 40%;
+  }
+
+  .img-primary {
+    position: absolute;
+    inset: 0;
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .img-secondary {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 2;
+  }
+
+  .project-card:hover .img-primary {
+    transform: scale(1.02);
+    filter: brightness(0.9) contrast(1.08);
+  }
+
+  .project-card:hover .img-secondary {
+    opacity: 1;
+    transform: scale(1.02);
+    filter: brightness(0.9) contrast(1.08);
   }
 
   .project-hardware-blueprint {
@@ -340,11 +638,11 @@ const featuredProjects = projects.filter(p => p.featured);
     width: 100%;
     height: 100%;
     display: block;
-    transition: transform 0.45s var(--ease-out);
+    transition: transform 0.5s var(--ease-out);
   }
 
   .project-card:hover .blueprint-svg {
-    transform: scale(1.03);
+    transform: scale(1.04);
   }
 
   /* Card visual top pills */
@@ -357,88 +655,221 @@ const featuredProjects = projects.filter(p => p.featured);
     justify-content: space-between;
     align-items: center;
     pointer-events: none;
-    z-index: 2;
+    z-index: 5;
   }
 
   .visual-index {
     font-size: var(--text-2xs);
     font-weight: 700;
     color: var(--color-ink);
-    background: rgba(20, 24, 34, 0.06);
+    background: rgba(247, 245, 240, 0.88);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    padding: 3px 9px;
+    padding: 4px 10px;
     border-radius: var(--r-pill);
-    border: 1px solid rgba(20, 24, 34, 0.12);
+    border: 1px solid rgba(20, 24, 34, 0.15);
+    letter-spacing: 0.04em;
   }
 
   .visual-status {
     font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.04em;
-    background: rgba(20, 24, 34, 0.06);
+    background: rgba(247, 245, 240, 0.88);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     color: var(--color-body);
-    border: 1px solid rgba(20, 24, 34, 0.12);
+    border: 1px solid rgba(20, 24, 34, 0.15);
+    padding: 3px 8px;
+    border-radius: var(--r-pill);
+  }
+
+  .status-flagship {
+    background: rgba(184, 146, 74, 0.15);
+    border-color: rgba(184, 146, 74, 0.4);
+    color: #8C6A28;
+    font-weight: 800;
   }
 
   /* Precision Corner Ticks */
   .card-corner {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     pointer-events: none;
+    z-index: 6;
   }
   .card-corner::before,
   .card-corner::after {
     content: '';
     position: absolute;
-    background: rgba(20, 24, 34, 0.08);
+    background: rgba(184, 146, 74, 0.5);
   }
-  .card-corner::before { width: 1px; height: 100%; left: 0; top: 0; }
-  .card-corner::after  { width: 100%; height: 1px; left: 0; top: 0; }
+  .card-corner::before { width: 1.5px; height: 100%; left: 0; top: 0; }
+  .card-corner::after  { width: 100%; height: 1.5px; left: 0; top: 0; }
 
-  .corner-tl { top: 8px; left: 8px; }
-  .corner-tr { top: 8px; right: 8px; transform: scaleX(-1); }
-  .corner-bl { bottom: 8px; left: 8px; transform: scaleY(-1); }
-  .corner-br { bottom: 8px; right: 8px; transform: scale(-1); }
+  .corner-tl { top: 10px; left: 10px; }
+  .corner-tr { top: 10px; right: 10px; transform: scaleX(-1); }
+  .corner-bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+  .corner-br { bottom: 10px; right: 10px; transform: scale(-1); }
 
-  /* Card content - compact padding and gap */
-  .card-content {
-    padding: var(--space-4);
+  /* HOVER GLASSMORPHIC OVERLAY */
+  .card-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(14, 18, 24, 0.94) 0%, rgba(14, 18, 24, 0.82) 45%, rgba(14, 18, 24, 0.35) 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 4;
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    flex-grow: 1;
-    min-height: 0;
+    justify-content: flex-end;
+    padding: var(--space-6);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
   }
 
-  .card-header {
+  .project-card:hover .card-hover-overlay {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .hover-overlay-content {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: var(--space-2);
   }
 
-  .card-domain-row {
+  .hover-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: var(--text-2xs);
+    color: var(--accent-light);
+    letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+
+  .hover-title {
+    font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .hover-role-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--accent-primary);
+    font-weight: 700;
+    background: rgba(184, 146, 74, 0.15);
+    border: 1px solid rgba(184, 146, 74, 0.35);
+    padding: 3px 8px;
+    border-radius: var(--r-xs);
+    width: fit-content;
+  }
+
+  .hover-areas-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .area-chip {
+    font-size: 0.65rem;
+    color: #E2E8F0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.03em;
+  }
+
+  .hover-cta-row {
+    margin-top: var(--space-2);
+  }
+
+  .inspect-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: var(--accent-primary);
+    padding: 6px 12px;
+    border-radius: var(--r-xs);
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(184, 146, 74, 0.4);
+    transition: transform var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  }
+
+  .project-card:hover .inspect-btn {
+    transform: translateX(2px);
+    background: var(--accent-light);
+    color: var(--color-ink);
+  }
+
+  /* RESTING MINIMAL FOOTER (20-25% height) */
+  .card-footer-minimal {
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    flex-grow: 1;
+  }
+
+  .footer-primary-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .card-domain-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-2xs);
     color: var(--text-muted);
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     font-weight: 600;
     text-transform: uppercase;
   }
 
+  .card-attr-badge {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #8C6A28;
+    background: rgba(184, 146, 74, 0.08);
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
   .card-title {
-    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    font-size: clamp(1.15rem, 1.6vw, 1.45rem);
     font-weight: 800;
     color: var(--text-primary);
     letter-spacing: -0.02em;
     line-height: 1.25;
+    margin: 0;
     transition: color var(--dur-fast) var(--ease-out);
-    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .project-card:hover .card-title {
@@ -448,96 +879,99 @@ const featuredProjects = projects.filter(p => p.featured);
   .card-subtitle {
     font-size: 0.7rem;
     color: var(--color-muted);
-    font-weight: 600;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .card-summary {
-    font-size: var(--text-xs);
-    color: var(--text-secondary);
-    line-height: 1.55;
-    margin: 0;
-  }
-
-  .card-tags {
+  .footer-secondary-col {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: auto;
-    padding-top: var(--space-1);
+    align-items: center;
+    gap: var(--space-3);
+    flex-shrink: 0;
   }
 
-  .tech-tag {
+  .role-badge {
     font-size: 0.65rem;
-    padding: 2px 6px;
+    color: var(--color-body);
     background: var(--bg-primary);
     border: 1px solid var(--border-subtle);
+    padding: 4px 8px;
     border-radius: var(--r-xs);
-    color: var(--text-primary);
+    font-weight: 600;
+    max-width: 170px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .hw-tag {
-    font-size: 0.65rem;
-    padding: 2px 6px;
-    background: var(--accent-muted);
-    border: 1px solid rgba(184, 146, 74, 0.15);
-    border-radius: var(--r-xs);
-    color: var(--color-body);
-  }
-
-  /* Card Footer */
-  .card-footer {
+  .card-arrow-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--border-subtle);
-    margin-top: var(--space-1);
-  }
-
-  .card-cta {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    font-size: var(--text-xs);
-    font-weight: 700;
+    justify-content: center;
+    font-size: 0.85rem;
     color: var(--text-primary);
-    transition: color var(--dur-fast) var(--ease-out);
+    transition: all var(--dur-fast) var(--ease-out);
   }
 
-  .cta-arrow {
-    color: var(--accent-primary);
-    font-size: var(--text-sm);
-    transition: transform var(--dur-fast) var(--ease-out);
-  }
-
-  .project-card:hover .card-cta {
-    color: var(--accent-primary);
-  }
-
-  .project-card:hover .cta-arrow {
+  .project-card:hover .card-arrow-circle {
+    background: var(--accent-primary);
+    color: #FFFFFF;
+    border-color: var(--accent-primary);
     transform: translateX(3px);
   }
 
-  .card-inspect-pill {
-    font-size: 0.6rem;
-    color: var(--text-dim);
-    letter-spacing: 0.05em;
-    transition: color var(--dur-fast) var(--ease-out);
-  }
-
-  .project-card:hover .card-inspect-pill {
-    color: var(--accent-primary);
-  }
-
-  @media (max-width: 900px) {
-    .projects-grid {
-      grid-template-columns: 1fr;
+  /* Responsive Rules */
+  @media (max-width: 1024px) {
+    .trio-grid-row {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  /* Archive Action Banner - compact */
+  @media (max-width: 768px) {
+    .baja-grid-row,
+    .duo-grid-row,
+    .trio-grid-row {
+      grid-template-columns: 1fr;
+    }
+
+    .flagship-visual {
+      height: 280px;
+    }
+
+    .baja-visual {
+      height: 280px;
+    }
+
+    .duo-visual {
+      height: 250px;
+    }
+
+    .trio-visual {
+      height: 220px;
+    }
+
+    .card-footer-minimal {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2);
+    }
+
+    .footer-secondary-col {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  /* Archive Action Banner */
   .archive-action-wrap {
-    margin-top: var(--space-5);
+    margin-top: var(--space-6);
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-card);

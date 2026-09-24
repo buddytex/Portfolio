@@ -11,6 +11,12 @@ export interface PCBArtifact {
   designDecisions: string;
   specs: { label: string; value: string }[];
   testPoints: { id: string; x: number; y: number; label: string; desc: string }[];
+  /** Path to original Gerber archive for download (relative to /media/) */
+  gerberArchive?: string;
+  /** Path to preprocessed JSON geometry (relative to /pcb-data/) */
+  gerberDataFile?: string;
+  /** Board type label */
+  boardType?: string;
 }
 
 export const pcbArtifacts: PCBArtifact[] = [
@@ -18,15 +24,18 @@ export const pcbArtifacts: PCBArtifact[] = [
     id: 'vehicle-ecu',
     name: 'Custom Multi-Layer Vehicle ECU',
     subsystem: 'Steer-by-Wire & Isolated CAN Gateway',
-    project: 'Autonomous aBAJA Vehicle (AIR 7 & AIR 11)',
-    projectId: 'abaja',
-    dimensions: '120 mm × 85 mm',
-    layerCount: '4-Layer FR4 (1.6mm)',
+    project: 'aBAJA SAEINDIA 2026 (Car A18 · AIR 11)',
+    projectId: 'baja-2026',
+    dimensions: '201.5 mm × 138.5 mm',
+    layerCount: '2-Layer FR4 (1.6mm)',
     finish: 'ENIG (Electroless Nickel Immersion Gold)',
     problemSolved: 'Eliminated high-current electromagnetic interference (EMI) and 24V servo inductive kickback that caused logic microcontrollers to brown out during rapid full-lock steering on rough off-road terrain.',
     designDecisions: 'Physically separated power and logic planes via optocoupled galvanic isolation. Routed differential CAN 2.0B traces with matched 120Ω split termination and common-mode TVS protection (SMBJ24CA).',
+    gerberArchive: 'Gerbers/Back_Box_2026.zip',
+    gerberDataFile: 'back-box-2026.json',
+    boardType: 'Back-Box ECU',
     specs: [
-      { label: 'Layer Stackup', value: '4-Layer (Sig / GND / PWR / Sig)' },
+      { label: 'Layer Stackup', value: '2-Layer (Sig / GND)' },
       { label: 'Isolation Barrier', value: '2.5 kV Galvanic Isolation' },
       { label: 'Bus Standard', value: 'CAN 2.0B @ 500 kbps' },
       { label: 'Connector Header', value: 'Automotive Deutsch DT04-12P' },
@@ -40,11 +49,38 @@ export const pcbArtifacts: PCBArtifact[] = [
     ],
   },
   {
+    id: 'front-box-ecu',
+    name: 'Front-Box ECU — Sensor Interface & Steering Controller',
+    subsystem: 'Front Sensor Hub & Steering Actuator Interface',
+    project: 'aBAJA SAEINDIA 2026 (Car A18 · AIR 11)',
+    projectId: 'baja-2026',
+    dimensions: '224.5 mm × 180.0 mm',
+    layerCount: '2-Layer FR4 (1.6mm)',
+    finish: 'ENIG (Electroless Nickel Immersion Gold)',
+    problemSolved: 'Centralized front vehicle sensing (LiDAR, camera, proximity) and steering actuator control into a single weatherproof enclosure with filtered power distribution and CAN bus connectivity.',
+    designDecisions: 'Wide board form factor allows direct header-to-sensor cabling without intermediate wiring harness. Copper pour ground plane minimizes RF interference from high-speed sensor data lines.',
+    gerberArchive: 'Gerbers/Front_Box_2026.rar',
+    gerberDataFile: 'front-box-2026.json',
+    boardType: 'Front-Box ECU',
+    specs: [
+      { label: 'Layer Stackup', value: '2-Layer (Sig / GND)' },
+      { label: 'Board Dimensions', value: '224.5 × 180.0 mm' },
+      { label: 'Bus Standard', value: 'CAN 2.0B @ 500 kbps' },
+      { label: 'Mounting', value: '6× M3 NPTH Mounting Points' },
+      { label: 'Supply Input', value: '12V–32V Automotive Input' },
+    ],
+    testPoints: [
+      { id: 'tp-can-f', x: 75, y: 30, label: 'TP_CAN: CAN Bus Interface', desc: 'CAN 2.0B differential pair with split termination to vehicle backbone.' },
+      { id: 'tp-pwr-f', x: 25, y: 70, label: 'TP_PWR: Power Distribution', desc: 'Filtered 12V input with automotive TVS protection and LC pre-filter.' },
+      { id: 'tp-sensor', x: 60, y: 55, label: 'TP_SENS: Sensor Headers', desc: 'Multi-channel sensor interface headers for LiDAR, camera, and proximity inputs.' },
+    ],
+  },
+  {
     id: 'estop-interlock',
     name: 'Fail-Safe Hardware E-Stop Interlock Board',
     subsystem: 'Dual-Channel Emergency Power Severing',
-    project: 'Autonomous aBAJA Vehicle Safety Architecture',
-    projectId: 'abaja',
+    project: 'aBAJA SAEINDIA 2026 Safety Architecture',
+    projectId: 'baja-2026',
     dimensions: '82 mm × 64 mm',
     layerCount: '2-Layer 2oz Heavy Copper',
     finish: 'Lead-Free HASL with Conformal Coating',

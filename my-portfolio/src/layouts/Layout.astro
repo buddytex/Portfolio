@@ -2,13 +2,17 @@
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 
+import ImageLightbox from '../components/ImageLightbox.astro';
+
 interface Props {
   title?: string;
   description?: string;
+  showSpine?: boolean;
 }
 const {
-  title = "Naveen Shaji George — Robotics & Autonomous Systems Engineer",
-  description = "Robotics engineer specializing in autonomous systems, 3D LiDAR perception, ROS 2 Humble, custom vehicle ECUs, isolated CAN bus networks, and vehicle-level hardware-software integration."
+  title = "Naveen Shaji George — Robotics and Automation Engineer",
+  description = "Robotics engineer specializing in autonomous systems, 3D LiDAR perception, ROS 2 Humble, custom vehicle ECUs, isolated CAN bus networks, and vehicle-level hardware-software integration.",
+  showSpine = true
 } = Astro.props;
 ---
 
@@ -40,62 +44,112 @@ const {
     <div id="scrollBar" aria-hidden="true"></div>
 
     <!-- Persistent Visual Anchor: Engineering Datum Spine (Desktop) -->
-    <aside class="datum-spine-wrap" aria-label="Section Navigation Spine">
+    {showSpine && (
+      <aside class="datum-spine-wrap" aria-label="Section Navigation Spine">
       <div class="datum-spine-track" aria-hidden="true">
         <div class="datum-spine-fill" id="datumSpineFill"></div>
       </div>
       <nav class="datum-waypoints" aria-label="Section Milestones">
         <a href="/#hero" class="datum-node active" data-section="hero" aria-label="01 // Hero">
           <span class="datum-pip"></span>
-          <span class="datum-tag mono">01</span>
-          <span class="datum-label mono">HERO</span>
+          <div class="datum-text-block">
+            <span class="datum-tag mono">01</span>
+            <span class="datum-label mono">HERO</span>
+          </div>
         </a>
-        <a href="/#background" class="datum-node" data-section="background" aria-label="02 // Engineering Background">
+        <a href="/#roles" class="datum-node" data-section="roles" aria-label="02 // Roles I've Taken">
           <span class="datum-pip"></span>
-          <span class="datum-tag mono">02</span>
-          <span class="datum-label mono">BACKGROUND</span>
+          <div class="datum-text-block">
+            <span class="datum-tag mono">02</span>
+            <span class="datum-label mono">ROLES</span>
+          </div>
         </a>
         <a href="/#work" class="datum-node" data-section="work" aria-label="03 // Projects">
           <span class="datum-pip"></span>
-          <span class="datum-tag mono">03</span>
-          <span class="datum-label mono">PROJECTS</span>
+          <div class="datum-text-block">
+            <span class="datum-tag mono">03</span>
+            <span class="datum-label mono">PROJECTS</span>
+          </div>
         </a>
         <a href="/#skills" class="datum-node" data-section="skills" aria-label="04 // Skills & Evidence">
           <span class="datum-pip"></span>
-          <span class="datum-tag mono">04</span>
-          <span class="datum-label mono">SKILLS</span>
+          <div class="datum-text-block">
+            <span class="datum-tag mono">04</span>
+            <span class="datum-label mono">SKILLS</span>
+          </div>
         </a>
         <a href="/#hardware" class="datum-node" data-section="hardware" aria-label="05 // PCB Lab">
           <span class="datum-pip"></span>
-          <span class="datum-tag mono">05</span>
-          <span class="datum-label mono">PCB LAB</span>
+          <div class="datum-text-block">
+            <span class="datum-tag mono">05</span>
+            <span class="datum-label mono">PCB LAB</span>
+          </div>
         </a>
         <a href="/#contact" class="datum-node" data-section="contact" aria-label="06 // Contact">
           <span class="datum-pip"></span>
-          <span class="datum-tag mono">06</span>
-          <span class="datum-label mono">CONTACT</span>
+          <div class="datum-text-block">
+            <span class="datum-tag mono">06</span>
+            <span class="datum-label mono">CONTACT</span>
+          </div>
         </a>
       </nav>
     </aside>
+    )}
 
     <slot />
 
+    <!-- Global Image Lightbox Modal for Uncropped Technical Evidence Inspection -->
+    <ImageLightbox />
+
     <script>
-      import { initScrollTracker } from '../lib/motion/scroll';
-      import { initScrollReveal } from '../lib/motion';
+      import {
+        initScrollTracker,
+        initSmoothScroll,
+        initCustomCursor,
+        initMagneticButtons,
+        initScrollRevealSystem,
+      } from '../animations';
 
       let trackerCleanup: (() => void) | undefined;
+      let cursorCleanup: (() => void) | null | undefined;
+      let scrollRevealCleanup: (() => void) | null | undefined;
 
       function setupPageMotion() {
         if (trackerCleanup) {
           trackerCleanup();
           trackerCleanup = undefined;
         }
-        initScrollReveal();
+        if (cursorCleanup) {
+          cursorCleanup();
+          cursorCleanup = undefined;
+        }
+        if (scrollRevealCleanup) {
+          scrollRevealCleanup();
+          scrollRevealCleanup = undefined;
+        }
+
+        // Initialize desktop inertia scroll
+        initSmoothScroll();
+
+        // Initialize desktop-only precision cursor
+        cursorCleanup = initCustomCursor();
+
+        // Initialize restrained magnetic CTAs
+        initMagneticButtons();
+
+        // Initialize Anime.js 4.5.x universal reveals with replay-on-return
+        scrollRevealCleanup = initScrollRevealSystem();
+
+        // Initialize datum spine tracker
         trackerCleanup = initScrollTracker();
       }
 
       document.addEventListener('astro:page-load', setupPageMotion);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupPageMotion);
+      } else {
+        setupPageMotion();
+      }
 
       // Top scroll bar progress
       window.addEventListener('scroll', () => {
@@ -143,11 +197,11 @@ const {
 
   .datum-spine-track {
     position: absolute;
-    left: 4.5px;
-    top: 12px;
-    bottom: 12px;
+    left: 2.5px;
+    top: 8px;
+    bottom: 8px;
     width: 1px;
-    background: rgba(20, 24, 34, 0.10);
+    background: rgba(20, 24, 34, 0.08);
   }
 
   .datum-spine-fill {
@@ -156,7 +210,7 @@ const {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--accent-primary);
+    background: var(--color-gold);
     box-shadow: 0 0 6px var(--accent-glow);
     transform-origin: top;
     transform: scaleY(0);
@@ -166,80 +220,82 @@ const {
   .datum-waypoints {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.6rem;
     position: relative;
     z-index: 2;
   }
 
   .datum-node {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
     text-decoration: none;
-    color: var(--text-dim);
-    transition: color 0.2s ease;
     cursor: pointer;
     padding: 2px 0;
   }
 
   .datum-pip {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--color-paper);
-    border: 1.5px solid var(--border-strong);
+    border: 1.5px solid var(--text-dim);
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .datum-text-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .datum-tag {
-    font-size: 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 700;
     color: var(--text-dim);
     transition: color 0.2s ease;
+    line-height: 1;
     letter-spacing: 0.04em;
   }
 
   .datum-label {
-    font-size: 0.65rem;
+    font-size: 0.58rem;
     letter-spacing: 0.08em;
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-    white-space: nowrap;
-    color: var(--text-secondary);
-  }
-
-  .datum-node:hover .datum-label,
-  .datum-node.active .datum-label {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .datum-node:hover {
-    color: var(--text-primary);
-  }
-
-  .datum-node:hover .datum-pip {
-    border-color: var(--accent-primary);
-    background: var(--accent-muted);
+    font-weight: 600;
+    color: var(--text-dim);
+    line-height: 1;
+    display: none;
   }
 
   .datum-node.active .datum-pip {
-    background: var(--accent-primary);
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 10px var(--accent-glow);
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    box-shadow: 0 0 8px rgba(184, 146, 74, 0.7);
     transform: scale(1.15);
   }
 
-  .datum-node.active .datum-tag,
-  .datum-node.active .datum-label {
-    color: var(--text-primary);
-    font-weight: 600;
+  .datum-node.active .datum-tag {
+    color: var(--color-ink);
+    font-weight: 800;
   }
 
-  /* Hide on screens narrower than 1440px to avoid competing with content */
-  @media (max-width: 1440px) {
+  .datum-node.active .datum-label {
+    display: block;
+    color: var(--text-muted);
+  }
+
+  .datum-node:hover .datum-tag {
+    color: var(--color-ink);
+  }
+
+  .datum-node:hover .datum-pip {
+    border-color: var(--color-gold);
+  }
+
+  /* Responsive: hide below 1100px */
+  @media (max-width: 1100px) {
     .datum-spine-wrap {
       display: none;
     }

@@ -145,9 +145,23 @@ const navItems = [
     });
   }, { passive: true });
 
-  // Scroll shadow
+  // Scroll direction & condensation tracker (§36 spec)
+  let lastScrollY = window.scrollY;
+  const navEl = document.getElementById('nav');
+
   window.addEventListener('scroll', () => {
-    document.getElementById('nav')?.classList.toggle('scrolled', window.scrollY > 30);
+    const currentScrollY = window.scrollY;
+    if (navEl) {
+      navEl.classList.toggle('scrolled', currentScrollY > 30);
+      
+      // When scrolling down past 120px, condense slightly
+      if (currentScrollY > 120 && currentScrollY > lastScrollY + 6) {
+        navEl.classList.add('nav-condensed');
+      } else if (currentScrollY < lastScrollY - 6 || currentScrollY <= 120) {
+        navEl.classList.remove('nav-condensed');
+      }
+    }
+    lastScrollY = currentScrollY;
   }, { passive: true });
 </script>
 
@@ -161,7 +175,14 @@ const navItems = [
     backdrop-filter: blur(20px) saturate(150%);
     -webkit-backdrop-filter: blur(20px) saturate(150%);
     border-bottom: 1px solid rgba(20, 24, 34, 0.06);
-    transition: border-color var(--dur-norm) var(--ease-out), box-shadow var(--dur-norm) var(--ease-out);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out);
+    will-change: transform;
+  }
+
+  .nav.nav-condensed {
+    transform: translateY(-4px);
   }
 
   .nav.scrolled {

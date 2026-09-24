@@ -1,6 +1,6 @@
 ---
 // Complete Project Archive: /projects
-// Naveen Shaji George · Robotics & Autonomous Systems Engineer
+// Naveen Shaji George · Robotics and Automation Engineer
 // Unified single source of truth consuming src/data/projects.ts
 import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
@@ -18,7 +18,7 @@ const filterCategories = [
 
 <Layout
   title="Complete Projects Archive — Naveen Shaji George"
-  description="Comprehensive technical archive of 8 verified robotics systems, autonomous vehicles, computer vision pipelines, custom automotive ECUs, and real-time embedded controllers."
+  description={`Comprehensive technical archive of ${projects.length} verified robotics systems, autonomous vehicles, computer vision pipelines, custom automotive ECUs, and real-time embedded controllers.`}
 >
   <Navigation />
 
@@ -33,7 +33,7 @@ const filterCategories = [
         </div>
 
         <div class="archive-title-wrap">
-          <span class="archive-kicker mono">[ 08 VERIFIED REPOSITORY SYSTEMS ]</span>
+          <span class="archive-kicker mono">[ {String(projects.length).padStart(2, '0')} VERIFIED REPOSITORY SYSTEMS ]</span>
           <h1 class="archive-title">Complete Engineering Archive</h1>
           <p class="archive-lead">
             Physical autonomous competition platforms, distributed multi-agent swarm meshes, high-throughput edge vision,
@@ -152,7 +152,7 @@ const filterCategories = [
 </Layout>
 
 <script>
-  import { animate, stagger, isReducedMotion } from '../../lib/motion';
+  import { animate, stagger, isReducedMotion } from '../../animations';
 
   // Client-side domain filtering with Anime.js transitions
   const filterChips = document.querySelectorAll<HTMLButtonElement>('.filter-chip');

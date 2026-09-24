@@ -1,205 +1,1083 @@
 ---
-// SkillsEvidence Component — Compact Engineering Skill Index
-// Homepage version: horizontal technical chips, clickable → /skills/[id]
-// All skills from data layer, no fabricated percentages
-import { skillsData } from '../data/skills';
+// SkillsEvidence Component — Interactive Engineering Skill Map
+// A deterministic, organized bubble composition of all engineering competencies.
+// Skills are arranged in domain clusters with three hierarchy levels:
+//   DOMAIN (large label bubbles) → SKILLS (medium) → SUPPORTING (smaller)
+// Hover reveals live connection inspector with project/role evidence.
+import { skillCategories, allSkills, type SkillCategory, type SkillItem } from '../data/skills';
+
+const coreCategories = skillCategories.filter(c => c.tier === 'core');
+const complementaryCategories = skillCategories.filter(c => c.tier === 'complementary');
+const defaultSkill = allSkills.find(s => s.id === 'vehicle-system-integration') || allSkills[0];
+
+// Pre-compute cluster data for the bubble map
+const clusterData = skillCategories.map(cat => ({
+  ...cat,
+  skillCount: cat.skills.length,
+  connectionCount: cat.skills.reduce((sum, s) => sum + s.connectedEntities.length, 0),
+}));
 ---
 
-<section id="skills" class="section skills-section">
+<section id="skills" class="section skills-section" aria-label="Engineering Skill Map">
   <div class="container-wide">
+    
     <!-- Section Header -->
     <div class="section-header">
-      <span class="section-eyebrow">Skills & Evidence</span>
-      <h2 class="section-title">Engineering Competencies <span class="accent">Validated by Real Systems</span></h2>
+      <div class="header-kicker mono">[ 04 // ENGINEERING COMPETENCIES ]</div>
+      <h2 class="section-title">Engineering <span class="accent">Skill Map</span></h2>
       <p class="section-lead">
-        Select any competency to inspect actual hardware schematics, firmware architecture, design trade-offs, and deployed results.
+        An interconnected map of <strong>{allSkills.length} verified competencies</strong> across {skillCategories.length} engineering disciplines.
+        Hover or tap any skill to inspect its real-world evidence and project connections.
       </p>
     </div>
 
-    <!-- Compact Skill Chip Index -->
-    <div class="skill-index-wrap">
-      <div class="skill-chips-grid" role="list" aria-label="Engineering Competencies">
-        {skillsData.map((skill) => (
-          <a
-            href={`/skills/${skill.id}`}
-            class="skill-chip"
-            role="listitem"
-            aria-label={`View evidence for ${skill.title}`}
-          >
-            <span class="chip-label">{skill.title}</span>
-            <span class="chip-category mono">{skill.category}</span>
-            <span class="chip-arrow" aria-hidden="true">→</span>
-          </a>
-        ))}
+    <!-- Tier Legend Bar -->
+    <div class="map-legend mono">
+      <div class="legend-item">
+        <span class="legend-dot dot-core"></span>
+        <span>CORE ENGINEERING</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot dot-comp"></span>
+        <span>COMPLEMENTARY</span>
+      </div>
+      <div class="legend-separator"></div>
+      <div class="legend-item">
+        <span class="legend-size size-strong"></span>
+        <span>STRONG</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-size size-working"></span>
+        <span>WORKING</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-size size-experience"></span>
+        <span>EXPOSURE</span>
       </div>
     </div>
 
-    <!-- View All Skills CTA -->
-    <div class="skills-cta-wrap">
-      <a href="/skills" class="skills-cta-btn">
-        <span>View All Competencies & Evidence</span>
-        <span class="cta-arrow" aria-hidden="true">→</span>
-      </a>
+    <!-- Main Interactive Skill Map -->
+    <div class="skill-map-workspace">
+      
+      <!-- The Bubble Map Canvas -->
+      <div class="skill-map-canvas" id="skillMapCanvas">
+        
+        {skillCategories.map((category, catIdx) => (
+          <div 
+            class={`domain-cluster cluster-${category.tier}`}
+            data-domain-id={category.id}
+            data-domain-tier={category.tier}
+            id={`domain-${category.id}`}
+          >
+            <!-- Domain Label Bubble -->
+            <div class="domain-label-bubble">
+              <span class="domain-idx mono">{category.index}</span>
+              <span class="domain-name">{category.shortTitle}</span>
+            </div>
+
+            <!-- Skill Bubbles -->
+            <div class="skill-bubbles-group">
+              {category.skills.map((skill, skillIdx) => (
+                <button
+                  class={`skill-bubble proficiency-${skill.proficiency} tier-${skill.tier}`}
+                  data-skill-id={skill.id}
+                  data-skill-name={skill.name}
+                  data-skill-category={skill.category}
+                  data-skill-category-idx={skill.categoryIndex}
+                  data-skill-tier={skill.tier}
+                  data-skill-proficiency={skill.proficiency}
+                  data-skill-evidence={skill.evidence}
+                  data-skill-context={skill.context}
+                  data-skill-tools={JSON.stringify(skill.tools || [])}
+                  data-skill-connections={JSON.stringify(skill.connectedEntities || [])}
+                  data-domain-id={category.id}
+                  aria-label={`${skill.name} — ${skill.proficiency} proficiency. ${skill.evidence}`}
+                  title={skill.name}
+                >
+                  <span class="bubble-label">{skill.name}</span>
+                  {skill.connectedEntities.length > 0 && (
+                    <span class="bubble-conn-count mono">{skill.connectedEntities.length}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+      </div>
+
+      <!-- Floating Connection Inspector HUD -->
+      <aside class="map-hud-inspector" id="mapHud" aria-label="Skill Inspector">
+        <div class="hud-inner">
+          
+          <!-- HUD Header -->
+          <div class="hud-header mono">
+            <div class="hud-status">
+              <span class="hud-pulse"></span>
+              <span>SKILL INSPECTOR</span>
+            </div>
+            <span class="hud-idx" id="hudIdx">{defaultSkill.categoryIndex}</span>
+          </div>
+
+          <!-- Active Skill -->
+          <div class="hud-skill-info">
+            <div class="hud-tier-row mono">
+              <span class="hud-tier-badge" id="hudTierBadge">
+                {defaultSkill.tier === 'core' ? 'CORE' : 'COMPLEMENTARY'}
+              </span>
+              <span class="hud-cat-label" id="hudCatLabel">{defaultSkill.category}</span>
+            </div>
+            <h4 class="hud-skill-name" id="hudSkillName">{defaultSkill.name}</h4>
+            <div class="hud-prof mono" id="hudProficiency">
+              {defaultSkill.proficiency.toUpperCase()} PROFICIENCY
+            </div>
+          </div>
+
+          <!-- Evidence -->
+          <div class="hud-block">
+            <div class="hud-block-title mono">
+              <span class="block-glyph">▸</span> ENGINEERING EVIDENCE
+            </div>
+            <blockquote class="hud-evidence" id="hudEvidence">
+              "{defaultSkill.evidence}"
+            </blockquote>
+            <p class="hud-context" id="hudContext">{defaultSkill.context}</p>
+          </div>
+
+          <!-- Connected Projects -->
+          <div class="hud-block">
+            <div class="hud-block-title mono">
+              <span class="block-glyph">⚡</span> CONNECTED PROJECTS
+            </div>
+            <div class="hud-projects" id="hudProjects">
+              {defaultSkill.connectedEntities
+                .filter(e => e.type === 'project' || e.type === 'hardware')
+                .map((item) => (
+                  <a href={item.url || '#'} class="hud-proj-link">
+                    <span class="proj-name mono">{item.name}</span>
+                    {item.badge && <span class="proj-badge mono">{item.badge}</span>}
+                  </a>
+                ))}
+            </div>
+          </div>
+
+          <!-- Connected Roles -->
+          <div class="hud-block">
+            <div class="hud-block-title mono">
+              <span class="block-glyph">⬡</span> ROLES & ORGANIZATIONS
+            </div>
+            <div class="hud-roles" id="hudRoles">
+              {defaultSkill.connectedEntities
+                .filter(e => e.type === 'role' || e.type === 'activity')
+                .map((item) => (
+                  <span class="hud-role-chip mono">
+                    {item.name}
+                    {item.badge && <span class="role-badge">{item.badge}</span>}
+                  </span>
+                ))}
+            </div>
+          </div>
+
+          <!-- Tools -->
+          <div class="hud-block">
+            <div class="hud-block-title mono">
+              <span class="block-glyph">⚙</span> TOOLS & PROTOCOLS
+            </div>
+            <div class="hud-tools" id="hudTools">
+              {defaultSkill.tools?.map((tool) => (
+                <span class="hud-tool-chip mono">{tool}</span>
+              ))}
+            </div>
+          </div>
+
+          <!-- Deep Dive CTA -->
+          <a 
+            href={`/skills/${defaultSkill.id}`} 
+            class="hud-cta mono" 
+            id="hudCta"
+          >
+            <span>VIEW FULL SPECIFICATION</span>
+            <span class="cta-arrow">↗</span>
+          </a>
+
+        </div>
+      </aside>
+
     </div>
+
+    <!-- Bottom Stats Bar -->
+    <div class="map-stats-bar mono">
+      <span class="stat-item">
+        <span class="stat-val">{allSkills.length}</span>
+        <span class="stat-label">TOTAL SKILLS</span>
+      </span>
+      <span class="stat-item">
+        <span class="stat-val">{skillCategories.length}</span>
+        <span class="stat-label">DOMAINS</span>
+      </span>
+      <span class="stat-item">
+        <span class="stat-val">{coreCategories.length}</span>
+        <span class="stat-label">CORE DISCIPLINES</span>
+      </span>
+      <span class="stat-item">
+        <span class="stat-val">{allSkills.reduce((sum, s) => sum + s.connectedEntities.length, 0)}</span>
+        <span class="stat-label">PROJECT CONNECTIONS</span>
+      </span>
+    </div>
+
   </div>
 </section>
 
+<script>
+  import { initSkillsAnimation } from '../animations';
+
+  let skillsCleanup: (() => void) | null = null;
+
+  interface ConnectedEntity {
+    id: string;
+    name: string;
+    type: 'project' | 'role' | 'hardware' | 'activity';
+    badge?: string;
+    url?: string;
+    detail?: string;
+  }
+
+  function initSkillMap() {
+    const bubbles = document.querySelectorAll<HTMLButtonElement>('.skill-bubble');
+    const domainClusters = document.querySelectorAll<HTMLElement>('.domain-cluster');
+    
+    // HUD Elements
+    const hudIdx = document.getElementById('hudIdx');
+    const hudTierBadge = document.getElementById('hudTierBadge');
+    const hudCatLabel = document.getElementById('hudCatLabel');
+    const hudSkillName = document.getElementById('hudSkillName');
+    const hudProficiency = document.getElementById('hudProficiency');
+    const hudEvidence = document.getElementById('hudEvidence');
+    const hudContext = document.getElementById('hudContext');
+    const hudProjects = document.getElementById('hudProjects');
+    const hudRoles = document.getElementById('hudRoles');
+    const hudTools = document.getElementById('hudTools');
+    const hudCta = document.getElementById('hudCta') as HTMLAnchorElement | null;
+    const mapHud = document.getElementById('mapHud');
+
+    function activateBubble(bubble: HTMLButtonElement) {
+      // Remove active from all bubbles
+      bubbles.forEach(b => b.classList.remove('is-active'));
+      bubble.classList.add('is-active');
+
+      // Highlight parent domain
+      domainClusters.forEach(c => c.classList.remove('domain-active'));
+      const domainId = bubble.getAttribute('data-domain-id');
+      const parentDomain = document.getElementById(`domain-${domainId}`);
+      if (parentDomain) parentDomain.classList.add('domain-active');
+
+      // Show HUD
+      if (mapHud) mapHud.classList.add('hud-visible');
+
+      // Extract data
+      const skillId = bubble.getAttribute('data-skill-id') || '';
+      const name = bubble.getAttribute('data-skill-name') || '';
+      const category = bubble.getAttribute('data-skill-category') || '';
+      const catIdx = bubble.getAttribute('data-skill-category-idx') || '';
+      const tier = bubble.getAttribute('data-skill-tier') || 'core';
+      const prof = bubble.getAttribute('data-skill-proficiency') || 'strong';
+      const evidence = bubble.getAttribute('data-skill-evidence') || '';
+      const context = bubble.getAttribute('data-skill-context') || '';
+
+      let tools: string[] = [];
+      let connections: ConnectedEntity[] = [];
+      try { tools = JSON.parse(bubble.getAttribute('data-skill-tools') || '[]'); } catch(e) { tools = []; }
+      try { connections = JSON.parse(bubble.getAttribute('data-skill-connections') || '[]'); } catch(e) { connections = []; }
+
+      // Update HUD
+      if (hudIdx) hudIdx.textContent = catIdx;
+      if (hudSkillName) hudSkillName.textContent = name;
+      if (hudCatLabel) hudCatLabel.textContent = category;
+      if (hudTierBadge) {
+        hudTierBadge.textContent = tier === 'core' ? 'CORE' : 'COMPLEMENTARY';
+        hudTierBadge.className = `hud-tier-badge ${tier === 'core' ? 'badge-core' : 'badge-comp'}`;
+      }
+      if (hudProficiency) hudProficiency.textContent = `${prof.toUpperCase()} PROFICIENCY`;
+      if (hudEvidence) hudEvidence.textContent = `"${evidence}"`;
+      if (hudContext) hudContext.textContent = context;
+      if (hudCta) hudCta.href = `/skills/${skillId}`;
+
+      // Update Projects
+      if (hudProjects) {
+        const projectItems = connections.filter(c => c.type === 'project' || c.type === 'hardware');
+        if (projectItems.length > 0) {
+          hudProjects.innerHTML = projectItems.map(p => `
+            <a href="${p.url || '#'}" class="hud-proj-link">
+              <span class="proj-name mono">${p.name}</span>
+              ${p.badge ? `<span class="proj-badge mono">${p.badge}</span>` : ''}
+            </a>
+          `).join('');
+        } else {
+          hudProjects.innerHTML = `<span class="hud-empty mono">APPLIED ACROSS LAB & TOOLING</span>`;
+        }
+      }
+
+      // Update Roles
+      if (hudRoles) {
+        const roleItems = connections.filter(c => c.type === 'role' || c.type === 'activity');
+        if (roleItems.length > 0) {
+          hudRoles.innerHTML = roleItems.map(r => `
+            <span class="hud-role-chip mono">
+              ${r.name}
+              ${r.badge ? `<span class="role-badge">${r.badge}</span>` : ''}
+            </span>
+          `).join('');
+        } else {
+          hudRoles.innerHTML = `<span class="hud-empty mono">DIRECT TECHNICAL COMPETENCY</span>`;
+        }
+      }
+
+      // Update Tools
+      if (hudTools) {
+        if (tools.length > 0) {
+          hudTools.innerHTML = tools.map(t => `<span class="hud-tool-chip mono">${t}</span>`).join('');
+        } else {
+          hudTools.innerHTML = `<span class="hud-tool-chip mono">STANDARD TOOLCHAIN</span>`;
+        }
+      }
+
+      // Highlight same-domain bubbles with a subtle glow
+      bubbles.forEach(b => {
+        b.classList.remove('same-domain');
+        if (b !== bubble && b.getAttribute('data-domain-id') === domainId) {
+          b.classList.add('same-domain');
+        }
+      });
+    }
+
+    bubbles.forEach(bubble => {
+      bubble.addEventListener('mouseenter', () => activateBubble(bubble));
+      bubble.addEventListener('focus', () => activateBubble(bubble));
+      bubble.addEventListener('click', (e) => {
+        e.preventDefault();
+        activateBubble(bubble);
+      });
+    });
+
+    // Anime.js 4.5.x Center-Out Stagger & Replay-on-Return
+    if (skillsCleanup) {
+      skillsCleanup();
+      skillsCleanup = null;
+    }
+    const skillsSection = document.getElementById('skills');
+    if (skillsSection) {
+      skillsCleanup = initSkillsAnimation(skillsSection);
+    }
+  }
+
+  document.addEventListener('astro:page-load', initSkillMap);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSkillMap);
+  } else {
+    initSkillMap();
+  }
+</script>
+
 <style>
+  /* ============================
+     SKILLS SECTION — SKILL MAP
+     ============================ */
   .skills-section {
     padding: var(--section-pad) 0;
     position: relative;
+    border-top: 1px solid var(--border-subtle);
     background: transparent;
+    overflow: hidden;
   }
 
-  /* Reduced section title for this section */
-  .skills-section .section-title {
-    font-size: clamp(1.6rem, 2.6vw, 2.4rem);
-  }
-
-  .section-eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
+  .header-kicker {
+    font-size: var(--text-2xs);
+    color: var(--accent-primary);
     font-weight: 700;
-    color: var(--color-muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-2);
+  }
+
+  .skills-section .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
     margin-bottom: var(--space-3);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
 
-  .section-eyebrow::before {
-    content: '';
-    width: 10px;
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent-primary), transparent);
+  .skills-section .section-lead {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    max-width: 680px;
+    line-height: 1.65;
   }
 
-  /* Skill Chip Grid - ~3 rows on desktop */
-  .skill-index-wrap {
-    margin-top: var(--space-4);
+  /* Legend Bar */
+  .map-legend {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-8);
+    padding: var(--space-3) var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    width: fit-content;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
   }
 
-  .skill-chips-grid {
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot-core {
+    background: var(--accent-primary);
+    box-shadow: 0 0 6px rgba(184, 146, 74, 0.4);
+  }
+
+  .dot-comp {
+    background: var(--color-muted);
+    opacity: 0.6;
+  }
+
+  .legend-separator {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+  }
+
+  .legend-size {
+    border-radius: 50%;
+    border: 1.5px solid var(--color-muted);
+    opacity: 0.5;
+  }
+
+  .size-strong { width: 12px; height: 12px; }
+  .size-working { width: 9px; height: 9px; }
+  .size-experience { width: 6px; height: 6px; }
+
+  /* ============================
+     MAIN WORKSPACE LAYOUT
+     ============================ */
+  .skill-map-workspace {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: var(--space-3);
+    grid-template-columns: 1fr 380px;
+    gap: var(--space-8);
     align-items: start;
   }
 
-  .skill-chip {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    padding: var(--space-4) var(--space-5);
+  /* ============================
+     THE BUBBLE MAP CANVAS
+     ============================ */
+  .skill-map-canvas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+
+  /* Domain Cluster */
+  .domain-cluster {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    text-decoration: none;
-    color: inherit;
-    transition: all var(--dur-fast) var(--ease-out);
-    box-shadow: var(--shadow-resting);
-    min-height: 80px;
+    border-radius: var(--r-card);
+    padding: var(--space-5);
+    transition: all 0.35s var(--ease-out);
+    opacity: 0;
+    transform: translateY(20px);
+    position: relative;
+    overflow: hidden;
   }
 
-  .skill-chip:hover,
-  .skill-chip:focus-visible {
-    border-color: var(--accent-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-    background: var(--surface-elevated);
+  .domain-cluster::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    transition: background 0.3s var(--ease-out);
   }
 
-  .skill-chip:focus-visible {
-    outline: 2px solid var(--accent-primary);
-    outline-offset: 2px;
+  .cluster-core::before {
+    background: linear-gradient(90deg, var(--accent-primary), rgba(184, 146, 74, 0.2));
   }
 
-  .chip-label {
-    font-size: var(--text-sm);
-    font-weight: 700;
+  .cluster-complementary::before {
+    background: linear-gradient(90deg, var(--color-muted), rgba(100, 116, 139, 0.2));
+  }
+
+  .domain-cluster.cluster-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .domain-cluster:hover,
+  .domain-cluster.domain-active {
+    border-color: rgba(184, 146, 74, 0.35);
+    box-shadow: 0 8px 32px rgba(184, 146, 74, 0.08);
+  }
+
+  .domain-cluster.domain-active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(184, 146, 74, 0.02);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Stagger reveal animation */
+  .domain-cluster:nth-child(1).cluster-visible { transition-delay: 0ms; }
+  .domain-cluster:nth-child(2).cluster-visible { transition-delay: 60ms; }
+  .domain-cluster:nth-child(3).cluster-visible { transition-delay: 120ms; }
+  .domain-cluster:nth-child(4).cluster-visible { transition-delay: 180ms; }
+  .domain-cluster:nth-child(5).cluster-visible { transition-delay: 240ms; }
+  .domain-cluster:nth-child(6).cluster-visible { transition-delay: 300ms; }
+  .domain-cluster:nth-child(7).cluster-visible { transition-delay: 360ms; }
+  .domain-cluster:nth-child(8).cluster-visible { transition-delay: 420ms; }
+  .domain-cluster:nth-child(9).cluster-visible { transition-delay: 480ms; }
+  .domain-cluster:nth-child(10).cluster-visible { transition-delay: 540ms; }
+  .domain-cluster:nth-child(11).cluster-visible { transition-delay: 600ms; }
+
+  /* Domain Label Bubble */
+  .domain-label-bubble {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .domain-idx {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--accent-primary);
+    background: rgba(184, 146, 74, 0.08);
+    padding: 3px 7px;
+    border-radius: var(--r-xs);
+    letter-spacing: 0.08em;
+  }
+
+  .domain-name {
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    font-weight: 800;
     color: var(--text-primary);
     letter-spacing: -0.01em;
+  }
+
+  .cluster-complementary .domain-idx {
+    color: var(--color-muted);
+    background: rgba(100, 116, 139, 0.08);
+  }
+
+  /* ============================
+     SKILL BUBBLES
+     ============================ */
+  .skill-bubbles-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .skill-bubble {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: none;
+    border-radius: var(--r-pill);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: all 0.25s var(--ease-out);
+    white-space: nowrap;
+    position: relative;
+    outline: none;
     line-height: 1.3;
   }
 
-  .chip-category {
-    font-size: var(--text-2xs);
-    color: var(--color-muted);
-    font-weight: 500;
-    letter-spacing: 0.04em;
+  /* SIZE by proficiency (three-level hierarchy) */
+  .skill-bubble.proficiency-strong {
+    font-size: 0.78rem;
+    padding: 7px 14px;
+    border: 1.5px solid rgba(184, 146, 74, 0.25);
   }
 
-  .chip-arrow {
-    margin-top: var(--space-1);
-    font-size: var(--text-xs);
-    color: var(--text-dim);
-    align-self: flex-end;
-    transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  .skill-bubble.proficiency-working {
+    font-size: 0.72rem;
+    padding: 5px 11px;
+    border: 1px solid var(--border);
   }
 
-  .skill-chip:hover .chip-arrow,
-  .skill-chip:focus-visible .chip-arrow {
+  .skill-bubble.proficiency-experience,
+  .skill-bubble.proficiency-awareness {
+    font-size: 0.66rem;
+    padding: 4px 9px;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+
+  /* Core vs Complementary tinting */
+  .skill-bubble.tier-core.proficiency-strong {
+    background: rgba(184, 146, 74, 0.06);
+  }
+
+  .skill-bubble.tier-complementary {
+    border-color: rgba(100, 116, 139, 0.2);
+  }
+
+  /* Connection count badge */
+  .bubble-conn-count {
+    font-size: 0.52rem;
+    font-weight: 800;
     color: var(--accent-primary);
-    transform: translateX(4px);
+    background: rgba(184, 146, 74, 0.1);
+    padding: 1px 4px;
+    border-radius: var(--r-pill);
+    min-width: 14px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* Hover / Active states */
+  .skill-bubble:hover,
+  .skill-bubble:focus-visible {
+    background: rgba(184, 146, 74, 0.1);
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(184, 146, 74, 0.15);
+  }
+
+  .skill-bubble.is-active {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border-color: var(--text-primary);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 24px rgba(20, 24, 34, 0.2);
+    z-index: 10;
+  }
+
+  .skill-bubble.is-active .bubble-conn-count {
+    color: var(--bg-primary);
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .skill-bubble.same-domain {
+    background: rgba(184, 146, 74, 0.06);
+    border-color: rgba(184, 146, 74, 0.3);
+  }
+
+  /* Subtle pulse animation on the active bubble */
+  .skill-bubble.is-active::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    border: 1.5px solid var(--accent-primary);
+    opacity: 0;
+    animation: bubblePulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes bubblePulse {
+    0% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 0; transform: scale(1.15); }
+    100% { opacity: 0; transform: scale(1.15); }
+  }
+
+  /* ============================
+     HUD INSPECTOR
+     ============================ */
+  .map-hud-inspector {
+    position: sticky;
+    top: 80px;
+    opacity: 0.4;
+    transition: opacity 0.3s var(--ease-out);
+  }
+
+  .map-hud-inspector.hud-visible {
+    opacity: 1;
+  }
+
+  .hud-inner {
+    background: var(--surface);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--r-card);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    box-shadow: 
+      0 16px 40px -12px rgba(184, 146, 74, 0.15),
+      0 4px 16px rgba(20, 24, 34, 0.06);
+  }
+
+  .hud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: var(--text-2xs);
+  }
+
+  .hud-status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--accent-primary);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .hud-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+    animation: hudPulseAnim 2s infinite ease-in-out;
+  }
+
+  @keyframes hudPulseAnim {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hud-idx {
+    font-weight: 800;
+    color: var(--text-primary);
+    background: rgba(20, 24, 34, 0.05);
+    padding: 2px 7px;
+    border-radius: var(--r-pill);
+    font-size: 0.65rem;
+  }
+
+  /* Skill Info */
+  .hud-tier-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-2xs);
+    margin-bottom: 2px;
+  }
+
+  .hud-tier-badge {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    font-size: 0.58rem;
+  }
+
+  .badge-core {
+    background: rgba(184, 146, 74, 0.12);
+    border: 1px solid rgba(184, 146, 74, 0.3);
+    color: #8C6A28;
+  }
+
+  .badge-comp {
+    background: rgba(100, 116, 139, 0.1);
+    border: 1px solid rgba(100, 116, 139, 0.2);
+    color: var(--text-secondary);
+  }
+
+  .hud-cat-label {
+    color: var(--color-muted);
+    font-weight: 600;
+    font-size: 0.6rem;
+  }
+
+  .hud-skill-name {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .hud-prof {
+    font-size: var(--text-2xs);
+    color: var(--accent-primary);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  /* HUD Blocks */
+  .hud-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .hud-block-title {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    color: var(--color-muted);
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .block-glyph {
+    color: var(--accent-primary);
+  }
+
+  .hud-evidence {
+    font-size: var(--text-xs);
+    color: var(--text-primary);
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0;
+    border-left: 2px solid var(--accent-primary);
+    padding-left: var(--space-3);
+  }
+
+  .hud-context {
+    font-size: var(--text-2xs);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Project Links */
+  .hud-projects {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hud-proj-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s var(--ease-out);
+  }
+
+  .hud-proj-link:hover {
+    border-color: var(--accent-primary);
+    transform: translateX(3px);
+    background: var(--surface-elevated);
+  }
+
+  .proj-name {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .proj-badge {
+    font-size: 0.55rem;
+    background: rgba(184, 146, 74, 0.1);
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    color: #8C6A28;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+
+  /* Roles */
+  .hud-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .hud-role-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.64rem;
+    padding: 3px 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-xs);
+    color: var(--text-primary);
+  }
+
+  .role-badge {
+    font-size: 0.52rem;
+    color: var(--color-muted);
+    font-weight: 600;
+  }
+
+  /* Tools */
+  .hud-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .hud-tool-chip {
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    background: rgba(20, 24, 34, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: 3px;
+    color: var(--color-body);
+  }
+
+  .hud-empty {
+    font-size: var(--text-2xs);
+    color: var(--text-dim);
+    padding: 4px 0;
   }
 
   /* CTA Button */
-  .skills-cta-wrap {
-    margin-top: var(--space-8);
-    text-align: center;
-  }
-
-  .skills-cta-btn {
-    display: inline-flex;
+  .hud-cta {
+    display: flex;
     align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-4) var(--space-8);
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.7rem 1rem;
     background: var(--text-primary);
     color: var(--bg-primary);
     border-radius: var(--r-sm);
-    font-weight: 600;
-    font-size: var(--text-sm);
-    letter-spacing: 0.02em;
-    transition: all var(--dur-fast) var(--ease-out);
-    box-shadow: var(--shadow-resting);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: all 0.2s var(--ease-out);
   }
 
-  .skills-cta-btn:hover {
+  .hud-cta:hover {
     background: var(--accent-primary);
-    color: var(--bg-primary);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
+    box-shadow: 0 4px 16px rgba(184, 146, 74, 0.3);
   }
 
-  .skills-cta-btn .cta-arrow {
-    transition: transform var(--dur-fast) var(--ease-out);
+  .cta-arrow {
+    font-size: 0.85rem;
+    transition: transform 0.2s var(--ease-out);
   }
 
-  .skills-cta-btn:hover .cta-arrow {
-    transform: translateX(4px);
+  .hud-cta:hover .cta-arrow {
+    transform: translate(2px, -2px);
   }
 
-  @media (max-width: 640px) {
-    .skill-chips-grid {
+  /* ============================
+     STATS BAR
+     ============================ */
+  .map-stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-10);
+    margin-top: var(--space-10);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .stat-val {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 0.58rem;
+    color: var(--color-muted);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  /* ============================
+     RESPONSIVE
+     ============================ */
+  @media (max-width: 1200px) {
+    .skill-map-workspace {
+      grid-template-columns: 1fr 340px;
+    }
+    .skill-map-canvas {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .skill-map-workspace {
       grid-template-columns: 1fr;
     }
-    
-    .skill-chip {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 60px;
-      padding: var(--space-3) var(--space-4);
-    }
-    
-    .chip-category {
+
+    .map-hud-inspector {
+      position: static;
+      opacity: 1;
       order: -1;
+      margin-bottom: var(--space-6);
     }
-    
-    .chip-arrow {
-      margin-top: 0;
+
+    .skill-map-canvas {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .skill-map-canvas {
+      grid-template-columns: 1fr;
+    }
+
+    .map-legend {
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    .map-stats-bar {
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .domain-cluster {
+      padding: var(--space-4);
+    }
+
+    .hud-inner {
+      padding: var(--space-4);
+    }
+
+    .skill-bubble.proficiency-strong {
+      font-size: 0.72rem;
+      padding: 6px 12px;
+    }
+
+    .skill-bubble.proficiency-working {
+      font-size: 0.66rem;
+      padding: 5px 10px;
     }
   }
 </style>

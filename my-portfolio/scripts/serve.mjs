@@ -45,6 +45,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(4321, '0.0.0.0', () => {
-  console.log('Static preview server listening on http://localhost:4321');
+const port = process.env.PORT || 4322;
+server.listen(port, '0.0.0.0', () => {
+  console.log(`Static preview server listening on http://localhost:${port}`);
 });

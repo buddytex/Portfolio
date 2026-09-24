@@ -1,0 +1,168 @@
+[
+  {
+    "section": "hero",
+    "target": "personal-identity",
+    "primaryImage": "/images/naveen-portrait.png",
+    "displayType": "transparent-cutout-3d-stage",
+    "reason": "Existing monumental personal identity cut-out positioned directly in front of the real Three.js WebGL mechanical core."
+  },
+  {
+    "section": "roles",
+    "role": "electrical-electronics-head",
+    "primaryImage": "/media/projects/baja/baja-2026/team/Electrical-Head.jpeg",
+    "secondaryImage": "/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.15.05.jpeg",
+    "displayType": "expanded-role-media-card",
+    "badge": "LEADERSHIP CREDENTIAL",
+    "caption": "Naveen Shaji George in Team Equinox Electrical Head team jersey (Car A18) with official signed Technical Inspection Accumulator pass sticker.",
+    "reason": "Authentic visual proof of divisional leadership and technical safety certification in national collegiate engineering competition."
+  },
+  {
+    "section": "roles",
+    "role": "vice-president-anchoring-club",
+    "primaryImage": "/media/activities/anchoring/Nakshatra_25/WhatsApp Image 2026-09-14 at 00.37.50.jpeg",
+    "secondaryImage": "/media/achievements/certificates/1156ae7c-fc50-424e-af60-4bcc8e38810b_page-0001.jpg",
+    "displayType": "expanded-role-media-card",
+    "badge": "STAGE LEADERSHIP · NAKSHATRA",
+    "caption": "Stage anchor portrait in tuxedo hosting Saintgits Nakshatra national cultural fest, accompanied by Saintgits Best Anchor certificate.",
+    "reason": "Exceptional lighting, poise, and national-scale event leadership evidence representing stage operations, celebrity coordination, and team grooming."
+  },
+  {
+    "section": "roles",
+    "role": "coordinator-campus-radio-jockey",
+    "primaryImage": "/media/activities/campus-radio/WhatsApp Image 2026-09-14 at 01.05.29(1).jpeg",
+    "displayType": "expanded-role-media-card",
+    "badge": "STUDIO OPERATIONS",
+    "caption": "Broadcast studio microphone setup, mixing terminal, and acoustic console production.",
+    "reason": "Clean, atmospheric studio photography proving hands-on broadcast coordination and sound management."
+  },
+  {
+    "section": "roles",
+    "role": "radio-jockey",
+    "primaryImage": "/media/activities/campus-radio/WhatsApp Image 2026-09-14 at 01.05.29(1).jpeg",
+    "displayType": "expanded-role-media-card",
+    "badge": "ON-AIR BROADCASTING",
+    "caption": "Live on-air voice delivery and thematic storytelling over collegiate radio transmitters.",
+    "reason": "Studio broadcast microphone setup establishing media presence and public communication expertise."
+  },
+  {
+    "section": "projects",
+    "projectId": "abaja",
+    "primaryImage": "/media/projects/baja/baja-2025/vehicle/car1.jpeg",
+    "secondaryImage": "/media/projects/baja/baja-2026/vehicle/WhatsApp Image 2026-09-14 at 00.14.44.jpeg",
+    "displayType": "project-card-hero-with-preview",
+    "badge": "AIR 7 (2025) · AIR 11 (2026)",
+    "caption": "Car A12 dynamic on-track endurance maneuver with Car A18 livery hover preview.",
+    "reason": "Immediate high-energy action photo replacing 2D block diagrams with real competition racing vehicle."
+  },
+  {
+    "section": "projects",
+    "projectId": "smart-cctv",
+    "primaryImage": "/media/hackathons/intel-ai/Picture1.png",
+    "secondaryImage": "/media/hackathons/intel-ai/IMG-20241127-WA0009.jpg",
+    "additionalGallery": [
+      "/media/hackathons/intel-ai/IMG-20241127-WA0010.jpg",
+      "/media/hackathons/intel-ai/IMG-20241127-WA0001.jpg",
+      "/media/hackathons/intel-ai/IMG-20241127-WA0002.jpg",
+      "/media/hackathons/intel-ai/IMG-20241127-WA0006.jpg",
+      "/media/hackathons/intel-ai/VID-20241127-WA0001.mp4",
+      "/media/achievements/certificates/intel-genai-hackathon-top25.jpg"
+    ],
+    "displayType": "project-card-and-dossier",
+    "badge": "INTEL TOP 25 NATIONAL FINALIST",
+    "caption": "Real-time YOLO surveillance telemetry visualizer with Intel GenAI Hackathon presentation team photo.",
+    "reason": "Real software inference screenshots verifying edge computer vision architecture, paired with stage evidence at Intel AI Hackathon."
+  },
+  {
+    "section": "projects",
+    "projectId": "swarm-robotics",
+    "primaryImage": "/media/projects/swarm-robotics/hero_swarm_test.png",
+    "secondaryImage": "/media/projects/swarm-robotics/hero_gazebo_swarm.png",
+    "additionalGallery": [
+      "/media/projects/swarm-robotics/hero_robot_ehat.jpg",
+      "/media/projects/swarm-robotics/hero_pcb.png",
+      "/media/projects/swarm-robotics/hero_robot_single.jpg"
+    ],
+    "displayType": "project-card-and-dossier",
+    "badge": "OPEN-SOURCE STUDY · VeRLab HeRo",
+    "caption": "Physical four-robot HeRo testbed in arena (left) and 16-agent Gazebo simulation (right) under CC BY-NC-SA 4.0 license.",
+    "reason": "Accurate, fully-attributed representation of open-source ROS swarm robotics framework (VeRLab / UFMG) used for multi-agent simulation research."
+  },
+  {
+    "section": "projects",
+    "projectId": "railguard-ai",
+    "primaryImage": "/media/projects/railguard-ai/event/WhatsApp Image 2026-09-14 at 00.59.22(1).jpeg",
+    "secondaryImage": "/media/projects/railguard-ai/app/WhatsApp Image 2026-09-14 at 00.59.28.jpeg",
+    "actionVideo": "/media/projects/railguard-ai/hardware-testing/WhatsApp Video 2026-09-14 at 00.59.27.mp4",
+    "displayType": "project-card-with-live-video-badge",
+    "badge": "NATIONAL WINNER",
+    "caption": "Faraway International Hackathon hardware engineering arena with live LiDAR and rover telemetry visualizer.",
+    "reason": "Replaces tightly cropped phone UI with 4032x3024 hackathon arena engineering setup showing breadboards, circuit integration, and dual-layer LiDAR hover preview."
+  },
+  {
+    "section": "projects",
+    "projectId": "surgical-robotics",
+    "primaryImage": "/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35.jpeg",
+    "secondaryImage": "/media/internships/surgical-robotics/hospital-experience/WhatsApp Image 2026-09-14 at 01.05.36(1).jpeg",
+    "teleopVideo": "/media/internships/surgical-robotics/robot-hardware/WhatsApp Video 2026-09-14 at 01.05.33.mp4",
+    "displayType": "project-case-study-dossier",
+    "badge": "CLINICAL TESTBED",
+    "caption": "CMR Versius modular bedside robotic arms and 3D surgeon console teleoperation at Muthoot Hospitals.",
+    "reason": "Clinical robotics case study showcasing high-precision teleoperation, kinematics, and sterile OR immersion."
+  },
+  {
+    "section": "hardware",
+    "target": "pcb-showcase-verification",
+    "boardId": "vehicle-ecu",
+    "primaryImage": "/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg",
+    "testVideo": "/media/projects/baja/baja-2026/electrical/WhatsApp Video 2026-09-14 at 00.14.56.mp4",
+    "displayType": "physical-build-toggle-drawer",
+    "badge": "PHYSICALLY BUILT & TESTED",
+    "caption": "Custom Equinox Back-Box PCB in enclosure with flashing dual-core ESP32s and terminal wiring.",
+    "reason": "Complements 3D procedural PCB rendering with photographic proof of assembled hardware in vehicle."
+  },
+  {
+    "section": "achievements",
+    "target": "restrained-credential-selector",
+    "certificates": [
+      {
+        "id": "sae-baja-2025",
+        "title": "SAEINDIA BAJA 2025 Participation",
+        "file": "/media/achievements/certificates/sae-baja-2025-cert.jpg",
+        "issuer": "SAEINDIA",
+        "category": "Collegiate Automotive"
+      },
+      {
+        "id": "intel-genai-2024",
+        "title": "Intel GenAI Hackathon 2024 Top 25 Finalist",
+        "file": "/media/achievements/certificates/intel-genai-hackathon-top25.jpg",
+        "issuer": "Intel & TechGeek Community",
+        "category": "Artificial Intelligence"
+      },
+      {
+        "id": "sae-self-driving",
+        "title": "Self Driving Car Workshop 2024",
+        "file": "/media/achievements/certificates/sae-self-driving-car-cert.jpg",
+        "issuer": "SAEINDIA & Skill-Lync",
+        "category": "Autonomous Systems"
+      },
+      {
+        "id": "srishti-2024",
+        "title": "Srishti 2024 Project Exhibition",
+        "file": "/media/achievements/certificates/93b5c232-34bf-4c5f-a807-b2f59067b084_page-0001.jpg",
+        "issuer": "Saintgits College of Engineering",
+        "category": "National Technical Exhibition"
+      },
+      {
+        "id": "nakshatra-best-anchor",
+        "title": "Nakshatra 2024 Best Anchor",
+        "file": "/media/achievements/certificates/1156ae7c-fc50-424e-af60-4bcc8e38810b_page-0001.jpg",
+        "issuer": "Saintgits College of Engineering",
+        "category": "Cultural Leadership"
+      }
+    ],
+    "displayType": "interactive-credential-micro-selector",
+    "badge": "VERIFIED CREDENTIALS",
+    "caption": "Curated, restrained credential selector allowing direct proof inspection without creating a certificate wall.",
+    "reason": "Provides direct, expandable evidence of verified achievements across robotics, automotive, and stage leadership."
+  }
+]

@@ -1,4 +1,6 @@
-export * from './tokens';
-export * from './core';
-export * from './orchestrator';
-export * from './scroll';
+// ============================================================
+// DEPRECATED COMPATIBILITY BARREL
+// Re-exports from the centralized Anime.js 4.5.x animation suite
+// ============================================================
+
+export * from '../../animations';

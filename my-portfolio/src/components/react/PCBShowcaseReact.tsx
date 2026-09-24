@@ -1,18 +1,22 @@
 // PCBShowcaseReact Component — Interactive 3D PCB Inspector using React Three Fiber
-// Proper OrbitControls: Left drag = rotate, Wheel = zoom, Right drag = pan
-// Touch: drag = rotate, pinch = zoom
+// Supports two modes:
+// 1. Decorative showcase (for boards without Gerber data)
+// 2. Real Gerber-derived 3D viewer (for boards with actual fabrication data)
 
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { pcbArtifacts } from '../../data/pcbArtifacts';
+import GerberPCBViewer from './GerberPCBViewer';
 
 interface PCBBoardData {
   id: string;
   name: string;
   layerCount: string;
   testPoints: { id: string; x: number; y: number; label: string; desc: string }[];
+  gerberDataFile?: string;
+  gerberArchive?: string;
 }
 
 interface PCBShowcaseReactProps {
@@ -26,50 +30,84 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
   // Listen for board change events from parent
   useEffect(() => {
     const handler = (e: CustomEvent) => {
-      setCurrentBoardIndex(e.detail.index);
+      if (typeof e.detail?.index === 'number') {
+        setCurrentBoardIndex(e.detail.index);
+      }
     };
     window.addEventListener('pcb-board-change', handler as EventListener);
     return () => window.removeEventListener('pcb-board-change', handler as EventListener);
   }, []);
 
+  // Listen for explicit gerber3d view requests from Astro
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      if (typeof e.detail?.boardIndex === 'number') {
+        setCurrentBoardIndex(e.detail.boardIndex);
+      }
+    };
+    window.addEventListener('pcb-view-gerber3d', handler as EventListener);
+    return () => window.removeEventListener('pcb-view-gerber3d', handler as EventListener);
+  }, []);
+
+  // Real Gerber 3D mode — ALWAYS rendered by default for boards with real fabrication data
+  if (currentBoard.gerberDataFile) {
+    return (
+      <div style={{ width: '100%', minHeight: '440px' }}>
+        <GerberPCBViewer
+          key={currentBoard.id}
+          gerberDataFile={currentBoard.gerberDataFile}
+          boardName={currentBoard.name}
+          gerberArchive={currentBoard.gerberArchive}
+        />
+      </div>
+    );
+  }
+
+  // Showcase mode — decorative PCB view
   return (
-    <Canvas
-      camera={{ position: [0, 0, 3.5], fov: 45 }}
-      gl={{ antialias: true, alpha: true, preserveDrawingBuffer: false }}
-      style={{ width: '100%', height: '100%', display: 'block' }}
-      onCreated={({ gl }) => {
-        gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-        gl.setClearColor(0xf7f5f0, 1);
-      }}
-    >
-      <PerspectiveCamera makeDefault position={[0, 0, 3.5]} fov={45} />
-      
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[2, 3, 2]} intensity={1.2} />
-      <directionalLight position={[-2, -1, 1.5]} intensity={0.4} />
-      
-      <PCBBoard board={currentBoard} />
-      
-      <OrbitControls
-        enableRotate={true}
-        enableZoom={true}
-        enablePan={true}
-        enableDamping={true}
-        dampingFactor={0.06}
-        autoRotate={false}
-        maxPolarAngle={Math.PI / 2 - 0.05}
-        minPolarAngle={0.05}
-        minZoom={0.5}
-        maxZoom={5}
-        rotateSpeed={0.8}
-        zoomSpeed={1}
-        panSpeed={0.8}
-      />
-      
-      <gridHelper args={[4, 4, 0xd0cbbe, 0xe5e1d7]} />
-    </Canvas>
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <Canvas
+        camera={{ position: [0, 0, 3.5], fov: 42 }}
+        gl={{ antialias: true, alpha: false, preserveDrawingBuffer: false }}
+        style={{ width: '100%', height: '100%', display: 'block', minHeight: '440px' }}
+        onCreated={({ gl }) => {
+          gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          gl.setClearColor(0x0E1117, 1);
+        }}
+      >
+        <PerspectiveCamera makeDefault position={[0, 0, 3.5]} fov={42} />
+        
+        <ambientLight intensity={1.2} color={0xFFFAF0} />
+        <directionalLight position={[3, 4, 3]} intensity={1.8} color={0xFFF6E6} />
+        <directionalLight position={[-3, -2, 2]} intensity={0.9} color={0xD8E6F5} />
+        <directionalLight position={[0, 0, 4]} intensity={1.0} color={0xFFFFFF} />
+        
+        <PCBBoard board={currentBoard} />
+        
+        <OrbitControls
+          enableRotate={true}
+          enableZoom={true}
+          enablePan={true}
+          enableDamping={true}
+          dampingFactor={0.08}
+          autoRotate={true}
+          autoRotateSpeed={0.6}
+          maxPolarAngle={Math.PI / 2 - 0.05}
+          minPolarAngle={0.05}
+          minZoom={0.5}
+          maxZoom={5}
+          rotateSpeed={0.8}
+          zoomSpeed={1.1}
+          panSpeed={0.8}
+        />
+        
+        <gridHelper args={[4, 20, 0x1E2430, 0x141822]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.05]} />
+      </Canvas>
+    </div>
   );
 }
+
+// ── Decorative PCB Board (existing showcase) ────────────────────────
 
 function PCBBoard({ board }: { board: PCBBoardData }) {
   const groupRef = useRef<THREE.Group>(null);

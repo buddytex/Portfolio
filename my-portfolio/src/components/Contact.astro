@@ -116,34 +116,35 @@
     <div class="contact-signature">
       <div class="signature-line"></div>
       <p class="signature-text mono">— Naveen Shaji George</p>
-      <p class="signature-role">Robotics & Autonomous Systems Engineer</p>
+      <p class="signature-role">Robotics and Automation Engineer</p>
     </div>
   </div>
 </section>
 
 <script>
-  // 1-Click Email copy to clipboard
-  const copyBtn = document.getElementById('copyEmailBtn');
-  const copyText = document.getElementById('copyText');
-  const email = 'ngbuddy5@gmail.com';
+  import { animateCopyFeedback } from '../animations';
 
-  copyBtn?.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(email);
-      if (copyText) {
-        copyText.textContent = 'Copied to Clipboard ✓';
-        copyText.style.color = 'var(--accent-primary)';
+  function initContactCopy() {
+    const copyBtn = document.getElementById('copyEmailBtn');
+    const copyText = document.getElementById('copyText');
+    const email = 'ngbuddy5@gmail.com';
+
+    copyBtn?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(email);
+        animateCopyFeedback(copyBtn, copyText);
+      } catch {
+        // Fallback
       }
-      setTimeout(() => {
-        if (copyText) {
-          copyText.textContent = 'Copy Address';
-          copyText.style.color = '';
-        }
-      }, 2500);
-    } catch {
-      // Fallback
-    }
-  });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initContactCopy);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initContactCopy);
+  } else {
+    initContactCopy();
+  }
 </script>
 
 <style>

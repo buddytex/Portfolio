@@ -1,0 +1,414 @@
+---
+// ImageLightbox.astro — Global Lightbox for Full-Resolution Engineering Evidence
+---
+
+<div id="portfolioLightbox" class="portfolio-lightbox" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+  <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+
+  <div class="lightbox-stage">
+    <!-- Top HUD Bar -->
+    <header class="lightbox-hud-bar">
+      <div class="lightbox-meta">
+        <span class="lightbox-badge mono" id="lightboxBadge">TECHNICAL ARTIFACT</span>
+        <h3 class="lightbox-title" id="lightboxTitle">Artifact Inspector</h3>
+      </div>
+      <div class="lightbox-actions">
+        <span class="lightbox-dim mono" id="lightboxDims">NATURAL RESOLUTION</span>
+        <button type="button" class="lightbox-btn-close" id="lightboxCloseBtn" aria-label="Close Lightbox (Esc)">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Visual Stage (Preserves Natural Aspect Ratio) -->
+    <div class="lightbox-viewport" id="lightboxViewport">
+      <div class="lightbox-img-wrap" id="lightboxImgWrap">
+        <img id="lightboxImg" class="lightbox-img" src="" alt="" />
+      </div>
+      <button type="button" class="lightbox-nav-btn prev" id="lightboxPrevBtn" aria-label="Previous Image" hidden>
+        <span aria-hidden="true">←</span>
+      </button>
+      <button type="button" class="lightbox-nav-btn next" id="lightboxNextBtn" aria-label="Next Image" hidden>
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+
+    <!-- Bottom Caption Bar -->
+    <footer class="lightbox-caption-bar">
+      <p class="lightbox-caption" id="lightboxCaption"></p>
+    </footer>
+  </div>
+</div>
+
+<script>
+  interface LightboxItem {
+    src: string;
+    title?: string;
+    caption?: string;
+    badge?: string;
+  }
+
+  function initGlobalLightbox() {
+    const lightbox = document.getElementById('portfolioLightbox');
+    const backdrop = document.getElementById('lightboxBackdrop');
+    const closeBtn = document.getElementById('lightboxCloseBtn');
+    const img = document.getElementById('lightboxImg') as HTMLImageElement | null;
+    const titleEl = document.getElementById('lightboxTitle');
+    const captionEl = document.getElementById('lightboxCaption');
+    const badgeEl = document.getElementById('lightboxBadge');
+    const dimsEl = document.getElementById('lightboxDims');
+    const prevBtn = document.getElementById('lightboxPrevBtn');
+    const nextBtn = document.getElementById('lightboxNextBtn');
+
+    if (!lightbox || !img) return;
+
+    let galleryItems: LightboxItem[] = [];
+    let currentIndex = 0;
+    let activeTrigger: HTMLElement | null = null;
+
+    function openLightbox(item: LightboxItem, items: LightboxItem[] = [item], index: number = 0) {
+      galleryItems = items;
+      currentIndex = index;
+      renderCurrentItem();
+
+      lightbox.hidden = false;
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('lightbox-open');
+      closeBtn?.focus();
+    }
+
+    function renderCurrentItem() {
+      if (!galleryItems.length || currentIndex < 0 || currentIndex >= galleryItems.length) return;
+      const current = galleryItems[currentIndex];
+
+      if (img) {
+        img.src = current.src;
+        img.alt = current.title || 'Technical engineering artifact';
+        img.onload = () => {
+          if (dimsEl && img.naturalWidth) {
+            dimsEl.textContent = `${img.naturalWidth} × ${img.naturalHeight} PX`;
+          }
+        };
+      }
+
+      if (titleEl) titleEl.textContent = current.title || 'Artifact Inspector';
+      if (badgeEl) badgeEl.textContent = current.badge || 'FULL RESOLUTION EVIDENCE';
+      if (captionEl) {
+        captionEl.textContent = current.caption || '';
+        captionEl.style.display = current.caption ? 'block' : 'none';
+      }
+
+      const hasMulti = galleryItems.length > 1;
+      if (prevBtn) prevBtn.hidden = !hasMulti;
+      if (nextBtn) nextBtn.hidden = !hasMulti;
+    }
+
+    function closeLightbox() {
+      lightbox.hidden = true;
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('lightbox-open');
+      if (img) img.src = '';
+      if (activeTrigger) {
+        activeTrigger.focus();
+        activeTrigger = null;
+      }
+    }
+
+    function showNext() {
+      if (galleryItems.length <= 1) return;
+      currentIndex = (currentIndex + 1) % galleryItems.length;
+      renderCurrentItem();
+    }
+
+    function showPrev() {
+      if (galleryItems.length <= 1) return;
+      currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+      renderCurrentItem();
+    }
+
+    // Attach click listeners to all expandable images across document
+    function bindTriggers() {
+      const triggers = document.querySelectorAll<HTMLElement>('[data-lightbox], .artifact-tile, .proof-img-card, .evidence-image-wrap');
+      triggers.forEach(el => {
+        // avoid double binding
+        if (el.dataset.lbBound) return;
+        el.dataset.lbBound = 'true';
+
+        el.addEventListener('click', (e) => {
+          // If clicked a link or interactive button inside that is not the image, allow default
+          const target = e.target as HTMLElement;
+          if (target.tagName === 'A' && !target.classList.contains('cred-thumb-wrap')) return;
+          if (target.tagName === 'BUTTON') return;
+
+          e.preventDefault();
+          activeTrigger = el;
+
+          const imageEl = el.querySelector('img');
+          const src = el.dataset.lightbox || imageEl?.currentSrc || imageEl?.src;
+          if (!src) return;
+
+          const title = el.dataset.title || imageEl?.alt || el.querySelector('.tile-title, .board-title, .evidence-caption')?.textContent?.trim();
+          const caption = el.dataset.caption || el.querySelector('.tile-caption, .proof-text, .evidence-caption')?.textContent?.trim();
+          const badge = el.dataset.badge || el.querySelector('.tile-badge, .proof-tag, .evidence-badge')?.textContent?.trim();
+
+          // Check if parent has siblings to form a collection
+          const parentGroup = el.closest('.artifacts-grid, .proof-media-row, .gallery-group');
+          if (parentGroup) {
+            const siblings = Array.from(parentGroup.querySelectorAll<HTMLElement>('[data-lightbox], .artifact-tile, .proof-img-card'));
+            const items: LightboxItem[] = siblings.map(s => {
+              const sImg = s.querySelector('img');
+              return {
+                src: s.dataset.lightbox || sImg?.currentSrc || sImg?.src || '',
+                title: s.dataset.title || sImg?.alt || s.querySelector('.tile-title')?.textContent?.trim(),
+                caption: s.dataset.caption || s.querySelector('.tile-caption')?.textContent?.trim(),
+                badge: s.dataset.badge || s.querySelector('.tile-badge')?.textContent?.trim(),
+              };
+            }).filter(i => !!i.src);
+
+            const sIdx = siblings.indexOf(el);
+            openLightbox({ src, title, caption, badge }, items, Math.max(0, sIdx));
+          } else {
+            openLightbox({ src, title, caption, badge });
+          }
+        });
+      });
+    }
+
+    closeBtn?.addEventListener('click', closeLightbox);
+    backdrop?.addEventListener('click', closeLightbox);
+    prevBtn?.addEventListener('click', showPrev);
+    nextBtn?.addEventListener('click', showNext);
+
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.hidden) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') showNext();
+      if (e.key === 'ArrowLeft') showPrev();
+    });
+
+    bindTriggers();
+
+    // Rebind on dynamic DOM updates or page navigations
+    document.addEventListener('astro:page-load', bindTriggers);
+  }
+
+  // Initialize once DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGlobalLightbox);
+  } else {
+    initGlobalLightbox();
+  }
+  document.addEventListener('astro:page-load', initGlobalLightbox);
+</script>
+
+<style>
+  .portfolio-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .portfolio-lightbox[hidden] {
+    display: none !important;
+  }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 13, 20, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    cursor: zoom-out;
+  }
+
+  .lightbox-stage {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    width: 95vw;
+    max-width: 1400px;
+    height: 94vh;
+    max-height: 920px;
+    background: #0E121A;
+    border: 1px solid rgba(184, 146, 74, 0.35);
+    border-radius: 12px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+  }
+
+  .lightbox-hud-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #141923;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .lightbox-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .lightbox-badge {
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    background: rgba(184, 146, 74, 0.18);
+    color: #E5C378;
+    border: 1px solid rgba(184, 146, 74, 0.35);
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .lightbox-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #F7F5F0;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .lightbox-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .lightbox-dim {
+    font-size: 0.65rem;
+    color: #8C94A0;
+    letter-spacing: 0.04em;
+  }
+
+  .lightbox-btn-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    color: #FAF8F2;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .lightbox-btn-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #F87171;
+  }
+
+  /* Main Viewport: Ensures complete image is visible with NO CROPPING */
+  .lightbox-viewport {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #151A24 0%, #0C0F16 100%);
+  }
+
+  .lightbox-img-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+  }
+
+  .lightbox-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14, 18, 26, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    color: #FAF8F2;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    z-index: 10;
+  }
+
+  .lightbox-nav-btn:hover {
+    background: var(--color-gold, #B8924A);
+    border-color: #E5C378;
+    color: #141822;
+  }
+
+  .lightbox-nav-btn.prev {
+    left: 20px;
+  }
+
+  .lightbox-nav-btn.next {
+    right: 20px;
+  }
+
+  .lightbox-caption-bar {
+    padding: 10px 20px;
+    background: #141923;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .lightbox-caption {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: #B5BAC5;
+    margin: 0;
+  }
+
+  :global(body.lightbox-open) {
+    overflow: hidden !important;
+  }
+
+  @media (max-width: 768px) {
+    .lightbox-stage {
+      width: 100vw;
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+      border: none;
+    }
+    .lightbox-dim {
+      display: none;
+    }
+    .lightbox-nav-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 0.9rem;
+    }
+  }
+</style>

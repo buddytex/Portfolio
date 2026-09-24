@@ -1,399 +1,690 @@
 ---
-// CircuitBoard Component — Cursor-Reactive PCB Trace Network
-// Ported from circuit-hover-demo.html reference implementation
-// Organic node placement, strict Manhattan routing, cursor proximity charging, pulse travel
-// Performance: DPR capped at 2, layout only on resize, 0 allocations in draw loop
+// CircuitBoard Component — High-Precision Deterministic PCB Architecture
+// Engineered exclusively for the Hero Section:
+// - 100% deterministic layout (NO Math.random)
+// - Purposeful routing: frames typography, bridges CTA to 3D hardware core
+// - Clear hierarchy: 10% hero highways, 20% secondary buses, 70% subtle hairlines
+// - Generous negative space preserving typographic legibility
+// - Contained strictly to Hero section (no leaking across rest of site)
+// - High-DPR canvas rendering, interactive cursor proximity, traveling gold pulses
 ---
 
 <canvas id="circuitBoardCanvas" aria-hidden="true"></canvas>
 
 <script>
-  const canvas = document.getElementById('circuitBoardCanvas') as HTMLCanvasElement;
-  if (canvas) {
+  import { registerCircuitVisibility, type CircuitController } from '../animations';
+
+  let currentCircuitController: CircuitController | null = null;
+  let circuitLoopId: number | null = null;
+  let isCircuitVisible = true;
+
+  function initHeroPCB() {
+    if (currentCircuitController) {
+      currentCircuitController.destroy();
+      currentCircuitController = null;
+    }
+    if (circuitLoopId) {
+      cancelAnimationFrame(circuitLoopId);
+      circuitLoopId = null;
+    }
+
+    const canvas = document.getElementById('circuitBoardCanvas') as HTMLCanvasElement;
+    if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
-    if (ctx) {
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let W = 0;
-      let H = 0;
-      let DPR = 1;
+    if (!ctx) return;
 
-      // ---- Data structures (rebuilt on resize) ----
-      interface BoardNode {
-        x: number;
-        y: number;
-        r: number;
-        shape: 'dot' | 'pad' | 'ic';
-        idx: number;
+    const heroSection = document.getElementById('hero');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let W = 0;
+    let H = 0;
+    let DPR = 1;
+
+    interface NodeDef {
+      u: number; // 0..1 normalized X
+      v: number; // 0..1 normalized Y
+      shape: 'glow_via' | 'via' | 'pad' | 'ic' | 'dot';
+      size: number;
+      label?: string;
+    }
+
+    interface TraceDef {
+      tier: 'highway' | 'medium' | 'hairline';
+      points: [number, number][]; // array of [u, v]
+      hasPulse?: boolean;
+    }
+
+    interface MarkerDef {
+      u: number;
+      v: number;
+      type: 'cross' | 'dot_matrix' | 'label';
+      text?: string;
+    }
+
+    // -----------------------------------------------------------
+    // DETERMINISTIC PCB TOPOLOGY ARCHITECTURE
+    // Intentionally routed around Hero content and leading into 3D core
+    // -----------------------------------------------------------
+
+    // 1. Strategic Functional Nodes (Glow Vias, Standard Vias, ICs)
+    const rawNodes: NodeDef[] = [
+      // Top Architectural Route (Well above eyebrow pill at v=0.28)
+      { u: 0.16, v: 0.00, shape: 'via', size: 3.5 },
+      { u: 0.16, v: 0.14, shape: 'via', size: 4.0 },
+      { u: 0.26, v: 0.14, shape: 'glow_via', size: 5.5 },
+      { u: 0.38, v: 0.14, shape: 'via', size: 3.5 },
+      { u: 0.48, v: 0.14, shape: 'via', size: 4.5 },
+      { u: 0.55, v: 0.18, shape: 'glow_via', size: 6.0 },
+
+      // Upper Bridge into 3D System (leading directly to Top-Left Gold Sphere at u=0.60, v=0.22)
+      { u: 0.60, v: 0.22, shape: 'glow_via', size: 5.5 },
+      { u: 0.66, v: 0.16, shape: 'via', size: 3.5 },
+      { u: 0.74, v: 0.12, shape: 'glow_via', size: 5.5 },
+
+      // Step Rail / Left Edge Bus (u=0.04 to 0.06)
+      { u: 0.04, v: 0.12, shape: 'via', size: 3.5 },
+      { u: 0.04, v: 0.28, shape: 'glow_via', size: 5.0 },
+      { u: 0.04, v: 0.45, shape: 'via', size: 3.5 },
+      { u: 0.04, v: 0.68, shape: 'via', size: 3.5 },
+      { u: 0.04, v: 0.84, shape: 'via', size: 4.5 },
+      { u: 0.06, v: 0.22, shape: 'via', size: 2.5 },
+      { u: 0.06, v: 0.62, shape: 'via', size: 2.5 },
+
+      // Name Baseline Bus (v=0.56, beneath typography) & CTA Connection Bridge
+      { u: 0.08, v: 0.56, shape: 'via', size: 4.0 },
+      { u: 0.24, v: 0.56, shape: 'via', size: 3.5 },
+      { u: 0.38, v: 0.56, shape: 'glow_via', size: 5.0 },
+      { u: 0.44, v: 0.66, shape: 'via', size: 4.0 },
+      { u: 0.52, v: 0.66, shape: 'via', size: 4.0 },
+      { u: 0.62, v: 0.66, shape: 'glow_via', size: 6.0 },
+      { u: 0.68, v: 0.74, shape: 'ic', size: 13 },
+
+      // Bottom Finger Array Entering 3D Mechanism from Below
+      { u: 0.52, v: 0.94, shape: 'via', size: 3.5 },
+      { u: 0.52, v: 0.80, shape: 'via', size: 4.0 },
+      { u: 0.56, v: 0.94, shape: 'via', size: 3.5 },
+      { u: 0.56, v: 0.76, shape: 'glow_via', size: 5.0 },
+      { u: 0.60, v: 0.94, shape: 'via', size: 3.5 },
+      { u: 0.60, v: 0.80, shape: 'via', size: 4.0 },
+      { u: 0.64, v: 0.92, shape: 'glow_via', size: 5.5 },
+      { u: 0.64, v: 0.84, shape: 'via', size: 4.0 },
+
+      // Bottom Left Industrial Ground Plane
+      { u: 0.10, v: 0.88, shape: 'via', size: 4.0 },
+      { u: 0.22, v: 0.88, shape: 'glow_via', size: 5.5 },
+      { u: 0.34, v: 0.88, shape: 'via', size: 4.0 },
+      { u: 0.42, v: 0.82, shape: 'via', size: 4.0 },
+      { u: 0.14, v: 0.82, shape: 'ic', size: 12 },
+
+      // Right Perimeter Actuator & Sensor Bus (Framing 3D assembly on right)
+      { u: 0.92, v: 0.08, shape: 'via', size: 3.5 },
+      { u: 0.92, v: 0.28, shape: 'glow_via', size: 5.5 },
+      { u: 0.84, v: 0.28, shape: 'via', size: 4.0 },
+      { u: 0.84, v: 0.46, shape: 'via', size: 3.5 },
+      { u: 0.88, v: 0.54, shape: 'via', size: 4.0 },
+      { u: 0.92, v: 0.68, shape: 'glow_via', size: 5.5 },
+      { u: 0.86, v: 0.78, shape: 'via', size: 3.5 },
+      { u: 0.90, v: 0.86, shape: 'via', size: 4.5 },
+      { u: 0.94, v: 0.64, shape: 'ic', size: 12 },
+    ];
+
+    // 2. Deterministic Traces (Highways, Medium Signal Routes, Hairlines)
+    const rawTraces: TraceDef[] = [
+      // ---------------------------------------------
+      // PRIMARY HIGHWAYS (~10%): Prominent, Embossed, Traveling Pulses
+      // ---------------------------------------------
+      // Highway A: Top Left -> Above Eyebrow -> Feeds 3D Core
+      {
+        tier: 'highway',
+        hasPulse: true,
+        points: [
+          [0.16, 0.00],
+          [0.16, 0.14],
+          [0.48, 0.14],
+          [0.55, 0.18],
+          [0.60, 0.22],
+          [0.66, 0.16],
+          [0.74, 0.12],
+        ],
+      },
+      // Highway B: Under Name Baseline -> CTA Bridge -> Into 3D Hardware Core
+      {
+        tier: 'highway',
+        hasPulse: true,
+        points: [
+          [0.08, 0.56],
+          [0.38, 0.56],
+          [0.44, 0.66],
+          [0.62, 0.66],
+          [0.68, 0.74],
+        ],
+      },
+      // Highway C: Left Industrial Edge Dual Bus
+      {
+        tier: 'highway',
+        points: [
+          [0.04, 0.12],
+          [0.04, 0.84],
+          [0.10, 0.88],
+          [0.34, 0.88],
+          [0.42, 0.82],
+        ],
+      },
+      // Highway D: Bottom Vertical Power Bus rising into 3D Assembly
+      {
+        tier: 'highway',
+        hasPulse: true,
+        points: [
+          [0.56, 0.94],
+          [0.56, 0.76],
+          [0.62, 0.66],
+        ],
+      },
+      // Highway E: Right Perimeter Actuator Bus
+      {
+        tier: 'highway',
+        points: [
+          [0.92, 0.08],
+          [0.92, 0.28],
+          [0.84, 0.28],
+          [0.84, 0.46],
+          [0.88, 0.54],
+          [0.92, 0.68],
+          [0.90, 0.86],
+        ],
+      },
+
+      // ---------------------------------------------
+      // SECONDARY ROUTES (~20%): Medium Width Signals
+      // ---------------------------------------------
+      // Parallel to Highway A (Spacing 12px)
+      {
+        tier: 'medium',
+        points: [
+          [0.175, 0.00],
+          [0.175, 0.125],
+          [0.465, 0.125],
+          [0.535, 0.165],
+          [0.585, 0.205],
+          [0.645, 0.145],
+          [0.725, 0.105],
+        ],
+      },
+      // Parallel to Left Edge Bus
+      {
+        tier: 'medium',
+        points: [
+          [0.06, 0.18],
+          [0.06, 0.82],
+          [0.115, 0.86],
+          [0.32, 0.86],
+          [0.40, 0.80],
+        ],
+      },
+      // Secondary Name Underline framing CTA buttons
+      {
+        tier: 'medium',
+        points: [
+          [0.08, 0.58],
+          [0.36, 0.58],
+          [0.42, 0.68],
+          [0.54, 0.68],
+          [0.60, 0.74],
+        ],
+      },
+      // Secondary Bottom Vertical Fingers into 3D core
+      {
+        tier: 'medium',
+        points: [
+          [0.52, 0.94],
+          [0.52, 0.80],
+        ],
+      },
+      {
+        tier: 'medium',
+        points: [
+          [0.60, 0.94],
+          [0.60, 0.80],
+        ],
+      },
+      {
+        tier: 'medium',
+        points: [
+          [0.64, 0.92],
+          [0.64, 0.84],
+          [0.68, 0.78],
+        ],
+      },
+      // Right Secondary Parallel Trace
+      {
+        tier: 'medium',
+        points: [
+          [0.935, 0.10],
+          [0.935, 0.30],
+          [0.855, 0.30],
+          [0.855, 0.44],
+          [0.90, 0.52],
+          [0.94, 0.64],
+        ],
+      },
+
+      // ---------------------------------------------
+      // SUBTLE HAIRLINES (~70%): Fine Architectural Background Weave
+      // ---------------------------------------------
+      // Top Area Faded Lines
+      { tier: 'hairline', points: [[0.08, 0.08], [0.14, 0.08], [0.18, 0.12]] },
+      { tier: 'hairline', points: [[0.28, 0.06], [0.38, 0.06], [0.42, 0.10], [0.48, 0.10]] },
+      { tier: 'hairline', points: [[0.36, 0.12], [0.46, 0.12], [0.50, 0.14]] },
+      { tier: 'hairline', points: [[0.58, 0.08], [0.66, 0.08], [0.70, 0.12]] },
+      { tier: 'hairline', points: [[0.74, 0.06], [0.82, 0.06], [0.86, 0.10], [0.90, 0.10]] },
+
+      // Mid-Left Margins (Outside typography exclusion box)
+      { tier: 'hairline', points: [[0.02, 0.34], [0.05, 0.34], [0.07, 0.36]] },
+      { tier: 'hairline', points: [[0.02, 0.48], [0.05, 0.48], [0.07, 0.50]] },
+      { tier: 'hairline', points: [[0.02, 0.62], [0.05, 0.62]] },
+
+      // Bottom Area Hairline Grid
+      { tier: 'hairline', points: [[0.08, 0.92], [0.18, 0.92], [0.22, 0.94]] },
+      { tier: 'hairline', points: [[0.26, 0.92], [0.38, 0.92], [0.44, 0.86]] },
+      { tier: 'hairline', points: [[0.14, 0.78], [0.18, 0.78], [0.22, 0.82]] },
+      { tier: 'hairline', points: [[0.44, 0.88], [0.48, 0.88], [0.50, 0.90]] },
+      { tier: 'hairline', points: [[0.66, 0.90], [0.72, 0.90], [0.76, 0.86]] },
+      { tier: 'hairline', points: [[0.78, 0.88], [0.84, 0.88], [0.88, 0.84]] },
+
+      // 3D Visual Perimeter Hairlines (Framing Right Hardware)
+      { tier: 'hairline', points: [[0.76, 0.24], [0.82, 0.24], [0.86, 0.28]] },
+      { tier: 'hairline', points: [[0.78, 0.38], [0.82, 0.38], [0.84, 0.40]] },
+      { tier: 'hairline', points: [[0.74, 0.62], [0.80, 0.62], [0.84, 0.66]] },
+      { tier: 'hairline', points: [[0.82, 0.72], [0.86, 0.72], [0.88, 0.76]] },
+      { tier: 'hairline', points: [[0.88, 0.20], [0.94, 0.20], [0.96, 0.24]] },
+      { tier: 'hairline', points: [[0.90, 0.42], [0.95, 0.42]] },
+    ];
+
+    // 3. Technical Markers & Annotations
+    const rawMarkers: MarkerDef[] = [
+      { u: 0.12, v: 0.14, type: 'cross' },
+      { u: 0.30, v: 0.22, type: 'cross' },
+      { u: 0.46, v: 0.12, type: 'cross' },
+      { u: 0.68, v: 0.12, type: 'cross' },
+      { u: 0.82, v: 0.18, type: 'cross' },
+      { u: 0.08, v: 0.74, type: 'cross' },
+      { u: 0.48, v: 0.72, type: 'cross' },
+      { u: 0.78, v: 0.80, type: 'cross' },
+      { u: 0.94, v: 0.48, type: 'cross' },
+      { u: 0.16, v: 0.70, type: 'dot_matrix' },
+      { u: 0.74, v: 0.72, type: 'dot_matrix' },
+      { u: 0.88, v: 0.36, type: 'dot_matrix' },
+    ];
+
+    // Deterministic 3-Wave Signal Propagation Cycle (§11 spec)
+    // Wave 0: Highway B (Under Name Baseline -> CTA Bridge -> Into 3D Core)
+    // Wave 1: Highway A (Top Left -> Above Eyebrow -> Feeds 3D Core)
+    // Wave 2: Highway D (Bottom Vertical Power Bus rising into 3D Assembly)
+    const PULSE_WAVE_TRACES = [1, 0, 3];
+    let currentWaveIndex = 0;
+    let waveDistTravelled = 0;
+    let wavePauseTimer = 0;
+    const WAVE_SPEED = 240; // px/sec
+    const PULSE_LENGTH = 50; // px
+
+    // Mouse coordinates relative to Hero canvas
+    const mouse = { x: -9999, y: -9999, active: false };
+
+    function resize() {
+      // Size canvas to Hero parent container (NOT entire window!)
+      const parent = canvas.parentElement || heroSection || document.body;
+      W = parent.clientWidth;
+      H = parent.clientHeight;
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+      canvas.width = Math.floor(W * DPR);
+      canvas.height = Math.floor(H * DPR);
+      canvas.style.width = `${W}px`;
+      canvas.style.height = `${H}px`;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      waveDistTravelled = 0;
+      wavePauseTimer = 0.2;
+
+      drawFrame(performance.now(), 0.016);
+    }
+
+    // Helper: compute total length of polyline
+    function getTraceLengths(points: { x: number; y: number }[]): { total: number; segs: number[] } {
+      let total = 0;
+      const segs: number[] = [];
+      for (let i = 0; i < points.length - 1; i++) {
+        const d = Math.hypot(points[i + 1].x - points[i].x, points[i + 1].y - points[i].y);
+        segs.push(d);
+        total += d;
       }
+      return { total, segs };
+    }
 
-      interface BoardEdge {
-        a: BoardNode;
-        b: BoardNode;
-        bends: { x: number; y: number }[];
-        width: number;
-        kind: 'local' | 'jump';
-        midX: number;
-        midY: number;
-      }
-
-      interface Pulse {
-        e: BoardEdge;
-        t0: number;
-        dur: number;
-      }
-
-      let nodes: BoardNode[] = [];
-      let edges: BoardEdge[] = [];
-      let pulses: Pulse[] = [];
-
-      const mouse = { x: -9999, y: -9999, active: false };
-      let lastMouseMoveTime = performance.now();
-      let lastIdleSpawnTime = 0;
-
-      // ---- Helpers ----
-      function rand(min: number, max: number): number {
-        return min + Math.random() * (max - min);
-      }
-      function snap(v: number, step: number): number {
-        return Math.round(v / step) * step;
-      }
-      function pick<T>(arr: T[]): T {
-        return arr[Math.floor(Math.random() * arr.length)];
-      }
-      function dist(x1: number, y1: number, x2: number, y2: number): number {
-        return Math.hypot(x1 - x2, y1 - y2);
-      }
-
-      // ---- Build organic PCB layout ----
-      function buildBoard(): void {
-        nodes = [];
-        edges = [];
-        pulses = [];
-
-        const GRID = 6; // fine snap grid
-        const cellW = rand(70, 95);
-        const cellH = rand(70, 95);
-        const cols = Math.ceil(W / cellW) + 1;
-        const rows = Math.ceil(H / cellH) + 1;
-
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            if (Math.random() < 0.22) continue; // skip cells → uneven density
-            let x = c * cellW + rand(-cellW * 0.4, cellW * 0.4);
-            let y = r * cellH + rand(-cellH * 0.4, cellH * 0.4);
-            x = snap(x, GRID);
-            y = snap(y, GRID);
-            if (x < 10 || x > W - 10 || y < 10 || y > H - 10) continue;
-
-            const roll = Math.random();
-            let shape: 'dot' | 'pad' | 'ic' = 'dot';
-            let size = 1.5;
-            if (roll > 0.94) {
-              shape = 'ic';
-              size = pick([6, 7, 8]);
-            } else if (roll > 0.8) {
-              shape = 'pad';
-              size = pick([2.5, 3, 3.5]);
-            } else {
-              size = pick([1, 1.5, 2]);
-            }
-
-            nodes.push({ x, y, r: size, shape, idx: nodes.length });
-          }
+    // Helper: interpolate point along polyline
+    function getPointAtDistance(
+      points: { x: number; y: number }[],
+      targetDist: number,
+      segs: number[]
+    ): { x: number; y: number } {
+      let accum = 0;
+      for (let i = 0; i < segs.length; i++) {
+        const segLen = segs[i];
+        if (accum + segLen >= targetDist) {
+          const ratio = (targetDist - accum) / (segLen || 1);
+          return {
+            x: points[i].x + (points[i + 1].x - points[i].x) * ratio,
+            y: points[i].y + (points[i + 1].y - points[i].y) * ratio,
+          };
         }
-
-        // Local connections: 1-3 nearest neighbors, thinned randomly
-        for (const n of nodes) {
-          const neighbors = nodes
-            .filter(m => m !== n)
-            .map(m => ({ m, d: Math.hypot(m.x - n.x, m.y - n.y) }))
-            .filter(o => o.d < Math.max(cellW, cellH) * 1.9)
-            .sort((a, b) => a.d - b.d)
-            .slice(0, Math.random() < 0.3 ? 3 : (Math.random() < 0.6 ? 2 : 1));
-
-          for (const { m } of neighbors) {
-            if (Math.random() < 0.5) continue; // thin further for irregularity
-            addEdge(n, m, false);
-          }
-        }
-
-        // Occasional long jump traces across the board
-        const jumps = Math.floor(nodes.length * 0.03);
-        for (let i = 0; i < jumps; i++) {
-          const a = nodes[Math.floor(Math.random() * nodes.length)];
-          const b = nodes[Math.floor(Math.random() * nodes.length)];
-          if (a === b) continue;
-          if (Math.hypot(a.x - b.x, a.y - b.y) < 160) continue;
-          addEdge(a, b, true);
-        }
+        accum += segLen;
       }
+      return points[points.length - 1];
+    }
 
-      // Strict Manhattan routing: clean 90° corners only
-      function addEdge(a: BoardNode, b: BoardNode, longRoute: boolean): void {
-        const twoBend = longRoute ? Math.random() < 0.5 : Math.random() < 0.35;
-        const bends: { x: number; y: number }[] = [];
+    let lastTime = performance.now();
 
-        if (twoBend) {
-          const midX = snap((a.x + b.x) / 2, 6);
-          bends.push({ x: midX, y: a.y });
-          bends.push({ x: midX, y: b.y });
-        } else {
-          const horizFirst = Math.random() < 0.5;
-          bends.push(horizFirst ? { x: b.x, y: a.y } : { x: a.x, y: b.y });
+    function drawFrame(now: number, dt: number) {
+      ctx.clearRect(0, 0, W, H);
+
+      // 1. Draw Subtle Background Hairlines (70%)
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      rawTraces.forEach((trace) => {
+        if (trace.tier !== 'hairline') return;
+        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          ctx.lineTo(pts[i].x, pts[i].y);
         }
-
-        // Compute midpoint for proximity checks
-        const pts = [a, ...bends, b];
-        const midX = pts.reduce((s, p) => s + p.x, 0) / pts.length;
-        const midY = pts.reduce((s, p) => s + p.y, 0) / pts.length;
-
-        edges.push({
-          a, b, bends,
-          width: Math.random() < 0.15 ? 2 : 1, // two trace classes: signal / power
-          kind: longRoute ? 'jump' : 'local',
-          midX, midY,
-        });
-      }
-
-      // ---- Resize handler ----
-      function resize(): void {
-        DPR = Math.min(window.devicePixelRatio || 1, 2);
-        W = window.innerWidth;
-        H = window.innerHeight;
-        canvas.width = W * DPR;
-        canvas.height = H * DPR;
-        canvas.style.width = W + 'px';
-        canvas.style.height = H + 'px';
-        ctx!.setTransform(DPR, 0, 0, DPR, 0, 0);
-        buildBoard();
-
-        if (prefersReduced) {
-          renderStatic();
-        }
-      }
-
-      // ---- Static render for reduced motion ----
-      function renderStatic(): void {
-        if (!ctx) return;
-        ctx.clearRect(0, 0, W, H);
-        ctx.fillStyle = '#F7F5F0';
-        ctx.fillRect(0, 0, W, H);
-
-        // Draw edges at base alpha
-        for (const e of edges) {
-          ctx.beginPath();
-          ctx.moveTo(e.a.x, e.a.y);
-          for (const p of e.bends) ctx.lineTo(p.x, p.y);
-          ctx.lineTo(e.b.x, e.b.y);
-          ctx.strokeStyle = `rgba(184,146,74,${e.kind === 'jump' ? 0.09 : 0.15})`;
-          ctx.lineWidth = e.width;
-          ctx.lineJoin = 'miter';
-          ctx.stroke();
-        }
-
-        // Draw nodes
-        for (const n of nodes) {
-          ctx.fillStyle = `rgba(184,146,74,${n.shape === 'ic' ? 0.18 : 0.25})`;
-          if (n.shape === 'ic') {
-            ctx.strokeStyle = ctx.fillStyle;
-            ctx.lineWidth = 1;
-            ctx.strokeRect(n.x - n.r, n.y - n.r, n.r * 2, n.r * 2);
-            for (let i = -1; i <= 1; i++) {
-              ctx.fillRect(n.x - n.r - 3, n.y + i * n.r * 0.6 - 0.6, 3, 1.2);
-              ctx.fillRect(n.x + n.r, n.y + i * n.r * 0.6 - 0.6, 3, 1.2);
-            }
-          } else {
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-      }
-
-      // ---- Animated draw loop ----
-      function draw(t: number): void {
-        if (!ctx) return;
-        ctx.clearRect(0, 0, W, H);
-        // Don't fill background — let CSS background show through (canvas is transparent)
-
-        const RADIUS = 190; // proximity influence radius
-
-        // Draw edges
-        for (let i = 0; i < edges.length; i++) {
-          const e = edges[i];
-          const d = mouse.active ? dist(mouse.x, mouse.y, e.midX, e.midY) : 9999;
-          const proximity = Math.max(0, 1 - d / RADIUS);
-
-          const baseAlpha = e.kind === 'jump' ? 0.09 : 0.15;
-          const alpha = baseAlpha + proximity * 0.75;
-
-          ctx.beginPath();
-          ctx.moveTo(e.a.x, e.a.y);
-          for (const p of e.bends) ctx.lineTo(p.x, p.y);
-          ctx.lineTo(e.b.x, e.b.y);
-
-          ctx.strokeStyle = `rgba(184,146,74,${alpha})`;
-          ctx.lineWidth = e.width + proximity * 1.4;
-          ctx.lineJoin = 'miter';
-
-          if (proximity > 0.4) {
-            ctx.shadowColor = 'rgba(228,200,122,0.55)';
-            ctx.shadowBlur = 6 * proximity;
-          } else {
-            ctx.shadowBlur = 0;
-          }
-          ctx.stroke();
-          ctx.shadowBlur = 0;
-
-          // Spawn pulse on hot edges
-          if (proximity > 0.55 && Math.random() < 0.012) {
-            pulses.push({
-              e,
-              t0: t,
-              dur: (e.kind === 'jump' ? 1000 : 600) + Math.random() * 400,
-            });
-          }
-        }
-
-        // Idle drift (§4 spec): when cursor is inactive for ~4s, spawn slow sparse phantom pulse
-        if (t - lastMouseMoveTime > 4000) {
-          if (t - lastIdleSpawnTime > 3500 && edges.length > 0 && pulses.length < 3) {
-            lastIdleSpawnTime = t;
-            const randomEdge = pick(edges);
-            pulses.push({
-              e: randomEdge,
-              t0: t,
-              dur: 1400 + Math.random() * 600,
-            });
-          }
-        }
-
-        // Draw nodes
-        for (let i = 0; i < nodes.length; i++) {
-          const n = nodes[i];
-          const d = mouse.active ? dist(mouse.x, mouse.y, n.x, n.y) : 9999;
-          const proximity = Math.max(0, 1 - d / RADIUS);
-          const rr = n.r + proximity * 2.2;
-          const fillA = n.shape === 'ic' ? (0.18 + proximity * 0.65) : (0.25 + proximity * 0.7);
-
-          ctx.fillStyle = `rgba(184,146,74,${fillA})`;
-
-          if (n.shape === 'ic') {
-            ctx.strokeStyle = `rgba(184,146,74,${fillA})`;
-            ctx.lineWidth = 1;
-            ctx.strokeRect(n.x - rr, n.y - rr, rr * 2, rr * 2);
-            for (let j = -1; j <= 1; j++) {
-              ctx.fillRect(n.x - rr - 3, n.y + j * rr * 0.6 - 0.6, 3, 1.2);
-              ctx.fillRect(n.x + rr, n.y + j * rr * 0.6 - 0.6, 3, 1.2);
-            }
-          } else {
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, rr, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          // Proximity ring on highly charged nodes
-          if (proximity > 0.5) {
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, rr + 3, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(228,200,122,${(proximity - 0.5) * 0.6})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-
-        // Draw + advance pulses along their full bent path
-        pulses = pulses.filter(p => (t - p.t0) < p.dur);
-        for (const p of pulses) {
-          const { a, b, bends } = p.e;
-          const pts = [a, ...bends, b];
-          const f = Math.min(1, (t - p.t0) / p.dur);
-
-          // Walk along the polyline by total length fraction f
-          const segLens: number[] = [];
-          let total = 0;
-          for (let i = 0; i < pts.length - 1; i++) {
-            const l = Math.hypot(pts[i + 1].x - pts[i].x, pts[i + 1].y - pts[i].y);
-            segLens.push(l);
-            total += l;
-          }
-
-          let target = f * total;
-          let px = pts[0].x;
-          let py = pts[0].y;
-          for (let i = 0; i < segLens.length; i++) {
-            if (target <= segLens[i]) {
-              const sf = segLens[i] === 0 ? 0 : target / segLens[i];
-              px = pts[i].x + (pts[i + 1].x - pts[i].x) * sf;
-              py = pts[i].y + (pts[i + 1].y - pts[i].y) * sf;
-              break;
-            }
-            target -= segLens[i];
-            px = pts[i + 1].x;
-            py = pts[i + 1].y;
-          }
-
-          ctx.beginPath();
-          ctx.arc(px, py, 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(228,200,122,${1 - f})`;
-          ctx.shadowColor = 'rgba(228,200,122,0.8)';
-          ctx.shadowBlur = 8;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-
-        requestAnimationFrame(draw);
-      }
-
-      // ---- Event listeners ----
-      // Use document-level mousemove since canvas is pointer-events:none
-      document.addEventListener('mousemove', (e: MouseEvent) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-        mouse.active = true;
-        lastMouseMoveTime = performance.now();
+        ctx.strokeStyle = '#D8BE8A';
+        ctx.globalAlpha = 0.18;
+        ctx.lineWidth = 0.85;
+        ctx.stroke();
       });
 
-      document.addEventListener('mouseleave', () => {
-        mouse.active = false;
+      // 2. Draw Medium Signal Traces (20%)
+      rawTraces.forEach((trace) => {
+        if (trace.tier !== 'medium') return;
+        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+
+        // Check cursor proximity
+        let proximityBoost = 0;
+        if (mouse.active) {
+          for (const p of pts) {
+            const d = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+            if (d < 160) {
+              proximityBoost = Math.max(proximityBoost, 1 - d / 160);
+            }
+          }
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          ctx.lineTo(pts[i].x, pts[i].y);
+        }
+        ctx.strokeStyle = '#C5A059';
+        ctx.globalAlpha = 0.38 + proximityBoost * 0.35;
+        ctx.lineWidth = 1.35 + proximityBoost * 0.5;
+        ctx.stroke();
       });
 
-      // Touch support
-      document.addEventListener('touchmove', (e: TouchEvent) => {
-        const touch = e.touches[0];
-        mouse.x = touch.clientX;
-        mouse.y = touch.clientY;
-        mouse.active = true;
-        lastMouseMoveTime = performance.now();
-      }, { passive: true });
+      // 3. Draw Hero Highway Traces (10%): Warm Champagne Gold Embossed Lines
+      rawTraces.forEach((trace) => {
+        if (trace.tier !== 'highway') return;
+        const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
 
-      document.addEventListener('touchend', () => {
-        mouse.active = false;
-      }, { passive: true });
+        let proximityBoost = 0;
+        if (mouse.active) {
+          for (const p of pts) {
+            const d = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+            if (d < 200) {
+              proximityBoost = Math.max(proximityBoost, 1 - d / 200);
+            }
+          }
+        }
 
-      window.addEventListener('resize', () => {
-        resize();
-      }, { passive: true });
+        // Drop shadow / relief under-trace for embossed physical PCB effect
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x + 1.2, pts[0].y + 1.2);
+        for (let i = 1; i < pts.length; i++) {
+          ctx.lineTo(pts[i].x + 1.2, pts[i].y + 1.2);
+        }
+        ctx.strokeStyle = '#8E733D';
+        ctx.globalAlpha = 0.16;
+        ctx.lineWidth = 2.4;
+        ctx.stroke();
 
-      // Initialize
-      resize();
-      window.addEventListener('load', () => { resize(); });
+        // Main highway copper trace
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          ctx.lineTo(pts[i].x, pts[i].y);
+        }
+        ctx.strokeStyle = '#B8924A';
+        ctx.globalAlpha = 0.78 + proximityBoost * 0.22;
+        ctx.lineWidth = 2.4 + proximityBoost * 0.8;
+        ctx.stroke();
+      });
+
+      // 4. Draw Traveling Pulse along Current Highway (Deterministic Sequential Propagation)
       if (!prefersReduced) {
-        requestAnimationFrame(draw);
+        if (wavePauseTimer > 0) {
+          wavePauseTimer -= dt;
+        } else {
+          const traceIdx = PULSE_WAVE_TRACES[currentWaveIndex];
+          const trace = rawTraces[traceIdx];
+          if (trace) {
+            const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+            const { total, segs } = getTraceLengths(pts);
+
+            waveDistTravelled += WAVE_SPEED * dt;
+
+            if (waveDistTravelled > total + PULSE_LENGTH) {
+              // Pause before next wave: 0.4s between waves, 0.9s after completing full 3-wave cycle
+              wavePauseTimer = currentWaveIndex === PULSE_WAVE_TRACES.length - 1 ? 0.9 : 0.4;
+              currentWaveIndex = (currentWaveIndex + 1) % PULSE_WAVE_TRACES.length;
+              waveDistTravelled = 0;
+            } else if (waveDistTravelled > 0 && waveDistTravelled - PULSE_LENGTH < total) {
+              const headDist = Math.min(waveDistTravelled, total);
+              const tailDist = Math.max(waveDistTravelled - PULSE_LENGTH, 0);
+
+              const pHead = getPointAtDistance(pts, headDist, segs);
+              const pTail = getPointAtDistance(pts, tailDist, segs);
+
+              const grad = ctx.createLinearGradient(pTail.x, pTail.y, pHead.x, pHead.y);
+              grad.addColorStop(0, 'rgba(255, 238, 179, 0)');
+              grad.addColorStop(0.7, 'rgba(255, 230, 140, 0.85)');
+              grad.addColorStop(1, '#FFF9E6');
+
+              ctx.beginPath();
+              ctx.moveTo(pTail.x, pTail.y);
+              ctx.lineTo(pHead.x, pHead.y);
+              ctx.strokeStyle = grad;
+              ctx.lineWidth = 3.6;
+              ctx.globalAlpha = 0.95;
+              ctx.stroke();
+
+              // Radiant head spark
+              ctx.beginPath();
+              ctx.arc(pHead.x, pHead.y, 2.8, 0, Math.PI * 2);
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fill();
+            }
+          }
+        }
+      }
+
+      // 5. Draw Technical Markers (Crosshairs +, Dot Grids)
+      rawMarkers.forEach((m) => {
+        const x = m.u * W;
+        const y = m.v * H;
+        ctx.globalAlpha = 0.35;
+
+        if (m.type === 'cross') {
+          ctx.strokeStyle = '#B8924A';
+          ctx.lineWidth = 1.0;
+          ctx.beginPath();
+          ctx.moveTo(x - 5, y);
+          ctx.lineTo(x + 5, y);
+          ctx.moveTo(x, y - 5);
+          ctx.lineTo(x, y + 5);
+          ctx.stroke();
+        } else if (m.type === 'dot_matrix') {
+          ctx.fillStyle = '#C5A059';
+          for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+              ctx.beginPath();
+              ctx.arc(x + dx * 5, y + dy * 5, 0.9, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        }
+      });
+
+      // 6. Draw Strategic PCB Nodes (Glow Vias, Standard Vias, ICs, Solder Pads)
+      rawNodes.forEach((node) => {
+        const x = node.u * W;
+        const y = node.v * H;
+
+        let prox = 0;
+        if (mouse.active) {
+          const d = Math.hypot(x - mouse.x, y - mouse.y);
+          if (d < 140) prox = 1 - d / 140;
+        }
+
+        if (node.shape === 'glow_via') {
+          // Radiant halo
+          const haloRad = ctx.createRadialGradient(x, y, 1, x, y, node.size * 3.8);
+          haloRad.addColorStop(0, 'rgba(230, 186, 92, 0.55)');
+          haloRad.addColorStop(0.5, 'rgba(230, 186, 92, 0.20)');
+          haloRad.addColorStop(1, 'rgba(230, 186, 92, 0)');
+          ctx.fillStyle = haloRad;
+          ctx.globalAlpha = 0.85 + prox * 0.15;
+          ctx.beginPath();
+          ctx.arc(x, y, node.size * 3.8, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Copper ring
+          ctx.beginPath();
+          ctx.arc(x, y, node.size, 0, Math.PI * 2);
+          ctx.fillStyle = '#B8924A';
+          ctx.globalAlpha = 0.95;
+          ctx.fill();
+
+          // Inner drill via
+          ctx.beginPath();
+          ctx.arc(x, y, node.size * 0.38, 0, Math.PI * 2);
+          ctx.fillStyle = '#222834';
+          ctx.fill();
+        } else if (node.shape === 'via') {
+          // Standard Annular Via
+          ctx.beginPath();
+          ctx.arc(x, y, node.size, 0, Math.PI * 2);
+          ctx.fillStyle = '#C5A059';
+          ctx.globalAlpha = 0.70 + prox * 0.25;
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(x, y, node.size * 0.45, 0, Math.PI * 2);
+          ctx.fillStyle = '#F7F5F0';
+          ctx.fill();
+        } else if (node.shape === 'ic') {
+          // SMD IC Footprint
+          const s = node.size;
+          ctx.fillStyle = 'rgba(28, 33, 44, 0.85)';
+          ctx.globalAlpha = 0.85;
+          ctx.fillRect(x - s / 2, y - s / 2, s, s);
+
+          ctx.strokeStyle = '#B8924A';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x - s / 2, y - s / 2, s, s);
+
+          // Pin leads
+          ctx.fillStyle = '#E5C678';
+          const pins = 3;
+          for (let p = 0; p < pins; p++) {
+            const py = y - s / 2 + (s / (pins + 1)) * (p + 1);
+            ctx.fillRect(x - s / 2 - 3, py - 1, 3, 2);
+            ctx.fillRect(x + s / 2, py - 1, 3, 2);
+          }
+        }
+      });
+
+      ctx.globalAlpha = 1.0;
+    }
+
+    // Animation Loop
+    function loop(now: number) {
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      drawFrame(now, dt);
+
+      if (!prefersReduced && isCircuitVisible) {
+        circuitLoopId = requestAnimationFrame(loop);
       }
     }
+
+    // Connect Anime.js visibility lifecycle
+    currentCircuitController = registerCircuitVisibility(canvas, (visible) => {
+      isCircuitVisible = visible;
+      if (visible && !prefersReduced) {
+        lastTime = performance.now();
+        if (circuitLoopId) cancelAnimationFrame(circuitLoopId);
+        circuitLoopId = requestAnimationFrame(loop);
+      }
+    });
+
+    // Event Listeners (Bound to Hero Section)
+    const targetElement = heroSection || window;
+
+    targetElement.addEventListener(
+      'mousemove',
+      (e: Event) => {
+        const me = e as MouseEvent;
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = me.clientX - rect.left;
+        mouse.y = me.clientY - rect.top;
+        mouse.active =
+          mouse.x >= 0 && mouse.x <= rect.width && mouse.y >= 0 && mouse.y <= rect.height;
+      },
+      { passive: true }
+    );
+
+    targetElement.addEventListener('mouseleave', () => {
+      mouse.active = false;
+    });
+
+    window.addEventListener('resize', resize, { passive: true });
+
+    resize();
+    if (!prefersReduced) {
+      circuitLoopId = requestAnimationFrame(loop);
+    }
   }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroPCB);
+  } else {
+    initHeroPCB();
+  }
+
+  document.addEventListener('astro:page-load', initHeroPCB);
 </script>
 
 <style>
   #circuitBoardCanvas {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     z-index: 0;
   }

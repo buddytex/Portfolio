@@ -92,7 +92,7 @@ src/
    - Three bold lines: `NAVEEN`, `SHAJI`, `GEORGE` rendered in heavy uppercase font weight (`font-weight: 900`, line height `0.88`, tracking `-0.05em`).
    - Acts as the primary visual anchor of the page.
 2. **Immediate Engineering Value Proposition**:
-   - Subtitle: `ROBOTICS & AUTONOMOUS SYSTEMS ENGINEER`
+   - Subtitle: `ROBOTICS AND AUTOMATION ENGINEER`
    - Statement: *"I build intelligent robotic systems that perceive, reason, and act in the physical world."*
    - Competencies: `Robotics · Autonomous Navigation · 3D Perception · ROS 2 · Embedded Systems`.
    - Verified Credential Badge: `AIR 7 & AIR 11 · BAJA SAE India National Campaign · Electrical & Autonomy Lead`.
