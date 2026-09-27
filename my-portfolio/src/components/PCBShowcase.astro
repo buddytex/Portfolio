@@ -79,7 +79,7 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
             <h4 class="board-title">{board.name}</h4>
             <div class="project-association">
               <span class="assoc-label mono">PROJECT:</span>
-              <a href={`/projects/${board.projectId}`} class="assoc-link mono">
+              <a href={resolveHref(`/projects/${board.projectId}`)} class="assoc-link mono">
                 <span>{board.project}</span>
                 <span class="assoc-arrow">↗</span>
               </a>

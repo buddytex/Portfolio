@@ -5,6 +5,7 @@
 //   DOMAIN (large label bubbles) → SKILLS (medium) → SUPPORTING (smaller)
 // Hover reveals live connection inspector with project/role evidence.
 import { skillCategories, allSkills, type SkillCategory, type SkillItem } from '../data/skills';
+import { resolveHref } from '../utils/media';
 
 const coreCategories = skillCategories.filter(c => c.tier === 'core');
 const complementaryCategories = skillCategories.filter(c => c.tier === 'complementary');
@@ -153,7 +154,7 @@ const clusterData = skillCategories.map(cat => ({
               {defaultSkill.connectedEntities
                 .filter(e => e.type === 'project' || e.type === 'hardware')
                 .map((item) => (
-                  <a href={item.url || '#'} class="hud-proj-link">
+                  <a href={resolveHref(item.url || '#')} class="hud-proj-link">
                     <span class="proj-name mono">{item.name}</span>
                     {item.badge && <span class="proj-badge mono">{item.badge}</span>}
                   </a>
@@ -192,7 +193,7 @@ const clusterData = skillCategories.map(cat => ({
 
           <!-- Deep Dive CTA -->
           <a 
-            href={`/skills/${defaultSkill.id}`} 
+            href={resolveHref(`/skills/${defaultSkill.id}`)}
             class="hud-cta mono" 
             id="hudCta"
           >
@@ -260,6 +261,22 @@ const clusterData = skillCategories.map(cat => ({
     const hudCta = document.getElementById('hudCta') as HTMLAnchorElement | null;
     const mapHud = document.getElementById('mapHud');
 
+    const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    const resolveClientHref = (rawPath: string | null | undefined): string => {
+      if (!rawPath || rawPath === '#') return rawPath || '#';
+      if (
+        rawPath.startsWith('http://') ||
+        rawPath.startsWith('https://') ||
+        rawPath.startsWith('mailto:') ||
+        rawPath.startsWith('tel:') ||
+        rawPath.startsWith('#')
+      ) {
+        return rawPath;
+      }
+      const cleanPath = rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
+      return cleanPath === '/' ? (basePath ? `${basePath}/` : '/') : `${basePath}${cleanPath}`;
+    };
+
     function activateBubble(bubble: HTMLButtonElement) {
       // Remove active from all bubbles
       bubbles.forEach(b => b.classList.remove('is-active'));
@@ -300,14 +317,14 @@ const clusterData = skillCategories.map(cat => ({
       if (hudProficiency) hudProficiency.textContent = `${prof.toUpperCase()} PROFICIENCY`;
       if (hudEvidence) hudEvidence.textContent = `"${evidence}"`;
       if (hudContext) hudContext.textContent = context;
-      if (hudCta) hudCta.href = `/skills/${skillId}`;
+      if (hudCta) hudCta.href = resolveClientHref(`/skills/${skillId}`);
 
       // Update Projects
       if (hudProjects) {
         const projectItems = connections.filter(c => c.type === 'project' || c.type === 'hardware');
         if (projectItems.length > 0) {
           hudProjects.innerHTML = projectItems.map(p => `
-            <a href="${p.url || '#'}" class="hud-proj-link">
+            <a href="${resolveClientHref(p.url || '#')}" class="hud-proj-link">
               <span class="proj-name mono">${p.name}</span>
               ${p.badge ? `<span class="proj-badge mono">${p.badge}</span>` : ''}
             </a>
