@@ -3,13 +3,17 @@
 // Uses React Three Fiber with OrbitControls for proper 3D interaction
 import { pcbArtifacts } from '../data/pcbArtifacts';
 import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
+import { resolveMediaUrl } from '../utils/media';
 ---
 
 <div class="pcb-showcase-container" id="pcbShowcase">
   <div class="pcb-header-bar">
     <div class="pcb-header-left">
-      <span class="pcb-tag mono">[ HARDWARE ARTIFACT INSPECTOR ]</span>
+      <span class="pcb-tag mono">[ 07 // HARDWARE &amp; PCB LAB ]</span>
       <h3 class="pcb-heading">Physical PCB Engineering Showcase</h3>
+      <p class="pcb-lead mono">
+        Interactive 3D inspection of production PCBs designed in KiCad EDA. Rendered directly from manufacturing Gerber geometry (RS-274X stackup) with authentic copper layers and zero artificial components.
+      </p>
     </div>
 
     <!-- Carousel Controls -->
@@ -80,6 +84,29 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
                 <span class="assoc-arrow">↗</span>
               </a>
             </div>
+
+            <!-- Provenance & CAD Tool -->
+            <div class="provenance-grid mono">
+              <div class="provenance-item">
+                <span class="prov-label">CAD SOFTWARE:</span>
+                <span class="prov-val">{board.designSoftware || 'KiCad EDA'}</span>
+              </div>
+              <div class="provenance-item">
+                <span class="prov-label">DATA PROVENANCE:</span>
+                <span class="prov-val">{board.dataUsed || 'Production Gerbers'}</span>
+              </div>
+            </div>
+
+            <!-- What Naveen Personally Designed -->
+            {board.whatIDesigned && (
+              <div class="personal-design-block">
+                <div class="personal-design-kicker mono">
+                  <span class="design-pip">⚡</span>
+                  <span>MY DIRECT PCB DESIGN WORK:</span>
+                </div>
+                <p class="personal-design-text">{board.whatIDesigned}</p>
+              </div>
+            )}
           </div>
 
           <!-- Technical Specs Table -->
@@ -175,7 +202,7 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
               )}
               {board.gerberArchive && (
                 <a
-                  href={`/media/${board.gerberArchive}`}
+                  href={resolveMediaUrl(`/media/${board.gerberArchive}`)}
                   download
                   class="btn-download-gerbers mono"
                 >
@@ -399,6 +426,73 @@ import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
     font-weight: 800;
     color: var(--text-primary);
     letter-spacing: -0.02em;
+  }
+
+  .pcb-lead {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    max-width: 640px;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+
+  .provenance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-xs);
+    font-size: var(--text-2xs);
+  }
+
+  .provenance-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .prov-label {
+    color: var(--text-muted);
+    font-size: 9px;
+    letter-spacing: 0.05em;
+  }
+
+  .prov-val {
+    color: var(--accent-primary);
+    font-weight: 700;
+  }
+
+  .personal-design-block {
+    margin-top: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: rgba(184, 146, 74, 0.06);
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    border-radius: var(--r-xs);
+  }
+
+  .personal-design-kicker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .design-pip {
+    color: var(--accent-primary);
+  }
+
+  .personal-design-text {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
   }
 
   /* Controls */

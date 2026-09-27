@@ -1,0 +1,196 @@
+---
+// EngineeringFocus Component — Core Technical Focus & System Relationships
+// Explains what kind of engineer Naveen is and how his hardware/software disciplines interlock.
+---
+
+<section id="focus" class="section focus-section" aria-labelledby="focusSectionHeading">
+  <div class="container-wide">
+    <!-- Section Header -->
+    <div class="section-header">
+      <div class="header-kicker mono">[ 05 // TECHNICAL SPECIALIZATION ]</div>
+      <h2 id="focusSectionHeading" class="section-title">
+        Bridging Physical Hardware with <span class="accent">Intelligent Autonomy</span>
+      </h2>
+      <p class="section-lead">
+        I am a robotics engineer focused on physical machines operating under harsh real-world constraints.
+        My work unites custom multi-layer automotive electronics, deterministic CAN communication, real-time embedded firmware, and ROS 2 perception.
+      </p>
+    </div>
+
+    <!-- Engineering Pillars Grid -->
+    <div class="focus-pillars-grid">
+      <!-- Pillar 1: Autonomous Vehicle & DBW Systems -->
+      <article class="focus-card scroll-reveal-node" data-reveal="focus">
+        <div class="focus-card-header">
+          <span class="focus-num mono">01</span>
+          <span class="focus-tag mono">VEHICLE SYSTEMS</span>
+        </div>
+        <h3 class="focus-title">Autonomous Vehicles & Drive-by-Wire</h3>
+        <p class="focus-desc">
+          Architecting complete vehicle control systems: electro-mechanical throttle, brake, and steer-by-wire actuation. Validated across two national BAJA SAEINDIA campaigns (AIR 7 &amp; AIR 11) and indoor autonomous service mobile robots.
+        </p>
+        <div class="focus-foot mono">
+          <span class="foot-label">CROSS-SYSTEM ANCHOR:</span>
+          <span class="foot-target">Car A18 (2026) · Car A12 (2025) · Hospital AMR (Main Project)</span>
+        </div>
+      </article>
+
+      <!-- Pillar 2: Custom Multi-Layer ECUs & PCBs -->
+      <article class="focus-card scroll-reveal-node" data-reveal="focus">
+        <div class="focus-card-header">
+          <span class="focus-num mono">02</span>
+          <span class="focus-tag mono">HARDWARE FABRICATION</span>
+        </div>
+        <h3 class="focus-title">Custom Multi-Layer ECUs &amp; PCB Design</h3>
+        <p class="focus-desc">
+          Engineering automotive electronic control units end-to-end in KiCad. Designing 2-layer FR4 boards with galvanic optocoupled isolation, TVS transient suppression, and high-current power switching verified via raw RS-274X Gerber geometry.
+        </p>
+        <div class="focus-foot mono">
+          <span class="foot-label">CROSS-SYSTEM ANCHOR:</span>
+          <span class="foot-target">Back-Box ECU · Front-Box ECU · Hardware E-Stop</span>
+        </div>
+      </article>
+
+      <!-- Pillar 3: Deterministic Networks & Firmware -->
+      <article class="focus-card scroll-reveal-node" data-reveal="focus">
+        <div class="focus-card-header">
+          <span class="focus-num mono">03</span>
+          <span class="focus-tag mono">EMBEDDED CONTROL</span>
+        </div>
+        <h3 class="focus-title">Isolated CAN Bus &amp; Real-Time Firmware</h3>
+        <p class="focus-desc">
+          Deploying robust differential CAN 2.0B vehicle networks at 500 kbps with matched 120Ω split termination. Developing deterministically scheduled FreeRTOS tasks and interrupt service routines on dual-core ESP32 microcontrollers.
+        </p>
+        <div class="focus-foot mono">
+          <span class="foot-label">CROSS-SYSTEM ANCHOR:</span>
+          <span class="foot-target">CAN Backbone · FreeRTOS Tasks · HV/LV Harness</span>
+        </div>
+      </article>
+
+      <!-- Pillar 4: Edge Perception & ROS 2 -->
+      <article class="focus-card scroll-reveal-node" data-reveal="focus">
+        <div class="focus-card-header">
+          <span class="focus-num mono">04</span>
+          <span class="focus-tag mono">PERCEPTION & AI</span>
+        </div>
+        <h3 class="focus-title">Edge AI Vision &amp; ROS 2 Perception</h3>
+        <p class="focus-desc">
+          Implementing high-throughput computer vision and LiDAR SLAM navigation on edge accelerators (Jetson Orin Nano). Benchmarking quantized neural network inference with OpenCV, Intel oneAPI, and Nav2 costmap layers.
+        </p>
+        <div class="focus-foot mono">
+          <span class="foot-label">CROSS-SYSTEM ANCHOR:</span>
+          <span class="foot-target">Intel Smart CCTV (Top 25) · RailGuard AI · Swarm Platform (Mini Project)</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .focus-section {
+    background: transparent;
+    padding-top: var(--section-pad);
+    padding-bottom: var(--space-16);
+    position: relative;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .focus-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-6);
+    margin-top: var(--space-10);
+  }
+
+  .focus-card {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-card);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out),
+                border-color var(--dur-norm) var(--ease-out);
+    position: relative;
+    box-shadow: var(--shadow-resting);
+  }
+
+  .focus-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(184, 146, 74, 0.4);
+  }
+
+  .focus-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: var(--space-4);
+  }
+
+  .focus-num {
+    font-size: var(--text-sm);
+    font-weight: 800;
+    color: var(--color-gold);
+  }
+
+  .focus-tag {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .focus-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: var(--space-3);
+  }
+
+  .focus-desc {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+    flex-grow: 1;
+  }
+
+  .focus-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(20, 24, 34, 0.04);
+  }
+
+  .foot-label {
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    font-weight: 700;
+  }
+
+  .foot-target {
+    font-size: 0.68rem;
+    color: var(--color-gold);
+    font-weight: 600;
+  }
+
+  @media (max-width: 1200px) {
+    .focus-pillars-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 680px) {
+    .focus-pillars-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

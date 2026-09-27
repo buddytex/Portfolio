@@ -4,11 +4,19 @@
 // 2. Real Gerber-derived 3D viewer (for boards with actual fabrication data)
 
 import { useEffect, useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { pcbArtifacts } from '../../data/pcbArtifacts';
 import GerberPCBViewer from './GerberPCBViewer';
+
+function ShowcaseRenderTrigger({ isInView }: { isInView: boolean }) {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    if (isInView) invalidate();
+  }, [isInView, invalidate]);
+  return null;
+}
 
 interface PCBBoardData {
   id: string;
@@ -28,7 +36,7 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
   const currentBoard = pcbArtifacts[currentBoardIndex];
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
+  const [isInView, setIsInView] = useState(true);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -37,13 +45,20 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
       return;
     }
 
+    const rect = el.getBoundingClientRect();
+    const initiallyVisible = rect.top < window.innerHeight + 300 && rect.bottom > -300;
+    setIsInView(initiallyVisible);
+    if (typeof window !== 'undefined' && (window as any).__PERF_METRICS__) {
+      (window as any).__PERF_METRICS__.pcb3dRunning = initiallyVisible;
+    }
+
     const observer = new IntersectionObserver(([entry]) => {
       const visible = entry.isIntersecting;
       setIsInView(visible);
       if (typeof window !== 'undefined' && (window as any).__PERF_METRICS__) {
         (window as any).__PERF_METRICS__.pcb3dRunning = visible;
       }
-    }, { threshold: 0.05 });
+    }, { rootMargin: '300px 0px', threshold: 0 });
 
     observer.observe(el);
     return () => observer.disconnect();
@@ -71,38 +86,32 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
     return () => window.removeEventListener('pcb-view-gerber3d', handler as EventListener);
   }, []);
 
-  // Real Gerber 3D mode — ALWAYS rendered by default for boards with real fabrication data
-  if (currentBoard.gerberDataFile) {
-    return (
-      <div style={{ width: '100%', minHeight: '440px' }}>
+  return (
+    <div ref={containerRef} style={{ width: '100%', minHeight: '440px', position: 'relative', height: '100%' }}>
+      {currentBoard.gerberDataFile ? (
         <GerberPCBViewer
           key={currentBoard.id}
           gerberDataFile={currentBoard.gerberDataFile}
           boardName={currentBoard.name}
           gerberArchive={currentBoard.gerberArchive}
         />
-      </div>
-    );
-  }
-
-  // Showcase mode — decorative PCB view
-  return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <Canvas
-        frameloop={isInView ? 'always' : 'never'}
-        camera={{ position: [0, 0, 3.5], fov: 42 }}
-        gl={{ antialias: true, alpha: false, preserveDrawingBuffer: false }}
-        style={{ width: '100%', height: '100%', display: 'block', minHeight: '440px' }}
-        onCreated={({ gl }) => {
-          gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-          gl.setClearColor(0x0E1117, 1);
-        }}
-      >
-        <PerspectiveCamera makeDefault position={[0, 0, 3.5]} fov={42} />
-        
-        <ambientLight intensity={1.2} color={0xFFFAF0} />
-        <directionalLight position={[3, 4, 3]} intensity={1.8} color={0xFFF6E6} />
-        <directionalLight position={[-3, -2, 2]} intensity={0.9} color={0xD8E6F5} />
+      ) : (
+        <Canvas
+          frameloop={isInView ? 'always' : 'never'}
+          camera={{ position: [0, 0, 3.5], fov: 42 }}
+          gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
+          style={{ width: '100%', height: '100%', display: 'block', minHeight: '440px' }}
+          onCreated={({ gl }) => {
+            gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+            gl.setClearColor(0x0E1117, 1);
+          }}
+        >
+          <ShowcaseRenderTrigger isInView={isInView} />
+          <PerspectiveCamera makeDefault position={[0, 0, 3.5]} fov={42} />
+          
+          <ambientLight intensity={1.2} color={0xFFFAF0} />
+          <directionalLight position={[3, 4, 3]} intensity={1.8} color={0xFFF6E6} />
+          <directionalLight position={[-3, -2, 2]} intensity={0.9} color={0xD8E6F5} />
         <directionalLight position={[0, 0, 4]} intensity={1.0} color={0xFFFFFF} />
         
         <PCBBoard board={currentBoard} />
@@ -126,6 +135,7 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
         
         <gridHelper args={[4, 20, 0x1E2430, 0x141822]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.05]} />
       </Canvas>
+      )}
     </div>
   );
 }
@@ -147,8 +157,8 @@ function PCBBoard({ board }: { board: PCBBoardData }) {
       {/* Copper Traces */}
       <PCBTraces />
       
-      {/* Components */}
-      <PCBComponents />
+      {/* Mounting Holes & Annular Rings */}
+      <PCBMountingHoles />
       
       {/* Test Points */}
       {board.testPoints.map((tp) => (
@@ -207,48 +217,10 @@ function PCBTraces() {
   );
 }
 
-function PCBComponents() {
+function PCBMountingHoles() {
   return (
     <group>
-      {/* MCU - ARM Cortex M4 */}
-      <mesh position={[-1.2, 0.3, 0.1]} rotation={[-Math.PI / 2, 0, 0]}>
-        <boxGeometry args={[1.2, 1.2, 0.2]} />
-        <meshStandardMaterial color={0x0c140f} roughness={0.4} metalness={0.6} />
-      </mesh>
-      
-      {/* Pin 1 indicator */}
-      <mesh position={[-1.75, 0.85, 0.18]}>
-        <cylinderGeometry args={[0.08, 0.08, 0.05, 16]} />
-        <meshStandardMaterial color={0xe5c158} roughness={0.2} metalness={0.9} />
-      </mesh>
-      
-      {/* CAN Transceiver ISO1050 */}
-      <mesh position={[1.8, 0.4, 0.1]} rotation={[-Math.PI / 2, 0, 0]}>
-        <boxGeometry args={[0.6, 0.4, 0.15]} />
-        <meshStandardMaterial color={0x0c140f} roughness={0.4} metalness={0.6} />
-      </mesh>
-      
-      {/* DC-DC Module */}
-      <mesh position={[-1.8, -1.0, 0.15]} rotation={[-Math.PI / 2, 0, 0]}>
-        <boxGeometry args={[1.0, 0.7, 0.3]} />
-        <meshStandardMaterial color={0x0c140f} roughness={0.4} metalness={0.5} />
-      </mesh>
-      
-      {/* Terminal Header J1 (Deutsch) */}
-      <mesh position={[2.2, 0.0, 0.1]} rotation={[-Math.PI / 2, 0, 0]}>
-        <boxGeometry args={[0.3, 1.5, 0.2]} />
-        <meshStandardMaterial color={0x1b1e1c} roughness={0.3} metalness={0.6} />
-      </mesh>
-      
-      {/* Header pins */}
-      {[0.6, 0.3, 0, -0.3, -0.6].map((y, i) => (
-        <mesh key={i} position={[2.35, y, 0.22]}>
-          <cylinderGeometry args={[0.06, 0.06, 0.15, 8]} />
-          <meshStandardMaterial color={0xd4af37} roughness={0.2} metalness={0.9} />
-        </mesh>
-      ))}
-      
-      {/* Mounting holes with gold plating */}
+      {/* Mounting holes through substrate */}
       {[
         [-2.15, 1.45],
         [2.15, 1.45],
@@ -261,7 +233,7 @@ function PCBComponents() {
         </mesh>
       ))}
       
-      {/* Mounting hole gold rings */}
+      {/* Mounting hole gold plated annular rings */}
       {[
         [-2.15, 1.45],
         [2.15, 1.45],

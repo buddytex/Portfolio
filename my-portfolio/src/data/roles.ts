@@ -55,81 +55,57 @@ export const rolesData: RoleItem[] = [
     id: 'vice-president-anchoring-club',
     num: '02',
     title: 'Vice President of Anchoring Club',
-    domainCategory: 'Leadership',
+    domainCategory: 'Event Leadership & Stage Direction',
     organization: 'Anchoring Club · Saintgits College of Engineering',
     period: '2023 – 2025',
-    description: 'I groomed and led anchoring teams for Nakshatra Cultural Fest at Saintgits College of Engineering, a national-level cultural fest, coordinating stage operations, audience flow, anchoring teams, celebrity guests, and live event execution.',
+    description: 'Began anchoring in 10th grade and have hosted ~10 major events. As Vice President, directed anchoring operations, groomed collegiate talent, wrote scripts, secured permissions, and managed main-stage flow and celebrity guest coordination for Nakshatra—Saintgits College of Engineering\'s premier national-level cultural fest.',
     responsibilities: [
-      'Groomed, trained, and directed collegiate anchoring teams for Nakshatra, a national-level cultural fest at Saintgits College of Engineering.',
-      'Managed the main auditorium stage, run of show, microphone transitions, and minute-by-minute rundown flow.',
-      'Commanded large-scale audience engagement and real-time crowd dynamics throughout high-energy sessions.',
-      'Coordinated directly with celebrity guests and institutional VIP dignitaries for on-stage introductions and protocols.',
-      'Spearheaded event coordination, team communication, and live execution contingency during peak show moments.'
+      'Groomed, trained, and mentored new anchors across voice modulation, pacing, and spontaneous stage recovery.',
+      'Scripted full-length event rundowns, wrote speaker intros, and secured institutional and venue permissions.',
+      'Coordinated the anchoring team, stage crews, contestants, and event coordinators across simultaneous venues.',
+      'Managed celebrity guests and VIP dignitaries backstage and conducted live on-stage protocol introductions.',
+      'Directed live main-stage energy, microphone transitions, and dynamic crowd engagement during national-scale Nakshatra cultural fests.'
     ],
     focusAreas: [
-      'Team Leadership & Grooming',
-      'Stage & Audience Management',
-      'Celebrity Guest Coordination',
-      'Stage Flow & Coordination',
-      'Live Event Execution'
+      'Team Mentorship & Grooming',
+      'Scriptwriting & Permissions',
+      'Celebrity & VIP Coordination',
+      'Multi-Venue Stage Direction',
+      'Live Audience Crowd Dynamics'
     ],
     visualEvidence: {
       image: '/media/activities/anchoring/Nakshatra_25/WhatsApp Image 2026-09-14 at 00.37.50.jpeg',
       badge: 'STAGE LEADERSHIP · NAKSHATRA',
-      caption: 'Leading live stage hosting in formal tuxedo with warm gold auditorium lighting at national-level Nakshatra Cultural Fest',
-      secondaryImage: '/media/achievements/certificates/1156ae7c-fc50-424e-af60-4bcc8e38810b_page-0001.jpg',
-      secondaryBadge: 'BEST ANCHOR AWARD',
-      secondaryCaption: 'Official Certificate of Recognition: Awarded Best Anchor for Nakshatra 2024 at Saintgits College of Engineering'
+      caption: 'Leading live stage hosting in formal tuxedo under main auditorium lights at national-level Nakshatra Cultural Fest',
+      secondaryImage: '/media/activities/anchoring/Nakshatra_26/IMG_0824.JPG',
+      secondaryBadge: 'NATIONAL CULTURAL FESTIVAL',
+      secondaryCaption: 'Backstage and on-stage live coordination during the Nakshatra cultural festival at Saintgits College of Engineering'
     }
   },
   {
-    id: 'coordinator-campus-radio-jockey',
+    id: 'campus-radio-jockey-coordinator',
     num: '03',
-    title: 'Coordinator of Campus Radio Jockey',
-    domainCategory: 'Coordination / Communication',
-    organization: 'Campus Radio',
-    period: '2023 – 2024',
-    description: 'Operational coordination for campus radio broadcasting sessions, show schedules, and talent operations.',
-    responsibilities: [
-      'Managed broadcasting rosters, studio session bookings, and programming timelines.',
-      'Coordinated between radio jockeys, technical sound operators, and campus departments.',
-      'Facilitated recorded and live segment production workflows and acoustic studio setup.'
-    ],
-    focusAreas: [
-      'Operations Coordination',
-      'Broadcast Scheduling',
-      'Team Liaison',
-      'Show Management'
-    ],
-    visualEvidence: {
-      image: '/media/activities/campus-radio/WhatsApp Image 2026-09-14 at 01.05.29(1).jpeg',
-      badge: 'STUDIO OPERATIONS',
-      caption: 'Managing broadcast studio programming, studio microphone setup, and acoustic console production'
-    }
-  },
-  {
-    id: 'radio-jockey',
-    num: '04',
-    title: 'Radio Jockey',
-    domainCategory: 'Communication / Media',
-    organization: 'Campus Radio',
+    title: 'Campus Radio Jockey & Coordinator',
+    domainCategory: 'Media & Vocal Broadcasting',
+    organization: 'Campus Radio · Saintgits',
     period: '2022 – 2024',
-    description: 'On-air broadcasting, vocal delivery, and live listener engagement across campus transmissions.',
+    description: 'Involved for approximately two years: joined as an on-air RJ, hosted broadcasts, aired vocal recordings, and coordinated club operations, studio sessions, and collegiate audio programming.',
     responsibilities: [
-      'Hosted on-air radio segments, curated campus announcements, and presented thematic shows.',
-      'Scripted episode concepts, conversational transitions, and interactive segment cues.',
-      'Maintained consistent voice modulation, pacing, and clear verbal communication.'
+      'Hosted on-air radio broadcasts and thematic shows, maintaining crisp voice delivery and listener engagement.',
+      'Scripted episode concepts, conversational transitions, interview prompts, and audio segment cues.',
+      'Managed audio recordings, studio session bookings, and acoustic console production timelines.',
+      'Coordinated club activities, scheduling between student RJs, sound engineers, and campus departments.'
     ],
     focusAreas: [
-      'On-Air Broadcasting',
-      'Voice Modulation',
-      'Scriptwriting',
-      'Audience Engagement'
+      'On-Air Voice Delivery',
+      'Scriptwriting & Narrative Flow',
+      'Studio Recording Operations',
+      'Broadcast Scheduling & Coordination'
     ],
     visualEvidence: {
       image: '/media/activities/campus-radio/WhatsApp Image 2026-09-14 at 01.05.29(1).jpeg',
-      badge: 'ON-AIR BROADCASTING',
-      caption: 'Live on-air voice delivery and thematic storytelling over collegiate radio transmitters'
+      badge: 'STUDIO & BROADCAST OPERATIONS',
+      caption: 'Live on-air vocal broadcasting and acoustic studio console coordination during campus radio transmissions'
     }
   }
 ];

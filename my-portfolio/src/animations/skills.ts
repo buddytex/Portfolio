@@ -29,15 +29,19 @@ export function initSkillsAnimation(container: HTMLElement = document.getElement
     return null;
   }
 
-  // Initial hidden state for bubbles
-  bubbles.forEach((b) => {
-    b.style.opacity = '0';
-    b.style.transform = 'scale(0.90) translateY(12px)';
-  });
-
   let animInstance: any = null;
+  let hasRevealed = false;
 
   function playCenterOutStagger() {
+    if (hasRevealed) {
+      domainClusters.forEach((c) => c.classList.add('cluster-visible'));
+      bubbles.forEach((b) => {
+        b.style.opacity = '1';
+        b.style.transform = 'none';
+      });
+      return;
+    }
+    hasRevealed = true;
     if (animInstance) animInstance.revert();
 
     // 1. Reveal domain clusters
@@ -58,6 +62,30 @@ export function initSkillsAnimation(container: HTMLElement = document.getElement
         });
       },
     });
+  }
+
+  // Check initial viewport bounds
+  const rect = container.getBoundingClientRect();
+  const initiallyInView = rect.top < window.innerHeight * 0.90 && rect.bottom > 0;
+
+  if (initiallyInView) {
+    playCenterOutStagger();
+  } else {
+    bubbles.forEach((b) => {
+      b.style.opacity = '0';
+      b.style.transform = 'scale(0.90) translateY(12px)';
+    });
+  }
+
+  // Native IntersectionObserver to ensure bubbles reveal during all scroll modes
+  let io: IntersectionObserver | null = null;
+  if (typeof IntersectionObserver !== 'undefined') {
+    io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        playCenterOutStagger();
+      }
+    }, { rootMargin: '60px 0px', threshold: 0.05 });
+    io.observe(container);
   }
 
   // 3. Subtle restrained micro-interactions on hover
@@ -111,6 +139,10 @@ export function initSkillsAnimation(container: HTMLElement = document.getElement
   });
 
   return () => {
+    if (io) {
+      try { io.disconnect(); } catch {}
+      io = null;
+    }
     try {
       observer.revert();
     } catch {}

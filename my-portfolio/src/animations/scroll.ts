@@ -22,12 +22,15 @@ export interface SectionWaypoint {
 }
 
 export const WAYPOINTS: SectionWaypoint[] = [
-  { id: 'hero',       label: 'Hero',       code: '01 // HERO', selector: '#hero' },
-  { id: 'roles',      label: 'Roles',      code: '02 // ROLES', selector: '#roles' },
-  { id: 'work',       label: 'Projects',   code: '03 // PROJ', selector: '#work' },
-  { id: 'skills',     label: 'Skills',     code: '04 // SKL',  selector: '#skills' },
-  { id: 'hardware',   label: 'PCB Lab',    code: '05 // PCB',  selector: '#hardware' },
-  { id: 'contact',    label: 'Contact',    code: '06 // CON',  selector: '#contact' },
+  { id: 'hero',         label: 'Hero',         code: '01 // HERO', selector: '#hero' },
+  { id: 'roles',        label: 'Roles',        code: '02 // ROLES', selector: '#roles' },
+  { id: 'work',         label: 'Projects',     code: '03 // PROJ', selector: '#work' },
+  { id: 'experience',   label: 'Experience',   code: '04 // EXP',  selector: '#experience' },
+  { id: 'focus',        label: 'Focus',        code: '05 // FOCUS', selector: '#focus' },
+  { id: 'skills',       label: 'Skills',       code: '06 // SKL',  selector: '#skills' },
+  { id: 'hardware',     label: 'PCB Lab',      code: '07 // PCB',  selector: '#hardware' },
+  { id: 'beyond',       label: 'Beyond',       code: '08 // BEY',  selector: '#beyond' },
+  { id: 'contact',      label: 'Contact',      code: '09 // CON',  selector: '#contact' },
 ];
 
 export interface ScrollRevealOptions {
@@ -75,13 +78,16 @@ export function registerScrollReveal(
     replay = true,
   } = options;
 
-  // Set initial visible state to hidden
-  target.style.opacity = '0';
-  target.style.transform = `translateY(${distance}px)`;
-
   let anim: any = null;
+  let isRevealed = false;
 
   function playEntrance() {
+    if (isRevealed && !replay) {
+      target.style.opacity = '1';
+      target.style.transform = 'none';
+      return;
+    }
+    isRevealed = true;
     if (anim) anim.revert();
     anim = animate(target, {
       opacity: [0, 1],
@@ -95,6 +101,35 @@ export function registerScrollReveal(
         target.style.transform = 'none';
       },
     });
+  }
+
+  // Check if element is ALREADY inside or scrolled past the viewport on load
+  const rect = target.getBoundingClientRect();
+  const initiallyInOrPastView = rect.top < window.innerHeight * 0.95;
+
+  if (initiallyInOrPastView) {
+    target.style.opacity = '1';
+    target.style.transform = 'none';
+    isRevealed = true;
+  } else {
+    // Set initial visible state to hidden
+    target.style.opacity = '0';
+    target.style.transform = `translateY(${distance}px)`;
+  }
+
+  // Native IntersectionObserver to GUARANTEE reveal regardless of scroll timing/Lenis
+  let io: IntersectionObserver | null = null;
+  if (typeof IntersectionObserver !== 'undefined') {
+    io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting || entry.boundingClientRect.top < window.innerHeight) {
+        playEntrance();
+        if (!replay) {
+          io?.disconnect();
+          io = null;
+        }
+      }
+    }, { rootMargin: '120px 0px 120px 0px', threshold: 0 });
+    io.observe(target);
   }
 
   const observer = onScroll({
@@ -116,6 +151,10 @@ export function registerScrollReveal(
 
   const entry = {
     revert: () => {
+      if (io) {
+        try { io.disconnect(); } catch {}
+        io = null;
+      }
       try {
         observer.revert();
       } catch {}
@@ -155,8 +194,26 @@ export function initScrollRevealSystem(): () => void {
     registerScrollReveal(el, {
       distance: el.classList.contains('reveal-lg') ? 28 : 18,
       duration: MOTION_TOKENS.duration.normal,
-      replay: true,
+      replay: false,
     });
+  });
+
+  const checkPassedElements = () => {
+    const vh = window.innerHeight;
+    revealElements.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.95) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      }
+    });
+  };
+
+  window.addEventListener('scroll', checkPassedElements, { passive: true });
+  activeObservers.push({
+    revert: () => {
+      window.removeEventListener('scroll', checkPassedElements);
+    }
   });
 
   return clearScrollObservers;

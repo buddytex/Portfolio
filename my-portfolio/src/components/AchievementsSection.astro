@@ -1,0 +1,389 @@
+---
+// AchievementsSection Component — Compact Homepage Credentials Entry Point
+// Connects homepage flow to dedicated /achievements archive.
+import { achievementsData, achievementMediaItems } from '../data/achievements';
+
+// Curated highlights for the compact homepage preview
+const highlights = [
+  {
+    event: 'aBAJA SAEINDIA 2025',
+    rank: 'AIR 7 NATIONALLY',
+    org: 'SAEINDIA · Team Equinox',
+  },
+  {
+    event: 'aBAJA SAEINDIA 2026',
+    rank: 'AIR 11 · E&E HEAD',
+    org: 'SAEINDIA · Team Equinox',
+  },
+  {
+    event: 'Intel GenAI Hackathon',
+    rank: 'TOP 25 / 300+ TEAMS',
+    org: 'Intel & KPRIET',
+  },
+  {
+    event: 'Best Anchor Award',
+    rank: 'BEST ANCHOR',
+    org: 'Nakshatra 2024 Fest',
+  },
+];
+---
+
+<section id="achievements" class="section achievements-bridge-section" aria-labelledby="achievementsHeading">
+  <div class="container-wide">
+    <!-- Compact Section Header -->
+    <div class="bridge-header scroll-reveal-node" data-reveal="achievement">
+      <div class="header-kicker mono">[ 08 // HONORS &amp; CREDENTIALS ]</div>
+      <div class="header-split">
+        <div>
+          <h2 id="achievementsHeading" class="section-title">
+            Verified <span class="accent">Achievements</span>
+          </h2>
+          <p class="section-lead">
+            National collegiate rankings, hackathon honors, and verified engineering credentials backed by official documentation.
+          </p>
+        </div>
+
+        <!-- Direct CTA Link -->
+        <a href="/achievements" class="btn btn-secondary mono view-all-cta" aria-label="View all verified achievements and certificates">
+          <span>VIEW ACHIEVEMENTS ARCHIVE</span>
+          <span class="cta-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Compact Entry Point Card -->
+    <div class="bridge-card scroll-reveal-node" data-reveal="achievement">
+      <div class="bridge-grid">
+        <!-- Highlights Column -->
+        <div class="highlights-col">
+          <div class="col-kicker mono">VERIFIED HIGHLIGHTS &amp; CITATIONS</div>
+          <div class="highlight-pills">
+            {highlights.map((item) => (
+              <div class="highlight-pill">
+                <span class="pill-pip mono">✓</span>
+                <div class="pill-body">
+                  <div class="pill-top">
+                    <span class="pill-title">{item.event}</span>
+                    <span class="pill-badge mono">{item.rank}</span>
+                  </div>
+                  <span class="pill-org mono">{item.org}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Dedicated Archive Entry Banner -->
+        <a href="/achievements" class="archive-banner" aria-label="Open comprehensive achievements and credentials page">
+          <div class="banner-content">
+            <div class="banner-top mono">
+              <span class="banner-badge">[ 08 // DEDICATED ARCHIVE ]</span>
+              <span class="banner-count">{achievementsData.length} CERTIFICATES · {achievementMediaItems.length} MEDIA</span>
+            </div>
+
+            <h3 class="banner-title">
+              Full-Resolution Credentials &amp; Media Gallery
+            </h3>
+
+            <p class="banner-desc">
+              Inspect uncropped official certificates, technical scrutiny passes, hackathon stage presentations, and photographic competition evidence.
+            </p>
+
+            <div class="banner-action mono">
+              <span>EXPLORE VERIFIED CREDENTIALS</span>
+              <span class="banner-arrow" aria-hidden="true">→</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .achievements-bridge-section {
+    background: transparent;
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-16);
+    position: relative;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .bridge-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .header-kicker {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-gold);
+    letter-spacing: 0.12em;
+    margin-bottom: var(--space-2);
+  }
+
+  .header-split {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-size: var(--text-section);
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+  }
+
+  .accent {
+    color: var(--color-gold);
+  }
+
+  .section-lead {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    max-width: 640px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .view-all-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    font-size: var(--text-xs);
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+
+  .view-all-cta:hover .cta-arrow {
+    transform: translateX(4px);
+  }
+
+  .cta-arrow {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  /* Compact Bridge Card */
+  .bridge-card {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    box-shadow: var(--shadow-resting);
+    transition: border-color var(--dur-norm) var(--ease-out),
+                box-shadow var(--dur-norm) var(--ease-out);
+  }
+
+  .bridge-card:hover {
+    border-color: rgba(184, 146, 74, 0.35);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .bridge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Highlights Column */
+  .highlights-col {
+    padding: var(--space-8);
+    background: var(--surface-dim);
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .col-kicker {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-4);
+  }
+
+  .highlight-pills {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .highlight-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    transition: border-color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
+  }
+
+  .highlight-pill:hover {
+    border-color: rgba(184, 146, 74, 0.4);
+    transform: translateX(3px);
+  }
+
+  .pill-pip {
+    color: #16A34A;
+    font-size: 0.75rem;
+    font-weight: 800;
+    line-height: 1.4;
+  }
+
+  .pill-body {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .pill-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+
+  .pill-title {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .pill-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--color-gold);
+    background: rgba(184, 146, 74, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    white-space: nowrap;
+  }
+
+  .pill-org {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+  }
+
+  /* Dedicated Archive Entry Banner */
+  .archive-banner {
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-decoration: none;
+    background: linear-gradient(135deg, rgba(247, 245, 240, 0.8) 0%, rgba(240, 237, 229, 0.4) 100%);
+    position: relative;
+    cursor: pointer;
+    transition: all var(--dur-norm) var(--ease-out);
+  }
+
+  .archive-banner:hover {
+    background: linear-gradient(135deg, rgba(247, 245, 240, 0.95) 0%, rgba(240, 237, 229, 0.8) 100%);
+  }
+
+  .banner-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  .banner-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: var(--space-4);
+  }
+
+  .banner-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    letter-spacing: 0.08em;
+  }
+
+  .banner-count {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .banner-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: var(--space-3);
+  }
+
+  .banner-desc {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-6);
+  }
+
+  .banner-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-gold);
+    letter-spacing: 0.06em;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .archive-banner:hover .banner-action {
+    color: var(--color-ink);
+  }
+
+  .banner-arrow {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  .archive-banner:hover .banner-arrow {
+    transform: translateX(6px);
+  }
+
+  /* Responsive Rules */
+  @media (max-width: 900px) {
+    .bridge-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .highlights-col {
+      border-right: none;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: var(--space-6);
+    }
+
+    .archive-banner {
+      padding: var(--space-6);
+    }
+  }
+
+  @media (max-width: 680px) {
+    .header-split {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .view-all-cta {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

@@ -36,9 +36,13 @@ import { rolesData } from '../data/roles';
           <div class="education-block">
             <span class="edu-badge mono">ACADEMIC FOUNDATION</span>
             <div class="edu-content">
-              <h4 class="edu-degree">B.Tech in Robotics &amp; Automation Engineering</h4>
-              <span class="edu-institution">Saintgits College of Engineering · Autonomous Institution</span>
-              <span class="edu-focus mono">Focus: Autonomous Navigation · Computer Vision · Embedded Controllers</span>
+              <h4 class="edu-degree">B.Tech in Robotics &amp; Automation</h4>
+              <span class="edu-institution">Saintgits College of Engineering</span>
+              <div class="edu-status-row mono">
+                <span class="edu-years">B.Tech Robotics &amp; Automation</span>
+                <span class="edu-sep">·</span>
+                <span class="edu-graduated-tag">2022–2026</span>
+              </div>
             </div>
           </div>
 
@@ -526,10 +530,30 @@ import { rolesData } from '../data/roles';
     color: var(--color-ink-muted, #767571);
   }
 
-  .edu-focus {
-    font-size: 0.7rem;
-    color: var(--color-ink-light, #5A5955);
-    margin-top: 2px;
+  .edu-status-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    margin-top: 3px;
+  }
+
+  .edu-years {
+    color: var(--color-ink-muted, #767571);
+  }
+
+  .edu-sep {
+    color: var(--color-ink-muted, #767571);
+  }
+
+  .edu-graduated-tag {
+    color: #059669;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid rgba(16, 185, 129, 0.25);
   }
 
   /* Compact Verified Credential Preview Card */

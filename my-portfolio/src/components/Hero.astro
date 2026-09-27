@@ -17,7 +17,7 @@ import CircuitBoard from './CircuitBoard.astro';
       <div class="hero-eyebrow" id="heroEyebrow">
         <span class="eyebrow-capsule" aria-hidden="true"></span>
         <span class="eyebrow-dot" aria-hidden="true"></span>
-        <span class="eyebrow-text mono">ROBOTICS AND AUTOMATION ENGINEER</span>
+        <span class="eyebrow-text mono">ROBOTICS ENGINEER // B.TECH ROBOTICS &amp; AUTOMATION</span>
       </div>
 
       <!-- Monumental Editorial Typography -->
@@ -30,15 +30,13 @@ import CircuitBoard from './CircuitBoard.astro';
 
       <!-- Supporting Engineering Disciplines -->
       <div class="hero-disciplines" id="heroDisciplines">
-        <span class="discipline-item mono">AUTONOMOUS SYSTEMS</span>
-        <span class="discipline-sep" aria-hidden="true">·</span>
-        <span class="discipline-item mono">ROBOTICS</span>
-        <span class="discipline-sep" aria-hidden="true">·</span>
         <span class="discipline-item mono">EMBEDDED SYSTEMS</span>
         <span class="discipline-sep" aria-hidden="true">·</span>
-        <span class="discipline-item mono">PERCEPTION</span>
+        <span class="discipline-item mono">AUTONOMOUS VEHICLES</span>
         <span class="discipline-sep" aria-hidden="true">·</span>
-        <span class="discipline-item mono">HARDWARE</span>
+        <span class="discipline-item mono">ROBOTICS HARDWARE</span>
+        <span class="discipline-sep" aria-hidden="true">·</span>
+        <span class="discipline-item mono">ROS 2 &amp; PERCEPTION</span>
       </div>
 
       <!-- Premium Pill CTAs matching Reference Image -->
@@ -136,23 +134,27 @@ import CircuitBoard from './CircuitBoard.astro';
 <!-- Pure Vanilla Three.js Client Controller: Immediate 60fps initialization, real 3D depth, metallic shaders, mouse parallax -->
 <script>
   import * as THREE from 'three';
-  import { initHeroAnimation, type HeroController } from '../animations';
-  import { isReducedMotion } from '../animations';
+  import {
+    initHeroAnimation,
+    type HeroController,
+    isReducedMotion,
+  } from '../animations';
 
   let heroController: HeroController | null = null;
   let hero3dRunning = false;
   let hero3dCancelId: number | null = null;
 
-  // 1. Initialize Anime.js 4.5.x Hero Entrance & Scroll Lifecycle
+  // 1. Initialize Anime.js 4.5.x Hero Lifecycle & Parallax
   function setupHero() {
     if (heroController) {
       heroController.destroy();
       heroController = null;
     }
     const heroSection = document.getElementById('hero');
-    if (heroSection) {
-      heroController = initHeroAnimation(heroSection);
-    }
+    if (!heroSection) return;
+
+    // Initialize Hero with skipEntrance: true so resting state is immediately established
+    heroController = initHeroAnimation(heroSection, { skipEntrance: true });
   }
 
   // 2. REAL Three.js 3D Mechanical Assembly Behind Portrait
@@ -237,8 +239,8 @@ import CircuitBoard from './CircuitBoard.astro';
     // 3D GEOMETRY CLUSTER: CNC Precision Machined Aerospace Collars
     // ----------------------------------------------------
     const torusGroup = new THREE.Group();
-    // Position collar behind portrait collarbone/head shifted down for breathing room
-    torusGroup.position.set(0.35, 0.20, -0.45);
+    // Position collar behind portrait collarbone/shoulders (lowered so face is 100% unobstructed)
+    torusGroup.position.set(0.08, -0.42, -0.45);
     masterGroup.add(torusGroup);
 
     // 1. Primary Dominant Dark Mechanical Collar (Lathe profile with chamfered bevels)
@@ -292,7 +294,7 @@ import CircuitBoard from './CircuitBoard.astro';
     const secCollarGeom = new THREE.LatheGeometry(secPoints, 96);
     const secCollar = new THREE.Mesh(secCollarGeom, secMetalMaterial);
     secCollar.rotation.set(Math.PI * 0.44, -Math.PI * 0.06, Math.PI * 0.44);
-    secCollar.position.set(0.38, 0.28, -0.65);
+    secCollar.position.set(0.12, -0.34, -0.65);
     secCollar.scale.set(1.06, 1.06, 1.06);
     torusGroup.add(secCollar);
 
@@ -300,7 +302,7 @@ import CircuitBoard from './CircuitBoard.astro';
     const secGoldGeom = new THREE.TorusGeometry(r2_in + 0.012, 0.014, 16, 96);
     const secGold = new THREE.Mesh(secGoldGeom, goldGlowRimMaterial);
     secGold.rotation.set(Math.PI * 0.44, -Math.PI * 0.06, Math.PI * 0.44);
-    secGold.position.set(0.38, 0.28, -0.65);
+    secGold.position.set(0.12, -0.34, -0.65);
     secGold.scale.set(1.06, 1.06, 1.06);
     torusGroup.add(secGold);
 
@@ -310,29 +312,29 @@ import CircuitBoard from './CircuitBoard.astro';
     // Sphere 1: Polished Champagne Gold Sphere (Top-Left of Portrait)
     const sphere1Geom = new THREE.SphereGeometry(0.20, 36, 36);
     const sphere1 = new THREE.Mesh(sphere1Geom, goldMetallicMaterial);
-    sphere1.position.set(-1.75, 1.18, 0.75);
+    sphere1.position.set(-1.75, 0.85, 0.75);
     masterGroup.add(sphere1);
 
     // Sphere 2: Medium Gunmetal Sphere (Mid-Left of Portrait, above GEORGE)
     const sphere2Geom = new THREE.SphereGeometry(0.16, 36, 36);
     const sphere2 = new THREE.Mesh(sphere2Geom, darkSphereMaterial);
-    sphere2.position.set(-1.18, 0.62, 0.65);
+    sphere2.position.set(-1.18, 0.25, 0.65);
     masterGroup.add(sphere2);
 
     // Sphere 3: Polished Metallic Gold Sphere (Far-Right of Ring)
     const sphere3Geom = new THREE.SphereGeometry(0.15, 36, 36);
     const sphere3 = new THREE.Mesh(sphere3Geom, goldMetallicMaterial);
-    sphere3.position.set(2.40, 0.10, 0.70);
+    sphere3.position.set(2.35, -0.25, 0.70);
     masterGroup.add(sphere3);
 
     // ----------------------------------------------------
-    // GOLD ORBITAL SYSTEM & MEASUREMENT ARCS (Shifted down)
+    // GOLD ORBITAL SYSTEM & MEASUREMENT ARCS (Lowered with assembly)
     // ----------------------------------------------------
     const beadGeom = new THREE.SphereGeometry(0.038, 18, 18);
 
     // Orbital 1: Large Master Ellipse wrapping completely around the silhouette
     const orbit1Group = new THREE.Group();
-    orbit1Group.position.set(0.30, -0.10, -0.55);
+    orbit1Group.position.set(0.08, -0.45, -0.55);
     orbit1Group.rotation.set(Math.PI * 0.36, -Math.PI * 0.12, Math.PI * 0.32);
     masterGroup.add(orbit1Group);
 
@@ -348,9 +350,9 @@ import CircuitBoard from './CircuitBoard.astro';
     bead1B.position.set(-3.85, 0, 0);
     orbit1Group.add(bead1B);
 
-    // Orbital 2: Concentric Fine Outer Measurement Arc above head
+    // Orbital 2: Concentric Fine Outer Measurement Arc
     const orbit2Group = new THREE.Group();
-    orbit2Group.position.set(0.35, 0.20, -0.45);
+    orbit2Group.position.set(0.08, -0.42, -0.45);
     orbit2Group.rotation.set(Math.PI * 0.42, -Math.PI * 0.05, Math.PI * 0.42);
     masterGroup.add(orbit2Group);
 
@@ -385,7 +387,7 @@ import CircuitBoard from './CircuitBoard.astro';
 
     // Warm Inner Point Light inside the glowing filament
     const goldPointLight = new THREE.PointLight(0xFFE599, 3.8, 6.0);
-    goldPointLight.position.set(0.35, 0.20, -0.38);
+    goldPointLight.position.set(0.08, -0.42, -0.38);
     scene.add(goldPointLight);
 
     // Soft Low Fill Light
@@ -460,15 +462,15 @@ import CircuitBoard from './CircuitBoard.astro';
         masterGroup.rotation.y = mouse.x;
         masterGroup.rotation.x = -mouse.y;
 
-        // Floating spheres organic bobbing
-        sphere1.position.y = 1.18 + Math.sin(time * 1.2) * 0.05;
+        // Floating spheres organic bobbing (lowered with collar assembly)
+        sphere1.position.y = 0.85 + Math.sin(time * 1.2) * 0.05;
         sphere1.position.x = -1.75 + Math.cos(time * 0.9) * 0.03;
 
-        sphere2.position.y = 0.62 + Math.sin(time * 1.5 + 1.2) * 0.04;
+        sphere2.position.y = 0.25 + Math.sin(time * 1.5 + 1.2) * 0.04;
         sphere2.position.x = -1.18 + Math.cos(time * 1.1 + 0.8) * 0.03;
 
-        sphere3.position.y = 0.10 + Math.sin(time * 1.3 + 2.5) * 0.04;
-        sphere3.position.x = 2.40 + Math.cos(time * 1.0 + 1.8) * 0.03;
+        sphere3.position.y = -0.25 + Math.sin(time * 1.3 + 2.5) * 0.04;
+        sphere3.position.x = 2.35 + Math.cos(time * 1.0 + 1.8) * 0.03;
 
         // Orbitals slow rotation
         orbit1Group.rotation.z += delta * 0.038;
@@ -504,22 +506,67 @@ import CircuitBoard from './CircuitBoard.astro';
 
     if (hero3dCancelId) cancelAnimationFrame(hero3dCancelId);
     checkVisibility();
+
+    // Expose 3D controls
+    (window as any).__HERO_3D_CONTROLS__ = {
+      masterGroup,
+      torusGroup,
+      primaryCollar,
+      secCollar,
+      sphere1,
+      sphere2,
+      sphere3,
+      orbit1Group,
+      orbit2Group,
+      keyLight,
+      rimLight,
+      resetToNormal: () => {
+        if (torusGroup) {
+          torusGroup.position.set(0.08, -0.42, -0.45);
+          torusGroup.scale.set(1.0, 1.0, 1.0);
+          torusGroup.rotation.set(0, 0, 0);
+        }
+        if (secCollar) {
+          secCollar.position.set(0.12, -0.34, -0.65);
+          secCollar.scale.set(1.06, 1.06, 1.06);
+          secCollar.rotation.set(Math.PI * 0.44, -Math.PI * 0.06, Math.PI * 0.44);
+        }
+        if (sphere1) sphere1.scale.set(1, 1, 1);
+        if (sphere2) sphere2.scale.set(1, 1, 1);
+        if (sphere3) sphere3.scale.set(1, 1, 1);
+        if (orbit1Group) orbit1Group.scale.set(1, 1, 1);
+      },
+    };
   }
 
-  // Run on page load
+  function deferredInit(fn: () => void) {
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(fn, { timeout: 500 });
+    } else {
+      setTimeout(fn, 100);
+    }
+  }
+
+  // Run on page load: defer heavy 3D scene init so it does not compete with initial paint/layout
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      setupHero();
-      initHero3DScene();
+      deferredInit(() => {
+        initHero3DScene();
+        setupHero();
+      });
     });
   } else {
-    setupHero();
-    initHero3DScene();
+    deferredInit(() => {
+      initHero3DScene();
+      setupHero();
+    });
   }
 
   document.addEventListener('astro:page-load', () => {
-    setupHero();
-    initHero3DScene();
+    deferredInit(() => {
+      initHero3DScene();
+      setupHero();
+    });
   });
 </script>
 

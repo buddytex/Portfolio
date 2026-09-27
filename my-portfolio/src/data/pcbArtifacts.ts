@@ -17,6 +17,12 @@ export interface PCBArtifact {
   gerberDataFile?: string;
   /** Board type label */
   boardType?: string;
+  /** Design CAD Software */
+  designSoftware?: string;
+  /** Primary Data Source */
+  dataUsed?: string;
+  /** What Naveen Personally Designed */
+  whatIDesigned?: string;
 }
 
 export const pcbArtifacts: PCBArtifact[] = [
@@ -29,6 +35,9 @@ export const pcbArtifacts: PCBArtifact[] = [
     dimensions: '201.5 mm × 138.5 mm',
     layerCount: '2-Layer FR4 (1.6mm)',
     finish: 'ENIG (Electroless Nickel Immersion Gold)',
+    designSoftware: 'KiCad EDA',
+    dataUsed: 'RS-274X Gerber Archive (Back_Box_2026.zip)',
+    whatIDesigned: 'Galvanic isolation barrier, CAN 2.0B differential split termination, TVS transient suppression, and automotive-grade buck power regulation.',
     problemSolved: 'Eliminated high-current electromagnetic interference (EMI) and 24V servo inductive kickback that caused logic microcontrollers to brown out during rapid full-lock steering on rough off-road terrain.',
     designDecisions: 'Physically separated power and logic planes via optocoupled galvanic isolation. Routed differential CAN 2.0B traces with matched 120Ω split termination and common-mode TVS protection (SMBJ24CA).',
     gerberArchive: 'Gerbers/Back_Box_2026.zip',
@@ -57,6 +66,9 @@ export const pcbArtifacts: PCBArtifact[] = [
     dimensions: '224.5 mm × 180.0 mm',
     layerCount: '2-Layer FR4 (1.6mm)',
     finish: 'ENIG (Electroless Nickel Immersion Gold)',
+    designSoftware: 'KiCad EDA',
+    dataUsed: 'RS-274X Gerber Archive (Front_Box_2026.rar)',
+    whatIDesigned: 'Sensor interface distribution, low-noise copper ground planes, weatherproof automotive header breakouts, and CAN bus transceiver layout.',
     problemSolved: 'Centralized front vehicle sensing (LiDAR, camera, proximity) and steering actuator control into a single weatherproof enclosure with filtered power distribution and CAN bus connectivity.',
     designDecisions: 'Wide board form factor allows direct header-to-sensor cabling without intermediate wiring harness. Copper pour ground plane minimizes RF interference from high-speed sensor data lines.',
     gerberArchive: 'Gerbers/Front_Box_2026.rar',
@@ -84,6 +96,9 @@ export const pcbArtifacts: PCBArtifact[] = [
     dimensions: '82 mm × 64 mm',
     layerCount: '2-Layer 2oz Heavy Copper',
     finish: 'Lead-Free HASL with Conformal Coating',
+    designSoftware: 'KiCad EDA',
+    dataUsed: 'Hardware Safety Prototype Architecture',
+    whatIDesigned: 'Purely hardware-arbitrated dual-channel latching circuit with SCR latching relay, sub-5ms contact separation, and isolated telemetry dry-contact feedback.',
     problemSolved: 'Prevented autonomous vehicle runaway in the event of trajectory software faults, communication link loss, or compute freeze during competition trials.',
     designDecisions: 'Purely hardware-arbitrated dual-channel latching circuit requiring active manual reset. Operates completely independent of microcontroller firmware or software state with sub-5ms relay contact separation.',
     specs: [
@@ -108,6 +123,9 @@ export const pcbArtifacts: PCBArtifact[] = [
     dimensions: '62 mm × 62 mm',
     layerCount: '2-Layer FR4 Standard',
     finish: 'ENIG Gold',
+    designSoftware: 'KiCad EDA',
+    dataUsed: 'Multi-Agent Mesh Architecture',
+    whatIDesigned: 'ESP32 modular compute carrier, dual H-bridge motor driver interface, optical wheel encoder conditioning, and regulated LiPo power rail.',
     problemSolved: 'Packaged dual-core compute, ad-hoc wireless mesh communications, dual H-bridge motor drivers, and 4-channel proximity sensing into a compact mobile agent footprint.',
     designDecisions: 'Dedicated Core 0 to real-time closed-loop encoder PID and Core 1 to peer-to-peer TCP/IP mesh consensus broadcasts, eliminating latency jitter.',
     specs: [

@@ -96,39 +96,69 @@ export function initRolesAccordion(rolesContainer: HTMLElement = document.getEle
   // Entrance reveal for roles section
   const revealNodes = rolesContainer.querySelectorAll<HTMLElement>('.scroll-reveal-node');
   let observer: any = null;
+  let io: IntersectionObserver | null = null;
+  let animInstance: any = null;
+  let hasRevealed = false;
+
+  function revealRoles() {
+    if (hasRevealed) {
+      revealNodes.forEach((n) => {
+        n.classList.add('is-revealed');
+        n.style.opacity = '1';
+        n.style.transform = 'none';
+      });
+      return;
+    }
+    hasRevealed = true;
+    if (animInstance) animInstance.revert();
+    animInstance = animate(revealNodes, {
+      opacity: [0, 1],
+      translateY: [20, 0],
+      duration: MOTION_TOKENS.duration.normal,
+      delay: stagger(80),
+      ease: MOTION_TOKENS.easing.technical,
+      onComplete: () => {
+        revealNodes.forEach((n) => {
+          n.classList.add('is-revealed');
+          n.style.opacity = '1';
+          n.style.transform = 'none';
+        });
+      },
+    });
+  }
 
   if (!isReducedMotion()) {
-    revealNodes.forEach((node) => {
-      node.style.opacity = '0';
-      node.style.transform = 'translateY(20px)';
-    });
+    const rect = rolesContainer.getBoundingClientRect();
+    const initiallyInView = rect.top < window.innerHeight * 0.90 && rect.bottom > 0;
+
+    if (initiallyInView) {
+      revealRoles();
+    } else {
+      revealNodes.forEach((node) => {
+        node.style.opacity = '0';
+        node.style.transform = 'translateY(20px)';
+      });
+    }
+
+    // Native IntersectionObserver guarantees reveal even during fast or virtual scrolling
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          revealRoles();
+        }
+      }, { rootMargin: '60px 0px', threshold: 0.05 });
+      io.observe(rolesContainer);
+    }
 
     observer = onScroll({
       target: rolesContainer,
       enter: 'top 82%',
       leave: 'bottom 15%',
       onEnter: () => {
-        animate(revealNodes, {
-          opacity: [0, 1],
-          translateY: [20, 0],
-          duration: MOTION_TOKENS.duration.normal,
-          delay: stagger(80),
-          ease: MOTION_TOKENS.easing.technical,
-          onComplete: () => {
-            revealNodes.forEach((n) => {
-              n.classList.add('is-revealed');
-              n.style.opacity = '1';
-              n.style.transform = 'none';
-            });
-          },
-        });
+        revealRoles();
       },
       onEnterBackward: () => {
-        revealNodes.forEach((n) => {
-          n.classList.add('is-revealed');
-          n.style.opacity = '1';
-          n.style.transform = 'none';
-        });
+        revealRoles();
       },
     });
   } else {
@@ -140,10 +170,17 @@ export function initRolesAccordion(rolesContainer: HTMLElement = document.getEle
   }
 
   return () => {
+    if (io) {
+      try { io.disconnect(); } catch {}
+      io = null;
+    }
     if (observer) {
       try {
         observer.revert();
       } catch {}
+    }
+    if (animInstance) {
+      try { animInstance.revert(); } catch {}
     }
     if (layoutEngine && typeof layoutEngine.revert === 'function') {
       layoutEngine.revert();

@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useRef, useState, useMemo, useCallback, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import {
@@ -150,7 +150,8 @@ export default function GerberPCBViewer({
 
   // Viewport IntersectionObserver to pause R3F render loop when offscreen
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
+  // Default to true so initial scene & geometry always compile & render without race condition
+  const [isInView, setIsInView] = useState(true);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -159,29 +160,44 @@ export default function GerberPCBViewer({
       return;
     }
 
+    // Check immediate visibility on mount
+    const rect = el.getBoundingClientRect();
+    const initiallyVisible = rect.top < window.innerHeight + 300 && rect.bottom > -300;
+    setIsInView(initiallyVisible);
+    console.log(`PCB visible: ${initiallyVisible}`);
+    if (typeof window !== 'undefined' && (window as any).__PERF_METRICS__) {
+      (window as any).__PERF_METRICS__.pcb3dRunning = initiallyVisible;
+    }
+
     const observer = new IntersectionObserver(([entry]) => {
       const visible = entry.isIntersecting;
       setIsInView(visible);
+      console.log(`PCB visible: ${visible}`);
       if (typeof window !== 'undefined' && (window as any).__PERF_METRICS__) {
         (window as any).__PERF_METRICS__.pcb3dRunning = visible;
       }
-    }, { threshold: 0.05 });
+    }, { rootMargin: '300px 0px', threshold: 0 });
 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  // Load PCB data
+  // Load PCB data only when component is scrolled into/near viewport
   useEffect(() => {
+    if (!isInView || pcbData) return;
     let cancelled = false;
     async function loadData() {
+      console.log(`[GerberPCBViewer] Fetching /pcb-data/${gerberDataFile}...`);
       setPhase('fetching');
       try {
-        const resp = await fetch(`/pcb-data/${gerberDataFile}`);
+        const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+        const resp = await fetch(`${basePath}/pcb-data/${gerberDataFile}`);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        console.log(`[GerberPCBViewer] Parsing JSON for ${gerberDataFile}...`);
         setPhase('parsing');
         const data: PCBData = await resp.json();
         if (cancelled) return;
+        console.log(`[GerberPCBViewer] Data loaded successfully, layers:`, Object.keys(data.layers));
         setPcbData(data);
         setPhase('rendering');
         requestAnimationFrame(() => {
@@ -189,13 +205,14 @@ export default function GerberPCBViewer({
         });
       } catch (err) {
         if (cancelled) return;
+        console.error(`[GerberPCBViewer] Load error:`, err);
         setPhase('error');
         setErrorMsg(err instanceof Error ? err.message : 'Failed to load PCB data');
       }
     }
     loadData();
     return () => { cancelled = true; };
-  }, [gerberDataFile]);
+  }, [isInView, gerberDataFile, pcbData]);
 
   const toggleLayer = useCallback((layer: string) => {
     setLayerVisibility(prev => ({ ...prev, [layer]: !prev[layer] }));
@@ -234,7 +251,7 @@ export default function GerberPCBViewer({
         gap: '10px',
         flexWrap: 'wrap',
       }}>
-        {/* Left: 3D Physical vs Gerber CAD Mode Switch */}
+        {/* Left: 3D Fabricated Board vs Gerber CAD Mode Switch */}
         <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
           <button
             type="button"
@@ -252,9 +269,9 @@ export default function GerberPCBViewer({
               letterSpacing: '0.04em',
               transition: 'all 0.15s ease',
             }}
-            title="Display populated physical board with 3D components and realistic materials"
+            title="Display fabricated PCB board with realistic solder mask, gold ENIG pads, copper traces, and silkscreen"
           >
-            ● 3D PHYSICAL BOARD
+            ● FABRICATED PCB
           </button>
           <button
             type="button"
@@ -272,9 +289,9 @@ export default function GerberPCBViewer({
               letterSpacing: '0.04em',
               transition: 'all 0.15s ease',
             }}
-            title="Display RS-274X manufacturing CAD layer geometry"
+            title="Display RS-274X manufacturing CAD layer geometry with individual layer toggles"
           >
-            ■ GERBER CAD LAYERS
+            ■ CAD LAYERS
           </button>
         </div>
 
@@ -400,7 +417,7 @@ export default function GerberPCBViewer({
         {pcbData && (
           <Canvas
             frameloop={isInView ? 'always' : 'never'}
-            gl={{ antialias: true, alpha: false, preserveDrawingBuffer: false }}
+            gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
             style={{ width: '100%', height: '100%' }}
             onCreated={({ gl }) => {
               gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
@@ -409,6 +426,7 @@ export default function GerberPCBViewer({
               gl.toneMappingExposure = 1.05;
             }}
           >
+            <RenderTrigger isInView={isInView} />
             <Suspense fallback={null}>
               <PCBScene
                 data={pcbData}
@@ -433,7 +451,7 @@ export default function GerberPCBViewer({
         flexWrap: 'wrap',
       }}>
         {viewMode === 'physical' ? (
-          // Physical Board Hardware Annotations
+          // Physical Fabricated Board Engineering Parameters
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
             <span style={{
               fontSize: '0.58rem',
@@ -442,7 +460,7 @@ export default function GerberPCBViewer({
               fontWeight: 700,
               letterSpacing: '0.06em',
             }}>
-              VERIFIED POPULATED HARDWARE:
+              FABRICATION SPECIFICATIONS:
             </span>
             <span style={{
               fontSize: '0.58rem',
@@ -453,7 +471,7 @@ export default function GerberPCBViewer({
               borderRadius: '3px',
               border: '1px solid rgba(255,255,255,0.08)',
             }}>
-              DUAL ESP32 DevKits (TBW / SBW)
+              2-LAYER FR4 (1.6mm)
             </span>
             <span style={{
               fontSize: '0.58rem',
@@ -464,7 +482,7 @@ export default function GerberPCBViewer({
               borderRadius: '3px',
               border: '1px solid rgba(255,255,255,0.08)',
             }}>
-              DEUTSCH DT04-12P AUTOMOTIVE HEADER
+              ENIG GOLD FINISH (Au 0.05µm / Ni 3µm)
             </span>
             <span style={{
               fontSize: '0.58rem',
@@ -475,7 +493,7 @@ export default function GerberPCBViewer({
               borderRadius: '3px',
               border: '1px solid rgba(255,255,255,0.08)',
             }}>
-              2.5kV OPTOCOUPLER BARRIER
+              ACTUAL RS-274X GERBER GEOMETRY
             </span>
             <span style={{
               fontSize: '0.58rem',
@@ -486,7 +504,7 @@ export default function GerberPCBViewer({
               borderRadius: '3px',
               border: '1px solid rgba(255,255,255,0.08)',
             }}>
-              CAN 2.0B TRANSCEIVERS
+              CNC PLATED THROUGH-HOLES & VIAS
             </span>
           </div>
         ) : (
@@ -537,7 +555,7 @@ export default function GerberPCBViewer({
         <div style={{ flex: 1 }} />
         {gerberArchive && (
           <a
-            href={`/media/${gerberArchive}`}
+            href={`${(import.meta.env.BASE_URL || '/').replace(/\/$/, '')}/media/${gerberArchive}`}
             download
             style={{
               padding: '4px 10px',
@@ -609,6 +627,18 @@ function LayerToggle({ label, checked, color, onChange }: {
       {label}
     </button>
   );
+}
+
+// ─── R3F Invalidation Helper ────────────────────────────────────────
+
+function RenderTrigger({ isInView }: { isInView: boolean }) {
+  const { invalidate } = useThree();
+  useEffect(() => {
+    if (isInView) {
+      invalidate();
+    }
+  }, [isInView, invalidate]);
+  return null;
 }
 
 // ─── 3D Scene ────────────────────────────────────────────────────────
@@ -699,11 +729,6 @@ function PCBScene({ data, layerVisibility, cameraPreset, presetTrigger, viewMode
 
       {/* PCB Board Mesh (substrate, real copper traces, silkscreen, and drills) */}
       <PCBBoardMesh data={data} layerVisibility={layerVisibility} />
-
-      {/* Populated 3D Components when in Physical Board Mode */}
-      {viewMode === 'physical' && (
-        <PopulatedComponents boardId={data.id} width={data.dimensions.width} height={data.dimensions.height} />
-      )}
 
       {/* OrbitControls with auto-rotation */}
       <OrbitControls
@@ -827,247 +852,6 @@ function PCBBoardMesh({ data, layerVisibility }: {
           />
         </mesh>
       )}
-    </group>
-  );
-}
-
-// ─── Populated 3D Components ─────────────────────────────────────────
-
-function PopulatedComponents({ boardId, width, height }: { boardId: string; width: number; height: number }) {
-  const isBackBox = boardId.includes('back-box') || boardId.includes('vehicle');
-  const isFrontBox = boardId.includes('front-box');
-
-  if (isBackBox) {
-    return (
-      <group>
-        {/* Dual ESP32 Microcontroller DevKits for Steer-by-Wire & Throttle-by-Wire */}
-        <ESP32DevKit position={[-0.45, 0.22, 0.008]} label="ESP32 TBW" />
-        <ESP32DevKit position={[-0.45, -0.25, 0.008]} label="ESP32 SBW" />
-
-        {/* Sealed Automotive Deutsch DT04 Connector Header */}
-        <DeutschConnector position={[0.70, 0.25, 0.008]} />
-
-        {/* 8-Position Heavy-Duty Power Terminal Strip for Steering Actuators */}
-        <TerminalBlock position={[0.75, -0.28, 0.008]} pins={8} />
-
-        {/* High-Current Form-C Automotive Relays */}
-        <AutomotiveRelay position={[0.18, -0.24, 0.008]} />
-        <AutomotiveRelay position={[0.18, -0.48, 0.008]} />
-
-        {/* Power Filter Capacitors */}
-        <ElectrolyticCap position={[0.28, 0.06, 0.008]} />
-        <ElectrolyticCap position={[0.38, 0.06, 0.008]} />
-
-        {/* CAN 2.0B Transceiver SOIC-8 & TVS Clamping Network */}
-        <SOICPackage position={[0.18, 0.38, 0.008]} label="CAN 2.0B" />
-        <SOICPackage position={[0.18, 0.24, 0.008]} label="TVS" />
-
-        {/* Galvanic Isolation Barrier Optocouplers (2.5kV isolation) */}
-        <SOICPackage position={[-0.05, 0.08, 0.008]} label="OPTO 1" />
-        <SOICPackage position={[-0.05, -0.08, 0.008]} label="OPTO 2" />
-
-        {/* Active Telemetry Status LEDs */}
-        <StatusLED position={[-0.72, 0.48, 0.008]} color={0x10B981} glow={0x10B981} /> {/* 3.3V PWR - Green */}
-        <StatusLED position={[0.08, 0.48, 0.008]} color={0xF59E0B} glow={0xF59E0B} />  {/* CAN ACT - Amber */}
-        <StatusLED position={[-0.72, -0.48, 0.008]} color={0x38BDF8} glow={0x38BDF8} /> {/* SBW RDY - Cyan */}
-      </group>
-    );
-  }
-
-  if (isFrontBox) {
-    return (
-      <group>
-        {/* Main Sensor Interface Compute Module */}
-        <ESP32DevKit position={[0, 0.15, 0.008]} label="FRONT MCU" />
-
-        {/* Multi-Channel Sensor Terminal Blocks (LiDAR, Camera, Wheel Speed) */}
-        <TerminalBlock position={[-0.85, 0.25, 0.008]} pins={6} />
-        <TerminalBlock position={[-0.85, -0.32, 0.008]} pins={6} />
-        <TerminalBlock position={[0.85, 0.0, 0.008]} pins={8} />
-
-        {/* Automotive Power Filter & Choke */}
-        <ElectrolyticCap position={[-0.32, -0.45, 0.008]} />
-        <ElectrolyticCap position={[-0.44, -0.45, 0.008]} />
-        <AutomotiveRelay position={[0.35, -0.38, 0.008]} />
-
-        {/* CAN Bus Controller & Transceivers */}
-        <SOICPackage position={[0.22, 0.48, 0.008]} label="CAN 1" />
-        <SOICPackage position={[0.36, 0.48, 0.008]} label="CAN 2" />
-
-        {/* Status LEDs */}
-        <StatusLED position={[-0.85, 0.65, 0.008]} color={0x10B981} glow={0x10B981} />
-        <StatusLED position={[0.85, 0.65, 0.008]} color={0x38BDF8} glow={0x38BDF8} />
-      </group>
-    );
-  }
-
-  return null;
-}
-
-// ─── Component Model Details ─────────────────────────────────────────
-
-function ESP32DevKit({ position, label }: { position: [number, number, number]; label: string }) {
-  return (
-    <group position={position}>
-      {/* DevKit PCB base */}
-      <mesh position={[0, 0, 0.006]}>
-        <boxGeometry args={[0.52, 0.28, 0.012]} />
-        <meshStandardMaterial color={0x181B20} roughness={0.7} metalness={0.1} />
-      </mesh>
-      {/* ESP-WROOM-32 Metal RF Shield Can */}
-      <mesh position={[-0.08, 0, 0.018]}>
-        <boxGeometry args={[0.18, 0.16, 0.016]} />
-        <meshStandardMaterial color={0xD1D5DB} roughness={0.25} metalness={0.9} />
-      </mesh>
-      {/* Meandered PCB Antenna */}
-      <mesh position={[-0.21, 0, 0.013]}>
-        <boxGeometry args={[0.06, 0.22, 0.002]} />
-        <meshStandardMaterial color={0xB8924A} roughness={0.3} metalness={0.8} />
-      </mesh>
-      {/* Micro-USB Port */}
-      <mesh position={[0.24, 0, 0.016]}>
-        <boxGeometry args={[0.07, 0.08, 0.015]} />
-        <meshStandardMaterial color={0xE5E7EB} roughness={0.2} metalness={0.95} />
-      </mesh>
-      {/* Header Pin Strips (Top & Bottom) */}
-      {[-0.12, 0.12].map((yOffset, row) => (
-        <group key={row} position={[0, yOffset, 0.012]}>
-          <mesh>
-            <boxGeometry args={[0.46, 0.025, 0.018]} />
-            <meshStandardMaterial color={0x111317} roughness={0.8} />
-          </mesh>
-        </group>
-      ))}
-      {/* Status LED Pip */}
-      <mesh position={[0.08, 0.08, 0.014]}>
-        <sphereGeometry args={[0.008, 8, 8]} />
-        <meshStandardMaterial color={0x38BDF8} emissive={0x38BDF8} emissiveIntensity={0.8} />
-      </mesh>
-    </group>
-  );
-}
-
-function DeutschConnector({ position }: { position: [number, number, number] }) {
-  return (
-    <group position={position}>
-      {/* Main connector housing */}
-      <mesh position={[0, 0, 0.06]}>
-        <boxGeometry args={[0.24, 0.44, 0.12]} />
-        <meshStandardMaterial color={0x2A2E39} roughness={0.5} metalness={0.2} />
-      </mesh>
-      {/* Silicone Weatherproof Gasket Collar */}
-      <mesh position={[-0.02, 0, 0.06]}>
-        <boxGeometry args={[0.03, 0.45, 0.125]} />
-        <meshStandardMaterial color={0xEA580C} roughness={0.6} metalness={0.0} />
-      </mesh>
-      {/* Locking Clip Tab */}
-      <mesh position={[0, 0, 0.13]}>
-        <boxGeometry args={[0.12, 0.14, 0.03]} />
-        <meshStandardMaterial color={0x374151} roughness={0.4} />
-      </mesh>
-      {/* Terminal Contact Pins inside */}
-      {[-0.14, -0.07, 0, 0.07, 0.14].map((y, i) => (
-        <mesh key={i} position={[0.08, y, 0.06]}>
-          <cylinderGeometry args={[0.007, 0.007, 0.05, 8]} />
-          <meshStandardMaterial color={0xD4AF37} roughness={0.2} metalness={0.9} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-function TerminalBlock({ position, pins = 8 }: { position: [number, number, number]; pins?: number }) {
-  const height = pins * 0.075;
-  return (
-    <group position={position}>
-      {/* Industrial Thermoplastic Housing */}
-      <mesh position={[0, 0, 0.05]}>
-        <boxGeometry args={[0.16, height, 0.10]} />
-        <meshStandardMaterial color={0x1B4332} roughness={0.6} metalness={0.1} />
-      </mesh>
-      {/* Brass Clamp Screws */}
-      {Array.from({ length: pins }).map((_, i) => {
-        const y = -height / 2 + (i + 0.5) * (height / pins);
-        return (
-          <mesh key={i} position={[-0.02, y, 0.102]}>
-            <cylinderGeometry args={[0.016, 0.016, 0.01, 12]} />
-            <meshStandardMaterial color={0xD4AF37} roughness={0.25} metalness={0.85} />
-          </mesh>
-        );
-      })}
-    </group>
-  );
-}
-
-function AutomotiveRelay({ position }: { position: [number, number, number] }) {
-  return (
-    <group position={position}>
-      <mesh position={[0, 0, 0.06]}>
-        <boxGeometry args={[0.22, 0.18, 0.12]} />
-        <meshStandardMaterial color={0x1E2024} roughness={0.35} metalness={0.15} />
-      </mesh>
-    </group>
-  );
-}
-
-function ElectrolyticCap({ position }: { position: [number, number, number] }) {
-  return (
-    <group position={position}>
-      {/* Aluminum Can with Black Sleeve */}
-      <mesh position={[0, 0, 0.045]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.038, 0.038, 0.09, 16]} />
-        <meshStandardMaterial color={0x1F242D} roughness={0.4} metalness={0.3} />
-      </mesh>
-      {/* Silver Top Vent Cross */}
-      <mesh position={[0, 0, 0.091]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.036, 0.036, 0.002, 16]} />
-        <meshStandardMaterial color={0xD1D5DB} roughness={0.2} metalness={0.9} />
-      </mesh>
-    </group>
-  );
-}
-
-function SOICPackage({ position, label }: { position: [number, number, number]; label?: string }) {
-  return (
-    <group position={position}>
-      {/* Molded Plastic Body */}
-      <mesh position={[0, 0, 0.01]}>
-        <boxGeometry args={[0.07, 0.06, 0.018]} />
-        <meshStandardMaterial color={0x16181D} roughness={0.5} metalness={0.1} />
-      </mesh>
-      {/* Pin 1 Notch */}
-      <mesh position={[-0.025, 0.02, 0.02]}>
-        <sphereGeometry args={[0.004, 6, 6]} />
-        <meshStandardMaterial color={0x374151} roughness={0.8} />
-      </mesh>
-      {/* Silver Pins */}
-      {[-0.02, 0, 0.02].map((y, i) => (
-        <group key={i}>
-          <mesh position={[-0.042, y, 0.006]}>
-            <boxGeometry args={[0.016, 0.007, 0.004]} />
-            <meshStandardMaterial color={0xE5E7EB} roughness={0.2} metalness={0.9} />
-          </mesh>
-          <mesh position={[0.042, y, 0.006]}>
-            <boxGeometry args={[0.016, 0.007, 0.004]} />
-            <meshStandardMaterial color={0xE5E7EB} roughness={0.2} metalness={0.9} />
-          </mesh>
-        </group>
-      ))}
-    </group>
-  );
-}
-
-function StatusLED({ position, color, glow }: { position: [number, number, number]; color: number; glow: number }) {
-  return (
-    <group position={position}>
-      <mesh position={[0, 0, 0.006]}>
-        <boxGeometry args={[0.022, 0.014, 0.01]} />
-        <meshStandardMaterial color={0x1E222A} roughness={0.6} />
-      </mesh>
-      <mesh position={[0, 0, 0.012]}>
-        <boxGeometry args={[0.014, 0.01, 0.005]} />
-        <meshStandardMaterial color={color} emissive={glow} emissiveIntensity={1.2} />
-      </mesh>
     </group>
   );
 }

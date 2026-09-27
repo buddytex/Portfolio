@@ -1,0 +1,576 @@
+---
+// IntroOverlay.astro — "Signal Lock" Engineering-Signal Burst Intro. ~2.3s.
+
+// 8 Ambient radial calibration beams
+const beams = Array.from({ length: 8 }, (_, i) => ({ id: `beam${i}`, rot: i * 45 }));
+
+// 8 Radial Circuit Traces & Synchronized Activation Nodes (PCB Geometry)
+const circuitTraces = [
+  { id: 'c0', angle: 12, length: 320, nodeA: 130, nodeB: 240 },
+  { id: 'c1', angle: 58, length: 380, nodeA: 170, nodeB: null },
+  { id: 'c2', angle: 102, length: 290, nodeA: 140, nodeB: 230 },
+  { id: 'c3', angle: 148, length: 410, nodeA: 190, nodeB: 320 },
+  { id: 'c4', angle: 192, length: 330, nodeA: 150, nodeB: null },
+  { id: 'c5', angle: 238, length: 390, nodeA: 180, nodeB: 290 },
+  { id: 'c6', angle: 282, length: 300, nodeA: 130, nodeB: 220 },
+  { id: 'c7', angle: 328, length: 420, nodeA: 190, nodeB: 330 },
+];
+
+// Population 1: INNER (12 particles, travel 110–180px, fast, sharp)
+// Profile A (hot white sparks): bright -> tiny -> disappear
+// Profile B (gold precision nodes): tiny -> slightly larger -> fade
+const innerParticles = Array.from({ length: 12 }, (_, i) => {
+  const baseAngle = (i * (360 / 12) + (i % 2 === 0 ? 0 : 14)) * (Math.PI / 180);
+  const dist = 110 + (i % 4) * 22;
+  const isHot = i % 2 === 0;
+  return {
+    id: `burstIn${i}`,
+    dx: Math.round(Math.cos(baseAngle) * dist),
+    dy: Math.round(Math.sin(baseAngle) * dist),
+    type: isHot ? 'hot' : 'gold',
+    profile: isHot ? 'fade-tiny' : 'bloom-fade',
+  };
+});
+
+// Population 2: MEDIUM (14 particles, travel 240–370px, 4 with directional signal trails)
+// Trajectories: 10 radial, 3 curved, 1 tangential
+const midParticles = Array.from({ length: 14 }, (_, i) => {
+  const baseDeg = i * (360 / 14) + (i % 3) * 6;
+  const rad = baseDeg * (Math.PI / 180);
+  const isCurved = i === 2 || i === 6 || i === 11;
+  const isTangential = i === 9;
+  const driftRad = isCurved ? rad + 0.32 : isTangential ? rad + 0.72 : rad;
+  const dist = 240 + (i % 5) * 28;
+  const hasTrail = i === 1 || i === 4 || i === 8 || i === 12;
+  return {
+    id: `burstMid${i}`,
+    dx: Math.round(Math.cos(driftRad) * dist),
+    dy: Math.round(Math.sin(driftRad) * dist),
+    angleDeg: Math.round((driftRad * 180) / Math.PI),
+    hasTrail,
+    type: i % 3 === 0 ? 'rust' : 'gold',
+  };
+});
+
+// Population 3: OUTER (10 particles, travel 450–620px, sweeping past viewport bounds)
+// 3 with directional signal trails
+const outerParticles = Array.from({ length: 10 }, (_, i) => {
+  const baseDeg = i * (360 / 10) + 16;
+  const rad = baseDeg * (Math.PI / 180);
+  const isCurved = i === 3 || i === 7;
+  const driftRad = isCurved ? rad - 0.28 : rad;
+  const dist = 450 + (i % 3) * 75; // 450, 525, 600px
+  const hasTrail = i === 0 || i === 5 || i === 8;
+  return {
+    id: `burstOut${i}`,
+    dx: Math.round(Math.cos(driftRad) * dist),
+    dy: Math.round(Math.sin(driftRad) * dist),
+    angleDeg: Math.round((driftRad * 180) / Math.PI),
+    hasTrail,
+    type: i % 2 === 0 ? 'gold' : 'rust',
+  };
+});
+---
+
+<div id="introOverlay" class="intro-overlay" aria-hidden="true">
+  <div class="intro-panel intro-panel-top" id="introPanelTop"></div>
+  <div class="intro-panel intro-panel-bottom" id="introPanelBottom"></div>
+
+  <div class="intro-content" id="introContent">
+    <div class="intro-vignette"></div>
+
+    <!-- Motes -->
+    <div class="intro-mote intro-mote-a" id="introMoteA"></div>
+    <div class="intro-mote intro-mote-b" id="introMoteB"></div>
+    <div class="intro-mote intro-mote-c" id="introMoteC"></div>
+    <div class="intro-mote intro-mote-d" id="introMoteD"></div>
+    <div class="intro-mote intro-mote-e" id="introMoteE"></div>
+    <div class="intro-mote intro-mote-f" id="introMoteF"></div>
+
+    <!-- Radial Calibration Beams -->
+    <div class="intro-beam-group" id="introBeamGroup">
+      {beams.map((b) => (
+        <div class="intro-beam" id={b.id} style={`--rot:${b.rot}deg;`}></div>
+      ))}
+    </div>
+
+    <!-- Reticle Calibration Rings -->
+    <div class="intro-ring intro-ring-outer" id="introRingOuter"></div>
+    <div class="intro-ring intro-ring-mid" id="introRingMid"></div>
+    <div class="intro-ring intro-ring-inner" id="introRing"></div>
+
+    <!-- Central Signal Mark & Satellites -->
+    <div class="intro-mark-hot" id="introMarkHot"></div>
+    <div class="intro-mark-gold" id="introMarkGold"></div>
+    <div class="intro-satellite intro-satellite-a" id="introSatA"></div>
+    <div class="intro-satellite intro-satellite-b" id="introSatB"></div>
+
+    <!-- Precision Crosshairs & Pulse -->
+    <div class="intro-glow-h" id="introGlowH"></div>
+    <div class="intro-line intro-line-h" id="introLineH"></div>
+    <div class="intro-line intro-line-v" id="introLineV"></div>
+    <div class="intro-diag intro-diag-a" id="introDiagA"></div>
+    <div class="intro-diag intro-diag-b" id="introDiagB"></div>
+    <div class="intro-pulse" id="introPulse"></div>
+
+    <!-- 8 Framing Ticks -->
+    <div class="intro-tick intro-tick-tl"><span></span></div>
+    <div class="intro-tick intro-tick-tr"><span></span></div>
+    <div class="intro-tick intro-tick-bl"><span></span></div>
+    <div class="intro-tick intro-tick-br"><span></span></div>
+    <div class="intro-tick intro-tick-t"><span></span></div>
+    <div class="intro-tick intro-tick-b"><span></span></div>
+    <div class="intro-tick intro-tick-l"><span></span></div>
+    <div class="intro-tick intro-tick-r"><span></span></div>
+
+    <!-- ============================================== -->
+    <!-- UPGRADED ENGINEERING-SIGNAL BURST ELEMENTS     -->
+    <!-- ============================================== -->
+
+    <!-- Full-Viewport Radial Energy Field (soft, expansive, not harsh) -->
+    <div class="intro-energy-field" id="introEnergyField"></div>
+
+    <!-- Radial Circuit Lines with Synchronized Activation Nodes -->
+    <div class="intro-circuit-group" id="introCircuitGroup">
+      {circuitTraces.map((t) => (
+        <div class="intro-circuit-line" id={t.id} style={`--rot:${t.angle}deg;--len:${t.length}px;`}>
+          {t.nodeA && <div class="intro-circuit-node intro-node-a" style={`--dist:${t.nodeA}px;`}></div>}
+          {t.nodeB && <div class="intro-circuit-node intro-node-b" style={`--dist:${t.nodeB}px;`}></div>}
+        </div>
+      ))}
+    </div>
+
+    <!-- 4 Layered Shockwaves -->
+    <div class="intro-shockwave intro-shockwave-core" id="introShockwaveCore"></div>
+    <div class="intro-shockwave intro-shockwave-secondary" id="introShockwaveSecondary"></div>
+    <div class="intro-shockwave intro-shockwave-outer" id="introShockwaveOuter"></div>
+    <div class="intro-shockwave intro-shockwave-ripple" id="introShockwaveRipple"></div>
+
+    <!-- Central Flash Luminance Transition -->
+    <div class="intro-core-flash" id="introCoreFlash"></div>
+
+    <!-- 3-Tier Radial Particle Field with Signal Trails -->
+    <div class="intro-burst-group" id="introBurstGroup">
+      {innerParticles.map((p) => (
+        <div
+          class={`intro-burst intro-burst-inner intro-burst-${p.type}`}
+          id={p.id}
+          data-profile={p.profile}
+          style={`--dx:${p.dx}px;--dy:${p.dy}px;`}
+        ></div>
+      ))}
+      {midParticles.map((p) => (
+        <div
+          class={`intro-burst intro-burst-mid intro-burst-${p.type}`}
+          id={p.id}
+          style={`--dx:${p.dx}px;--dy:${p.dy}px;`}
+        >
+          {p.hasTrail && <span class="intro-burst-trail" style={`--angle:${p.angleDeg}deg;`}></span>}
+        </div>
+      ))}
+      {outerParticles.map((p) => (
+        <div
+          class={`intro-burst intro-burst-outer intro-burst-${p.type}`}
+          id={p.id}
+          style={`--dx:${p.dx}px;--dy:${p.dy}px;`}
+        >
+          {p.hasTrail && <span class="intro-burst-trail" style={`--angle:${p.angleDeg}deg;`}></span>}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Horizon Splitting Seam -->
+  <div class="intro-seam" id="introSeam"></div>
+</div>
+
+<script is:inline>
+  (() => {
+    try {
+      const isPreview = new URLSearchParams(window.location.search).get('introPreview') === 'true';
+      const seen = sessionStorage.getItem('portfolio_intro_seen') === 'true';
+      if (seen && !isPreview) {
+        const overlay = document.getElementById('introOverlay');
+        if (overlay) overlay.remove();
+      } else {
+        sessionStorage.setItem('portfolio_intro_seen', 'true');
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<script>
+  import gsap from 'gsap';
+  import { CustomEase } from 'gsap/CustomEase';
+  gsap.registerPlugin(CustomEase);
+
+  CustomEase.create('signalGlide', '0.19, 1, 0.22, 1');
+  CustomEase.create('burstOut', '0.1, 0.9, 0.15, 1');
+
+  let activeTimeline: gsap.core.Timeline | null = null;
+
+  function cleanup() {
+    if (activeTimeline) {
+      activeTimeline.kill();
+      activeTimeline = null;
+    }
+    const overlay = document.getElementById('introOverlay');
+    if (overlay) overlay.remove();
+  }
+
+  function startIntroTimeline(overlay: HTMLElement) {
+    const content = overlay.querySelector('#introContent');
+    const panelTop = overlay.querySelector('#introPanelTop');
+    const panelBottom = overlay.querySelector('#introPanelBottom');
+    const seam = overlay.querySelector('#introSeam');
+
+    const motes = overlay.querySelectorAll('.intro-mote');
+    const beamEls = overlay.querySelectorAll('.intro-beam');
+    const markHot = overlay.querySelector('#introMarkHot');
+    const markGold = overlay.querySelector('#introMarkGold');
+    const ring = overlay.querySelector('#introRing');
+    const ringMid = overlay.querySelector('#introRingMid');
+    const ringOuter = overlay.querySelector('#introRingOuter');
+    const satA = overlay.querySelector('#introSatA');
+    const satB = overlay.querySelector('#introSatB');
+    const glowH = overlay.querySelector('#introGlowH');
+    const lineH = overlay.querySelector('#introLineH');
+    const lineV = overlay.querySelector('#introLineV');
+    const diagA = overlay.querySelector('#introDiagA');
+    const diagB = overlay.querySelector('#introDiagB');
+    const pulse = overlay.querySelector('#introPulse');
+    const ticks = overlay.querySelectorAll('.intro-tick > span');
+
+    // Upgraded explosion elements
+    const energyField = overlay.querySelector('#introEnergyField');
+    const coreFlash = overlay.querySelector('#introCoreFlash');
+    const shockCore = overlay.querySelector('#introShockwaveCore');
+    const shockSecondary = overlay.querySelector('#introShockwaveSecondary');
+    const shockOuter = overlay.querySelector('#introShockwaveOuter');
+    const shockRipple = overlay.querySelector('#introShockwaveRipple');
+    const circuitLines = overlay.querySelectorAll('.intro-circuit-line');
+    const nodesA = overlay.querySelectorAll('.intro-node-a');
+    const nodesB = overlay.querySelectorAll('.intro-node-b');
+    const burstInnerHot = overlay.querySelectorAll('.intro-burst-inner[data-profile="fade-tiny"]');
+    const burstInnerGold = overlay.querySelectorAll('.intro-burst-inner[data-profile="bloom-fade"]');
+    const burstMid = overlay.querySelectorAll('.intro-burst-mid');
+    const burstOuter = overlay.querySelectorAll('.intro-burst-outer');
+
+    const dismiss = () => cleanup();
+    overlay.addEventListener('click', dismiss, { once: true });
+    overlay.addEventListener('keydown', dismiss, { once: true });
+    overlay.addEventListener('wheel', dismiss, { once: true, passive: true });
+    overlay.addEventListener('touchstart', dismiss, { once: true, passive: true });
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    activeTimeline = gsap.timeline({
+      defaults: { force3D: true, ease: 'signalGlide' },
+      onComplete: () => {
+        overlay.remove();
+        activeTimeline = null;
+      },
+    });
+
+    if (reducedMotion) {
+      // Respect prefers-reduced-motion: retain reticle assembly, short pulse, skip explosion, immediate door transition
+      activeTimeline
+        .set(overlay, { opacity: 1, pointerEvents: 'auto' })
+        .fromTo(markGold, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.35 }, 0.05)
+        .fromTo(ring, { opacity: 0, scale: 0.5 }, { opacity: 0.8, scale: 1, duration: 0.45 }, 0.1)
+        .fromTo(lineH, { scaleX: 0 }, { scaleX: 1, duration: 0.4 }, 0.2)
+        .fromTo(lineV, { scaleY: 0 }, { scaleY: 1, duration: 0.3 }, 0.3)
+        .fromTo(pulse, { opacity: 0, x: -30 }, { opacity: 1, x: 30, duration: 0.3 }, 0.4)
+        .to(pulse, { opacity: 0, duration: 0.15 }, 0.7)
+        .fromTo(seam, { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.25 }, 0.8)
+        .set(overlay, { pointerEvents: 'none' }, 0.95)
+        .to(content, { opacity: 0, duration: 0.2 }, 0.95)
+        .to(panelTop, { yPercent: -100, duration: 0.55 }, 0.98)
+        .to(panelBottom, { yPercent: 100, duration: 0.55 }, 0.98);
+      return;
+    }
+
+    // Responsive travel scale factor (maintains vastness while respecting mobile viewports)
+    const isMobile = window.innerWidth <= 768;
+    const travelScale = isMobile ? 0.7 : 1;
+
+    activeTimeline
+      .set(overlay, { opacity: 1, pointerEvents: 'auto' })
+
+      // === PHASE 1: ATMOSPHERE ===
+      .fromTo(motes, { opacity: 0, y: 10 }, { opacity: 0.5, y: -6, duration: 1.2, stagger: 0.1 }, 0)
+      .to(motes, { opacity: 0, duration: 0.35 }, 1.05)
+
+      .fromTo(beamEls, { opacity: 0, scaleY: 0 }, { opacity: 0.18, scaleY: 1, duration: 0.9, stagger: 0.02 }, 0.15)
+      .to(beamEls, { opacity: 0, duration: 0.3 }, 1.15)
+
+      // === PHASE 2: RETICLE ASSEMBLY ===
+      .fromTo(markHot, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1.3, duration: 0.32 }, 0.05)
+      .fromTo(markGold, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.55 }, 0.18)
+      .to(markHot, { opacity: 0, scale: 1, duration: 0.4 }, 0.22)
+
+      .fromTo(satA, { opacity: 0, x: -40, y: -18 }, { opacity: 1, x: -22, y: -10, duration: 0.55 }, 0.13)
+      .fromTo(satB, { opacity: 0, x: 40, y: 18 }, { opacity: 1, x: 22, y: 10, duration: 0.55 }, 0.2)
+      .to([satA, satB], { opacity: 0, duration: 0.25 }, 0.8)
+
+      .fromTo(ring, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, duration: 0.75 }, 0.08)
+      .to(ring, { opacity: 0, duration: 0.35 }, 0.6)
+      .fromTo(ringMid, { opacity: 0, scale: 0.4, rotate: 10 }, { opacity: 0.4, scale: 1, rotate: 0, duration: 0.9 }, 0.14)
+      .to(ringMid, { opacity: 0, duration: 0.35 }, 0.68)
+      .fromTo(ringOuter, { opacity: 0, scale: 0.5, rotate: -8 }, { opacity: 0.55, scale: 1, rotate: 0, duration: 0.9 }, 0.18)
+      .to(ringOuter, { opacity: 0, duration: 0.35 }, 0.7)
+
+      .fromTo(glowH, { opacity: 0, scaleX: 0 }, { opacity: 0.6, scaleX: 1, duration: 0.5 }, 0.28)
+      .to(glowH, { opacity: 0, duration: 0.25 }, 0.68)
+      .fromTo(lineH, { scaleX: 0 }, { scaleX: 1, duration: 0.55 }, 0.32)
+      .fromTo(lineV, { scaleY: 0 }, { scaleY: 1, duration: 0.45 }, 0.48)
+      .fromTo([diagA, diagB], { opacity: 0, scale: 0 }, { opacity: 0.5, scale: 1, duration: 0.4, stagger: 0.05 }, 0.6)
+      .fromTo(pulse, { opacity: 0, x: 0 }, { opacity: 1, x: 90, duration: 0.35 }, 0.72)
+      .to(pulse, { opacity: 0, duration: 0.18 }, 0.98)
+      .fromTo(ticks, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, stagger: 0.045 }, 0.56)
+
+      // === PHASE 3: CONVERGENCE (Snap toward center before release) ===
+      .to([ringOuter, ringMid, lineH, lineV, diagA, diagB, ticks, beamEls], { opacity: 0, scale: 0.85, duration: 0.18 }, 1.10)
+
+      // === PHASE 4: THE ENGINEERING-SIGNAL BURST ===
+
+      // 1. Center Luminance & Expanding Warm Gold Energy Field
+      .fromTo(coreFlash, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1.8, duration: 0.1, ease: 'burstOut' }, 1.18)
+      .to(coreFlash, { opacity: 0, scale: 2.8, duration: 0.32, ease: 'power2.out' }, 1.28)
+      .to(markGold, { scale: 1.8, duration: 0.1, ease: 'burstOut' }, 1.18)
+      .to(markGold, { scale: 0, opacity: 0, duration: 0.24 }, 1.28)
+
+      // Full-viewport energy field (replaces harsh whiteout with vast, subtle illumination)
+      .fromTo(energyField, { opacity: 0, scale: 0.7 }, { opacity: 0.45, scale: 1.15, duration: 0.24, ease: 'burstOut' }, 1.18)
+      .to(energyField, { opacity: 0, scale: 1.45, duration: 0.45, ease: 'power2.out' }, 1.42)
+
+      // 2. The 4-Layer Shockwave System
+      // Wave 1 — Core Shockwave (fast, bright, sharp gold ring)
+      .fromTo(shockCore, { opacity: 0.95, scale: 0.2 }, { opacity: 0, scale: 3.6, duration: 0.55, ease: 'burstOut' }, 1.18)
+      // Wave 2 — Secondary Shockwave (warm gold, slightly softer, wider)
+      .fromTo(shockSecondary, { opacity: 0.8, scale: 0.2 }, { opacity: 0, scale: 5.6, duration: 0.75, ease: 'burstOut' }, 1.26)
+      // Wave 3 — Outer Field (THE EXPANSION TO VIEWPORT EDGES: 10.5x scale sweeps across whole screen)
+      .fromTo(shockOuter, { opacity: 0.45, scale: 0.15 }, { opacity: 0, scale: 10.5, duration: 1.05, ease: 'burstOut' }, 1.22)
+      // Wave 4 — Micro Ripple (fine, high-speed secondary ripple)
+      .fromTo(shockRipple, { opacity: 0.5, scale: 0.2 }, { opacity: 0, scale: 7.5, duration: 0.65, ease: 'burstOut' }, 1.32)
+
+      // 3. Radial Circuit Lines (PCB trace geometry extending during burst)
+      .fromTo(circuitLines, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 0.7, duration: 0.32, ease: 'burstOut', stagger: 0.01 }, 1.19)
+      .to(circuitLines, { opacity: 0, duration: 0.32, ease: 'power2.in' }, 1.50)
+
+      // 4. Synchronized Circuit Node Activation (pulses deterministically as wavefront arrives)
+      .fromTo(nodesA, { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1.45, duration: 0.12, ease: 'power2.out', stagger: 0.012 }, 1.25)
+      .to(nodesA, { opacity: 0.7, scale: 1, duration: 0.15 }, 1.37)
+      .to(nodesA, { opacity: 0, duration: 0.24, ease: 'power2.in', stagger: 0.012 }, 1.48)
+
+      .fromTo(nodesB, { opacity: 0, scale: 0.2 }, { opacity: 1, scale: 1.35, duration: 0.14, ease: 'power2.out', stagger: 0.015 }, 1.33)
+      .to(nodesB, { opacity: 0.7, scale: 1, duration: 0.15 }, 1.47)
+      .to(nodesB, { opacity: 0, duration: 0.24, ease: 'power2.in', stagger: 0.015 }, 1.52)
+
+      // 5. 3-Tier Particle Populations (Depth & Custom Profiles)
+      // Inner Population A (hot sparks: bright -> tiny -> disappear)
+      .fromTo(
+        burstInnerHot,
+        { opacity: 1, x: 0, y: 0, scale: 1.4 },
+        {
+          opacity: 0,
+          x: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dx')) * travelScale + 'px',
+          y: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dy')) * travelScale + 'px',
+          scale: 0.2,
+          duration: 0.52,
+          ease: 'burstOut',
+          stagger: 0.008,
+        },
+        1.19
+      )
+      // Inner Population B (gold nodes: tiny -> larger -> fade)
+      .fromTo(
+        burstInnerGold,
+        { opacity: 0.9, x: 0, y: 0, scale: 0.3 },
+        {
+          opacity: 0,
+          x: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dx')) * travelScale + 'px',
+          y: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dy')) * travelScale + 'px',
+          scale: 1.2,
+          duration: 0.58,
+          ease: 'burstOut',
+          stagger: 0.01,
+        },
+        1.19
+      )
+      // Medium Population (small -> bright -> larger -> fade, with directional trails)
+      .fromTo(
+        burstMid,
+        { opacity: 0.95, x: 0, y: 0, scale: 0.5 },
+        {
+          opacity: 0,
+          x: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dx')) * travelScale + 'px',
+          y: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dy')) * travelScale + 'px',
+          scale: 1.2,
+          duration: 0.72,
+          ease: 'burstOut',
+          stagger: 0.012,
+        },
+        1.20
+      )
+      // Outer Population (leaves visible viewport bounds, subtle, directional trails)
+      .fromTo(
+        burstOuter,
+        { opacity: 0.9, x: 0, y: 0, scale: 0.4 },
+        {
+          opacity: 0,
+          x: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dx')) * travelScale + 'px',
+          y: (i, el) => parseFloat(getComputedStyle(el).getPropertyValue('--dy')) * travelScale + 'px',
+          scale: 1.3,
+          duration: 0.92,
+          ease: 'burstOut',
+          stagger: 0.015,
+        },
+        1.21
+      )
+
+      // === PHASE 5: HORIZON DOOR TRANSITION (OVERLAPPED, CAUSAL) ===
+      // Seam ignites as outer shockwave & particles reach edge threshold (~1.48s)
+      .fromTo(seam, { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.26, ease: 'signalGlide' }, 1.48)
+
+      // Seamless handoff into door opening while outer particles & field are still fading
+      .set(overlay, { pointerEvents: 'none' }, 1.60)
+      .to(content, { opacity: 0, duration: 0.28 }, 1.60)
+      .to(seam, { opacity: 0, scaleX: 1.6, duration: 0.45, ease: 'power2.out' }, 1.60)
+      .to(panelTop, { yPercent: -100, duration: 0.68, ease: 'signalGlide' }, 1.62)
+      .to(panelBottom, { yPercent: 100, duration: 0.68, ease: 'signalGlide' }, 1.62);
+  }
+
+  function runIntro() {
+    const overlay = document.getElementById('introOverlay') as HTMLElement | null;
+    if (!overlay || overlay.dataset.ran === 'true') return;
+    overlay.dataset.ran = 'true';
+    requestAnimationFrame(() => requestAnimationFrame(() => startIntroTimeline(overlay)));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runIntro);
+  } else {
+    runIntro();
+  }
+
+  document.addEventListener('astro:page-load', runIntro);
+
+  document.addEventListener('astro:before-swap', (e: any) => {
+    cleanup();
+    try {
+      const isPreview = new URLSearchParams(window.location.search).get('introPreview') === 'true';
+      if (!isPreview && sessionStorage.getItem('portfolio_intro_seen') === 'true' && e?.newDocument) {
+        const incoming = e.newDocument.getElementById('introOverlay');
+        if (incoming) incoming.remove();
+      }
+    } catch {}
+  });
+</script>
+
+<style is:inline>
+  .intro-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: auto; contain: strict; transform: translateZ(0); overflow: hidden; }
+  .intro-panel { position: absolute; left: 0; right: 0; height: 50%; background: #F7F5F0; will-change: transform; }
+  .intro-panel-top { top: 0; }
+  .intro-panel-bottom { bottom: 0; }
+
+  .intro-seam { position: absolute; left: 50%; top: 50%; width: 440px; height: 1.5px; margin-left: -220px; background: linear-gradient(90deg, transparent, #FFFDF5 25%, #FFFDF5 75%, transparent); box-shadow: 0 0 20px rgba(245, 229, 184, 0.95), 0 0 6px rgba(255, 253, 245, 1); opacity: 0; transform: scaleX(0); transform-origin: center; will-change: transform, opacity; z-index: 2; pointer-events: none; }
+
+  .intro-content { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; will-change: opacity; }
+  .intro-vignette { position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(255, 253, 245, 0.5) 0%, rgba(247, 245, 240, 0) 45%, rgba(30, 24, 12, 0.06) 100%); pointer-events: none; }
+
+  /* Full-Viewport Energy Field */
+  .intro-energy-field { position: absolute; inset: -20%; background: radial-gradient(circle at center, rgba(255, 253, 245, 0.6) 0%, rgba(229, 193, 88, 0.32) 30%, rgba(184, 120, 64, 0.14) 55%, rgba(184, 120, 64, 0.03) 75%, transparent 100%); opacity: 0; pointer-events: none; will-change: transform, opacity; transform-origin: center; }
+
+  /* Central Core Flash */
+  .intro-core-flash { position: absolute; left: 50%; top: 50%; width: 68px; height: 68px; margin-left: -34px; margin-top: -34px; border-radius: 50%; background: radial-gradient(circle at center, #FFFDF5 0%, rgba(255, 253, 245, 0.9) 35%, rgba(197, 160, 89, 0.45) 65%, transparent 100%); box-shadow: 0 0 34px 12px rgba(255, 253, 245, 0.92); opacity: 0; pointer-events: none; will-change: transform, opacity; }
+
+  /* Atmosphere Elements */
+  .intro-mote { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: rgba(197, 160, 89, 0.6); opacity: 0; will-change: transform, opacity; }
+  .intro-mote-a { transform: translate(-160px, -70px); }
+  .intro-mote-b { transform: translate(150px, -100px); }
+  .intro-mote-c { transform: translate(-130px, 110px); }
+  .intro-mote-d { transform: translate(170px, 80px); }
+  .intro-mote-e { transform: translate(-190px, 20px); background: rgba(150, 90, 50, 0.5); }
+  .intro-mote-f { transform: translate(200px, -20px); background: rgba(150, 90, 50, 0.5); }
+
+  .intro-beam-group { position: absolute; width: 0; height: 0; }
+  .intro-beam { position: absolute; width: 2px; height: 130px; top: -65px; left: -1px; background: linear-gradient(to bottom, transparent, rgba(197, 160, 89, 0.5), transparent); transform: rotate(var(--rot)) scaleY(0); opacity: 0; transform-origin: center; will-change: transform, opacity; }
+
+  /* Reticle & Signal Mark */
+  .intro-mark-hot, .intro-mark-gold, .intro-satellite, .intro-pulse { position: absolute; border-radius: 50%; opacity: 0; will-change: transform, opacity; }
+  .intro-mark-hot { width: 10px; height: 10px; background: #FFFDF5; box-shadow: 0 0 16px 4px rgba(255, 253, 245, 0.9); }
+  .intro-mark-gold { width: 10px; height: 10px; background: #C5A059; box-shadow: 0 0 10px rgba(197, 160, 89, 0.6); }
+  .intro-satellite { width: 3px; height: 3px; background: #E5C158; box-shadow: 0 0 6px rgba(229, 193, 88, 0.7); }
+  .intro-pulse { width: 4px; height: 4px; background: #FFFDF5; box-shadow: 0 0 10px rgba(255, 253, 245, 0.9); left: 50%; margin-left: -2px; }
+
+  .intro-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(197, 160, 89, 0.4); opacity: 0; will-change: transform, opacity; }
+  .intro-ring-inner { width: 64px; height: 64px; }
+  .intro-ring-mid { width: 88px; height: 88px; border-color: rgba(150, 90, 50, 0.3); }
+  .intro-ring-outer { width: 108px; height: 108px; border-color: rgba(197, 160, 89, 0.22); }
+
+  /* 4 Layered Shockwaves */
+  .intro-shockwave { position: absolute; left: 50%; top: 50%; border-radius: 50%; opacity: 0; pointer-events: none; will-change: transform, opacity; transform-origin: center; }
+  .intro-shockwave-core { width: 36px; height: 36px; margin-left: -18px; margin-top: -18px; border: 2px solid rgba(255, 253, 245, 1); box-shadow: 0 0 20px 2px rgba(245, 229, 184, 0.95); }
+  .intro-shockwave-secondary { width: 50px; height: 50px; margin-left: -25px; margin-top: -25px; border: 2px solid rgba(197, 160, 89, 0.85); box-shadow: 0 0 24px rgba(197, 160, 89, 0.45); }
+  .intro-shockwave-outer { width: 120px; height: 120px; margin-left: -60px; margin-top: -60px; border: 1.5px solid rgba(229, 193, 88, 0.45); box-shadow: 0 0 40px rgba(197, 160, 89, 0.25); }
+  .intro-shockwave-ripple { width: 60px; height: 60px; margin-left: -30px; margin-top: -30px; border: 1px solid rgba(184, 120, 64, 0.55); }
+
+  /* Radial Circuit Lines & Activation Nodes */
+  .intro-circuit-group { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
+  .intro-circuit-line { position: absolute; left: 0; top: 0; width: var(--len); height: 1.5px; transform-origin: 0 50%; transform: rotate(var(--rot)) scaleX(0); background: linear-gradient(90deg, rgba(255, 253, 245, 0.85) 0%, rgba(197, 160, 89, 0.6) 65%, transparent 100%); box-shadow: 0 0 4px rgba(197, 160, 89, 0.3); opacity: 0; will-change: transform, opacity; }
+  .intro-circuit-node { position: absolute; left: var(--dist); top: -3px; width: 7px; height: 7px; border-radius: 50%; background: #FFFDF5; border: 1.5px solid #C5A059; box-shadow: 0 0 10px rgba(245, 229, 184, 0.95); opacity: 0; transform: scale(0); will-change: transform, opacity; }
+
+  /* Crosshairs */
+  .intro-line, .intro-diag { will-change: transform, opacity; }
+  .intro-line-h { position: absolute; width: 240px; height: 2px; background: #C5A059; transform: scaleX(0); transform-origin: center; box-shadow: 0 0 8px rgba(197, 160, 89, 0.5); }
+  .intro-line-v { position: absolute; width: 2px; height: 64px; background: #C5A059; transform: scaleY(0); transform-origin: center; box-shadow: 0 0 8px rgba(197, 160, 89, 0.5); }
+  .intro-glow-h { position: absolute; width: 240px; height: 10px; background: radial-gradient(ellipse at center, rgba(245, 229, 184, 0.8) 0%, rgba(245, 229, 184, 0) 70%); opacity: 0; will-change: transform, opacity; }
+  .intro-diag { position: absolute; width: 46px; height: 1px; background: rgba(197, 160, 89, 0.5); opacity: 0; }
+  .intro-diag-a { transform: rotate(45deg) scale(0); }
+  .intro-diag-b { transform: rotate(-45deg) scale(0); }
+
+  /* Framing Ticks */
+  .intro-tick { position: absolute; width: 0; height: 0; }
+  .intro-tick > span { position: absolute; display: block; width: 14px; height: 1px; background: rgba(197, 160, 89, 0.55); opacity: 0; will-change: transform, opacity; }
+  .intro-tick-tl { transform: translate(-120px, -90px); } .intro-tick-tl > span { transform: rotate(45deg); }
+  .intro-tick-tr { transform: translate(120px, -90px); } .intro-tick-tr > span { transform: rotate(-45deg); }
+  .intro-tick-bl { transform: translate(-120px, 90px); } .intro-tick-bl > span { transform: rotate(-45deg); }
+  .intro-tick-br { transform: translate(120px, 90px); } .intro-tick-br > span { transform: rotate(45deg); }
+  .intro-tick-t { transform: translate(0, -128px); } .intro-tick-t > span { transform: rotate(90deg); background: rgba(150, 90, 50, 0.45); }
+  .intro-tick-b { transform: translate(0, 128px); } .intro-tick-b > span { transform: rotate(90deg); background: rgba(150, 90, 50, 0.45); }
+  .intro-tick-l { transform: translate(-155px, 0); } .intro-tick-l > span { background: rgba(150, 90, 50, 0.45); }
+  .intro-tick-r { transform: translate(155px, 0); } .intro-tick-r > span { background: rgba(150, 90, 50, 0.45); }
+
+  /* 3-Tier Particle Populations */
+  .intro-burst-group { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
+  .intro-burst { position: absolute; left: 0; top: 0; border-radius: 50%; opacity: 0; will-change: transform, opacity; pointer-events: none; }
+  .intro-burst-inner { width: 3.5px; height: 3.5px; margin-left: -1.75px; margin-top: -1.75px; }
+  .intro-burst-mid { width: 4.5px; height: 4.5px; margin-left: -2.25px; margin-top: -2.25px; }
+  .intro-burst-outer { width: 5px; height: 5px; margin-left: -2.5px; margin-top: -2.5px; }
+
+  .intro-burst-hot { background: #FFFDF5; box-shadow: 0 0 10px 2px rgba(255, 253, 245, 1); }
+  .intro-burst-gold { background: #E5C158; box-shadow: 0 0 8px rgba(229, 193, 88, 0.9); }
+  .intro-burst-rust { background: #B87840; box-shadow: 0 0 9px rgba(184, 120, 64, 0.85); }
+
+  /* Directional Signal Trails */
+  .intro-burst-trail {
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    width: 32px;
+    height: 1.5px;
+    margin-top: -0.75px;
+    transform-origin: right center;
+    transform: rotate(var(--angle));
+    background: linear-gradient(to left, rgba(255, 253, 245, 0.95), rgba(229, 193, 88, 0.5) 50%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Responsive rules */
+  @media (max-width: 768px) {
+    .intro-seam { width: 260px; margin-left: -130px; }
+    .intro-circuit-line { width: calc(var(--len) * 0.7); }
+    .intro-circuit-node { left: calc(var(--dist) * 0.7); }
+  }
+</style>

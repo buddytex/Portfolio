@@ -4,12 +4,19 @@ import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
 import Footer from '../../components/Footer.astro';
 import { projects, type Project } from '../../data/projects';
+import { resolveMediaUrl } from '../../utils/media';
 
 export function getStaticPaths() {
-  return projects.map((project) => ({
+  const paths = projects.map((project) => ({
     params: { id: project.id },
     props: { project },
   }));
+  // Backward-compatible route aliases for aBAJA 2025 & 2026
+  const baja25 = projects.find((p) => p.id === 'baja-2025');
+  if (baja25) paths.push({ params: { id: 'abaja-2025' }, props: { project: baja25 } });
+  const baja26 = projects.find((p) => p.id === 'baja-2026');
+  if (baja26) paths.push({ params: { id: 'abaja-2026' }, props: { project: baja26 } });
+  return paths;
 }
 
 interface Props {
@@ -17,6 +24,12 @@ interface Props {
 }
 
 const { project } = Astro.props;
+
+// Calculate previous & next projects in sequence for seamless case study navigation
+const currentIndex = projects.findIndex((p) => p.id === project.id);
+const safeIndex = currentIndex >= 0 ? currentIndex : 0;
+const prevProject = safeIndex > 0 ? projects[safeIndex - 1] : projects[projects.length - 1];
+const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : projects[0];
 ---
 
 <Layout
@@ -28,11 +41,11 @@ const { project } = Astro.props;
 
   <main class="project-page">
     <div class="container project-container">
-      <!-- Back button -->
+      <!-- Back button to dedicated Projects Experience -->
       <div class="project-nav-bar">
-        <a href="/#work" class="back-link mono">
+        <a href="/projects" class="back-link mono">
           <span class="back-arrow" aria-hidden="true">←</span>
-          <span>Back to Projects</span>
+          <span>Back to Projects Archive</span>
         </a>
         <div class="project-meta-pill mono">
           <span>{project.index}</span>
@@ -80,24 +93,45 @@ const { project } = Astro.props;
             class="project-hero-img img-expandable"
             loading="eager"
           />
-        ) : project.id === 'hospital-amr' ? (
-          <div class="project-hardware-blueprint" aria-label="LiDAR SLAM Navigation Testbed Schematic">
+        ) : project.id === 'balancing-robot' ? (
+          <div class="project-hardware-blueprint" aria-label="Two-Wheeled Inverted Pendulum Robot Dynamic Balance Schematic">
             <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
-              <circle cx="190" cy="110" r="35" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.4" />
-              <circle cx="190" cy="110" r="75" stroke="#0EA5E9" stroke-width="1" stroke-dasharray="3 3" opacity="0.3" />
-              <circle cx="190" cy="110" r="105" stroke="#0EA5E9" stroke-width="1" opacity="0.2" />
-              <rect x="175" y="95" width="30" height="30" rx="4" fill="#0EA5E9" fill-opacity="0.25" stroke="#0EA5E9" stroke-width="1.5" />
-              <circle cx="190" cy="110" r="4" fill="#38BDF8" />
-              <path d="M190 110 L190 65" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" />
-              <polygon points="190,58 186,67 194,67" fill="#38BDF8" />
-              <line x1="40" y1="30" x2="340" y2="30" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
-              <line x1="40" y1="190" x2="340" y2="190" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
-              <g fill="#38BDF8" opacity="0.8">
-                <circle cx="80" cy="30" r="2" /><circle cx="130" cy="30" r="2" /><circle cx="240" cy="30" r="2" /><circle cx="300" cy="30" r="2" />
-                <circle cx="90" cy="190" r="2" /><circle cx="150" cy="190" r="2" /><circle cx="230" cy="190" r="2" /><circle cx="290" cy="190" r="2" />
-              </g>
-              <path d="M190 110 L110 40 M190 110 L150 32 M190 110 L230 32 M190 110 L270 40" stroke="#0EA5E9" stroke-width="0.8" opacity="0.45" />
-              <text x="190" y="145" fill="#94A3B8" font-size="8" font-family="monospace" text-anchor="middle">NAV2 COSTMAP // 360° PLANAR LIDAR</text>
+              <line x1="20" y1="180" x2="360" y2="180" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 4" />
+              <circle cx="190" cy="170" r="24" stroke="#0EA5E9" stroke-width="2" fill="#0EA5E9" fill-opacity="0.15" />
+              <circle cx="190" cy="170" r="4" fill="#0EA5E9" />
+              <line x1="190" y1="170" x2="225" y2="60" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" />
+              <line x1="190" y1="170" x2="190" y2="50" stroke="#94A3B8" stroke-width="1.2" stroke-dasharray="3 3" />
+              <path d="M 190 110 A 60 60 0 0 1 209 113" stroke="#F59E0B" stroke-width="1.5" fill="none" />
+              <text x="216" y="112" fill="#F59E0B" font-size="9" font-family="monospace" font-weight="bold">θ (TILT)</text>
+              <circle cx="212" cy="100" r="6" fill="#F59E0B" stroke="#D97706" stroke-width="1.5" />
+              <text x="224" y="98" fill="#64748B" font-size="7.5" font-family="monospace">MPU6050 6-DoF</text>
+              <rect x="215" y="45" width="24" height="26" rx="3" fill="#0EA5E9" fill-opacity="0.25" stroke="#0EA5E9" stroke-width="1.5" transform="rotate(18 227 58)" />
+              <path d="M 160 178 Q 190 195 220 178" stroke="#10B981" stroke-width="2" fill="none" />
+              <text x="190" y="208" fill="#10B981" font-size="8" font-family="monospace" text-anchor="middle">u(t) = Kp·θ + Ki·∫θ + Kd·θ̇ // 200 HZ PID</text>
+              <text x="190" y="25" fill="#64748B" font-size="8" font-family="monospace" text-anchor="middle">INVERTED PENDULUM CLOSED-LOOP STATE STABILIZATION</text>
+            </svg>
+          </div>
+        ) : project.id === 'agv-sensor-fusion' ? (
+          <div class="project-hardware-blueprint" aria-label="AGV Industrial Odometry & Sensor Fusion Schematic">
+            <svg viewBox="0 0 380 220" fill="none" class="blueprint-svg" aria-hidden="true">
+              <rect x="70" y="70" width="80" height="90" rx="6" fill="#0EA5E9" fill-opacity="0.12" stroke="#0EA5E9" stroke-width="1.8" />
+              <rect x="62" y="85" width="10" height="25" rx="2" fill="#0EA5E9" />
+              <rect x="148" y="85" width="10" height="25" rx="2" fill="#0EA5E9" />
+              <text x="110" y="118" fill="#0EA5E9" font-size="8" font-family="monospace" font-weight="bold" text-anchor="middle">AGV BASE</text>
+              <path d="M 155 98 L 220 65" stroke="#64748B" stroke-width="1.2" stroke-dasharray="2 2" />
+              <circle cx="110" cy="115" r="4" fill="#F59E0B" />
+              <path d="M 110 115 L 220 115" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="2 2" />
+              <circle cx="110" cy="80" r="5" stroke="#10B981" stroke-width="1.5" />
+              <path d="M 110 80 L 220 160" stroke="#10B981" stroke-width="1.2" stroke-dasharray="2 2" />
+              <rect x="220" y="45" width="125" height="135" rx="5" fill="#0EA5E9" fill-opacity="0.18" stroke="#0EA5E9" stroke-width="1.5" />
+              <text x="282" y="65" fill="#0EA5E9" font-size="8" font-family="monospace" font-weight="bold" text-anchor="middle">robot_localization</text>
+              <line x1="228" y1="72" x2="337" y2="72" stroke="#64748B" stroke-width="0.8" opacity="0.5" />
+              <text x="232" y="90" fill="#64748B" font-size="7" font-family="monospace">▸ WHEEL ENCODERS [50 Hz]</text>
+              <text x="232" y="110" fill="#F59E0B" font-size="7" font-family="monospace">▸ 6-AXIS IMU [100 Hz]</text>
+              <text x="232" y="130" fill="#10B981" font-size="7" font-family="monospace">▸ LASER ODOM [20 Hz]</text>
+              <text x="232" y="150" fill="#38BDF8" font-size="7" font-family="monospace">▸ ZUPT DRIFT REJECTION</text>
+              <text x="232" y="168" fill="#10B981" font-size="7.5" font-family="monospace" font-weight="bold">ESTIMATED POSE [x, y, θ]</text>
+              <text x="190" y="206" fill="#64748B" font-size="8" font-family="monospace" text-anchor="middle">DUAL-EKF MULTI-RATE NON-LINEAR STATE ESTIMATION</text>
             </svg>
           </div>
         ) : (
@@ -150,6 +184,44 @@ const { project } = Astro.props;
         </aside>
       )}
 
+      <!-- Continuous Ambient Video Feature Block (Where Verified Video Exists) -->
+      {project.featuredVideo && (
+        <section class="case-section video-feature-section" aria-label="Live System Video Demonstration">
+          <div class="video-feature-box">
+            <video
+              poster={resolveMediaUrl(project.featuredVideo.poster)}
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="metadata"
+              class="ambient-project-video"
+              title={project.featuredVideo.title}
+            >
+              <source src={resolveMediaUrl(project.featuredVideo.path)} type="video/mp4" />
+            </video>
+            <div class="video-feature-overlay mono">
+              <div class="video-overlay-left">
+                <span class="video-live-pip">●</span>
+                <span class="video-feature-badge">{project.featuredVideo.badge}</span>
+              </div>
+              <div class="video-overlay-right">
+                <span class="video-feature-title">{project.featuredVideo.title}</span>
+                <button type="button" class="video-sound-toggle mono" aria-label="Toggle video sound" data-muted="true">
+                  <span class="sound-icon" aria-hidden="true">🔈</span>
+                  <span class="sound-label">UNMUTE</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          {project.featuredVideo.caption && (
+            <p class="video-feature-caption mono">
+              <span class="caption-arrow">↳</span> {project.featuredVideo.caption}
+            </p>
+          )}
+        </section>
+      )}
+
       <!-- Two-Column Problem & Approach -->
       <div class="problem-approach-grid">
         <section class="case-section col-box">
@@ -162,6 +234,29 @@ const { project } = Astro.props;
           <p class="col-text">{project.approach}</p>
         </section>
       </div>
+
+      <!-- Overall Team Vehicle Platform (Team System vs Personal Contribution) -->
+      {project.teamSystem && project.teamSystem.length > 0 && (
+        <section class="case-section team-system-section">
+          <div class="section-kicker mono">
+            <span class="accent-glyph">⚙</span>
+            <span>OVERALL TEAM VEHICLE PLATFORM // MULTIDISCIPLINARY SCOPE</span>
+          </div>
+          <div class="team-system-card">
+            <div class="team-system-lead mono">
+              <span>DEVELOPED BY COLLEGIATE ENGINEERING TEAM // OVERALL VEHICLE ARCHITECTURE</span>
+            </div>
+            <ul class="team-system-list">
+              {project.teamSystem.map((item) => (
+                <li class="team-system-item">
+                  <span class="team-bullet mono">◽</span>
+                  <span class="team-text">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <!-- My Role & Personal Engineering Contributions -->
       {project.personalContributions && project.personalContributions.length > 0 && (
@@ -182,6 +277,31 @@ const { project } = Astro.props;
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+      )}
+
+      <!-- Personal Engineering Story: Built When It Had to Be Built / Taking Ownership -->
+      {project.ownershipStory && (
+        <section class="case-section ownership-section" aria-labelledby="ownershipHeading">
+          <div class="section-kicker mono text-gold">
+            <span class="accent-glyph">★</span>
+            <span id="ownershipHeading">ENGINEERING ACCOUNTABILITY // CRITICAL PIVOT</span>
+          </div>
+          <div class="ownership-card">
+            <h3 class="ownership-title">{project.ownershipStory.title}</h3>
+            <p class="ownership-narrative">{project.ownershipStory.narrative}</p>
+            <div class="ownership-takeaways">
+              <span class="takeaway-label mono">CORE DEMONSTRATED CAPABILITIES:</span>
+              <ul class="takeaways-list">
+                {project.ownershipStory.takeaways.map((takeaway) => (
+                  <li class="takeaway-item">
+                    <span class="takeaway-bullet mono text-gold">▸</span>
+                    <span>{takeaway}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
       )}
@@ -323,14 +443,15 @@ const { project } = Astro.props;
                         {item.type === 'video' ? (
                           <div class="video-container">
                             <video
-                              src={item.path}
-                              poster={item.poster}
+                              poster={resolveMediaUrl(item.poster)}
                               controls
                               preload="metadata"
                               playsinline
                               muted
                               class="artifact-video"
-                            ></video>
+                            >
+                              <source src={resolveMediaUrl(item.path)} type="video/mp4" />
+                            </video>
                             <span class="video-pill mono">
                               <span class="video-pulse">●</span>
                               <span>LIVE TEST VIDEO</span>
@@ -427,6 +548,24 @@ const { project } = Astro.props;
           <span>Discuss System Architecture</span>
         </a>
       </div>
+
+      <!-- Sequential Case Study Pagination & Archive Navigator -->
+      <nav class="project-pagination-footer" aria-label="Sequential Case Study Navigation">
+        <a href={`/projects/${prevProject.id}`} class="pagination-card prev-card">
+          <span class="pagination-sub mono">← PREVIOUS SYSTEM</span>
+          <span class="pagination-title">{prevProject.title}</span>
+          <span class="pagination-meta mono">{prevProject.domain}</span>
+        </a>
+        <a href="/projects" class="pagination-center-btn mono" aria-label="Return to full Projects Archive">
+          <span class="center-icon" aria-hidden="true">▦</span>
+          <span>ALL PROJECTS [ {String(projects.length).padStart(2, '0')} ]</span>
+        </a>
+        <a href={`/projects/${nextProject.id}`} class="pagination-card next-card">
+          <span class="pagination-sub mono">NEXT SYSTEM →</span>
+          <span class="pagination-title">{nextProject.title}</span>
+          <span class="pagination-meta mono">{nextProject.domain}</span>
+        </a>
+      </nav>
     </div>
   </main>
 
@@ -574,6 +713,49 @@ const { project } = Astro.props;
     line-height: 1.7;
   }
 
+  /* Team Vehicle Platform vs Personal Contribution */
+  .team-system-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: var(--space-8);
+    margin-bottom: var(--space-6);
+  }
+
+  .team-system-lead {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .team-system-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .team-system-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .team-bullet {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
   /* Contributions Section */
   .contributions-section {
     background: var(--surface);
@@ -621,6 +803,72 @@ const { project } = Astro.props;
     font-weight: 700;
     flex-shrink: 0;
     margin-top: 2px;
+  }
+
+  /* Ownership Story Section */
+  .ownership-section {
+    background: linear-gradient(135deg, rgba(184, 146, 74, 0.08) 0%, rgba(18, 25, 38, 0.03) 100%), var(--surface);
+    border: 1.5px solid var(--accent-primary, #B8924A);
+    border-radius: var(--r-md);
+    padding: var(--space-8);
+    box-shadow: 0 12px 32px -8px rgba(184, 146, 74, 0.18);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ownership-title {
+    font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+    font-weight: 800;
+    color: var(--color-ink, #0E131F);
+    letter-spacing: -0.02em;
+    margin: var(--space-2) 0 var(--space-4);
+  }
+
+  .ownership-narrative {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: var(--space-6);
+  }
+
+  .ownership-takeaways {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(184, 146, 74, 0.3);
+    border-radius: var(--r-sm);
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .takeaway-label {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent-primary, #B8924A);
+    display: block;
+    margin-bottom: var(--space-3);
+  }
+
+  .takeaways-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .takeaway-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    line-height: 1.55;
+  }
+
+  .takeaway-bullet {
+    color: var(--accent-primary, #B8924A);
+    font-weight: bold;
+    flex-shrink: 0;
   }
 
   /* Architectural Decisions Grid */
@@ -831,6 +1079,122 @@ const { project } = Astro.props;
     flex-wrap: wrap;
   }
 
+  /* Sound Toggle Button */
+  .video-sound-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(217, 119, 6, 0.5);
+    border-radius: var(--r-full);
+    color: var(--color-gold);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .video-sound-toggle:hover {
+    background: rgba(217, 119, 6, 0.2);
+    border-color: var(--color-gold);
+    color: #FFF;
+    transform: translateY(-1px);
+  }
+
+  /* Sequential Case Study Pagination Footer */
+  .project-pagination-footer {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-4);
+    align-items: center;
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: var(--space-4);
+  }
+
+  .pagination-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+
+  .pagination-card:hover {
+    border-color: var(--color-gold);
+    background: var(--surface-hover, rgba(217, 119, 6, 0.04));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.08);
+  }
+
+  .next-card {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .pagination-sub {
+    font-size: var(--text-2xs);
+    color: var(--color-gold);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .pagination-title {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .pagination-meta {
+    font-size: var(--text-2xs);
+    color: var(--text-tertiary);
+  }
+
+  .pagination-center-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--r-full);
+    color: var(--text-secondary);
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .pagination-center-btn:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    .project-pagination-footer {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+    .next-card {
+      text-align: left;
+      align-items: flex-start;
+    }
+    .pagination-center-btn {
+      justify-content: center;
+      order: -1;
+    }
+  }
+
   /* Hero Hardware/Architecture Visual Stage (Shared Element Transition) */
   .project-hero-visual {
     width: 100%;
@@ -894,6 +1258,83 @@ const { project } = Astro.props;
     max-width: 620px;
     height: auto;
     display: block;
+  }
+
+  /* Ambient Video Feature Section */
+  .video-feature-section {
+    width: 100%;
+    margin: var(--space-4) 0;
+  }
+
+  .video-feature-box {
+    position: relative;
+    width: 100%;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12);
+  }
+
+  .ambient-project-video {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .video-feature-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--space-3) var(--space-4);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.3) 70%, transparent 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #FFF;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.08em;
+  }
+
+  .video-overlay-left {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .video-live-pip {
+    color: #10B981;
+    font-size: 0.65rem;
+    animation: livePulse 2s infinite ease-in-out;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .video-feature-badge {
+    color: var(--color-gold);
+    font-weight: 700;
+  }
+
+  .video-feature-title {
+    color: #E2E8F0;
+    font-weight: 500;
+  }
+
+  .video-feature-caption {
+    margin-top: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .caption-arrow {
+    color: var(--cyan-dark);
+    margin-right: 4px;
   }
 
   /* Research Notebook (Failures & Iterations) */
@@ -1356,9 +1797,10 @@ const { project } = Astro.props;
 </style>
 
 <script>
-  import { initProjectDetailAnimation } from '../../animations';
+  import { initProjectDetailAnimation, isReducedMotion } from '../../animations';
 
   let detailCleanup: (() => void) | null = null;
+  let videoObserver: IntersectionObserver | null = null;
 
   function initDossierTabs() {
     const tabs = document.querySelectorAll<HTMLButtonElement>('.dossier-tab-btn');
@@ -1387,15 +1829,84 @@ const { project } = Astro.props;
     });
   }
 
+  function setupProjectVideos() {
+    if (videoObserver) {
+      videoObserver.disconnect();
+      videoObserver = null;
+    }
+
+    const allVideos = document.querySelectorAll<HTMLVideoElement>('.ambient-project-video, .artifact-video');
+    if (allVideos.length === 0) return;
+
+    const reducedMotion = isReducedMotion();
+
+    allVideos.forEach((v) => {
+      if (v.classList.contains('ambient-project-video')) {
+        v.muted = true;
+      }
+    });
+
+    // Sound toggle buttons for ambient video showcase
+    document.querySelectorAll<HTMLButtonElement>('.video-sound-toggle').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const box = btn.closest('.video-feature-box');
+        const video = box?.querySelector<HTMLVideoElement>('video');
+        if (!video) return;
+        video.muted = !video.muted;
+        const isMuted = video.muted;
+        btn.setAttribute('data-muted', String(isMuted));
+        const icon = btn.querySelector('.sound-icon');
+        const label = btn.querySelector('.sound-label');
+        if (icon) icon.textContent = isMuted ? '🔈' : '🔊';
+        if (label) label.textContent = isMuted ? 'UNMUTE' : 'MUTED';
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const v = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            // Autoplay ambient loop only if not reduced motion
+            if (v.classList.contains('ambient-project-video') && !reducedMotion) {
+              const playPromise = v.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                  // Fallback: poster remains visible
+                });
+              }
+            }
+          } else {
+            // Pause when offscreen to preserve CPU/GPU
+            v.pause();
+          }
+        });
+      }, { rootMargin: '120px 0px 120px 0px', threshold: 0.1 });
+
+      allVideos.forEach((v) => videoObserver!.observe(v));
+    } else {
+      allVideos.forEach((v) => {
+        if (v.classList.contains('ambient-project-video') && !reducedMotion) {
+          v.play().catch(() => {});
+        }
+      });
+    }
+  }
+
   function setupPage() {
     if (detailCleanup) {
       detailCleanup();
       detailCleanup = null;
     }
     initDossierTabs();
+    setupProjectVideos();
     detailCleanup = initProjectDetailAnimation();
   }
 
   document.addEventListener('DOMContentLoaded', setupPage);
-  document.addEventListener('astro:page-load', setupPage);
+  document.addEventListener('astro:page-load', () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    setupPage();
+  });
 </script>

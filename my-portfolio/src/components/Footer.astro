@@ -1,10 +1,14 @@
 ---
-// Footer Component — Editorial Light Canvas
+// Footer Component — Editorial Light/Dark Canvas
 // Clean minimal signature
+interface Props {
+  dark?: boolean;
+}
+const { dark = false } = Astro.props;
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="footer">
+<footer class:list={['footer', { 'footer-dark': dark }]}>
   <div class="container-wide footer-inner">
     <div class="footer-left">
       <span class="footer-brand">Naveen Shaji George</span>
@@ -29,6 +33,21 @@ const currentYear = new Date().getFullYear();
     background: var(--color-paper);
     position: relative;
     z-index: 1;
+  }
+
+  .footer.footer-dark {
+    background: #080A0F;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .footer.footer-dark .footer-brand {
+    color: #F8FAFC;
+  }
+
+  .footer.footer-dark .footer-sub,
+  .footer.footer-dark .footer-loc,
+  .footer.footer-dark .footer-copy {
+    color: #64748B;
   }
 
   .footer-inner {

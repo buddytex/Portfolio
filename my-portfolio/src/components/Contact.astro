@@ -7,7 +7,7 @@
   <div class="container-wide">
     <!-- Section Header -->
     <div class="section-header">
-      <span class="section-eyebrow">[ 06 // DIRECT DISPATCH ]</span>
+      <span class="section-eyebrow mono">[ 09 // DIRECT DISPATCH ]</span>
       <h2 class="section-title">Let's Build Something <span class="accent">Meaningful.</span></h2>
       <p class="section-lead">
         Actively exploring robotics engineering roles, autonomous systems R&D, and technical collaborations worldwide.
@@ -33,6 +33,43 @@
             The most reliable channel for engineering roles, technical inquiries, and project discussions.
             Typically responds within 24 hours.
           </p>
+
+          <!-- Target Opportunities -->
+          <div class="target-roles-wrap">
+            <span class="target-roles-label mono">TARGET DOMAINS &amp; ROLES:</span>
+            <div class="target-roles-chips mono">
+              <span class="role-chip">Robotics Engineering</span>
+              <span class="role-chip">Embedded Systems &amp; Firmware</span>
+              <span class="role-chip">Autonomous Vehicles (DBW)</span>
+              <span class="role-chip">Hardware &amp; PCB Design (KiCad)</span>
+              <span class="role-chip">R&amp;D Systems Integration</span>
+            </div>
+          </div>
+
+          <!-- Quick Email Presets -->
+          <div class="email-presets-wrap">
+            <span class="presets-label mono">PRE-COMPOSED TOPICS:</span>
+            <div class="presets-buttons mono">
+              <a 
+                href="mailto:ngbuddy5@gmail.com?subject=Robotics%20Engineering%20Opportunity%20%E2%80%94%20Naveen%20Shaji%20George&body=Hi%20Naveen%2C%0A%0AI%20reviewed%20your%20robotics%20portfolio%20and%20would%20like%20to%20discuss%20an%20engineering%20opportunity%20at..." 
+                class="preset-btn"
+              >
+                💼 Full-Time Role
+              </a>
+              <a 
+                href="mailto:ngbuddy5@gmail.com?subject=Hardware%20%26%20PCB%20Collaboration%20%E2%80%94%20Naveen%20Shaji%20George&body=Hi%20Naveen%2C%0A%0AI%20am%20interested%20in%20collaborating%20on%20a%20robotics%2Fhardware%20project..." 
+                class="preset-btn"
+              >
+                ⚡ Hardware / PCB Collab
+              </a>
+              <a 
+                href="mailto:ngbuddy5@gmail.com?subject=Technical%20Inquiry%20%E2%80%94%20Naveen%20Shaji%20George&body=Hi%20Naveen%2C%0A%0AI%20wanted%20to%20reach%20out%20regarding%20your%20work%20on..." 
+                class="preset-btn"
+              >
+                🔬 Technical Inquiry
+              </a>
+            </div>
+          </div>
         </div>
 
         <div class="card-actions">
@@ -227,6 +264,60 @@
     font-size: var(--text-sm);
     color: var(--text-secondary);
     line-height: 1.7;
+  }
+
+  .target-roles-wrap,
+  .email-presets-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .target-roles-label,
+  .presets-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .target-roles-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .role-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-xs);
+    color: var(--text-secondary);
+  }
+
+  .presets-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .preset-btn {
+    font-size: 10px;
+    padding: 4px 10px;
+    background: rgba(184, 146, 74, 0.06);
+    border: 1px solid rgba(184, 146, 74, 0.25);
+    border-radius: var(--r-xs);
+    color: var(--accent-primary);
+    text-decoration: none;
+    transition: all 120ms var(--ease-standard);
+  }
+
+  .preset-btn:hover {
+    background: var(--accent-primary);
+    color: #FFFFFF;
+    border-color: var(--accent-primary);
   }
 
   .card-actions {

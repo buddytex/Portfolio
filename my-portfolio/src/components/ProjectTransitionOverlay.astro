@@ -1,0 +1,189 @@
+---
+// ProjectTransitionOverlay.astro
+// Cinematic transition between the Light Portfolio and Dark Projects Archive.
+// Uses Anime.js 4.x for signal trace propagation and soft darkening without loading spinners.
+---
+
+<div id="projectTransitionOverlay" class="project-transition-overlay" aria-hidden="true">
+  <div class="trans-veil" id="transVeil"></div>
+  <div class="trans-circuits" id="transCircuits">
+    <svg viewBox="0 0 1200 800" fill="none" preserveAspectRatio="none" class="trans-svg">
+      <path class="trans-trace trans-trace-1" d="M0,200 L400,200 L550,350 L1200,350" />
+      <path class="trans-trace trans-trace-2" d="M0,450 L350,450 L500,600 L850,600 L1200,600" />
+      <path class="trans-trace trans-trace-3" d="M200,800 L200,500 L350,350 L700,350 L900,150 L1200,150" />
+      <circle class="trans-node" cx="400" cy="200" r="4" />
+      <circle class="trans-node" cx="550" cy="350" r="4" />
+      <circle class="trans-node" cx="500" cy="600" r="4" />
+      <circle class="trans-node" cx="850" cy="600" r="4" />
+      <circle class="trans-node" cx="700" cy="350" r="4" />
+      <circle class="trans-node" cx="900" cy="150" r="4" />
+    </svg>
+  </div>
+  <div class="trans-vignette"></div>
+</div>
+
+<style>
+  .project-transition-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99990;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .trans-veil {
+    position: absolute;
+    inset: 0;
+    background: #0B0E14;
+    opacity: 0;
+  }
+
+  .trans-circuits {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  .trans-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .trans-trace {
+    stroke: rgba(217, 119, 6, 0.65);
+    stroke-width: 1.5;
+    stroke-dasharray: 1400;
+    stroke-dashoffset: 1400;
+  }
+
+  .trans-node {
+    fill: #F59E0B;
+    opacity: 0;
+    transform-origin: center;
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.7));
+  }
+
+  .trans-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.65) 100%);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  import { animate, createTimeline, isReducedMotion, stagger } from '../animations';
+  import { navigate } from 'astro:transitions/client';
+
+  function setupProjectsNavigationTransition() {
+    const overlay = document.getElementById('projectTransitionOverlay');
+    const veil = document.getElementById('transVeil');
+    const circuits = document.getElementById('transCircuits');
+    const traces = document.querySelectorAll('.trans-trace');
+    const nodes = document.querySelectorAll('.trans-node');
+
+    if (!overlay || !veil || !circuits) return;
+
+    // Handle incoming reveal if we arrived at /projects
+    if (window.location.pathname.startsWith('/projects')) {
+      if (sessionStorage.getItem('nsg_projects_transition') === 'active') {
+        sessionStorage.removeItem('nsg_projects_transition');
+        overlay.style.visibility = 'visible';
+        overlay.style.opacity = '1';
+        veil.style.opacity = '1';
+
+        // Softly dissolve the veil to reveal dark projects world
+        animate(overlay, {
+          opacity: [1, 0],
+          duration: 500,
+          ease: 'outQuad',
+          onComplete: () => {
+            overlay.style.visibility = 'hidden';
+            overlay.style.pointerEvents = 'none';
+          },
+        });
+      }
+    }
+
+    // Intercept clicks to /projects from outside /projects
+    const projectLinks = document.querySelectorAll<HTMLAnchorElement>(
+      'a[href="/projects"], [data-nav-projects="true"]'
+    );
+
+    projectLinks.forEach((link) => {
+      // Avoid duplicate listener attachments
+      if (link.dataset.transitionBound === 'true') return;
+      link.dataset.transitionBound = 'true';
+
+      link.addEventListener('click', (e) => {
+        // If already on /projects, allow normal behavior
+        if (window.location.pathname.startsWith('/projects')) return;
+
+        // Respect reduced motion
+        if (isReducedMotion()) return;
+
+        // Only intercept standard left clicks without modifier keys
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+        e.preventDefault();
+        const targetHref = link.getAttribute('href') || '/projects';
+
+        sessionStorage.setItem('nsg_projects_transition', 'active');
+        overlay.style.visibility = 'visible';
+        overlay.style.pointerEvents = 'auto';
+
+        const tl = createTimeline({
+          autoplay: true,
+          onComplete: () => {
+            navigate(targetHref);
+          },
+        });
+
+        // Step 1: Soft darkening (400ms)
+        tl.add(overlay, {
+          opacity: [0, 1],
+          duration: 200,
+          ease: 'outQuad',
+        }, 0);
+
+        tl.add(veil, {
+          opacity: [0, 1],
+          duration: 400,
+          ease: 'outQuad',
+        }, 0);
+
+        // Step 2: Gold signal traces shoot across (420ms)
+        tl.add(circuits, {
+          opacity: [0, 1],
+          duration: 150,
+          ease: 'outQuad',
+        }, 80);
+
+        tl.add(traces, {
+          strokeDashoffset: [1400, 0],
+          duration: 450,
+          delay: stagger(60),
+          ease: 'outCubic',
+        }, 100);
+
+        tl.add(nodes, {
+          opacity: [0, 1],
+          scale: [0, 1],
+          duration: 200,
+          delay: stagger(40),
+          ease: 'outBack',
+        }, 220);
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', setupProjectsNavigationTransition);
+  document.addEventListener('astro:page-load', setupProjectsNavigationTransition);
+</script>

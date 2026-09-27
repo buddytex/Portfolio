@@ -1,13 +1,20 @@
 ---
+const pathname = Astro.url.pathname;
+const isProjectsActive = pathname.startsWith('/projects');
+
 const navItems = [
-  { href: '#work',    label: 'Projects' },
-  { href: '#skills',  label: 'Skills' },
-  { href: '#hardware', label: 'PCB Lab' },
-  { href: '#contact', label: 'Contact' },
+  { href: '/#roles',        label: 'Roles' },
+  { href: '/projects',      label: 'Projects', isProjectsPage: true },
+  { href: '/#experience',   label: 'Experience' },
+  { href: '/#focus',        label: 'Focus' },
+  { href: '/#skills',       label: 'Skills' },
+  { href: '/#hardware',     label: 'PCB Lab' },
+  { href: '/#beyond',       label: 'Beyond' },
+  { href: '/#contact',      label: 'Contact' },
 ];
 ---
 
-<header class="nav" id="nav">
+<header class:list={['nav', { 'nav-dark': isProjectsActive }]} id="nav">
   <div class="container-wide nav-inner">
     <!-- Brand -->
     <a href="/" class="nav-brand" aria-label="Naveen — Home">
@@ -16,9 +23,18 @@ const navItems = [
 
     <!-- Desktop links -->
     <nav class="nav-links" aria-label="Primary navigation">
-      {navItems.map((item) => (
-        <a href={item.href} class="nav-link">{item.label}</a>
-      ))}
+      {navItems.map((item) => {
+        const isActive = item.isProjectsPage && isProjectsActive;
+        return (
+          <a
+            href={item.href}
+            class:list={['nav-link', { active: isActive, 'projects-nav-trigger': item.isProjectsPage }]}
+            data-nav-projects={item.isProjectsPage ? "true" : undefined}
+          >
+            {item.label}
+          </a>
+        );
+      })}
     </nav>
 
     <!-- Actions -->
@@ -54,7 +70,13 @@ const navItems = [
   <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
     <nav class="mobile-nav" aria-label="Mobile navigation">
       {navItems.map((item) => (
-        <a href={item.href} class="mobile-link">{item.label}</a>
+        <a
+          href={item.href}
+          class:list={['mobile-link', { active: item.isProjectsPage && isProjectsActive }]}
+          data-nav-projects={item.isProjectsPage ? "true" : undefined}
+        >
+          {item.label}
+        </a>
       ))}
       <a href="/CV_1.pdf" class="mobile-link mobile-resume" download>
         Resume ↓
@@ -188,6 +210,53 @@ const navItems = [
   .nav.scrolled {
     border-bottom-color: var(--border-subtle);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  .nav.nav-dark {
+    background: rgba(11, 14, 20, 0.88);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .nav.nav-dark .brand-name {
+    color: #F8FAFC;
+  }
+
+  .nav.nav-dark .nav-link {
+    color: #94A3B8;
+  }
+
+  .nav.nav-dark .nav-link:hover {
+    color: #FDE68A;
+  }
+
+  .nav.nav-dark .nav-link.active {
+    color: #F59E0B;
+  }
+
+  .nav.nav-dark .nav-link.active::after {
+    background: #F59E0B;
+  }
+
+  .nav.nav-dark .nav-icon-btn {
+    color: #94A3B8;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .nav.nav-dark .nav-icon-btn:hover {
+    color: #FDE68A;
+    border-color: #F59E0B;
+  }
+
+  .nav.nav-dark .nav-resume {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #F8FAFC;
+  }
+
+  .nav.nav-dark .nav-resume:hover {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #F59E0B;
+    color: #FDE68A;
   }
 
   .nav-inner {

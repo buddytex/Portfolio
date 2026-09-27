@@ -317,16 +317,147 @@
       { u: 0.88, v: 0.36, type: 'dot_matrix' },
     ];
 
-    // Deterministic 3-Wave Signal Propagation Cycle (§11 spec)
-    // Wave 0: Highway B (Under Name Baseline -> CTA Bridge -> Into 3D Core)
-    // Wave 1: Highway A (Top Left -> Above Eyebrow -> Feeds 3D Core)
-    // Wave 2: Highway D (Bottom Vertical Power Bus rising into 3D Assembly)
-    const PULSE_WAVE_TRACES = [1, 0, 3];
-    let currentWaveIndex = 0;
-    let waveDistTravelled = 0;
-    let wavePauseTimer = 0;
-    const WAVE_SPEED = 240; // px/sec
-    const PULSE_LENGTH = 50; // px
+    // -----------------------------------------------------------
+    // DETERMINISTIC MULTI-CHANNEL SIGNAL PROPAGATION ENGINE
+    // 8 concurrent channels across visual hierarchy (outer -> center, center -> outer)
+    // -----------------------------------------------------------
+    interface PulseChannel {
+      traceIdx: number;
+      reverse: boolean;
+      speed: number;       // Base speed in px/sec
+      length: number;      // Length of pulse in px
+      dist: number;        // Current distance traveled
+      pause: number;       // Current pause timer
+      pauseMin: number;    // Min pause before replay
+      pauseMax: number;    // Max pause before replay
+      coreColor: string;
+      glowColor: string;
+      coreWidth: number;
+      sparkRadius: number;
+    }
+
+    const PULSE_CHANNELS: PulseChannel[] = [
+      // Channel 0: Highway B (Center Name -> CTA Bridge -> Into 3D Core) - Fast Primary
+      {
+        traceIdx: 1,
+        reverse: false,
+        speed: 330,
+        length: 58,
+        dist: 0,
+        pause: 0.05,
+        pauseMin: 0.25,
+        pauseMax: 0.55,
+        coreColor: '#FFFDF5',
+        glowColor: 'rgba(235, 195, 110, 0.90)',
+        coreWidth: 3.4,
+        sparkRadius: 3.2,
+      },
+      // Channel 1: Highway A (Top-Left Outer -> Above Eyebrow -> Feeds 3D Core) - Steady Inbound
+      {
+        traceIdx: 0,
+        reverse: false,
+        speed: 250,
+        length: 52,
+        dist: 0,
+        pause: 0.25,
+        pauseMin: 0.35,
+        pauseMax: 0.70,
+        coreColor: '#FFF8E1',
+        glowColor: 'rgba(225, 185, 95, 0.85)',
+        coreWidth: 3.2,
+        sparkRadius: 2.8,
+      },
+      // Channel 2: Highway D (Bottom Vertical Power Bus -> Rising Into 3D Core) - Power Injection
+      {
+        traceIdx: 3,
+        reverse: false,
+        speed: 290,
+        length: 46,
+        dist: 0,
+        pause: 0.15,
+        pauseMin: 0.40,
+        pauseMax: 0.85,
+        coreColor: '#FFF9E6',
+        glowColor: 'rgba(230, 190, 100, 0.85)',
+        coreWidth: 3.2,
+        sparkRadius: 2.8,
+      },
+      // Channel 3: Secondary Route 5 (Center 3D Core -> Outward to Top Left) - Outbound Telemetry
+      {
+        traceIdx: 5,
+        reverse: true,
+        speed: 210,
+        length: 45,
+        dist: 0,
+        pause: 0.40,
+        pauseMin: 0.55,
+        pauseMax: 1.00,
+        coreColor: '#FFEFB8',
+        glowColor: 'rgba(215, 175, 85, 0.80)',
+        coreWidth: 2.8,
+        sparkRadius: 2.4,
+      },
+      // Channel 4: Highway C (Left Edge Industrial Bus -> Ground Plane) - Slow Heavy Rail
+      {
+        traceIdx: 2,
+        reverse: false,
+        speed: 185,
+        length: 64,
+        dist: 0,
+        pause: 0.10,
+        pauseMin: 0.65,
+        pauseMax: 1.25,
+        coreColor: '#FFE8A3',
+        glowColor: 'rgba(210, 168, 80, 0.75)',
+        coreWidth: 3.2,
+        sparkRadius: 2.6,
+      },
+      // Channel 5: Highway E (Right Perimeter Actuator Bus) - High-Speed Perimeter Link
+      {
+        traceIdx: 4,
+        reverse: false,
+        speed: 360,
+        length: 50,
+        dist: 0,
+        pause: 0.35,
+        pauseMin: 0.30,
+        pauseMax: 0.75,
+        coreColor: '#FFF8DC',
+        glowColor: 'rgba(235, 195, 110, 0.85)',
+        coreWidth: 3.2,
+        sparkRadius: 3.0,
+      },
+      // Channel 6: Secondary Route 7 (Secondary CTA Underline -> Outward Left)
+      {
+        traceIdx: 7,
+        reverse: true,
+        speed: 230,
+        length: 42,
+        dist: 0,
+        pause: 0.30,
+        pauseMin: 0.60,
+        pauseMax: 1.15,
+        coreColor: '#FFF0C4',
+        glowColor: 'rgba(220, 180, 90, 0.80)',
+        coreWidth: 2.8,
+        sparkRadius: 2.4,
+      },
+      // Channel 7: Secondary Route 10 (Bottom Finger 3 -> Into 3D Core)
+      {
+        traceIdx: 10,
+        reverse: false,
+        speed: 300,
+        length: 44,
+        dist: 0,
+        pause: 0.50,
+        pauseMin: 0.45,
+        pauseMax: 0.95,
+        coreColor: '#FFFDF0',
+        glowColor: 'rgba(230, 190, 100, 0.85)',
+        coreWidth: 2.8,
+        sparkRadius: 2.6,
+      },
+    ];
 
     // Mouse coordinates relative to Hero canvas
     const mouse = { x: -9999, y: -9999, active: false };
@@ -494,11 +625,30 @@
 
       renderStaticLayers();
 
-      waveDistTravelled = 0;
-      wavePauseTimer = 0.2;
+      // Pre-stagger initial distance along each trace so pulses do not start simultaneously
+      const INITIAL_OFFSETS = [0.15, 0.55, 0.35, 0.75, 0.20, 0.60, 0.40, 0.85];
+      PULSE_CHANNELS.forEach((p, idx) => {
+        const trace = rawTraces[p.traceIdx];
+        if (trace) {
+          const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+          const { total } = getTraceLengths(pts);
+          p.dist = (INITIAL_OFFSETS[idx % INITIAL_OFFSETS.length] || 0.2) * total;
+          p.pause = 0;
+        }
+      });
 
       drawFrame(performance.now(), 0.016);
     }
+
+    // Expose circuit controls for coordinated cinematic intro animations
+    (window as any).__HERO_CIRCUIT_CONTROLS__ = {
+      triggerSignalBurst: () => {
+        PULSE_CHANNELS.forEach((p, idx) => {
+          p.pause = 0;
+          p.dist = idx * 30;
+        });
+      },
+    };
 
     // Helper: compute total length of polyline
     function getTraceLengths(points: { x: number; y: number }[]): { total: number; segs: number[] } {
@@ -579,149 +729,122 @@
         });
       }
 
-      // 4. Draw Traveling Pulse along Current Highway (Deterministic Sequential Propagation)
+      // 4. Draw Traveling Pulses along Existing Circuit Traces (Multi-Channel Deterministic Signal Flow)
       if (!prefersReduced) {
-        if (wavePauseTimer > 0) {
-          wavePauseTimer -= dt;
-        } else {
-          const traceIdx = PULSE_WAVE_TRACES[currentWaveIndex];
-          const trace = rawTraces[traceIdx];
-          if (trace) {
-            const pts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
-            const { total, segs } = getTraceLengths(pts);
+        // Density scaling: Desktop (4-8) -> 6-7, Tablet (3-5) -> 4, Mobile (2-4) -> 3
+        let maxActivePulses = 6;
+        if (W < 640) {
+          maxActivePulses = 3;
+        } else if (W < 1024) {
+          maxActivePulses = 4;
+        } else if (W >= 1440) {
+          maxActivePulses = 7;
+        }
 
-            waveDistTravelled += WAVE_SPEED * dt;
+        const speedMultiplier = (typeof window !== 'undefined' && (window as any).__HERO_CIRCUIT_SPEED_BOOST__) || 1.0;
 
-            if (waveDistTravelled > total + PULSE_LENGTH) {
-              // Pause before next wave: 0.4s between waves, 0.9s after completing full 3-wave cycle
-              wavePauseTimer = currentWaveIndex === PULSE_WAVE_TRACES.length - 1 ? 0.9 : 0.4;
-              currentWaveIndex = (currentWaveIndex + 1) % PULSE_WAVE_TRACES.length;
-              waveDistTravelled = 0;
-            } else if (waveDistTravelled > 0 && waveDistTravelled - PULSE_LENGTH < total) {
-              const headDist = Math.min(waveDistTravelled, total);
-              const tailDist = Math.max(waveDistTravelled - PULSE_LENGTH, 0);
+        for (let i = 0; i < maxActivePulses; i++) {
+          const p = PULSE_CHANNELS[i];
+          if (!p) continue;
 
-              const pHead = getPointAtDistance(pts, headDist, segs);
-              const pTail = getPointAtDistance(pts, tailDist, segs);
+          if (p.pause > 0) {
+            p.pause -= dt;
+            continue;
+          }
 
-              const grad = ctx.createLinearGradient(pTail.x, pTail.y, pHead.x, pHead.y);
-              grad.addColorStop(0, 'rgba(255, 238, 179, 0)');
-              grad.addColorStop(0.7, 'rgba(255, 230, 140, 0.85)');
-              grad.addColorStop(1, '#FFF9E6');
+          const trace = rawTraces[p.traceIdx];
+          if (!trace) continue;
 
-              ctx.beginPath();
-              ctx.moveTo(pTail.x, pTail.y);
-              ctx.lineTo(pHead.x, pHead.y);
-              ctx.strokeStyle = grad;
-              ctx.lineWidth = 3.6;
-              ctx.globalAlpha = 0.95;
-              ctx.stroke();
+          const rawPts = trace.points.map(([u, v]) => ({ x: u * W, y: v * H }));
+          const pts = p.reverse ? [...rawPts].reverse() : rawPts;
+          const { total, segs } = getTraceLengths(pts);
 
-              // Radiant head spark
-              ctx.beginPath();
-              ctx.arc(pHead.x, pHead.y, 2.8, 0, Math.PI * 2);
-              ctx.fillStyle = '#FFFFFF';
-              ctx.fill();
-            }
+          p.dist += p.speed * dt * speedMultiplier;
+
+          if (p.dist > total + p.length) {
+            // Pause before replay: deterministic variation
+            const pauseRange = p.pauseMax - p.pauseMin;
+            p.pause = p.pauseMin + ((i * 0.17) % 1) * pauseRange;
+            p.dist = 0;
+          } else if (p.dist > 0 && p.dist - p.length < total) {
+            const headDist = Math.min(p.dist, total);
+            const tailDist = Math.max(p.dist - p.length, 0);
+
+            const pHead = getPointAtDistance(pts, headDist, segs);
+            const pTail = getPointAtDistance(pts, tailDist, segs);
+
+            // 1. Subtle Outer Glow Stroke
+            const glowGrad = ctx.createLinearGradient(pTail.x, pTail.y, pHead.x, pHead.y);
+            glowGrad.addColorStop(0, 'rgba(255, 238, 179, 0)');
+            glowGrad.addColorStop(0.5, p.glowColor);
+            glowGrad.addColorStop(1, p.coreColor);
+
+            ctx.beginPath();
+            ctx.moveTo(pTail.x, pTail.y);
+            ctx.lineTo(pHead.x, pHead.y);
+            ctx.strokeStyle = glowGrad;
+            ctx.lineWidth = p.coreWidth + 2.6;
+            ctx.globalAlpha = 0.35;
+            ctx.stroke();
+
+            // 2. Crisp Metallic Core Stroke
+            const coreGrad = ctx.createLinearGradient(pTail.x, pTail.y, pHead.x, pHead.y);
+            coreGrad.addColorStop(0, 'rgba(255, 245, 210, 0)');
+            coreGrad.addColorStop(0.55, 'rgba(255, 230, 140, 0.85)');
+            coreGrad.addColorStop(1, p.coreColor);
+
+            ctx.beginPath();
+            ctx.moveTo(pTail.x, pTail.y);
+            ctx.lineTo(pHead.x, pHead.y);
+            ctx.strokeStyle = coreGrad;
+            ctx.lineWidth = p.coreWidth;
+            ctx.globalAlpha = 0.95;
+            ctx.stroke();
+
+            // 3. Radiant Head Spark (White hot center with warm gold corona)
+            ctx.beginPath();
+            ctx.arc(pHead.x, pHead.y, p.sparkRadius + 1.2, 0, Math.PI * 2);
+            ctx.fillStyle = p.glowColor;
+            ctx.globalAlpha = 0.6;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(pHead.x, pHead.y, p.sparkRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.globalAlpha = 1.0;
+            ctx.fill();
           }
         }
       }
 
-      // 5. Draw Technical Markers (Crosshairs +, Dot Grids)
-      rawMarkers.forEach((m) => {
-        const x = m.u * W;
-        const y = m.v * H;
-        ctx.globalAlpha = 0.35;
-
-        if (m.type === 'cross') {
-          ctx.strokeStyle = '#B8924A';
-          ctx.lineWidth = 1.0;
-          ctx.beginPath();
-          ctx.moveTo(x - 5, y);
-          ctx.lineTo(x + 5, y);
-          ctx.moveTo(x, y - 5);
-          ctx.lineTo(x, y + 5);
-          ctx.stroke();
-        } else if (m.type === 'dot_matrix') {
-          ctx.fillStyle = '#C5A059';
-          for (let dx = -1; dx <= 1; dx++) {
-            for (let dy = -1; dy <= 1; dy++) {
-              ctx.beginPath();
-              ctx.arc(x + dx * 5, y + dy * 5, 0.9, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        }
-      });
-
-      // 6. Draw Strategic PCB Nodes (Glow Vias, Standard Vias, ICs, Solder Pads)
-      rawNodes.forEach((node) => {
-        const x = node.u * W;
-        const y = node.v * H;
-
-        let prox = 0;
-        if (mouse.active) {
+      // 5. Draw Strategic PCB Nodes Only When Proximity Active (Base nodes/markers already cached on staticCanvas)
+      if (mouse.active) {
+        rawNodes.forEach((node) => {
+          const x = node.u * W;
+          const y = node.v * H;
           const d = Math.hypot(x - mouse.x, y - mouse.y);
-          if (d < 140) prox = 1 - d / 140;
-        }
+          if (d >= 140) return;
+          const prox = 1 - d / 140;
 
-        if (node.shape === 'glow_via') {
-          // Radiant halo
-          const haloRad = ctx.createRadialGradient(x, y, 1, x, y, node.size * 3.8);
-          haloRad.addColorStop(0, 'rgba(230, 186, 92, 0.55)');
-          haloRad.addColorStop(0.5, 'rgba(230, 186, 92, 0.20)');
-          haloRad.addColorStop(1, 'rgba(230, 186, 92, 0)');
-          ctx.fillStyle = haloRad;
-          ctx.globalAlpha = 0.85 + prox * 0.15;
-          ctx.beginPath();
-          ctx.arc(x, y, node.size * 3.8, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Copper ring
-          ctx.beginPath();
-          ctx.arc(x, y, node.size, 0, Math.PI * 2);
-          ctx.fillStyle = '#B8924A';
-          ctx.globalAlpha = 0.95;
-          ctx.fill();
-
-          // Inner drill via
-          ctx.beginPath();
-          ctx.arc(x, y, node.size * 0.38, 0, Math.PI * 2);
-          ctx.fillStyle = '#222834';
-          ctx.fill();
-        } else if (node.shape === 'via') {
-          // Standard Annular Via
-          ctx.beginPath();
-          ctx.arc(x, y, node.size, 0, Math.PI * 2);
-          ctx.fillStyle = '#C5A059';
-          ctx.globalAlpha = 0.70 + prox * 0.25;
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.arc(x, y, node.size * 0.45, 0, Math.PI * 2);
-          ctx.fillStyle = '#F7F5F0';
-          ctx.fill();
-        } else if (node.shape === 'ic') {
-          // SMD IC Footprint
-          const s = node.size;
-          ctx.fillStyle = 'rgba(28, 33, 44, 0.85)';
-          ctx.globalAlpha = 0.85;
-          ctx.fillRect(x - s / 2, y - s / 2, s, s);
-
-          ctx.strokeStyle = '#B8924A';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(x - s / 2, y - s / 2, s, s);
-
-          // Pin leads
-          ctx.fillStyle = '#E5C678';
-          const pins = 3;
-          for (let p = 0; p < pins; p++) {
-            const py = y - s / 2 + (s / (pins + 1)) * (p + 1);
-            ctx.fillRect(x - s / 2 - 3, py - 1, 3, 2);
-            ctx.fillRect(x + s / 2, py - 1, 3, 2);
+          if (node.shape === 'glow_via') {
+            const haloRad = ctx.createRadialGradient(x, y, 1, x, y, node.size * 3.8);
+            haloRad.addColorStop(0, 'rgba(230, 186, 92, 0.55)');
+            haloRad.addColorStop(0.5, 'rgba(230, 186, 92, 0.20)');
+            haloRad.addColorStop(1, 'rgba(230, 186, 92, 0)');
+            ctx.fillStyle = haloRad;
+            ctx.globalAlpha = 0.85 + prox * 0.15;
+            ctx.beginPath();
+            ctx.arc(x, y, node.size * 3.8, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (node.shape === 'via') {
+            ctx.beginPath();
+            ctx.arc(x, y, node.size, 0, Math.PI * 2);
+            ctx.fillStyle = '#C5A059';
+            ctx.globalAlpha = 0.70 + prox * 0.25;
+            ctx.fill();
           }
-        }
-      });
+        });
+      }
 
       ctx.globalAlpha = 1.0;
     }
@@ -786,13 +909,21 @@
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHeroPCB);
-  } else {
-    initHeroPCB();
+  function deferredInit(fn: () => void) {
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(fn, { timeout: 600 });
+    } else {
+      setTimeout(fn, 150);
+    }
   }
 
-  document.addEventListener('astro:page-load', initHeroPCB);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => deferredInit(initHeroPCB));
+  } else {
+    deferredInit(initHeroPCB);
+  }
+
+  document.addEventListener('astro:page-load', () => deferredInit(initHeroPCB));
 </script>
 
 <style>

@@ -42,42 +42,91 @@ export function initPCBShowcaseAnimation(
 
   // 1. Entrance reveal
   let observer: any = null;
+  let io: IntersectionObserver | null = null;
+  let hasRevealed = false;
+
+  function revealPCB() {
+    if (hasRevealed) {
+      if (headerBar) {
+        headerBar.style.opacity = '1';
+        headerBar.style.transform = 'none';
+      }
+      if (stageGrid) {
+        stageGrid.style.opacity = '1';
+        stageGrid.style.transform = 'none';
+      }
+      return;
+    }
+    hasRevealed = true;
+    if (headerBar) {
+      animate(headerBar, {
+        opacity: [0, 1],
+        translateY: [16, 0],
+        duration: 380,
+        ease: MOTION_TOKENS.easing.technical,
+      });
+    }
+    if (stageGrid) {
+      animate(stageGrid, {
+        opacity: [0, 1],
+        translateY: [24, 0],
+        duration: 520,
+        delay: 100,
+        ease: MOTION_TOKENS.easing.technical,
+        onComplete: () => {
+          if (headerBar) {
+            headerBar.style.opacity = '1';
+            headerBar.style.transform = 'none';
+          }
+          if (stageGrid) {
+            stageGrid.style.opacity = '1';
+            stageGrid.style.transform = 'none';
+          }
+        },
+      });
+    }
+  }
+
   if (headerBar && stageGrid) {
-    headerBar.style.opacity = '0';
-    headerBar.style.transform = 'translateY(16px)';
-    stageGrid.style.opacity = '0';
-    stageGrid.style.transform = 'translateY(24px)';
+    const rect = container.getBoundingClientRect();
+    const initiallyInView = rect.top < window.innerHeight * 0.90 && rect.bottom > 0;
+
+    if (initiallyInView) {
+      revealPCB();
+    } else {
+      headerBar.style.opacity = '0';
+      headerBar.style.transform = 'translateY(16px)';
+      stageGrid.style.opacity = '0';
+      stageGrid.style.transform = 'translateY(24px)';
+    }
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          revealPCB();
+        }
+      }, { rootMargin: '60px 0px', threshold: 0.05 });
+      io.observe(container);
+    }
 
     observer = onScroll({
       target: container,
       enter: 'top 82%',
       onEnter: () => {
-        animate(headerBar, {
-          opacity: [0, 1],
-          translateY: [16, 0],
-          duration: 380,
-          ease: MOTION_TOKENS.easing.technical,
-        });
-
-        animate(stageGrid, {
-          opacity: [0, 1],
-          translateY: [24, 0],
-          duration: 520,
-          delay: 100,
-          ease: MOTION_TOKENS.easing.technical,
-          onComplete: () => {
-            headerBar.style.opacity = '1';
-            headerBar.style.transform = 'none';
-            stageGrid.style.opacity = '1';
-            stageGrid.style.transform = 'none';
-          },
-        });
+        revealPCB();
+      },
+      onEnterBackward: () => {
+        revealPCB();
       },
     });
   }
 
   return {
     destroy: () => {
+      if (io) {
+        try { io.disconnect(); } catch {}
+        io = null;
+      }
       if (observer) {
         try {
           observer.revert();

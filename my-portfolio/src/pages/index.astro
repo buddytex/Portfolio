@@ -2,12 +2,16 @@
 // Home Page — Precision Engineering Portfolio
 // Naveen Shaji George · Robotics and Automation Engineer
 import Layout from '../layouts/Layout.astro';
+import IntroOverlay from '../components/IntroOverlay.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
-import RolesTaken from '../components/RolesTaken.astro';
+import EngineeringFocus from '../components/EngineeringFocus.astro';
 import ProjectIndex from '../components/ProjectIndex.astro';
-import PCBShowcase from '../components/PCBShowcase.astro';
+import ExperienceSection from '../components/ExperienceSection.astro';
+import RolesTaken from '../components/RolesTaken.astro';
 import SkillsEvidence from '../components/SkillsEvidence.astro';
+import PCBShowcase from '../components/PCBShowcase.astro';
+import BeyondTheBuild from '../components/BeyondTheBuild.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 ---
@@ -16,30 +20,42 @@ import Footer from '../components/Footer.astro';
   title="Naveen Shaji George — Robotics Engineer"
   description="Robotics engineer specializing in autonomous vehicles, 3D LiDAR perception, custom vehicle ECUs, isolated CAN bus networks, and ROS 2 software integration. AIR 7 and AIR 11 aBAJA team leader."
 >
+  <!-- Dedicated Isolated Cinematic Intro Overlay (Full Screen, Option 1) -->
+  <IntroOverlay />
+
   <!-- Minimalist Editorial Navigation -->
   <Navigation />
 
   <main id="mainContent">
-    <!-- 01 HERO: Monumental Typography + Large Portrait + Dense Circuit Network -->
+    <!-- 01 HERO: Identity, Monumental Typography, Cutout Portrait & Three.js Mechanical Core -->
     <Hero />
 
-    <!-- 02 ROLES I'VE TAKEN: Interactive Technical Progression Index -->
+    <!-- 02 ROLES & LEADERSHIP: Electrical Head, Club Vice President, Radio Jockey -->
     <RolesTaken />
 
-    <!-- 03 PROJECTS: Interactive Editorial Entry Cards -->
+    <!-- 03 SELECTED PROJECTS: 6 Flagship & Priority Engineering Systems -->
     <ProjectIndex />
 
-    <!-- 04 SKILLS & EVIDENCE: Compact Skill Index -->
+    <!-- 04 CLINICAL & INDUSTRIAL EXPERIENCE: Surgical Robotics Clinical Internship -->
+    <ExperienceSection />
+
+    <!-- 05 ENGINEERING FOCUS: Core Disciplines & Cross-System Architectural Relationships -->
+    <EngineeringFocus />
+
+    <!-- 06 TECHNICAL SKILLS: Connected Competency Map with Live Evidence Inspector -->
     <SkillsEvidence />
 
-    <!-- 05 PCB LAB: Interactive 3D PCB Artifact Inspector -->
+    <!-- 07 HARDWARE & PCB LAB: Real-time 3D Gerber Inspector (RS-274X Geometry) -->
     <section id="hardware" class="section hardware-section" aria-label="Physical PCB Engineering Showcase">
       <div class="container-wide">
         <PCBShowcase />
       </div>
     </section>
 
-    <!-- 06 CONTACT: Direct Communication & Verified Channels -->
+    <!-- 08 BEYOND THE BUILD: Athletics, Choral Music, Creative Direction & Personal Ethos -->
+    <BeyondTheBuild />
+
+    <!-- 09 CONTACT: Purposeful Dispatch, Target Domains & Quick Drafting -->
     <Contact />
   </main>
 

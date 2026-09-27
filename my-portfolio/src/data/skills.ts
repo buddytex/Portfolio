@@ -4,7 +4,7 @@ export type SkillProficiency = 'strong' | 'working' | 'experience' | 'awareness'
 export interface ConnectedEntity {
   id: string;
   name: string;
-  type: 'project' | 'role' | 'hardware' | 'activity';
+  type: 'project' | 'role' | 'hardware' | 'activity' | 'experience';
   badge?: string;
   url?: string;
   detail?: string;
@@ -42,6 +42,7 @@ export interface SkillEvidence {
   relatedProjects: {
     name: string;
     id: string;
+    url?: string;
   }[];
   connectedEntities?: ConnectedEntity[];
 }
@@ -76,8 +77,8 @@ export const skillCategories: SkillCategory[] = [
         context: 'Deterministic node lifecycles, action servers, and custom message types running on Ubuntu Linux.',
         connectedEntities: [
           { id: 'baja-2026', name: 'aBAJA SAEINDIA 2026', type: 'project', badge: 'AIR 11 (2026)', url: '/projects/baja-2026' },
-          { id: 'hospital-amr', name: 'Hospital Service AMR', type: 'project', badge: 'FINAL YEAR', url: '/projects/hospital-amr' },
-          { id: 'swarm-robotics', name: 'Swarm Robotics Study', type: 'project', badge: 'VeRLab HeRo', url: '/projects/swarm-robotics' }
+          { id: 'hospital-amr', name: 'Hospital Service AMR', type: 'project', badge: 'MAIN PROJECT', url: '/projects/hospital-amr' },
+          { id: 'swarm-robotics', name: 'Swarm Robotics Platform', type: 'project', badge: 'MINI PROJECT', url: '/projects/swarm-robotics' }
         ],
         tools: ['ROS 2 Humble', 'rclcpp', 'rclpy', 'RViz 2', 'Foxglove Studio']
       },
@@ -133,10 +134,10 @@ export const skillCategories: SkillCategory[] = [
         proficiency: 'working',
         category: 'Robotics & Autonomous Systems',
         categoryIndex: '01',
-        evidence: 'Designed a two-robot master-slave system for B.Tech minor project and benchmarked 16-agent HeRo Common Gazebo simulations.',
+        evidence: 'Designed a physical two-robot master-slave system for B.Tech college mini project and benchmarked 16-agent HeRo Common Gazebo simulations.',
         context: 'Decentralized peer-to-peer consensus, virtual attractor potential fields, and flocking dynamics.',
         connectedEntities: [
-          { id: 'swarm-robotics', name: 'Swarm Robotics Platform', type: 'project', badge: 'VeRLab STUDY', url: '/projects/swarm-robotics' }
+          { id: 'swarm-robotics', name: 'Swarm Robotics Platform', type: 'project', badge: 'MINI PROJECT', url: '/projects/swarm-robotics' }
         ],
         tools: ['Gazebo 3D', 'TCP/HTTP Sockets', 'VeRLab HeRo Common']
       },
@@ -151,7 +152,7 @@ export const skillCategories: SkillCategory[] = [
         context: 'Closed-loop velocity control, feedforward steering, and coordinate frame transformations.',
         connectedEntities: [
           { id: 'balancing-robot', name: 'Inverted Pendulum Robot', type: 'project', badge: '200 Hz PID', url: '/projects/balancing-robot' },
-          { id: 'surgical-robotics', name: 'CMR Versius Internship', type: 'project', badge: '7-DoF TELEOP', url: '/projects/surgical-robotics' }
+          { id: 'surgical-robotics', name: 'Clinical Surgical Robotics Internship', type: 'experience', badge: '7-DoF TELEOP', url: '/experience/surgical-robotics' }
         ],
         tools: ['Kinematic Models', 'Cascaded PID', 'TF2 Transforms']
       }
@@ -751,7 +752,7 @@ export const skillCategories: SkillCategory[] = [
         evidence: 'Rapidly absorbed and evaluated complex clinical robotic surgery workflows (CMR Versius) and Intel oneAPI development environments within tight sprint windows.',
         context: 'Studied unfamiliar documentation, analyzed architecture diagrams, and quickly extracted actionable technical insights.',
         connectedEntities: [
-          { id: 'surgical-robotics', name: 'CMR Versius Internship', type: 'project', badge: 'CLINICAL ONBOARDING', url: '/projects/surgical-robotics' },
+          { id: 'surgical-robotics', name: 'Clinical Surgical Robotics Internship', type: 'experience', badge: 'CLINICAL ONBOARDING', url: '/experience/surgical-robotics' },
           { id: 'smart-cctv', name: 'Smart CCTV Platform', type: 'project', badge: 'oneAPI SPRINT', url: '/projects/smart-cctv' }
         ],
         tools: ['Rapid Documentation Ingestion', 'Systemic Deconstruction', 'Workflow Modeling']
@@ -933,7 +934,7 @@ export const skillCategories: SkillCategory[] = [
         connectedEntities: [
           { id: 'baja-2026', name: 'aBAJA SAEINDIA 2026', type: 'project', badge: 'BENCH VIDEOS', url: '/projects/baja-2026' },
           { id: 'railguard-ai', name: 'RailGuard AI Rover', type: 'project', badge: 'ROVER VIDEO', url: '/projects/railguard-ai' },
-          { id: 'surgical-robotics', name: 'CMR Versius Internship', type: 'project', badge: 'CLINICAL VIDEO', url: '/projects/surgical-robotics' }
+          { id: 'surgical-robotics', name: 'Clinical Surgical Robotics Internship', type: 'experience', badge: 'CLINICAL VIDEO', url: '/experience/surgical-robotics' }
         ],
         tools: ['Video Editing', 'Clip Trimming', 'Pacing & Transitions']
       }
@@ -964,7 +965,7 @@ export const skillsData: SkillEvidence[] = allSkills.map(skill => ({
     }
   ],
   relatedProjects: skill.connectedEntities
-    .filter(e => e.type === 'project')
-    .map(e => ({ name: e.name, id: e.id })),
+    .filter(e => e.type === 'project' || e.type === 'experience')
+    .map(e => ({ name: e.name, id: e.id, url: e.url })),
   connectedEntities: skill.connectedEntities
 }));

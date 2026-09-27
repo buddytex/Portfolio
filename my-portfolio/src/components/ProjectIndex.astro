@@ -7,7 +7,7 @@ import { projects } from '../data/projects';
 const featuredProjects = projects.filter(p => p.featured);
 const bajaProjects = featuredProjects.filter(p => p.id === 'baja-2025' || p.id === 'baja-2026');
 const duoProjects = featuredProjects.filter(p => p.id === 'hospital-amr' || p.id === 'smart-cctv');
-const trioProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.id === 'surgical-robotics' || p.id === 'swarm-robotics');
+const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.id === 'swarm-robotics' || p.id === 'balancing-robot');
 ---
 
 <section id="work" class="section work-section">
@@ -103,6 +103,12 @@ const trioProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.i
                   </div>
                   <h3 class="card-title" transition:name={`project-title-${project.id}`}>{project.title}</h3>
                   <div class="card-subtitle mono">{project.subtitle}</div>
+                  {project.ownershipStory && (
+                    <div class="card-ownership-tag mono">
+                      <span class="ownership-glyph">★</span>
+                      <span>{project.ownershipStory.title}</span>
+                    </div>
+                  )}
                 </div>
                 <div class="footer-secondary-col">
                   <span class="role-badge mono">{project.shortRole}</span>
@@ -227,9 +233,9 @@ const trioProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.i
         ))}
       </div>
 
-      <!-- 03. SUPPORTING SYSTEMS TRIO: RailGuard AI, Surgical Robotics, Swarm Robotics -->
+      <!-- 03. RESEARCH PLATFORMS & MULTI-AGENT SYSTEMS: RailGuard AI & Swarm Robotics -->
       <div class="trio-grid-row">
-        {trioProjects.map((project) => (
+        {supportingProjects.map((project) => (
           <article 
             class="project-card card-trio" 
             id={`card-${project.id}`} 
@@ -286,11 +292,7 @@ const trioProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.i
                   <!-- Top Index & Badges -->
                   <div class="card-visual-top">
                     <span class="visual-index mono">{project.index}</span>
-                    {project.attribution ? (
-                      <span class="card-attr-badge">OPEN-SOURCE STUDY</span>
-                    ) : (
-                      <span class="visual-status tag">{project.status}</span>
-                    )}
+                    <span class="visual-status tag">{project.status}</span>
                   </div>
 
                   <!-- Precision Corner Ticks -->
@@ -449,8 +451,8 @@ const trioProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.i
 
   .trio-grid-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-5);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
   }
 
   .project-card {
@@ -883,6 +885,27 @@ const trioProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.i
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .card-ownership-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--accent-primary, #B8924A);
+    background: rgba(184, 146, 74, 0.08);
+    border: 1px solid rgba(184, 146, 74, 0.35);
+    padding: 2px 7px;
+    border-radius: var(--r-xs, 4px);
+    margin-top: 5px;
+    width: fit-content;
+  }
+
+  .ownership-glyph {
+    font-size: 0.65rem;
+    color: var(--accent-primary, #B8924A);
   }
 
   .footer-secondary-col {

@@ -97,7 +97,7 @@ const { skill } = Astro.props;
         <h2 class="section-kicker mono">DEPLOYED SYSTEMS USING THIS COMPETENCY</h2>
         <div class="systems-grid">
           {skill.relatedProjects.map((proj) => (
-            <a href={`/projects/${proj.id}`} class="system-box">
+            <a href={proj.url || `/projects/${proj.id}`} class="system-box">
               <span class="system-sub mono">CASE STUDY</span>
               <h4 class="system-title">{proj.name}</h4>
               <span class="system-action mono">Explore Architecture →</span>

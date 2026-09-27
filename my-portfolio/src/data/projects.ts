@@ -23,6 +23,8 @@ export interface Project {
   keyAreas: string[];
   skillsUsed: string[];
   personalContributions?: string[];
+  teamSystem?: string[];
+  projectType?: 'competition' | 'academic' | 'hackathon' | 'research';
   engineeringDecisions?: string[];
   year: string;
   status: string;
@@ -35,16 +37,28 @@ export interface Project {
   softwareStack: string[];
   hardwareStack: string[];
   keyResults: string[];
+  ownershipStory?: {
+    title: string;
+    narrative: string;
+    takeaways: string[];
+  };
   failuresAndIterations?: {
     issue: string;
     rootCause: string;
     iteration: string;
   }[];
   githubUrl?: string;
-  visualSignature: 'trajectory' | 'lidar' | 'vision' | 'swarm' | 'rail' | 'balance' | 'agv' | 'lane' | 'surgical';
+  visualSignature: 'trajectory' | 'lidar' | 'vision' | 'swarm' | 'rail' | 'balance' | 'agv' | 'lane' | 'surgical' | 'mechatronics';
   featured?: boolean;
   imagePath?: string;
   secondaryImage?: string;
+  featuredVideo?: {
+    path: string;
+    poster?: string;
+    title: string;
+    caption: string;
+    badge: string;
+  };
   attribution?: {
     source: string;
     project: string;
@@ -67,34 +81,43 @@ export const projects: Project[] = [
     subtitle: 'Autonomous All-Terrain Vehicle · Car A12 · Team Equinox',
     role: 'Electrical & Electronics Division · Vehicle Development',
     shortRole: 'E&E Division — Vehicle Development',
-    keyAreas: ['Vehicle Electrical', 'Relay Control Systems', 'Sensor Integration', 'Wiring', 'Team Collaboration'],
+    keyAreas: ['Vehicle Electrical', 'Relay Control Systems', 'Sensor Integration', 'Wiring', 'Hands-on Fabrication', 'Project Ownership'],
     skillsUsed: [
       'Wiring Harness Fabrication',
       'Mechanical Fabrication',
       'Hands-on Prototyping',
       'Mechanical Assembly',
       'Electronics Debugging',
-      'Team Coordination',
+      'Team Leadership',
       'C++',
       'Python'
     ],
+    ownershipStory: {
+      title: 'Taking Ownership: Built When It Had to Be Built',
+      narrative: 'During the 2025 Baja campaign, the team situation deteriorated and overall build momentum effectively stalled, leaving the autonomous vehicle and its subsystems at risk of not qualifying for the national arena. Rather than allowing months of collegiate preparation to lapse, I stepped into the breach and spent months personally developing, troubleshooting, and fabricating the vehicle and its core systems. Working late into the night in the college workshop, I wired the complete electrical distribution box, built the relay switching boards, resolved mechanical mounting constraints, and ensured the sensor suite was integrated and calibrated. This pivotal trial taught me true engineering persistence: stepping up when external support falters, learning whatever mechanical or electrical disciplines are needed on the fly, and taking absolute ownership until Car A12 reached the competition grounds—earning All India Rank 7 nationally.',
+      takeaways: [
+        'Personal accountability: Taking complete responsibility when project continuity is threatened',
+        'Multi-domain execution: Bridging electrical wiring, mechanical fitting, and system troubleshooting',
+        'Grounded engineering grit: Overcoming setbacks through hands-on fabrication to meet strict competition deadlines'
+      ]
+    },
     personalContributions: [
-      'Contributed to the electrical and electronics division of Team Equinox for the inaugural autonomous Baja campaign.',
-      'Assisted in vehicle electrical system assembly, relay control wiring, and sensor integration on Car A12.',
-      'Participated in national-level BAJA SAEINDIA competition dynamic and endurance events.',
-      'Gained foundational experience in automotive electrical systems, competition engineering, and team-based vehicle development.'
+      'Stepped up during a critical team stall to personally assemble and integrate key vehicle electrical, relay control, and sensor subsystems.',
+      'Fabricated and routed the high-current relay power switching box and safety E-Stop interlock circuits for Car A12.',
+      'Overcame mechanical and electrical mounting roadblocks through hands-on workshop fabrication, soldering, and harness crimping.',
+      'Field-tested electrical integrity across dynamic off-road obstacle courses at BAJA SAEINDIA 2025, securing AIR 7.'
     ],
     engineeringDecisions: [
-      'Relay-based switching architecture selected for initial prototype simplicity and rapid integration timeline.',
-      'Direct sensor wiring approach used to establish baseline data acquisition before migrating to bus-based communication in the 2026 campaign.'
+      'Relay-based switching architecture selected for initial prototype simplicity, rapid fabrication, and high noise immunity on rugged terrain.',
+      'Direct sensor wiring approach used to establish a reliable baseline before migrating to a distributed CAN bus architecture in 2026.'
     ],
     year: '2025',
     status: 'AIR 7 — NATIONAL',
     domain: 'Autonomous Vehicle / Competition Engineering / Team Development',
     category: 'autonomous',
-    summary: 'Contributed to the electrical and electronics division of Team Equinox\'s inaugural autonomous Baja vehicle (Car A12), competing at BAJA SAEINDIA 2025 and achieving All India Rank 7 nationally.',
-    challenge: 'Developing a functional autonomous vehicle electrical system within aggressive competition timelines while learning automotive engineering fundamentals as a team.',
-    approach: 'Built relay-based switching systems, integrated sensors, assembled vehicle wiring, and supported the broader team through fabrication, testing, and competition events.',
+    summary: 'Took core ownership of electrical development and vehicle assembly for Team Equinox\'s inaugural autonomous Baja vehicle (Car A12), bringing the car to the dirt track to compete at BAJA SAEINDIA 2025 and achieve All India Rank 7 nationally.',
+    challenge: 'Overcoming team attrition and severe build delays to deliver a fully functional, scrutiny-compliant autonomous vehicle electrical system within strict national competition deadlines.',
+    approach: 'Personally built the relay-based power switching systems, integrated safety interlocks, routed custom harnesses, and conducted comprehensive hands-on workshop fabrication and testing.',
     systemArchitecture: [
       'Relay-Based Power Switching & Control',
       'Direct Sensor Wiring & Signal Conditioning',
@@ -113,6 +136,13 @@ export const projects: Project[] = [
     visualSignature: 'trajectory',
     imagePath: '/media/projects/baja/baja-2025/vehicle/CAR_best_2025.jpeg',
     secondaryImage: '/media/projects/baja/baja-2025/team/spider1.png',
+    featuredVideo: {
+      path: '/media/projects/baja/baja-2025/WhatsApp Video 2026-09-25 at 17.17.53.mp4',
+      poster: '/media/projects/baja/baja-2025/abaja2025bench.jpeg',
+      title: 'Powertrain & Bench Electrical Testing',
+      caption: 'Direct bench-level validation of the electric traction drive, motor controller, custom relay boards, and auxiliary 12V bus during shop development.',
+      badge: 'BENCH TESTING EVIDENCE'
+    },
     mediaGalleries: [
       {
         id: 'vehicle-2025',
@@ -129,8 +159,29 @@ export const projects: Project[] = [
       },
       {
         id: 'electrical-2025',
-        title: 'Electrical Systems',
+        title: 'Electrical & Bench Systems — Taking Ownership Evidence',
         items: [
+          {
+            path: '/media/projects/baja/baja-2025/abaja2025bench.jpeg',
+            type: 'image',
+            title: 'Motor Test Bench & Power Electronics Setup',
+            caption: 'Electric traction motor coupled to custom high-voltage orange motor cabling, industrial inverter box, 12V auxiliary battery, and hand-built relay switching boards during endurance bench tests.',
+            badge: 'TEST BENCH'
+          },
+          {
+            path: '/media/projects/baja/baja-2025/abaja2025.jpeg',
+            type: 'image',
+            title: 'Hand-Wired Protoboard Vehicle ECU & CAN Transceiver',
+            caption: 'Custom point-to-point protoboard ECU integrating SN65HVD230 CAN transceiver, DC-DC step-down buck converter, screw terminal blocks, and inductive proximity sensor conditioning.',
+            badge: 'CUSTOM ECU'
+          },
+          {
+            path: '/media/projects/baja/baja-2025/WhatsApp Image 2026-09-25 at 17.19.43.jpeg',
+            type: 'image',
+            title: 'Chassis Electrical Enclosure & Dual-Level Control Boxes',
+            caption: 'Integrated vehicle electrical enclosure with custom Equinox PCB, Arduino controller, high-current relay banks, and sealed IP-rated exterior distribution box with compute power brick.',
+            badge: 'VEHICLE HARNESS'
+          },
           {
             path: '/media/projects/baja/baja-2025/electrical/WhatsApp Image 2026-09-14 at 00.52.50.jpeg',
             type: 'image',
@@ -211,6 +262,12 @@ export const projects: Project[] = [
       'Technical Leadership',
       'Technical Documentation'
     ],
+    teamSystem: [
+      'Custom lightweight 4130 chromoly tubular spaceframe roll cage chassis designed by vehicle dynamics sub-team.',
+      'Double A-arm front suspension and custom rear trailing arm geometry.',
+      '48V electric traction powertrain and brushless DC motor integration.',
+      'NVIDIA Jetson Orin Nano perception computing platform running autonomous state estimators.'
+    ],
     personalContributions: [
       'Headed the Electrical & Electronics division as division lead, architecting the complete vehicle electrical system from ground up.',
       'Designed and assembled custom multi-layer ECU PCBs in KiCad with differential CAN transceivers, galvanic isolation, and MOSFET switching.',
@@ -263,6 +320,13 @@ export const projects: Project[] = [
     visualSignature: 'trajectory',
     imagePath: '/media/projects/baja/baja-2026/vehicle/WhatsApp Image 2026-09-14 at 00.14.44.jpeg',
     secondaryImage: '/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg',
+    featuredVideo: {
+      path: '/media/projects/baja/baja-2026/electrical/WhatsApp Video 2026-09-14 at 01.00.19(1).mp4',
+      poster: '/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg',
+      title: 'Steer-by-Wire & Electronic Brake Actuation Bench Test',
+      caption: 'Dynamic bench validation of Steer-by-Wire servo rack positioning and brake thresholding driven by custom ECU commands.',
+      badge: 'BENCH TEST TELEMETRY'
+    },
     mediaGalleries: [
       {
         id: 'vehicle-2026',
@@ -286,12 +350,47 @@ export const projects: Project[] = [
       },
       {
         id: 'ecu-pcb',
-        title: 'Custom ECU & PCB Design',
+        title: 'Custom ECU & PCB Design & Physical Assembly',
         items: [
+          {
+            path: '/media/projects/baja/baja-2026/WhatsApp Image 2026-09-25 at 23.39.45 (1).jpeg',
+            type: 'image',
+            title: 'KiCad Multi-Layer PCB Layout & Net Routing',
+            caption: 'Computer-aided design layout in KiCad PCB Editor featuring 3 ESP32 headers (DBU, SW/CAN, DEBUG), differential CAN bus traces, optocoupled switching networks, and peripheral terminal connectors.',
+            badge: 'KICAD DESIGN'
+          },
+          {
+            path: '/media/projects/baja/baja-2026/WhatsApp Image 2026-09-25 at 23.39.46.jpeg',
+            type: 'image',
+            title: 'Fabricated Bare PCB Inspection at Spaceframe Chassis',
+            caption: 'Inspecting the newly fabricated 2-layer JLCPCB Equinox board directly against the red tubular spaceframe roll cage chassis in the race workshop.',
+            badge: 'FABRICATION'
+          },
+          {
+            path: '/media/projects/baja/baja-2026/WhatsApp Image 2026-09-25 at 23.39.45.jpeg',
+            type: 'image',
+            title: 'SMD Soldering Bench & Assembly Workstation',
+            caption: 'Soldering bench setup with green custom PCB, hot air rework wand, solder paste syringe, precision tweezers, IPA flux wash, and SMD component trays.',
+            badge: 'PCB ASSEMBLY'
+          },
+          {
+            path: '/media/projects/baja/baja-2026/WhatsApp Image 2026-09-25 at 23.39.45 (2).jpeg',
+            type: 'image',
+            title: 'Active Bench Power-Up & Firmware Telemetry Flash',
+            caption: 'Fully assembled Backbox PCB running in the dark with green power rails, amber telemetry LEDs active, and dual ESP32 microcontrollers connected via USB debugging serial.',
+            badge: 'BENCH POWER-ON'
+          },
+          {
+            path: '/media/projects/baja/baja-2026/WhatsApp Image 2026-09-25 at 23.39.46 (1).jpeg',
+            type: 'image',
+            title: 'Chassis-Mounted Sealed Backbox & Brake-by-Wire Integration',
+            caption: 'Sealed IP enclosure bolted into chassis frame, populated with ECU, wire-labeled terminal blocks, conduit cable glands, and Deutsch connectors alongside hydraulic master cylinder.',
+            badge: 'IN-CHASSIS MOUNT'
+          },
           {
             path: '/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg',
             type: 'image',
-            title: 'Custom Equinox Back-Box ECU',
+            title: 'Custom Equinox Back-Box ECU Overview',
             caption: 'Multi-layer PCB with dual ESP32 sockets, optocoupled galvanic isolation, terminal blocks, and Deutsch connector pass-throughs mounted in sealed automotive enclosure.',
             badge: 'CUSTOM ECU'
           },
@@ -430,9 +529,9 @@ export const projects: Project[] = [
     index: '03',
     title: 'Hospital Service AMR',
     featured: true,
-    subtitle: 'Autonomous Indoor Clinical Transport Platform',
-    role: 'Autonomy & Embedded Systems Developer',
-    shortRole: 'Autonomy & Embedded Systems Lead',
+    subtitle: 'B.Tech Main Project · Autonomous Healthcare Service Robot',
+    role: 'B.Tech Main Project Lead · Autonomy & Embedded Systems',
+    shortRole: 'Main Project Lead — Autonomy & Embedded',
     keyAreas: ['Nav2 Autonomy', 'LiDAR SLAM', 'ESP32 Motor Control', 'Dynamic Obstacle Avoidance', 'IoT Telemetry'],
     skillsUsed: [
       'Autonomous Navigation & Nav2',
@@ -445,20 +544,22 @@ export const projects: Project[] = [
       'Python',
       'C++'
     ],
+    projectType: 'academic',
     personalContributions: [
-      'Architected autonomous mobile robot platform for indoor hospital corridors to assist staff and transport supplies.',
-      'Integrated 360-degree planar LiDAR SLAM with calibrated differential wheel encoders via an Extended Kalman Filter.',
-      'Tuned dynamic layered costmaps in Nav2 with custom inflation radiuses for safe pedestrian deceleration.'
+      'Architected and engineered the physical autonomous mobile robot platform as my B.Tech College Main Project at Saintgits College of Engineering.',
+      'Integrated 360-degree planar LiDAR SLAM with calibrated differential wheel encoders via an Extended Kalman Filter (robot_localization).',
+      'Tuned dynamic layered costmaps in Nav2 with custom inflation radiuses for safe pedestrian deceleration and doorway navigation.',
+      'Designed and assembled the physical robot chassis, differential drive base, ESP32 real-time motor controller, and power distribution.'
     ],
     engineeringDecisions: [
       'Used asymmetric exponential decay costmap inflation gradients to allow doorway passage without colliding with moving foot traffic.',
       'Implemented Extended Kalman Filter (robot_localization) fusing planar LiDAR scan matching with wheel odometry to eliminate rotational drift during turns.'
     ],
-    year: '2024 – 2025',
-    status: 'DEPLOYED TESTBED',
-    domain: 'Service Robotics / SLAM / Nav2 / IoT Fleet',
+    year: '2025 – 2026',
+    status: 'COLLEGE MAIN PROJECT',
+    domain: 'Service Robotics / SLAM / Nav2 / College Main Project',
     category: 'robotics',
-    summary: 'Engineered an autonomous mobile robot platform to reliably navigate indoor healthcare corridors, transporting medical payloads alongside staff and patients with zero collision tolerance.',
+    summary: 'Architected and developed a physical autonomous mobile robot platform as my B.Tech College Main Project at Saintgits College of Engineering, designed to reliably navigate indoor healthcare corridors, avoid pedestrians, and transport medical payloads.',
     challenge: 'Mitigating odometric drift in feature-sparse hospital hallways, handling reflective glass barriers invisible to standard planar sensors, and executing fluid deceleration around sudden pedestrian paths.',
     approach: 'Integrated 360-degree planar LiDAR SLAM with calibrated differential wheel encoders using an Extended Kalman Filter (EKF). Configured dynamic layered costmaps in Nav2 with custom inflation radiuses and automated recovery behaviors.',
     systemArchitecture: [
@@ -537,14 +638,28 @@ export const projects: Project[] = [
       },
       {
         id: 'amr-sensors',
-        title: 'Sensors & Perception Subsystems',
+        title: 'Sensors, Drive Base & Perception Subsystems',
         items: [
           {
             path: '/media/projects/Hospital/Lidar_hosp.jpeg',
             type: 'image',
-            title: 'Planar LiDAR Sensor & Power Subsystem',
-            caption: 'Close-up of the 360-degree 2D planar LiDAR scanner mounted with lithium battery pack and power distribution harness.',
+            title: 'Planar LiDAR Sensor & Standoff Mount',
+            caption: 'Close-up of the 360-degree 2D planar LiDAR scanner mounted with vibration dampening standoffs and DC power harness.',
             badge: 'LIDAR SENSOR'
+          },
+          {
+            path: '/media/projects/Hospital/WhatsApp Image 2026-09-25 at 23.39.44 (1).jpeg',
+            type: 'image',
+            title: 'Differential Drive Base Plate & Battery Bay',
+            caption: 'Aluminum treadplate base showing RPLIDAR mount, step-down DC buck converter, Foxin 12V VRLA sealed rechargeable battery, and high-traction rubber drive wheels.',
+            badge: 'DRIVE BASE'
+          },
+          {
+            path: '/media/projects/Hospital/WhatsApp Image 2026-09-25 at 23.39.44 (2).jpeg',
+            type: 'image',
+            title: 'Vertical Sensor & Compute Column',
+            caption: 'Front perspective showing the multi-tier aluminum extrusion column with top webcam, intermediate compute controller shelf, battery tray, and base LiDAR scanner.',
+            badge: 'SENSOR COLUMN'
           },
           {
             path: '/media/projects/Hospital/Hostpital.jpeg',
@@ -559,6 +674,19 @@ export const projects: Project[] = [
             title: 'Electronics & Power Integration',
             caption: 'Internal wiring, buck converters, and ESP32 motor controller integration in the workshop.',
             badge: 'INTERNAL ELECTRONICS'
+          }
+        ]
+      },
+      {
+        id: 'amr-team',
+        title: 'B.Tech Engineering Project Team',
+        items: [
+          {
+            path: '/media/projects/Hospital/WhatsApp Image 2026-09-25 at 23.39.44.jpeg',
+            type: 'image',
+            title: 'B.Tech Project Team with Physical AMR Prototype',
+            caption: 'Saintgits College of Engineering B.Tech Final Year project team standing in the department corridor with the completed physical AMR robot. Naveen Shaji George on the far right.',
+            badge: 'PROJECT TEAM'
           }
         ]
       }
@@ -623,6 +751,13 @@ export const projects: Project[] = [
     visualSignature: 'vision',
     imagePath: '/media/hackathons/intel-ai/IMG-20241127-WA0009.jpg',
     secondaryImage: '/media/hackathons/intel-ai/Intel .jpeg',
+    featuredVideo: {
+      path: '/media/hackathons/intel-ai/VID-20241127-WA0001.mp4',
+      poster: '/media/hackathons/intel-ai/IMG-20241127-WA0009.jpg',
+      title: 'Intel oneAPI Live Edge Video Intrusion Detection',
+      caption: 'Live inference session demonstrating real-time computer vision bounding boxes and automated intrusion alerting on Intel edge hardware.',
+      badge: 'INTEL AI LIVE DEMO'
+    },
     mediaGalleries: [
       {
         id: 'intel-hackathon',
@@ -762,6 +897,13 @@ export const projects: Project[] = [
     visualSignature: 'rail',
     imagePath: '/media/projects/railguard-ai/event/WhatsApp Image 2026-09-14 at 00.59.22(1).jpeg',
     secondaryImage: '/media/projects/railguard-ai/app/WhatsApp Image 2026-09-14 at 00.59.28.jpeg',
+    featuredVideo: {
+      path: '/media/projects/railguard-ai/hardware-testing/WhatsApp Video 2026-09-14 at 01.00.21.mp4',
+      poster: '/media/projects/railguard-ai/event/WhatsApp Image 2026-09-14 at 00.59.22(1).jpeg',
+      title: 'Autonomous Rail Defect Rover Track Traversal & Testing',
+      caption: 'Dynamic track testbed validation showing four-wheel drive rover traversing rail geometry with real-time anomaly detection.',
+      badge: 'DYNAMIC TRACK TEST'
+    },
     mediaGalleries: [
       {
         id: 'rover-testing',
@@ -865,158 +1007,14 @@ export const projects: Project[] = [
     ]
   },
   {
-    id: 'surgical-robotics',
-    index: '06',
-    title: 'CMR Versius Surgical Robotics Internship',
-    featured: true,
-    subtitle: 'Clinical Teleoperation & Bedside Robotic Articulation · Muthoot Hospitals',
-    role: 'Surgical Robotics Engineering Intern',
-    shortRole: 'Surgical Robotics Engineering Intern',
-    keyAreas: ['CMR Versius', 'Clinical Teleoperation', '7-DoF Kinematics', 'Sterile OR Protocols', 'Medical Robotics'],
-    skillsUsed: [
-      'Clinical Robotics Immersion',
-      'Rapid System Onboarding',
-      'System Integration Observation',
-      'Safety & Sterilization Standards'
-    ],
-    personalContributions: [
-      'Completed clinical engineering immersion at Muthoot Hospitals observing CMR Versius surgical robotic systems in active OR suites.',
-      'Studied multi-arm inverse kinematics, sterile drape instrument coupling, and 3D stereoscopic surgeon console teleoperation.',
-      'Transferred clinical fail-safe and patient-proximity safety paradigms into the Hospital Service AMR design.'
-    ],
-    engineeringDecisions: [
-      'Documented and verified dual-channel foot pedal safety cutoffs and optical sensor interlocks preventing accidental instrument drift.',
-      'Analyzed master-slave latency compensation algorithms for high-dexterity surgical micro-suturing.'
-    ],
-    year: '2024 – 2025',
-    status: 'CLINICAL DEPLOYMENT TESTBED',
-    domain: 'Medical Robotics / Teleoperation / Kinematics / Clinical Validation',
-    category: 'robotics',
-    summary: 'Engaged in clinical engineering evaluation, master-slave manipulator teleoperation, and bedside robotic arm calibration of the advanced CMR Versius next-generation surgical robotic platform at Muthoot Hospitals.',
-    challenge: 'Achieving sub-millimeter instrument placement accuracy, zero-backlash joint kinematics, and ergonomic master manipulator feedback within sterile operating room constraints.',
-    approach: 'Analyzed closed-loop teleoperation joint coordinate transformations, verified multi-DoF wrist articulation safety interlocks, and evaluated 3D stereoscopic surgeon console feedback during clinical surgical simulations.',
-    systemArchitecture: [
-      'Multi-Arm Modular Bedside Robotic Units',
-      'Open 3D High-Definition Ergonomic Surgeon Console',
-      'Multi-DoF Articulated Master Teleoperation Joysticks',
-      'Sub-Millimeter Instrument Joint Actuation Encoders',
-      'Optical Safety & Dual-Channel Foot Pedal Interlocks'
-    ],
-    softwareStack: ['Teleoperation Kinematics', 'Closed-Loop Joint Control', 'Safety Interlock Firmware', 'Stereoscopic 3D Vision'],
-    hardwareStack: ['CMR Versius Robotic Arms', '3D HD Surgeon Console', 'Master Controllers', 'Endowrist Surgical Instruments', 'Sterile Drape Adapters'],
-    keyResults: [
-      'Mastered intuitive 7-DoF teleoperation manipulation on the Versius surgical console',
-      'Documented and verified sterile drape robotic arm docking protocols in active hospital OR suites',
-      'Completed comprehensive clinical robotics orientation in operating theatre procedures'
-    ],
-    failuresAndIterations: [
-      {
-        issue: 'Master manipulator tracking lag during rapid micro-suturing wrist rotations.',
-        rootCause: 'Optical joint encoder packet queueing over high-traffic internal controller CAN links.',
-        iteration: 'Verified priority-arbitrated CAN frame prioritization for manipulator end-effector state packets.'
-      }
-    ],
-    githubUrl: 'https://github.com/buddytex',
-    visualSignature: 'surgical',
-    imagePath: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35.jpeg',
-    secondaryImage: '/media/internships/surgical-robotics/hospital-experience/WhatsApp Image 2026-09-14 at 01.05.36(1).jpeg',
-    mediaGalleries: [
-      {
-        id: 'robot-hardware',
-        title: 'CMR Versius Robotic System & Surgeon Console',
-        items: [
-          {
-            path: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Video 2026-09-14 at 01.05.33.mp4',
-            type: 'video',
-            title: 'Master Manipulator Teleoperation Joystick Operation',
-            caption: 'Naveen operating the CMR Versius 3D console master joysticks demonstrating fine articulation control.',
-            badge: 'TELEOPERATION DEMO',
-            poster: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35(1).jpeg'
-          },
-          {
-            path: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Video 2026-09-14 at 01.05.34.mp4',
-            type: 'video',
-            title: 'Surgeon Console Dexterity & Multi-DoF Articulation Test',
-            caption: 'Testing tremor-filtered fine manipulation and robotic wrist articulation.',
-            badge: 'WRIST DEXTERITY',
-            poster: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35(1).jpeg'
-          },
-          {
-            path: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35.jpeg',
-            type: 'image',
-            title: 'CMR Versius Bedside Robotic Arm Units',
-            caption: 'Modular bedside robotic units configured with multi-axis articulated surgical instruments.',
-            badge: 'BEDSIDE ARMS'
-          },
-          {
-            path: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35(1).jpeg',
-            type: 'image',
-            title: 'Versius 3D Stereoscopic Surgeon Console',
-            caption: 'Open ergonomic surgeon console featuring 3D polarized display and dual master grip controllers.',
-            badge: '3D CONSOLE'
-          },
-          {
-            path: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35(2).jpeg',
-            type: 'image',
-            title: 'Instrument Joint Mechanics & Sterilization Coupling',
-            caption: 'Precision mechanical coupling and sterile drape interface for laparoscopic robotic tools.',
-            badge: 'JOINT MECHANICS'
-          },
-          {
-            path: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.36.jpeg',
-            type: 'image',
-            title: 'Clinical Operating Theatre System Alignment',
-            caption: 'Full multi-arm cart positioning around the surgical operating table in Muthoot Hospitals.',
-            badge: 'OR SYSTEM SETUP'
-          }
-        ]
-      },
-      {
-        id: 'clinical-experience',
-        title: 'Clinical Hospital Operating Theatre Immersion',
-        items: [
-          {
-            path: '/media/internships/surgical-robotics/hospital-experience/WhatsApp Image 2026-09-14 at 01.05.36(1).jpeg',
-            type: 'image',
-            title: 'Naveen Shaji George in Surgical Operating Theatre',
-            caption: 'Wearing surgical scrubs, cap, and mask in the sterile operating suite at Muthoot Hospitals.',
-            badge: 'CLINICAL SUITE'
-          },
-          {
-            path: '/media/internships/surgical-robotics/hospital-experience/WhatsApp Image 2026-09-14 at 01.05.37.jpeg',
-            type: 'image',
-            title: 'Pre-Operative Robotics Protocol Review',
-            caption: 'Participating in sterile operating protocols and robotic surgery checklist procedures.',
-            badge: 'STERILE PROTOCOL'
-          },
-          {
-            path: '/media/internships/surgical-robotics/hospital-experience/WhatsApp Image 2026-09-14 at 01.05.38.jpeg',
-            type: 'image',
-            title: 'Robotic Surgery Clinical Observation',
-            caption: 'Observing surgical procedure workflow and robotic instrument tool changes under sterile conditions.',
-            badge: 'OR OBSERVATION'
-          },
-          {
-            path: '/media/internships/surgical-robotics/hospital-experience/WhatsApp Video 2026-09-14 at 01.05.36.mp4',
-            type: 'video',
-            title: 'Hospital Surgical Wing Corridor Walkthrough',
-            caption: 'Clinical environment walkthrough between robotic surgical theatre suites.',
-            badge: 'CLINICAL WING',
-            poster: '/media/internships/surgical-robotics/hospital-experience/WhatsApp Image 2026-09-14 at 01.05.36(1).jpeg'
-          }
-        ]
-      }
-    ]
-  },
-  {
     id: 'swarm-robotics',
-    index: '07',
-    title: 'HERO Common Swarm Robotics Platform',
+    index: '06',
+    title: 'Swarm Robotics Platform',
     featured: true,
-    subtitle: 'ROS-Based Distributed Swarm Framework & Experimental Study · VeRLab HeRo',
-    role: 'Swarm Systems Architecture & Simulation Research',
-    shortRole: 'Swarm Systems & Simulation Researcher',
-    keyAreas: ['Multi-Agent Consensus', 'ROS 2 Swarm Arena', 'Gazebo 16-Agent Simulation', 'HeRo Open-Source', 'Two-Robot Master-Slave'],
+    subtitle: 'B.Tech Mini Project · Decentralized Two-Robot Coordination & Swarm Study',
+    role: 'B.Tech Mini Project Lead · Swarm Systems & Simulation',
+    shortRole: 'Mini Project Lead — Swarm Systems',
+    keyAreas: ['Two-Robot Master-Slave', 'Multi-Agent Consensus', 'ROS 2 Swarm Arena', 'Gazebo 16-Agent Simulation', 'Peer-to-Peer TCP/IP'],
     skillsUsed: [
       'Swarm Robotics',
       'ROS 2 (Humble)',
@@ -1026,20 +1024,22 @@ export const projects: Project[] = [
       'C++',
       'Python'
     ],
+    projectType: 'academic',
     personalContributions: [
-      'Benchmarked open-source ROS-based HeRo Common framework (VeRLab / UFMG) across 16-agent Gazebo simulation arenas.',
-      'Designed a two-robot master-slave coordination system using TCP/HTTP sockets for B.Tech minor project.',
-      'Analyzed decentralized flocking dynamics, obstacle avoidance consensus, and modular micro-robot PCB hardware.'
+      'Designed and built the physical two-robot master-slave swarm coordination platform for my B.Tech College Mini Project at Saintgits College of Engineering.',
+      'Implemented peer-to-peer TCP/HTTP wireless communication sockets between ESP32 microcontrollers for synchronized trajectory following and collision avoidance.',
+      'Benchmarked 16-agent distributed swarm simulations in Gazebo evaluating decentralized consensus and virtual attractor flocking dynamics.',
+      'Analyzed modular micro-robot PCB hardware architectures and sensory ring geometries for scalable swarm agents.'
     ],
     engineeringDecisions: [
       'Grouped high-frequency infrared proximity raycasters into radial sector collision cones at 20 Hz to sustain 60 FPS in Gazebo physics.',
       'Employed virtual attractor potential fields to guide decentralized agent clusters around irregular arena obstacles.'
     ],
-    year: '2024 – 2025',
-    status: 'VERIFIED REFERENCE STUDY',
-    domain: 'Swarm Robotics / ROS / VeRLab HeRo / Multi-Agent Simulation',
+    year: '2024',
+    status: 'COLLEGE MINI PROJECT',
+    domain: 'Swarm Robotics / Decentralized Coordination / Multi-Agent Simulation',
     category: 'robotics',
-    summary: 'Conducted architectural analysis, multi-agent Gazebo simulation benchmarking, and modular hardware PCB node evaluation based on the open-source HeRo Common swarm robotics framework developed by VeRLab / UFMG.',
+    summary: 'Developed a decentralized two-robot swarm coordination system as my B.Tech College Mini Project at Saintgits College of Engineering, combined with multi-agent Gazebo simulation studies and architectural analysis of the open-source HeRo Common swarm robotics framework.',
     challenge: 'Understanding scalable multi-robot consensus, peer-to-peer decentralized communication constraints, and coordinate frame alignment across 16+ simultaneous autonomous agents without centralized bottleneck controllers.',
     approach: 'Studied the open-source ROS-based HeRo framework, set up Gazebo multi-agent simulation arenas with custom proximity-sensing cones, benchmarked virtual attractor flocking dynamics, and analyzed the octagonal modular micro-robot PCB architecture.',
     systemArchitecture: [
@@ -1120,50 +1120,103 @@ export const projects: Project[] = [
   },
   {
     id: 'balancing-robot',
-    index: '08',
-    title: 'Two-Wheeled Inverted Pendulum Robot',
-    featured: false,
-    subtitle: 'High-Frequency Closed-Loop Postural Stabilization',
-    role: 'Embedded Control Systems Engineer',
+    index: '07',
+    title: 'Two-Wheeled Self-Balancing Robot (Revathon 2.0)',
+    featured: true,
+    subtitle: 'High-Frequency Closed-Loop Postural Stabilization · REV-A-THON 2.0 Hackathon',
+    role: 'Embedded Control & Mechatronics Systems Engineer',
     shortRole: 'Embedded Control Systems Engineer',
-    keyAreas: ['PID Inverted Pendulum', 'IMU Complementary Filter', 'Closed-Loop Balance', 'DC Steppers'],
+    keyAreas: ['PID Inverted Pendulum', 'IMU Complementary Filter', 'Closed-Loop Balance', 'Rapid Hackathon Prototyping'],
     skillsUsed: ['Robot Kinematics & Motion Planning', 'Microcontrollers (Arduino/STM32)', 'Hands-on Prototyping', 'C++', 'Electronics Debugging'],
-    personalContributions: ['Engineered two-wheeled self-stabilizing inverted pendulum robot executing 200 Hz PID tilt angle regulation.'],
-    engineeringDecisions: ['Designed 3D-printed TPU dampening grommets and 30 Hz software low-pass Butterworth filter on raw accelerometer data.'],
+    imagePath: '/media/hackathons/Revathon2.0/WhatsApp Image 2026-09-25 at 23.39.43 (2).jpeg',
+    secondaryImage: '/media/hackathons/Revathon2.0/WhatsApp Image 2026-09-25 at 23.39.42 (2).jpeg',
+    personalContributions: [
+      'Engineered two-wheeled self-stabilizing inverted pendulum testbed executing 200 Hz PID tilt angle regulation during 24-hour REV-A-THON 2.0 sprint.',
+      'Implemented discrete complementary and Kalman state estimation fusing 6-DoF MPU6050 accelerometer and gyroscope streams.',
+      'Tuned cascaded dual-loop PID controllers (inner angle posture stabilizer and outer velocity/position regulator) to eliminate steady-state creep.',
+      'Designed and assembled 3-tier modular physical chassis integrating high-current motor drivers, logic stack, and low-noise isolated power distribution.'
+    ],
+    engineeringDecisions: [
+      'Engineered dampening mounts and implemented a 30 Hz software low-pass Butterworth filter on raw accelerometer data to reject motor vibration noise.',
+      'Configured hardware timer interrupts for motor actuation pulses, ensuring deterministic execution with sub-5ms cycle times.'
+    ],
     year: '2024',
-    status: 'DEPLOYED BENCH TESTBED',
-    domain: 'Control Theory / Embedded Systems / ESP8266 / Kalman Filter',
-    category: 'embedded',
-    summary: 'Engineered a self-stabilizing dual-wheeled inverted pendulum robot executing 200 Hz PID tilt angle regulation and dynamic disturbance recovery via complementary and Kalman sensor fusion.',
-    challenge: 'Overcoming sensor drift and accelerometer high-frequency motor vibration noise while keeping firmware control loop cycle times strictly under 5ms.',
-    approach: 'Fused MPU6050 6-DoF accelerometer and gyroscope streams through an optimized Kalman filter on an ESP8266 microcontroller, commanding high-torque stepper drivers via hardware timer interrupts.',
+    status: 'DEPLOYED HACKATHON PROTOTYPE',
+    domain: 'Control Theory / Inverted Pendulum / IMU Fusion / REV-A-THON 2.0',
+    category: 'robotics',
+    summary: 'Engineered a physical self-stabilizing dual-wheeled inverted pendulum robot during the intensive 24-hour REV-A-THON 2.0 robotics hackathon, executing 200 Hz PID tilt angle regulation and dynamic disturbance recovery via complementary and Kalman sensor fusion.',
+    challenge: 'Overcoming sensor drift and accelerometer high-frequency motor vibration noise during an intense 24-hour hackathon build, keeping firmware control loop cycle times strictly under 5ms.',
+    approach: 'Fused MPU6050 6-DoF accelerometer and gyroscope streams through an optimized Kalman filter, commanding dual DC geared motors via high-current driver bridges and hardware timer interrupts.',
     systemArchitecture: [
       '6-DoF MPU6050 Inertial Measurement Unit (I2C 400 kHz)',
       'Discrete-Time Kalman Filter State Estimator',
       'Dual-Loop Cascaded PID Velocity & Posture Regulator',
       'Hardware Timer Driven Microstepping Motor Controller',
-      'Web-Based Real-Time PID Gain Tuning Interface'
+      '3-Tier Laser-Cut / 3D-Printed Modular Vibration-Isolated Chassis'
     ],
-    softwareStack: ['Embedded C/C++', 'FreeRTOS', 'Kalman Filter', 'WebSockets Telemetry'],
-    hardwareStack: ['ESP8266 Microcontroller', 'MPU6050 6-DoF IMU', 'A4988 Stepper Drivers', 'NEMA 17 Steppers', 'Custom Power Distribution PCB'],
+    softwareStack: ['Embedded C/C++', 'FreeRTOS', 'Kalman Filter', 'Arduino C++'],
+    hardwareStack: ['Arduino / ESP Controller', 'MPU6050 6-DoF IMU', 'High-Current Motor Drivers', 'DC Geared Motors with Encoders', 'Custom Power Distribution Rail'],
     keyResults: [
       'Continuous upright balance maintenance with less than ±0.8° angular wobble',
       'Sub-150ms dynamic impulse recovery from external mechanical push disturbances',
-      'Zero cumulative drift over extended stationary balancing trials'
+      'Fully operational hardware prototype assembled, programmed, and demonstrated within 24-hour sprint'
     ],
     failuresAndIterations: [
       {
         issue: 'Structural chassis resonance at specific motor RPMs corrupting accelerometer Z-axis readings.',
-        rootCause: 'Rigid direct coupling of stepper mounts transmitted step vibration directly into the IMU substrate.',
-        iteration: 'Designed 3D-printed TPU dampening grommets and implemented a 30 Hz software low-pass Butterworth filter on raw accelerometer data.'
+        rootCause: 'Rigid direct coupling of motor mounts transmitted step vibration directly into the IMU substrate.',
+        iteration: 'Engineered dampening grommets and implemented a 30 Hz software low-pass Butterworth filter on raw accelerometer data.'
       }
     ],
     githubUrl: 'https://github.com/buddytex',
-    visualSignature: 'balance'
+    visualSignature: 'balance',
+    mediaGalleries: [
+      {
+        id: 'revathon-hardware',
+        title: 'Revathon 2.0 Physical Hardware & Testing',
+        items: [
+          {
+            path: '/media/hackathons/Revathon2.0/WhatsApp Image 2026-09-25 at 23.39.43 (2).jpeg',
+            type: 'image',
+            title: 'Two-Wheeled Self-Balancing Robot Testbed',
+            caption: '3-tier vertical stack prototype engineered with high-current motor drivers, logic compute layer, isolated battery bay, and 6-DoF IMU.',
+            badge: 'HARDWARE PLATFORM'
+          },
+          {
+            path: '/media/hackathons/Revathon2.0/WhatsApp Image 2026-09-25 at 23.39.42 (2).jpeg',
+            type: 'image',
+            title: 'In-Hand Closed-Loop Postural Stabilization Tuning',
+            caption: 'Naveen performing live in-hand verification of high-rate cascaded PID equilibrium response and external impulse disturbance rejection.',
+            badge: 'CONTROL VERIFICATION'
+          },
+          {
+            path: '/media/hackathons/Revathon2.0/WhatsApp Image 2026-09-25 at 23.39.43.jpeg',
+            type: 'image',
+            title: 'Chassis Assembly & Structural Wiring Harness Inspection',
+            caption: 'Precision mechanical assembly and low-noise signal wiring inspection during the 24-hour REV-A-THON 2.0 sprint.',
+            badge: 'PHYSICAL ASSEMBLY'
+          },
+          {
+            path: '/media/hackathons/Revathon2.0/WhatsApp Image 2026-09-25 at 23.39.43 (1).jpeg',
+            type: 'image',
+            title: 'Firmware Calibration & Real-Time IMU Telemetry Bench',
+            caption: 'Calibrating MPU6050 accelerometer offset bias and tuning complementary filter coefficients via serial telemetry.',
+            badge: 'FIRMWARE CALIBRATION'
+          },
+          {
+            path: '/media/hackathons/Revathon2.0/WhatsApp Image 2026-09-25 at 23.39.42 (1).jpeg',
+            type: 'image',
+            title: 'REV-A-THON 2.0 Rapid Prototyping Engineering Workbench',
+            caption: 'Full hardware development station with multimeters, logic analyzers, microcontroller breakout boards, and tools.',
+            badge: 'HACKATHON DEPLOYMENT'
+          }
+        ]
+      }
+    ]
   },
   {
     id: 'agv-sensor-fusion',
-    index: '09',
+    index: '08',
     title: 'AGV Industrial Odometry & Sensor Fusion',
     featured: false,
     subtitle: 'Multi-Rate Pose Estimation for Industrial Guided Vehicles',
@@ -1171,8 +1224,16 @@ export const projects: Project[] = [
     shortRole: 'Robotics Software & State Estimation Engineer',
     keyAreas: ['Extended Kalman Filter', 'robot_localization', 'Planar Laser Odometry', 'Industrial AGV'],
     skillsUsed: ['Sensor Integration', 'SLAM & Localization', 'Embedded C/C++', 'Hardware Protocols'],
-    personalContributions: ['Developed industrial AGV pose estimation package combining wheel encoders, high-rate IMU, and planar laser odometry through robot_localization.'],
-    engineeringDecisions: ['Implemented zero-velocity update (ZUPT) detection thresholding to lock orientation covariance during idle periods.'],
+    personalContributions: [
+      'Developed industrial AGV multi-sensor state estimation package integrating optical wheel encoders, 6-axis IMU, and 2D planar LiDAR.',
+      'Configured robot_localization dual-EKF pipeline with non-linear kinematic motion model and dynamic outlier rejection gates.',
+      'Implemented Zero-Velocity Update (ZUPT) detection to lock orientation covariance during vehicle idle and docking phases.',
+      'Validated tf2 coordinate transform tree continuity (odom -> base_link -> laser_frame) under simulated high-slip conditions.'
+    ],
+    engineeringDecisions: [
+      'Implemented zero-velocity update (ZUPT) detection thresholding to lock orientation covariance during idle periods and prevent gyroscope bias drift.',
+      'Tuned measurement covariance matrices dynamically based on linear velocity thresholds to reject wheel slip during acceleration.'
+    ],
     year: '2024 – 2025',
     status: 'ACTIVE BENCHMARK',
     domain: 'Sensor Fusion / EKF / ROS 2 / Industrial Automation',
@@ -1202,11 +1263,26 @@ export const projects: Project[] = [
       }
     ],
     githubUrl: 'https://github.com/buddytex',
-    visualSignature: 'agv'
+    visualSignature: 'agv',
+    mediaGalleries: [
+      {
+        id: 'agv-state-estimation',
+        title: 'Multi-Rate State Estimation Architecture',
+        items: [
+          {
+            path: '/images/abaja-sbw-architecture.png',
+            type: 'image',
+            title: 'Industrial Sensor Bus & EKF Estimator Topology',
+            caption: 'Multi-rate sensor bus topology bridging wheel odometry, IMU high-rate angular velocity, and planar laser scan matching.',
+            badge: 'EKF TOPOLOGY'
+          }
+        ]
+      }
+    ]
   },
   {
     id: 'lane-keep-assist',
-    index: '10',
+    index: '09',
     title: 'Autonomous Lane-Keep Assist (LKA) System',
     featured: false,
     subtitle: 'Real-Time Polynomial Lane Boundary Tracking & Steering Feedforward',
@@ -1214,8 +1290,16 @@ export const projects: Project[] = [
     shortRole: 'Autonomous Vehicle Algorithms Engineer',
     keyAreas: ['Computer Vision ADAS', 'Sliding Window Polyfit', 'Canny / Hough Transform', 'Steering Feedforward'],
     skillsUsed: ['OpenCV', 'Python', 'Steering Geometry', 'Drive-by-Wire (TBW / SBW / BBW)'],
-    personalContributions: ['Engineered autonomous vision guidance pipeline applying inverse perspective bird’s-eye mapping and 2nd-degree polynomial regression to compute road curvature.'],
-    engineeringDecisions: ['Integrated Kalman-smoothed polynomial prior predicting next-frame lane coefficients during dashed line mark dropouts.'],
+    personalContributions: [
+      'Engineered autonomous computer vision lane detection pipeline applying inverse perspective bird’s-eye mapping and Sobel edge filters.',
+      'Implemented adaptive sliding-window histogram tracking with 2nd-degree polynomial regression for real-time road curvature.',
+      'Calculated cross-track error (CTE) and heading error feedforward angles mapped directly to steer-by-wire servo targets.',
+      'Integrated historical frame-to-frame polynomial smoothing to prevent steering oscillation during temporary dashed line dropouts.'
+    ],
+    engineeringDecisions: [
+      'Integrated Kalman-smoothed polynomial prior predicting next-frame lane coefficients during dashed line mark dropouts.',
+      'Mapped cross-track error feedforward angle into CAN 2.0B steering gateway with rate-limiting filters to prevent vehicle instability.'
+    ],
     year: '2025',
     status: 'VALIDATED PIPELINE',
     domain: 'Computer Vision / Autonomous Steering / Polynomial Fitting / Python',
@@ -1246,6 +1330,102 @@ export const projects: Project[] = [
     ],
     githubUrl: 'https://github.com/buddytex',
     visualSignature: 'lane',
-    imagePath: '/images/abaja-lane-pipeline.png'
+    imagePath: '/images/abaja-lane-pipeline.png',
+    mediaGalleries: [
+      {
+        id: 'lane-detection-pipeline',
+        title: 'Computer Vision Perception Pipeline',
+        items: [
+          {
+            path: '/images/abaja-lane-pipeline.png',
+            type: 'image',
+            title: 'Polynomial Lane Boundary Detection Pipeline',
+            caption: 'Sliding window histogram analysis, bird’s-eye inverse perspective mapping, and polynomial curve fitting.',
+            badge: 'VISION PIPELINE'
+          },
+          {
+            path: '/images/abaja-sbw-architecture.png',
+            type: 'image',
+            title: 'Steer-by-Wire Feedforward Command Architecture',
+            caption: 'Cross-track error feedforward angle calculation mapped to CAN bus steer-by-wire actuator controller.',
+            badge: 'STEER GATEWAY'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'waste-segregator',
+    index: '10',
+    title: 'Automated Waste Segregation Robot',
+    featured: false,
+    subtitle: 'Sensor Fusion · Inductive / Capacitive / Ultrasonic · Rotary Diverter',
+    role: 'Mechatronics & Embedded Systems Developer',
+    shortRole: 'Mechatronics & Embedded Systems Developer',
+    keyAreas: ['Sensor Fusion', 'Embedded Microcontrollers', 'PWM Servo Control', 'Physical Prototyping'],
+    skillsUsed: ['Embedded C/C++', 'Hands-on Prototyping', 'Power Electronics & Galvanic Isolation', 'Electronics Debugging & PCB Testing'],
+    personalContributions: [
+      'Designed and assembled physical automated waste segregation bin with multi-stage sensor detection aperture.',
+      'Implemented sensor fusion logic combining ultrasonic proximity distance, inductive metallic sensing, and capacitive moisture probes.',
+      'Calibrated dual-axis servo motor diverter mechanism to dynamically classify and route waste into segregated containment bays.'
+    ],
+    engineeringDecisions: [
+      'Configured sequential sensor polling window to ensure metal objects trigger inductive thresholding prior to dielectric moisture measurement.',
+      'Added hardware debounce and optical isolation to prevent servo EMF kickback from resetting the logic microcontroller.'
+    ],
+    year: '2024',
+    status: 'HARDWARE PROTOTYPE',
+    domain: 'Mechatronics / Sensor Fusion / Embedded C / Prototyping',
+    category: 'robotics',
+    summary: 'Developed an automated benchtop waste segregation robot that leverages multi-sensor fusion (ultrasonic distance, inductive metal detection, and capacitive moisture sensing) with a servo-actuated rotary chute to autonomously identify and separate dry recyclable, metallic, and wet organic waste streams.',
+    challenge: 'Discriminating between metallic, dry recyclable, and high-moisture organic waste in real time while preventing mechanical jams in the rotary distribution chute.',
+    approach: 'Engineered a cascading sensor evaluation aperture. When an object enters the chute, ultrasonic sensors trigger evaluation; inductive sensors check for ferromagnetism; capacitive probes measure moisture; and high-torque PWM servos index the collection flap to the target compartment.',
+    systemArchitecture: [
+      'Entrance Detection & Dimension Gating (Ultrasonic Rangefinder)',
+      'Metallic Discrimination Stage (Inductive Proximity Sensor)',
+      'Organic / Moisture Detection Stage (Capacitive Soil Probe)',
+      'Microcontroller Decision Kernel (Embedded C State Machine)',
+      'High-Torque PWM Servo Flap Actuator & Chute Diverter'
+    ],
+    softwareStack: ['Embedded C', 'Arduino Core', 'State Machine Logic', 'Hardware Debounce Algorithms'],
+    hardwareStack: ['Ultrasonic Sensor', 'Inductive Proximity Sensor', 'Capacitive Moisture Sensor', 'High-Torque Servo Motor', 'Microcontroller Logic Board', 'Regulated 5V/12V Power Supply'],
+    keyResults: [
+      'Reliable 3-stream classification across dry paper, aluminum cans, and wet organic food waste',
+      'Sub-800ms end-to-end detection and mechanical deflection cycle time',
+      'Zero microcontroller resets achieved via inductive kickback suppression circuitry'
+    ],
+    failuresAndIterations: [
+      {
+        issue: 'Servo motor rotation induced electrical noise spikes resetting the microcontroller.',
+        rootCause: 'Shared 5V power bus dropped voltage during high inrush current servo activation.',
+        iteration: 'Separated servo power rail with a dedicated regulator and bulk capacitor filtering, isolating logic from actuator EMF.'
+      }
+    ],
+    githubUrl: 'https://github.com/buddytex',
+    visualSignature: 'mechatronics',
+    imagePath: '/media/projects/Waste Segregation robot/waste_robot_poster.jpg',
+    featuredVideo: {
+      path: '/media/projects/Waste Segregation robot/WhatsApp Video 2026-09-25 at 23.39.41.mp4',
+      poster: '/media/projects/Waste Segregation robot/waste_robot_poster.jpg',
+      title: 'Automated Waste Segregation Mechanism Demo',
+      caption: 'Physical demonstration of sensor aperture detecting waste item, triggering inductive and moisture sensing, and servo-rotating the diverter chute.',
+      badge: 'MECHANISM VIDEO'
+    },
+    mediaGalleries: [
+      {
+        id: 'waste-robot-testing',
+        title: 'Prototype Mechanism & Sensor Aperture',
+        items: [
+          {
+            path: '/media/projects/Waste Segregation robot/WhatsApp Video 2026-09-25 at 23.39.41.mp4',
+            poster: '/media/projects/Waste Segregation robot/waste_robot_poster.jpg',
+            type: 'video',
+            title: 'Automated Waste Segregation Mechanism in Action',
+            caption: 'Video demonstrating the multi-sensor detection aperture, ultrasonic proximity gating, and servo diverter mechanism classifying waste.',
+            badge: 'PROTOTYPE DEMO'
+          }
+        ]
+      }
+    ]
   }
 ];

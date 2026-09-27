@@ -30,15 +30,19 @@ export function initProjectCardsAnimation(container: HTMLElement = document.getE
     return null;
   }
 
-  // Initial state
-  cards.forEach((c) => {
-    c.style.opacity = '0';
-    c.style.transform = 'translateY(22px)';
-  });
-
   let animInstance: any = null;
+  let hasRevealed = false;
 
   function playCardsReveal() {
+    if (hasRevealed) {
+      cards.forEach((c) => {
+        c.classList.add('is-revealed');
+        c.style.opacity = '1';
+        c.style.transform = 'none';
+      });
+      return;
+    }
+    hasRevealed = true;
     if (animInstance) animInstance.revert();
     animInstance = animate(cards, {
       opacity: [0, 1],
@@ -56,6 +60,30 @@ export function initProjectCardsAnimation(container: HTMLElement = document.getE
     });
   }
 
+  // Check initial viewport bounds
+  const rect = container.getBoundingClientRect();
+  const initiallyInView = rect.top < window.innerHeight * 0.90 && rect.bottom > 0;
+
+  if (initiallyInView) {
+    playCardsReveal();
+  } else {
+    cards.forEach((c) => {
+      c.style.opacity = '0';
+      c.style.transform = 'translateY(22px)';
+    });
+  }
+
+  // Native IntersectionObserver to ensure cards reveal during all scroll modes
+  let io: IntersectionObserver | null = null;
+  if (typeof IntersectionObserver !== 'undefined') {
+    io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        playCardsReveal();
+      }
+    }, { rootMargin: '60px 0px', threshold: 0.05 });
+    io.observe(container);
+  }
+
   const observer = onScroll({
     target: container,
     enter: 'top 82%',
@@ -69,6 +97,10 @@ export function initProjectCardsAnimation(container: HTMLElement = document.getE
   });
 
   return () => {
+    if (io) {
+      try { io.disconnect(); } catch {}
+      io = null;
+    }
     try {
       observer.revert();
     } catch {}
@@ -145,37 +177,76 @@ export function initProjectDetailAnimation(): (() => void) | null {
     }, 100);
   }
 
-  // Scroll reveals for dossier blocks
+  // Scroll reveals for dossier blocks: Viewport-aware with guaranteed fallback
   const observers: any[] = [];
-  sections.forEach((sec) => {
-    sec.style.opacity = '0';
-    sec.style.transform = 'translateY(18px)';
+  const ioList: IntersectionObserver[] = [];
 
-    const obs = onScroll({
-      target: sec,
-      enter: 'top 90%',
-      onEnter: () => {
-        animate(sec, {
-          opacity: [0, 1],
-          translateY: [18, 0],
-          duration: MOTION_TOKENS.duration.normal,
-          ease: MOTION_TOKENS.easing.technical,
-          onComplete: () => {
-            sec.style.opacity = '1';
-            sec.style.transform = 'none';
-          },
-        });
-      },
-    });
-    observers.push(obs);
+  sections.forEach((sec) => {
+    // If element is already in viewport or near top on load, ensure it is immediately visible
+    const rect = sec.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.9) {
+      sec.style.opacity = '1';
+      sec.style.transform = 'none';
+      return;
+    }
+
+    let revealed = false;
+    const reveal = () => {
+      if (revealed) return;
+      revealed = true;
+      animate(sec, {
+        opacity: [0.2, 1],
+        translateY: [16, 0],
+        duration: MOTION_TOKENS.duration.fast,
+        ease: MOTION_TOKENS.easing.technical,
+        onComplete: () => {
+          sec.style.opacity = '1';
+          sec.style.transform = 'none';
+        },
+      });
+    };
+
+    // If below fold, set initial soft state (never fully invisible)
+    sec.style.opacity = '0.2';
+    sec.style.transform = 'translateY(16px)';
+
+    // Robust native IntersectionObserver trigger
+    if (typeof IntersectionObserver !== 'undefined') {
+      const io = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting || entry.boundingClientRect.top < window.innerHeight) {
+          reveal();
+          io.disconnect();
+        }
+      }, { rootMargin: '150px 0px 150px 0px', threshold: 0 });
+      io.observe(sec);
+      ioList.push(io);
+    } else {
+      reveal();
+    }
   });
 
+  // Safety fallback: after 300ms, guarantee all sections are 100% visible regardless of scroll state
+  const safetyTimer = setTimeout(() => {
+    sections.forEach((sec) => {
+      sec.style.opacity = '1';
+      sec.style.transform = 'none';
+    });
+  }, 300);
+
   return () => {
+    clearTimeout(safetyTimer);
     tl.revert();
+    ioList.forEach((io) => {
+      try { io.disconnect(); } catch {}
+    });
     observers.forEach((obs) => {
       try {
         obs.revert();
       } catch {}
+    });
+    sections.forEach((sec) => {
+      sec.style.opacity = '';
+      sec.style.transform = '';
     });
   };
 }

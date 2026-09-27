@@ -11,8 +11,16 @@ export default defineConfig({
   integrations: [react()],
   vite: {
     optimizeDeps: {
-      noDiscovery: true,
-      include: [],
+      include: [
+        'react',
+        'react/jsx-runtime',
+        'react-dom',
+        'react-dom/client',
+        '@react-three/fiber',
+        '@react-three/drei',
+        'three',
+        'scheduler',
+      ],
     },
   },
 });
