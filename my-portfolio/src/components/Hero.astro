@@ -4,6 +4,7 @@
 // Real Three.js WebGL 3D mechanical assembly behind authentic portrait,
 // metallic champagne gold circuitry, monumental editorial typography, and technical HUD.
 import CircuitBoard from './CircuitBoard.astro';
+import { resolveMediaUrl } from '../utils/media';
 ---
 
 <section class="hero" id="hero" aria-labelledby="heroName">
@@ -65,7 +66,7 @@ import CircuitBoard from './CircuitBoard.astro';
         <!-- Authentic User Cutout Portrait (Positions IN FRONT of 3D objects) -->
         <div class="portrait-cutout-wrap" id="portraitCutoutWrap">
           <img
-            src="/images/naveen-portrait.png"
+            src={resolveMediaUrl('/images/naveen-portrait.png')}
             alt="Naveen Shaji George — Robotics and Automation Engineer"
             class="portrait-cutout-img"
             id="heroPortraitImg"

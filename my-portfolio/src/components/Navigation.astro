@@ -1,23 +1,26 @@
 ---
+import { resolveHref } from '../utils/media';
+
 const pathname = Astro.url.pathname;
-const isProjectsActive = pathname.startsWith('/projects');
+const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+const isProjectsActive = pathname.startsWith(`${base}/projects`) || pathname.startsWith('/projects');
 
 const navItems = [
-  { href: '/#roles',        label: 'Roles' },
-  { href: '/projects',      label: 'Projects', isProjectsPage: true },
-  { href: '/#experience',   label: 'Experience' },
-  { href: '/#focus',        label: 'Focus' },
-  { href: '/#skills',       label: 'Skills' },
-  { href: '/#hardware',     label: 'PCB Lab' },
-  { href: '/#beyond',       label: 'Beyond' },
-  { href: '/#contact',      label: 'Contact' },
+  { href: resolveHref('/#roles'),        label: 'Roles' },
+  { href: resolveHref('/projects'),      label: 'Projects', isProjectsPage: true },
+  { href: resolveHref('/#experience'),   label: 'Experience' },
+  { href: resolveHref('/#focus'),        label: 'Focus' },
+  { href: resolveHref('/#skills'),       label: 'Skills' },
+  { href: resolveHref('/#hardware'),     label: 'PCB Lab' },
+  { href: resolveHref('/#beyond'),       label: 'Beyond' },
+  { href: resolveHref('/#contact'),      label: 'Contact' },
 ];
 ---
 
 <header class:list={['nav', { 'nav-dark': isProjectsActive }]} id="nav">
   <div class="container-wide nav-inner">
     <!-- Brand -->
-    <a href="/" class="nav-brand" aria-label="Naveen — Home">
+    <a href={resolveHref('/')} class="nav-brand" aria-label="Naveen — Home">
       <span class="brand-name">NAVEEN.</span>
     </a>
 
@@ -52,7 +55,7 @@ const navItems = [
       </a>
 
       <a
-        href="/CV_1.pdf"
+        href={resolveHref('/CV_1.pdf')}
         class="nav-resume btn btn-secondary"
         download
       >
@@ -78,7 +81,7 @@ const navItems = [
           {item.label}
         </a>
       ))}
-      <a href="/CV_1.pdf" class="mobile-link mobile-resume" download>
+      <a href={resolveHref('/CV_1.pdf')} class="mobile-link mobile-resume" download>
         Resume ↓
       </a>
     </nav>

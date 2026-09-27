@@ -4,7 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
 import Footer from '../../components/Footer.astro';
 import { experiences, type ExperienceItem } from '../../data/experience';
-import { resolveMediaUrl } from '../../utils/media';
+import { resolveMediaUrl, resolveHref } from '../../utils/media';
 
 export function getStaticPaths() {
   return experiences.map((exp) => ({
@@ -31,7 +31,7 @@ const { exp } = Astro.props;
     <div class="container exp-container">
       <!-- Back button -->
       <div class="exp-nav-bar">
-        <a href="/#experience" class="back-link mono">
+        <a href={resolveHref('/#experience')} class="back-link mono">
           <span class="back-arrow" aria-hidden="true">←</span>
           <span>Back to Experience</span>
         </a>

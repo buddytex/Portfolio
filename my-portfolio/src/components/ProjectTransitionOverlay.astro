@@ -113,8 +113,10 @@
     }
 
     // Intercept clicks to /projects from outside /projects
+    const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    const projectsPath = `${basePath}/projects`;
     const projectLinks = document.querySelectorAll<HTMLAnchorElement>(
-      'a[href="/projects"], [data-nav-projects="true"]'
+      `a[href="/projects"], a[href="${projectsPath}"], [data-nav-projects="true"]`
     );
 
     projectLinks.forEach((link) => {
@@ -124,7 +126,7 @@
 
       link.addEventListener('click', (e) => {
         // If already on /projects, allow normal behavior
-        if (window.location.pathname.startsWith('/projects')) return;
+        if (window.location.pathname.startsWith(projectsPath) || window.location.pathname.startsWith('/projects')) return;
 
         // Respect reduced motion
         if (isReducedMotion()) return;
@@ -133,7 +135,7 @@
         if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
         e.preventDefault();
-        const targetHref = link.getAttribute('href') || '/projects';
+        const targetHref = link.getAttribute('href') || projectsPath;
 
         sessionStorage.setItem('nsg_projects_transition', 'active');
         overlay.style.visibility = 'visible';

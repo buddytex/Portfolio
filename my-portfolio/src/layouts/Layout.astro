@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
+import { resolveHref } from '../utils/media';
 
 import ImageLightbox from '../components/ImageLightbox.astro';
 import PerformanceDiagnosticHUD from '../components/PerformanceDiagnosticHUD.astro';
@@ -27,20 +28,20 @@ const {
     <meta name="author" content="Naveen Shaji George" />
     <meta name="theme-color" content="#F7F5F0" />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={resolveHref('/favicon.svg')} />
+    <link rel="icon" href={resolveHref('/favicon.ico')} />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site || 'https://buddytex.github.io').href} />
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site || 'https://buddytex.github.io').href} />
-    <meta property="og:image" content={new URL('/images/naveen-portrait.png', Astro.site || 'https://buddytex.github.io').href} />
+    <meta property="og:image" content={new URL(resolveHref('/images/naveen-portrait.png'), Astro.site || 'https://buddytex.github.io').href} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/images/naveen-portrait.png', Astro.site || 'https://buddytex.github.io').href} />
+    <meta name="twitter:image" content={new URL(resolveHref('/images/naveen-portrait.png'), Astro.site || 'https://buddytex.github.io').href} />
 
     <title>{title}</title>
     <ClientRouter />
@@ -60,63 +61,63 @@ const {
         <div class="datum-spine-fill" id="datumSpineFill"></div>
       </div>
       <nav class="datum-waypoints" aria-label="Section Milestones">
-        <a href="/#hero" class="datum-node active" data-section="hero" aria-label="01 // Hero">
+        <a href={resolveHref('/#hero')} class="datum-node active" data-section="hero" aria-label="01 // Hero">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">01</span>
             <span class="datum-label mono">HERO</span>
           </div>
         </a>
-        <a href="/#roles" class="datum-node" data-section="roles" aria-label="02 // Roles">
+        <a href={resolveHref('/#roles')} class="datum-node" data-section="roles" aria-label="02 // Roles">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">02</span>
             <span class="datum-label mono">ROLES</span>
           </div>
         </a>
-        <a href="/#work" class="datum-node" data-section="work" aria-label="03 // Projects">
+        <a href={resolveHref('/#work')} class="datum-node" data-section="work" aria-label="03 // Projects">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">03</span>
             <span class="datum-label mono">PROJECTS</span>
           </div>
         </a>
-        <a href="/#experience" class="datum-node" data-section="experience" aria-label="04 // Experience">
+        <a href={resolveHref('/#experience')} class="datum-node" data-section="experience" aria-label="04 // Experience">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">04</span>
             <span class="datum-label mono">EXP</span>
           </div>
         </a>
-        <a href="/#focus" class="datum-node" data-section="focus" aria-label="05 // Engineering Focus">
+        <a href={resolveHref('/#focus')} class="datum-node" data-section="focus" aria-label="05 // Engineering Focus">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">05</span>
             <span class="datum-label mono">FOCUS</span>
           </div>
         </a>
-        <a href="/#skills" class="datum-node" data-section="skills" aria-label="06 // Skills">
+        <a href={resolveHref('/#skills')} class="datum-node" data-section="skills" aria-label="06 // Skills">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">06</span>
             <span class="datum-label mono">SKILLS</span>
           </div>
         </a>
-        <a href="/#hardware" class="datum-node" data-section="hardware" aria-label="07 // PCB Lab">
+        <a href={resolveHref('/#hardware')} class="datum-node" data-section="hardware" aria-label="07 // PCB Lab">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">07</span>
             <span class="datum-label mono">PCB LAB</span>
           </div>
         </a>
-        <a href="/#beyond" class="datum-node" data-section="beyond" aria-label="08 // Beyond the Build">
+        <a href={resolveHref('/#beyond')} class="datum-node" data-section="beyond" aria-label="08 // Beyond the Build">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">08</span>
             <span class="datum-label mono">BEYOND</span>
           </div>
         </a>
-        <a href="/#contact" class="datum-node" data-section="contact" aria-label="09 // Contact">
+        <a href={resolveHref('/#contact')} class="datum-node" data-section="contact" aria-label="09 // Contact">
           <span class="datum-pip"></span>
           <div class="datum-text-block">
             <span class="datum-tag mono">09</span>

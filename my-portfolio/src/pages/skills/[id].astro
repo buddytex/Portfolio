@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
 import Footer from '../../components/Footer.astro';
 import { skillsData, type SkillEvidence } from '../../data/skills';
+import { resolveHref } from '../../utils/media';
 
 export function getStaticPaths() {
   return skillsData.map((skill) => ({
@@ -30,7 +31,7 @@ const { skill } = Astro.props;
     <div class="container skill-container">
       <!-- Back Link -->
       <div class="skill-nav-bar">
-        <a href="/#skills" class="back-link mono">
+        <a href={resolveHref('/#skills')} class="back-link mono">
           <span class="back-arrow" aria-hidden="true">←</span>
           <span>Back to Skills & Evidence</span>
         </a>
@@ -97,7 +98,7 @@ const { skill } = Astro.props;
         <h2 class="section-kicker mono">DEPLOYED SYSTEMS USING THIS COMPETENCY</h2>
         <div class="systems-grid">
           {skill.relatedProjects.map((proj) => (
-            <a href={proj.url || `/projects/${proj.id}`} class="system-box">
+            <a href={resolveHref(proj.url || `/projects/${proj.id}`)} class="system-box">
               <span class="system-sub mono">CASE STUDY</span>
               <h4 class="system-title">{proj.name}</h4>
               <span class="system-action mono">Explore Architecture →</span>
@@ -108,10 +109,10 @@ const { skill } = Astro.props;
 
       <!-- Bottom CTAs -->
       <div class="skill-bottom-bar">
-        <a href="/#skills" class="btn btn-secondary">
+        <a href={resolveHref('/#skills')} class="btn btn-secondary">
           <span>← All Competencies</span>
         </a>
-        <a href="/#contact" class="btn btn-primary">
+        <a href={resolveHref('/#contact')} class="btn btn-primary">
           <span>Inquire About Engineering Roles</span>
         </a>
       </div>

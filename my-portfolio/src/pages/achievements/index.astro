@@ -6,6 +6,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
 import Footer from '../../components/Footer.astro';
 import { achievementsData, achievementMediaItems } from '../../data/achievements';
+import { resolveMediaUrl, resolveHref } from '../../utils/media';
 
 const mediaCategories = [
   { id: 'all', label: 'ALL MEDIA', count: achievementMediaItems.length },
@@ -30,7 +31,7 @@ const mediaCategories = [
       <div class="container">
         <!-- Navigation Breadcrumb -->
         <div class="header-breadcrumb mono">
-          <a href="/" class="back-link">
+          <a href={resolveHref('/')} class="back-link">
             <span class="back-arrow" aria-hidden="true">←</span>
             <span>BACK TO MAIN PORTFOLIO</span>
           </a>
@@ -128,7 +129,7 @@ const mediaCategories = [
               <!-- Complete Uncropped Certificate Frame -->
               <div
                 class="cert-media-stage"
-                data-lightbox={item.certificateImage}
+                data-lightbox={resolveMediaUrl(item.certificateImage)}
                 data-title={item.title}
                 data-badge={item.resultBadge}
                 data-caption={item.verifiedSource}
@@ -136,7 +137,7 @@ const mediaCategories = [
               >
                 <div class="cert-matte-box">
                   <img
-                    src={item.certificateImage}
+                    src={resolveMediaUrl(item.certificateImage)}
                     alt={`${item.title} — Official Credential Document`}
                     class="cert-img"
                     loading={idx < 3 ? 'eager' : 'lazy'}
@@ -193,7 +194,7 @@ const mediaCategories = [
                 { 'media-card-featured': idx === 0 || idx === 3 }
               ]}
               data-media-category={item.category}
-              data-lightbox={item.imagePath}
+              data-lightbox={resolveMediaUrl(item.imagePath)}
               data-title={item.title}
               data-badge={item.resultBadge}
               data-caption={`${item.event} (${item.year}) — ${item.description}`}
@@ -201,7 +202,7 @@ const mediaCategories = [
             >
               <div class:list={['media-frame', { 'fit-contain': item.fit === 'contain' }]}>
                 <img
-                  src={item.imagePath}
+                  src={resolveMediaUrl(item.imagePath)}
                   alt={item.title}
                   class:list={['media-thumb', { 'contain-img': item.fit === 'contain' }]}
                   loading={idx < 6 ? 'eager' : 'lazy'}
@@ -239,14 +240,14 @@ const mediaCategories = [
     <!-- Bottom Bridge Navigation -->
     <section class="achievements-bottom-nav">
       <div class="container bottom-nav-inner">
-        <a href="/" class="btn btn-secondary mono back-portfolio-btn">
+        <a href={resolveHref('/')} class="btn btn-secondary mono back-portfolio-btn">
           <span class="btn-arrow" aria-hidden="true">←</span>
           <span>RETURN TO MAIN PORTFOLIO</span>
         </a>
         <div class="bottom-nav-links mono">
-          <a href="/#work" class="bottom-nav-link">PROJECTS ARCHIVE →</a>
-          <a href="/#hardware" class="bottom-nav-link">HARDWARE &amp; PCB LAB →</a>
-          <a href="/#contact" class="bottom-nav-link">CONTACT &amp; DISPATCH →</a>
+          <a href={resolveHref('/#work')} class="bottom-nav-link">PROJECTS ARCHIVE →</a>
+          <a href={resolveHref('/#hardware')} class="bottom-nav-link">HARDWARE &amp; PCB LAB →</a>
+          <a href={resolveHref('/#contact')} class="bottom-nav-link">CONTACT &amp; DISPATCH →</a>
         </div>
       </div>
     </section>

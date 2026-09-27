@@ -3,7 +3,7 @@
 // Uses React Three Fiber with OrbitControls for proper 3D interaction
 import { pcbArtifacts } from '../data/pcbArtifacts';
 import PCBShowcaseReact from './react/PCBShowcaseReact.tsx';
-import { resolveMediaUrl } from '../utils/media';
+import { resolveMediaUrl, resolveHref } from '../utils/media';
 ---
 
 <div class="pcb-showcase-container" id="pcbShowcase">
@@ -158,14 +158,14 @@ import { resolveMediaUrl } from '../utils/media';
                 <div class="proof-media-row">
                   <div 
                     class="proof-img-card img-expandable" 
-                    data-lightbox="/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg"
+                    data-lightbox={resolveMediaUrl('/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg')}
                     data-title="Custom Equinox Back-Box ECU Assembled in Chassis Enclosure"
                     data-badge="PHYSICAL PROOF"
                     data-caption="Custom multi-layer Back-Box ECU with galvanic isolation barrier and screw terminal interface, photographed mounted inside the competition vehicle sealed chassis enclosure."
                     title="Click to view full resolution photograph"
                   >
                     <img
-                      src="/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg"
+                      src={resolveMediaUrl('/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.14.57(3).jpeg')}
                       alt="Custom Equinox Back-Box ECU Assembled in Chassis Enclosure"
                       class="proof-thumb-img img-contain"
                       loading="lazy"
@@ -176,7 +176,7 @@ import { resolveMediaUrl } from '../utils/media';
                     <p class="proof-text">
                       Custom multi-layer Back-Box ECU with galvanic isolation barrier and screw terminal interface, photographed mounted inside the competition vehicle sealed chassis enclosure.
                     </p>
-                    <a href="/projects/baja-2026#engineeringDossier" class="proof-link mono">
+                    <a href={resolveHref('/projects/baja-2026#engineeringDossier')} class="proof-link mono">
                       <span>Inspect Live Power-On Testing Video</span>
                       <span aria-hidden="true">→</span>
                     </a>

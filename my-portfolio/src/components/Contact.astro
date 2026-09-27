@@ -1,6 +1,5 @@
 ---
-// Contact Component — Final Engineering Handoff
-// Direct professional communication, verified credentials, and open collaboration
+import { resolveHref } from '../utils/media';
 ---
 
 <section id="contact" class="section contact-section">
@@ -130,7 +129,7 @@
           </a>
 
           <a
-            href="/CV_1.pdf"
+            href={resolveHref('/CV_1.pdf')}
             class="network-link"
             download
           >

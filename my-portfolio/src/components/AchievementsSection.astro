@@ -2,6 +2,7 @@
 // AchievementsSection Component — Compact Homepage Credentials Entry Point
 // Connects homepage flow to dedicated /achievements archive.
 import { achievementsData, achievementMediaItems } from '../data/achievements';
+import { resolveHref } from '../utils/media';
 
 // Curated highlights for the compact homepage preview
 const highlights = [
@@ -44,7 +45,7 @@ const highlights = [
         </div>
 
         <!-- Direct CTA Link -->
-        <a href="/achievements" class="btn btn-secondary mono view-all-cta" aria-label="View all verified achievements and certificates">
+        <a href={resolveHref('/achievements')} class="btn btn-secondary mono view-all-cta" aria-label="View all verified achievements and certificates">
           <span>VIEW ACHIEVEMENTS ARCHIVE</span>
           <span class="cta-arrow" aria-hidden="true">→</span>
         </a>
@@ -74,7 +75,7 @@ const highlights = [
         </div>
 
         <!-- Dedicated Archive Entry Banner -->
-        <a href="/achievements" class="archive-banner" aria-label="Open comprehensive achievements and credentials page">
+        <a href={resolveHref('/achievements')} class="archive-banner" aria-label="Open comprehensive achievements and credentials page">
           <div class="banner-content">
             <div class="banner-top mono">
               <span class="banner-badge">[ 08 // DEDICATED ARCHIVE ]</span>

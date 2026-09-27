@@ -37,6 +37,9 @@ jobs:
 
       - name: Build static distribution
         working-directory: ./my-portfolio
+        env:
+          ASTRO_SITE: 'https://buddytex.github.io'
+          ASTRO_BASE: '/Portfolio'
         run: npm run build
 
       - name: Upload Pages artifact

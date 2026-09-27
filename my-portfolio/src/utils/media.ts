@@ -28,3 +28,30 @@ export function resolveMediaUrl(rawPath: string | null | undefined): string {
 
   return `${base}${encodedPath}${suffix}`;
 }
+
+/**
+ * Universal Href Resolver
+ * Ensures internal page routes and anchor jumps cleanly adhere to Astro's base URL.
+ * Automatically compatible with both root deployments ('/') and GitHub Pages subpaths ('/Portfolio/').
+ */
+export function resolveHref(rawPath: string | null | undefined): string {
+  if (!rawPath) return '';
+  if (
+    rawPath.startsWith('http://') ||
+    rawPath.startsWith('https://') ||
+    rawPath.startsWith('mailto:') ||
+    rawPath.startsWith('tel:') ||
+    rawPath.startsWith('#')
+  ) {
+    return rawPath;
+  }
+
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  const cleanPath = rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
+
+  if (cleanPath === '/') {
+    return base ? `${base}/` : '/';
+  }
+
+  return `${base}${cleanPath}`;
+}

@@ -4,7 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
 import Footer from '../../components/Footer.astro';
 import { projects, type Project } from '../../data/projects';
-import { resolveMediaUrl } from '../../utils/media';
+import { resolveMediaUrl, resolveHref } from '../../utils/media';
 
 export function getStaticPaths() {
   const paths = projects.map((project) => ({
@@ -43,7 +43,7 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
     <div class="container project-container">
       <!-- Back button to dedicated Projects Experience -->
       <div class="project-nav-bar">
-        <a href="/projects" class="back-link mono">
+        <a href={resolveHref('/projects')} class="back-link mono">
           <span class="back-arrow" aria-hidden="true">←</span>
           <span>Back to Projects Archive</span>
         </a>
@@ -80,7 +80,7 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
       <div 
         class="project-hero-visual" 
         transition:name={`project-visual-${project.id}`}
-        data-lightbox={project.imagePath}
+        data-lightbox={project.imagePath ? resolveMediaUrl(project.imagePath) : undefined}
         data-title={project.title}
         data-badge="PROJECT HERO ARTIFACT"
         data-caption={project.subtitle}
@@ -88,7 +88,7 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
       >
         {project.imagePath ? (
           <img
-            src={project.imagePath}
+            src={resolveMediaUrl(project.imagePath)}
             alt={`${project.title} Architecture Schematic`}
             class="project-hero-img img-expandable"
             loading="eager"
@@ -330,7 +330,7 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
           <div class="section-kicker mono">COMPETENCIES APPLIED &amp; VALIDATED</div>
           <div class="skills-applied-chips mono">
             {project.skillsUsed.map((skillName) => (
-              <a href="/#skills" class="skill-applied-chip" title="Inspect competency in Skills Network">
+              <a href={resolveHref('/#skills')} class="skill-applied-chip" title="Inspect competency in Skills Network">
                 <span class="chip-dot"></span>
                 <span>{skillName}</span>
               </a>
@@ -433,7 +433,7 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
                     <article 
                       class="artifact-tile" 
                       data-item-type={item.type}
-                      data-lightbox={item.type !== 'video' ? item.path : undefined}
+                      data-lightbox={item.type !== 'video' ? resolveMediaUrl(item.path) : undefined}
                       data-title={item.title}
                       data-caption={item.caption}
                       data-badge={item.badge || `ARTIFACT 0${itemIdx + 1}`}
@@ -464,7 +464,7 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
                           return (
                             <div class:list={["image-container", { "is-contain-box": isTechnicalDoc, "is-cover-box": !isTechnicalDoc }]}>
                               <img
-                                src={item.path}
+                                src={resolveMediaUrl(item.path)}
                                 alt={item.title}
                                 class:list={["artifact-img", isTechnicalDoc ? "img-contain" : "img-cover"]}
                                 loading="lazy"
@@ -544,23 +544,23 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
             <span>View Source on GitHub ↗</span>
           </a>
         )}
-        <a href="/#contact" class="btn btn-secondary">
+        <a href={resolveHref('/#contact')} class="btn btn-secondary">
           <span>Discuss System Architecture</span>
         </a>
       </div>
 
       <!-- Sequential Case Study Pagination & Archive Navigator -->
       <nav class="project-pagination-footer" aria-label="Sequential Case Study Navigation">
-        <a href={`/projects/${prevProject.id}`} class="pagination-card prev-card">
+        <a href={resolveHref(`/projects/${prevProject.id}`)} class="pagination-card prev-card">
           <span class="pagination-sub mono">← PREVIOUS SYSTEM</span>
           <span class="pagination-title">{prevProject.title}</span>
           <span class="pagination-meta mono">{prevProject.domain}</span>
         </a>
-        <a href="/projects" class="pagination-center-btn mono" aria-label="Return to full Projects Archive">
+        <a href={resolveHref('/projects')} class="pagination-center-btn mono" aria-label="Return to full Projects Archive">
           <span class="center-icon" aria-hidden="true">▦</span>
           <span>ALL PROJECTS [ {String(projects.length).padStart(2, '0')} ]</span>
         </a>
-        <a href={`/projects/${nextProject.id}`} class="pagination-card next-card">
+        <a href={resolveHref(`/projects/${nextProject.id}`)} class="pagination-card next-card">
           <span class="pagination-sub mono">NEXT SYSTEM →</span>
           <span class="pagination-title">{nextProject.title}</span>
           <span class="pagination-meta mono">{nextProject.domain}</span>

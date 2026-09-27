@@ -6,7 +6,7 @@ import Layout from '../../layouts/Layout.astro';
 import Navigation from '../../components/Navigation.astro';
 import Footer from '../../components/Footer.astro';
 import { projectMediaCollage } from '../../data/projectMediaCollage';
-import { resolveMediaUrl } from '../../utils/media';
+import { resolveMediaUrl, resolveHref } from '../../utils/media';
 
 const totalArtifacts = projectMediaCollage.length;
 const heroLeft = projectMediaCollage.filter((item) => item.isHeroVehicle && item.heroPlacement === 'left');
@@ -78,7 +78,7 @@ const filterTabs = [
                   data-category={item.category}
                 >
                   <a
-                    href={item.href || `/projects/${item.projectId}`}
+                    href={resolveHref(item.href || `/projects/${item.projectId}`)}
                     class="tile-link"
                     aria-label={`Inspect ${item.projectTitle}: ${item.title}`}
                   >
@@ -142,7 +142,7 @@ const filterTabs = [
                   data-category={item.category}
                 >
                   <a
-                    href={item.href || `/projects/${item.projectId}`}
+                    href={resolveHref(item.href || `/projects/${item.projectId}`)}
                     class="tile-link"
                     aria-label={`Inspect ${item.projectTitle}: ${item.title}`}
                   >
@@ -211,7 +211,7 @@ const filterTabs = [
               data-category={item.category}
             >
               <a
-                href={item.href || (item.projectId === 'surgical-robotics' ? '/experience/surgical-robotics' : `/projects/${item.projectId}`)}
+                href={resolveHref(item.href || (item.projectId === 'surgical-robotics' ? '/experience/surgical-robotics' : `/projects/${item.projectId}`))}
                 class="tile-link"
                 aria-label={`Inspect ${item.projectTitle}: ${item.title}`}
               >
@@ -280,7 +280,7 @@ const filterTabs = [
 
       <!-- Return to Light Portfolio Horizon Link -->
       <div class="collage-footer-nav">
-        <a href="/" class="return-home-btn mono">
+        <a href={resolveHref('/')} class="return-home-btn mono">
           <span class="ret-arrow">←</span>
           <span>RETURN TO OVERVIEW PORTFOLIO</span>
         </a>

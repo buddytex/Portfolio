@@ -3,6 +3,7 @@
 // Side-by-side layout: Journey & Academic Foundation on left;
 // Interactive collapsed-by-default "ROLES I'VE TAKEN" technical index on right.
 import { rolesData } from '../data/roles';
+import { resolveMediaUrl, resolveHref } from '../utils/media';
 ---
 
 <section id="roles" class="roles-section" aria-labelledby="rolesSectionHeading">
@@ -65,9 +66,9 @@ import { rolesData } from '../data/roles';
             <div class="cred-preview-row">
               <a 
                 id="credLink" 
-                href="/media/achievements/certificates/sae-baja-2025-cert.jpg" 
+                href={resolveMediaUrl('/media/achievements/certificates/sae-baja-2025-cert.jpg')} 
                 class="cred-thumb-wrap img-expandable" 
-                data-lightbox="/media/achievements/certificates/sae-baja-2025-cert.jpg"
+                data-lightbox={resolveMediaUrl('/media/achievements/certificates/sae-baja-2025-cert.jpg')}
                 data-title="SAEINDIA aBAJA 2025 Certificate"
                 data-badge="OFFICIAL CREDENTIAL"
                 data-caption="Certificate of Participation & Technical Safety Compliance · Team Equinox"
@@ -75,7 +76,7 @@ import { rolesData } from '../data/roles';
               >
                 <img
                   id="credImg"
-                  src="/media/achievements/certificates/sae-baja-2025-cert.jpg"
+                  src={resolveMediaUrl('/media/achievements/certificates/sae-baja-2025-cert.jpg')}
                   alt="SAEINDIA aBAJA 2025 Certificate of Participation awarded to Naveen Shaji George"
                   class="cred-thumb-img img-contain"
                   width="140"
@@ -94,7 +95,7 @@ import { rolesData } from '../data/roles';
 
           <!-- CV Download Action -->
           <div class="bio-action">
-            <a href="/CV_1.pdf" class="btn-cv-pill" download>
+            <a href={resolveHref('/CV_1.pdf')} class="btn-cv-pill" download>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
               </svg>
@@ -243,14 +244,14 @@ import { rolesData } from '../data/roles';
 
                             <div 
                               class="evidence-image-wrap img-expandable"
-                              data-lightbox={role.visualEvidence.image}
+                              data-lightbox={resolveMediaUrl(role.visualEvidence.image)}
                               data-title={role.title}
                               data-badge={role.visualEvidence.badge}
                               data-caption={role.visualEvidence.caption}
                               title="Click to view full uncropped photograph"
                             >
                               <img
-                                src={role.visualEvidence.image}
+                                src={resolveMediaUrl(role.visualEvidence.image)}
                                 alt={role.visualEvidence.caption}
                                 class="evidence-img img-contain"
                                 width="360"
@@ -261,7 +262,7 @@ import { rolesData } from '../data/roles';
                               {role.visualEvidence.secondaryImage && (
                                 <div class="evidence-inset-pill" title={role.visualEvidence.secondaryCaption || 'Official Technical Inspection Pass'}>
                                   <img
-                                    src={role.visualEvidence.secondaryImage}
+                                    src={resolveMediaUrl(role.visualEvidence.secondaryImage)}
                                     alt={role.visualEvidence.secondaryCaption || 'Secondary Credential'}
                                     class="evidence-inset-img"
                                     width="120"
@@ -298,38 +299,41 @@ import { rolesData } from '../data/roles';
     const credCard = document.getElementById('credentialCard');
     if (!credCard) return;
 
+    const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    const resolve = (p: string) => `${basePath}${p}`;
+
     const credData: Record<string, { href: string; src: string; award: string; recipient: string; meta: string }> = {
       baja: {
-        href: '/media/achievements/certificates/sae-baja-2025-cert.jpg',
-        src: '/media/achievements/certificates/sae-baja-2025-cert.jpg',
+        href: resolve('/media/achievements/certificates/sae-baja-2025-cert.jpg'),
+        src: resolve('/media/achievements/certificates/sae-baja-2025-cert.jpg'),
         award: 'SAEINDIA aBAJA 2025',
         recipient: 'Naveen Shaji George · AIR 7',
         meta: 'Certificate of Participation & Technical Safety Compliance · Team Equinox'
       },
       intel: {
-        href: '/media/achievements/certificates/intel-genai-hackathon-top25.jpg',
-        src: '/media/achievements/certificates/intel-genai-hackathon-top25.jpg',
+        href: resolve('/media/achievements/certificates/intel-genai-hackathon-top25.jpg'),
+        src: resolve('/media/achievements/certificates/intel-genai-hackathon-top25.jpg'),
         award: 'Intel GenAI Hackathon 2024',
         recipient: 'Naveen Shaji George · Top 25 Finalist',
         meta: 'National Level Hackathon in association with Intel · KPR Institute'
       },
       'sae-ad': {
-        href: '/media/achievements/certificates/sae-self-driving-car-cert.jpg',
-        src: '/media/achievements/certificates/sae-self-driving-car-cert.jpg',
+        href: resolve('/media/achievements/certificates/sae-self-driving-car-cert.jpg'),
+        src: resolve('/media/achievements/certificates/sae-self-driving-car-cert.jpg'),
         award: 'Self Driving Car Workshop',
         recipient: 'Naveen Shaji George · SAEISS Chennai',
         meta: 'SAEINDIA Southern Section 4-Day Autonomous Systems Intensive'
       },
       srishti: {
-        href: '/media/achievements/certificates/93b5c232-34bf-4c5f-a807-b2f59067b084_page-0001.jpg',
-        src: '/media/achievements/certificates/93b5c232-34bf-4c5f-a807-b2f59067b084_page-0001.jpg',
+        href: resolve('/media/achievements/certificates/93b5c232-34bf-4c5f-a807-b2f59067b084_page-0001.jpg'),
+        src: resolve('/media/achievements/certificates/93b5c232-34bf-4c5f-a807-b2f59067b084_page-0001.jpg'),
         award: 'SRISHTI 2024 Exhibition',
         recipient: 'Naveen Shaji George · AI for Sustainability',
         meta: '10th National Level Technical Project Exhibition & Competition Recognition'
       },
       nakshatra: {
-        href: '/media/achievements/certificates/1156ae7c-fc50-424e-af60-4bcc8e38810b_page-0001.jpg',
-        src: '/media/achievements/certificates/1156ae7c-fc50-424e-af60-4bcc8e38810b_page-0001.jpg',
+        href: resolve('/media/achievements/certificates/1156ae7c-fc50-424e-af60-4bcc8e38810b_page-0001.jpg'),
+        src: resolve('/media/achievements/certificates/1156ae7c-fc50-424e-af60-4bcc8e38810b_page-0001.jpg'),
         award: 'Nakshatra 2024 Recognition',
         recipient: 'Naveen Shaji George · Best Anchor',
         meta: 'Saintgits College of Engineering · National Level Cultural Fest'

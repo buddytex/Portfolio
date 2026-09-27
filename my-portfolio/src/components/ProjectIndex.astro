@@ -4,6 +4,7 @@
 // Asymmetrical layout: Flagship monumental aBAJA card, balanced featured duo, supporting trio
 // Hover: subtle zoom, dark glass overlay with role, key technical areas, and inspect CTA
 import { projects } from '../data/projects';
+import { resolveMediaUrl, resolveHref } from '../utils/media';
 const featuredProjects = projects.filter(p => p.featured);
 const bajaProjects = featuredProjects.filter(p => p.id === 'baja-2025' || p.id === 'baja-2026');
 const duoProjects = featuredProjects.filter(p => p.id === 'hospital-amr' || p.id === 'smart-cctv');
@@ -33,14 +34,14 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
             id={`card-${project.id}`} 
             data-project-id={project.id}
           >
-            <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
+            <a href={resolveHref(`/projects/${project.id}`)} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
               
               <!-- Dominant Visual Stage (75-80% area) -->
               <div class="card-visual-wrap baja-visual" transition:name={`project-visual-${project.id}`}>
                 <div class="card-media-stage">
                   <div class="project-img-dual">
                     <img
-                      src={project.imagePath}
+                      src={resolveMediaUrl(project.imagePath)}
                       alt={`${project.title} Primary Artifact`}
                       class="project-real-img img-primary"
                       loading="eager"
@@ -48,7 +49,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                     />
                     {project.secondaryImage && (
                       <img
-                        src={project.secondaryImage}
+                        src={resolveMediaUrl(project.secondaryImage)}
                         alt={`${project.title} Secondary Artifact`}
                         class="project-real-img img-secondary"
                         loading="eager"
@@ -129,7 +130,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
             id={`card-${project.id}`} 
             data-project-id={project.id}
           >
-            <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
+            <a href={resolveHref(`/projects/${project.id}`)} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
               
               <!-- Dominant Visual Stage (75-80% area) -->
               <div class="card-visual-wrap duo-visual" transition:name={`project-visual-${project.id}`}>
@@ -137,7 +138,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                   {project.imagePath ? (
                     <div class="project-img-dual">
                       <img
-                        src={project.imagePath}
+                        src={resolveMediaUrl(project.imagePath)}
                         alt={`${project.title} Primary Artifact`}
                         class="project-real-img img-primary"
                         loading="eager"
@@ -145,7 +146,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                       />
                       {project.secondaryImage && (
                         <img
-                          src={project.secondaryImage}
+                          src={resolveMediaUrl(project.secondaryImage)}
                           alt={`${project.title} Secondary Artifact`}
                           class="project-real-img img-secondary"
                           loading="eager"
@@ -241,7 +242,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
             id={`card-${project.id}`} 
             data-project-id={project.id}
           >
-            <a href={`/projects/${project.id}`} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
+            <a href={resolveHref(`/projects/${project.id}`)} class="card-link" aria-label={`View architecture case study for ${project.title}`}>
               
               <!-- Dominant Visual Stage (75-80% area) -->
               <div class="card-visual-wrap trio-visual" transition:name={`project-visual-${project.id}`}>
@@ -249,7 +250,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                   {project.imagePath ? (
                     <div class="project-img-dual">
                       <img
-                        src={project.imagePath}
+                        src={resolveMediaUrl(project.imagePath)}
                         alt={`${project.title} Primary Artifact`}
                         class="project-real-img img-primary"
                         loading="eager"
@@ -257,7 +258,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                       />
                       {project.secondaryImage && (
                         <img
-                          src={project.secondaryImage}
+                          src={resolveMediaUrl(project.secondaryImage)}
                           alt={`${project.title} Secondary Artifact`}
                           class="project-real-img img-secondary"
                           loading="eager"
@@ -364,7 +365,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
         </div>
 
         <div class="archive-btn-wrap">
-          <a href="/projects" class="see-all-projects-btn" id="seeAllProjectsBtn">
+          <a href={resolveHref('/projects')} class="see-all-projects-btn" id="seeAllProjectsBtn">
             <span class="btn-main-label">SEE ALL PROJECTS</span>
             <span class="btn-count mono">({projects.length})</span>
             <span class="btn-arrow" aria-hidden="true">→</span>
