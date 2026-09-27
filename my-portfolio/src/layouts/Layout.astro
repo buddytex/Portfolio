@@ -28,6 +28,16 @@ const {
     <meta name="author" content="Naveen Shaji George" />
     <meta name="theme-color" content="#F7F5F0" />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MFE99919HM" is:inline></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-MFE99919HM');
+    </script>
+
     <link rel="icon" type="image/svg+xml" href={resolveHref('/favicon.svg')} />
     <link rel="icon" href={resolveHref('/favicon.ico')} />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site || 'https://buddytex.github.io').href} />
