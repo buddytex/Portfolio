@@ -2,9 +2,9 @@
   {
     "section": "hero",
     "target": "personal-identity",
-    "primaryImage": "/images/naveen-portrait.png",
+    "primaryImage": "/images/naveen-robotics-hero.png",
     "displayType": "transparent-cutout-3d-stage",
-    "reason": "Existing monumental personal identity cut-out positioned directly in front of the real Three.js WebGL mechanical core."
+    "reason": "Hands-on robotics builder cut-out (inspecting a LiDAR-equipped red-frame prototype) positioned directly in front of the real Three.js WebGL mechanical core."
   },
   {
     "section": "roles",

@@ -66,12 +66,12 @@ import { resolveMediaUrl } from '../utils/media';
         <!-- Authentic User Cutout Portrait (Positions IN FRONT of 3D objects) -->
         <div class="portrait-cutout-wrap" id="portraitCutoutWrap">
           <img
-            src={resolveMediaUrl('/images/naveen-portrait.png')}
-            alt="Naveen Shaji George — Robotics and Automation Engineer"
+            src={resolveMediaUrl('/images/naveen-robotics-hero.png')}
+            alt="Naveen Shaji George, Robotics and Automation Engineer, inspecting a custom-built robotics prototype with a LiDAR sensor, red structural frame and exposed wiring"
             class="portrait-cutout-img"
             id="heroPortraitImg"
-            width="720"
-            height="780"
+            width="1024"
+            height="694"
             loading="eager"
             decoding="async"
           />
@@ -786,39 +786,33 @@ import { resolveMediaUrl } from '../utils/media';
     z-index: 1;
   }
 
-  /* Ambient Occlusion depth shadow between 3D object and portrait (z-index 2) */
+  /* Ambient Occlusion depth shadow disabled — not needed for transparent robotics cutout */
   .portrait-ao-shadow {
-    position: absolute;
-    width: 82%;
-    height: 86%;
-    border-radius: 50%;
-    background: radial-gradient(ellipse at 50% 55%, rgba(18, 22, 30, 0.35) 0%, rgba(18, 22, 30, 0.12) 40%, transparent 70%);
-    filter: blur(36px);
-    pointer-events: none;
-    z-index: 2;
+    display: none;
   }
 
   /* Cutout portrait (Positions IN FRONT of 3D objects at z-index 3) */
+  /* Landscape engineering cutout (1024×694): sized by aspect-ratio so the full
+     subject + prototype is shown uncropped without any bounding-box clipping. */
   .portrait-cutout-wrap {
     position: relative;
-    width: 100%;
-    max-width: 540px;
-    height: clamp(440px, 58vh, 600px);
+    flex-shrink: 0;
+    width: 108%;
+    left: -32px;
+    max-width: none;
+    aspect-ratio: 1024 / 694;
     z-index: 3;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    mask-image: linear-gradient(to bottom, black 86%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 86%, transparent 100%);
   }
 
   .portrait-cutout-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center 8%;
+    object-fit: contain;
+    object-position: center bottom;
     display: block;
-    filter: drop-shadow(0 20px 36px rgba(18, 22, 30, 0.24)) contrast(1.03);
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -1007,6 +1001,10 @@ import { resolveMediaUrl } from '../utils/media';
       order: -1;
       max-width: 480px;
       margin: 0 auto;
+    }
+
+    .portrait-cutout-wrap {
+      left: -8px;
     }
 
     .hero-3d-canvas {
