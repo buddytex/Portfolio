@@ -53,8 +53,9 @@ The static build compiles **64 pages** (1 homepage, 11 project case studies/inde
     │   └── preprocess-gerbers.mjs          # Build-time Gerber RS-274X + Excellon drill parser
     ├── public/
     │   ├── favicon.ico, favicon.svg        # Site favicons
-    │   ├── CV_1.pdf                        # Primary downloadable CV (Updated 2026)
-    │   ├── Naveen_Shaji_George_CV.pdf      # Legacy CV copy
+    │   ├── CV_1.pdf                        # Primary downloadable CV (synced with media/MAIN_CV.pdf)
+    │   ├── MAIN_CV.pdf                     # Direct mirror of media/MAIN_CV.pdf
+    │   ├── Naveen_Shaji_George_CV.pdf      # Legacy CV copy mirror
     │   ├── media -> ../media               # Symlink exposing media library at /media/
     │   ├── images/                         # Static raster images (portrait, schematics)
     │   │   ├── naveen-portrait.png         # Transparent cutout portrait for Hero section

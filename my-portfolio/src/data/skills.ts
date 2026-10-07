@@ -279,7 +279,7 @@ export const skillCategories: SkillCategory[] = [
           { id: 'pcb-lab', name: 'PCB Lab Showcase', type: 'hardware', badge: '3D VIEWER', url: '/#hardware' },
           { id: 'role-01', name: 'Electrical & Electronics Head', type: 'role', badge: 'HARDWARE LEAD' }
         ],
-        tools: ['KiCad 8', 'Gerber RS-274X', 'DRC / DFM Rules', 'Differential Pairs']
+        tools: ['KiCad 8', 'EasyEDA', 'Gerber RS-274X', 'DRC / DFM Rules', 'Differential Pairs']
       },
       {
         id: 'schematic-design',
@@ -420,7 +420,7 @@ export const skillCategories: SkillCategory[] = [
           { id: 'railguard-ai', name: 'RailGuard AI Rover', type: 'project', badge: 'PROTOTYPE', url: '/projects/railguard-ai' },
           { id: 'balancing-robot', name: 'Inverted Pendulum Robot', type: 'project', badge: 'BENCH MODEL', url: '/projects/balancing-robot' }
         ],
-        tools: ['3D Printing (TPU/PLA)', 'Fast Prototyping Hardware', 'Bench Alignment Tools']
+        tools: ['SolidWorks', 'Fusion 360', '3D Printing (TPU/PLA)', 'Fast Prototyping Hardware', 'Bench Alignment Tools']
       },
       {
         id: 'mechanical-assembly',

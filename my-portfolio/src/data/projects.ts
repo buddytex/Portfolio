@@ -562,7 +562,7 @@ export const projects: Project[] = [
       'Used asymmetric exponential decay costmap inflation gradients to allow doorway passage without colliding with moving foot traffic.',
       'Implemented Extended Kalman Filter (robot_localization) fusing planar LiDAR scan matching with wheel odometry to eliminate rotational drift during turns.'
     ],
-    year: '2025 – 2026',
+    year: '2024 – 2025',
     status: 'COLLEGE MAIN PROJECT',
     domain: 'Service Robotics / SLAM / Nav2 / College Main Project',
     category: 'robotics',
@@ -571,13 +571,13 @@ export const projects: Project[] = [
     approach: 'Integrated 360-degree planar LiDAR SLAM with calibrated differential wheel encoders using an Extended Kalman Filter (EKF). Configured dynamic layered costmaps in Nav2 with custom inflation radiuses and automated recovery behaviors.',
     systemArchitecture: [
       '360-Degree Planar LiDAR Scanning & Filter Layer',
-      'SLAM Toolbox Sub-Centimeter Map Matching',
+      'SLAM Toolbox & Cartographer Sub-Centimeter Map Matching',
       'Nav2 Dynamic Costmaps with Inflation Recovery Behaviors',
       'Differential Drive Kinematics Controller with ESP32',
       'IoT MQTT Telemetry Gateway for Central Fleet Dispatch'
     ],
-    softwareStack: ['ROS 2 Humble', 'Nav2 Navigation Stack', 'SLAM Toolbox', 'Python', 'MQTT Cloud Bridge'],
-    hardwareStack: ['Differential Chassis', '2D Planar LiDAR', 'ESP32 Motor Controller', 'Ultrasonic Safety Rings', 'Power Distribution Board'],
+    softwareStack: ['ROS 2 Humble', 'Nav2 Navigation Stack', 'Cartographer / SLAM Toolbox', 'Python', 'MQTT Cloud Bridge'],
+    hardwareStack: ['Raspberry Pi 4 (Main Compute)', 'Differential / Omnidirectional Chassis', '2D Planar LiDAR', 'ESP32 Motor Controller', 'Ultrasonic Safety Rings', 'Power Distribution Board'],
     keyResults: [
       'Sub-centimeter repeatability across structured indoor hospital waypoint runs',
       'Smooth dynamic pedestrian avoidance in congested corridor testbeds',
@@ -872,7 +872,7 @@ export const projects: Project[] = [
       'Optimized lightweight YOLO defect inference on Raspberry Pi 4 edge compute, pairing edge vision with real-time anomaly telemetry.',
       'Implemented local SQLite buffer queues to prevent data loss during transient wireless blackouts along railway tracks.'
     ],
-    year: '2026',
+    year: '2024',
     status: 'NATIONAL HACKATHON WINNER',
     domain: 'Edge AI / Computer Vision / Android / Railway Safety',
     category: 'vision',
