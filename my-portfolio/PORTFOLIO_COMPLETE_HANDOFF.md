@@ -206,7 +206,7 @@ The homepage ([src/pages/index.astro](file:///home/buddy/Portfolio/my-portfolio/
 #### 05 // PCB LAB (`PCBShowcase.astro` inside `<section id="hardware">`)
 - **Purpose**: Physical hardware verification proving the ability to take schematics to fabricated, multi-layer, competition-grade ECUs.
 - **Visuals**: Two-column interactive engineering test bench. Left: Interactive WebGL 3D PCB viewport (`PCBShowcaseReact.tsx` / `GerberPCBViewer.tsx`). Right: Engineering telemetry panel with board dimensions, stackup, TVS/CAN/isolation design rationale, and test points.
-- **Interactions**: Board carousel selector (`★ BACK-BOX ECU (2026)`, `FRONT-BOX ECU (2026)`, `E-STOP SAFETY`, `SWARM NODE`), full 3D OrbitControls (pan, zoom, rotate), CAD layer toggle buttons (`F.Cu`, `B.Cu`, `F.Mask`, `Silkscreen`, `Drills`), camera angle presets (Isometric, Top, Bottom), and Gerber archive download.
+- **Interactions**: Board carousel selector (`★ BACK-BOX ECU (2026)`, `FRONT-BOX ECU (2026)`, etc.), full 3D OrbitControls (pan, zoom, rotate), CAD layer toggle buttons (`F.Cu`, `B.Cu`, `F.Mask`, `Silkscreen`, `Drills`), camera angle presets (Isometric, Top, Bottom), and Gerber archive download.
 
 #### 06 // CONTACT (`Contact.astro`)
 - **Purpose**: Facilitates direct technical communication, recruitment inquiries, and professional networking.
@@ -477,7 +477,7 @@ The portfolio documents **10 distinct engineering projects** in [src/data/projec
 | **`baja-2026`** | aBAJA SAEINDIA 2026 (Car A18) | Autonomous Vehicle / Competition (AIR 11)| Electrical & Electronics Head | Custom ECUs, CAN 2.0B, SBW/TBW, ESP32, FreeRTOS | `/media/projects/baja/baja-2026/vehicle/WhatsApp Image 2026-09-14 at 00.14.44.jpeg` |
 | **`hospital-amr`** | Hospital Service AMR (2024–2025) | Autonomous Robotics / Healthcare | Perception & Systems Lead | 2D/3D LiDAR, ROS 2 Humble, Nav2, Cartographer | `/media/projects/Hospital/Hosptial_robot_side-view.jpeg` |
 | **`smart-cctv`** | Smart CCTV Edge Vision (2024) | Computer Vision / Edge AI (Intel Top 25) | Edge AI Engineer | Intel oneAPI, OpenVINO, YOLOv8, RTSP, C++ | `/media/hackathons/intel-ai/IMG-20241127-WA0009.jpg` |
-| **`railguard-ai`** | RailGuard AI Anomaly Rover (2024) | Edge AI / Inspection Robotics (Top 10) | Robotics Hardware Lead | Autonomous rover, YOLOv8, Flutter telemetry, Jetson | `/media/projects/railguard-ai/event/WhatsApp Image 2026-09-14 at 00.59.22(1).jpeg` |
+| **`railguard-ai`** | RailGuard AI Anomaly Rover (2024) | Edge AI / Inspection Robotics (Top 10) | Robotics Hardware Lead | Autonomous rover, YOLOv8, Flutter telemetry, Raspberry Pi 4 | `/media/projects/railguard-ai/event/WhatsApp Image 2026-09-14 at 00.59.22(1).jpeg` |
 | **`surgical-robotics`**| CMR Versius Surgical Robotics (2024) | Medical Robotics / Clinical Systems | Clinical Robotics Intern | Multi-joint robotic arms, surgeon console, kinematics | `/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35.jpeg` |
 | **`swarm-robotics`** | HeRo Swarm Robotics Study (2024) | Multi-Agent Robotics / Simulation | Research Engineer | ESP32 ad-hoc mesh, Gazebo, consensus algorithms | `/media/projects/swarm-robotics/hero_swarm_test.png` |
 | **`balancing-robot`**| Two-Wheeled Inverted Pendulum (2023) | Mechatronics / Control Systems | Control Systems Lead | MPU-6050, PID control, high-torque DC motors, C++ | `/images/abaja-lane-pipeline.png` |

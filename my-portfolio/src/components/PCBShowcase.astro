@@ -20,13 +20,7 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
     <div class="pcb-nav-controls">
       <div class="pcb-dots" role="tablist" aria-label="PCB Board Artifacts">
         {pcbArtifacts.map((board, idx) => {
-          const tabLabel = idx === 0 
-            ? '★ BACK-BOX ECU (2026)' 
-            : idx === 1 
-            ? 'FRONT-BOX ECU (2026)' 
-            : idx === 2 
-            ? 'E-STOP SAFETY' 
-            : 'SWARM NODE';
+          const tabLabel = board.tabLabel || board.name.toUpperCase();
           return (
             <button
               class:list={['pcb-dot-btn', { active: idx === 0 }]}
@@ -79,10 +73,14 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
             <h4 class="board-title">{board.name}</h4>
             <div class="project-association">
               <span class="assoc-label mono">PROJECT:</span>
-              <a href={resolveHref(`/projects/${board.projectId}`)} class="assoc-link mono">
-                <span>{board.project}</span>
-                <span class="assoc-arrow">↗</span>
-              </a>
+              {board.projectId ? (
+                <a href={resolveHref(`/projects/${board.projectId}`)} class="assoc-link mono">
+                  <span>{board.project}</span>
+                  <span class="assoc-arrow">↗</span>
+                </a>
+              ) : (
+                <span class="assoc-link mono">{board.project}</span>
+              )}
             </div>
 
             <!-- Provenance & CAD Tool -->
@@ -123,7 +121,9 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
           </div>
 
           <!-- Physical Engineering Rationale -->
+          {(board.problemSolved || board.designDecisions) && (
           <div class="rationale-section">
+            {board.problemSolved && (
             <div class="rationale-block">
               <div class="rationale-title mono">
                 <span class="dot-warn">●</span>
@@ -131,7 +131,9 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
               </div>
               <p class="rationale-text">{board.problemSolved}</p>
             </div>
+            )}
 
+            {board.designDecisions && (
             <div class="rationale-block">
               <div class="rationale-title mono">
                 <span class="dot-accent">●</span>
@@ -139,7 +141,9 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
               </div>
               <p class="rationale-text">{board.designDecisions}</p>
             </div>
+            )}
           </div>
+          )}
 
           <!-- Physical Build Verification (Photographic & Live Test Proof) -->
           {board.id === 'vehicle-ecu' && (
@@ -209,10 +213,21 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
                   <span>↓ DOWNLOAD GERBERS</span>
                 </a>
               )}
+              {board.renders && Object.entries(board.renders).map(([view, file]) => (
+                <a
+                  href={resolveMediaUrl(`/media/${file}`)}
+                  download
+                  class="btn-download-gerbers mono"
+                  title={`Download ${view} render (PNG, transparent background)`}
+                >
+                  <span>↓ {view.toUpperCase()} PNG</span>
+                </a>
+              ))}
             </div>
           )}
 
           <!-- Live Test Point Inspector Callout (Updated on TP hover) -->
+          {board.testPoints.length > 0 && (
           <div class="live-tp-callout" id={`tpCallout-${board.id}`}>
             <div class="tp-callout-header mono">
               <span class="tp-icon">⌖</span>
@@ -222,6 +237,7 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
               Click or hover any glowing gold test point on the physical PCB schematic to read electrical signal parameters and trace routing rationale.
             </p>
           </div>
+          )}
         </article>
       ))}
     </div>
@@ -499,13 +515,16 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
   .pcb-nav-controls {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1.25rem;
+    width: 100%;
   }
 
   .pcb-dots {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
   }
 
   .pcb-dot-btn {
@@ -958,8 +977,15 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
   }
 
   @media (max-width: 960px) {
+    .pcb-header-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+
     .pcb-stage-grid {
       grid-template-columns: 1fr;
+      gap: var(--space-6);
     }
     
     .pcb-viewport-wrap :global(astro-island),
@@ -967,12 +993,85 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
     .pcb-viewport-wrap :global(.gerber-viewer-container) {
       max-width: 100%;
     }
-  }
 
-  @media (max-width: 640px) {
     .pcb-nav-controls {
       width: 100%;
       justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .pcb-dot-btn {
+      min-height: 40px;
+      padding: 6px 12px;
+      font-size: 0.68rem;
+    }
+
+    .pcb-arrow-btn {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .pcb-header-bar {
+      margin-bottom: var(--space-4);
+    }
+
+    .pcb-heading {
+      font-size: clamp(1.4rem, 5vw, 1.8rem);
+    }
+
+    .pcb-nav-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .pcb-dots {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .pcb-dot-btn {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+      padding: 8px 6px;
+      font-size: 0.64rem;
+    }
+
+    .pcb-arrows {
+      display: none;
+    }
+
+    .provenance-grid {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .spec-row {
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px 10px;
+    }
+
+    .spec-v {
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    .gerber-actions-strip {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn-view-gerber3d,
+    .btn-download-gerbers {
+      width: 100%;
+      justify-content: center;
+      min-height: 42px;
     }
   }
 

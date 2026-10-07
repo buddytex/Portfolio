@@ -399,6 +399,33 @@ const primaryExp = experiences[0];
       border-bottom: 1px solid var(--border-subtle);
     }
   }
+
+  @media (max-width: 640px) {
+    .exp-media-column {
+      padding: clamp(0.75rem, 3vw, 1.25rem);
+      gap: var(--space-3);
+    }
+
+    .exp-content-column {
+      padding: clamp(1rem, 3.5vw, 1.5rem);
+      gap: var(--space-4);
+    }
+
+    .exp-role-title {
+      font-size: clamp(1.2rem, 5vw, 1.45rem);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .exp-photo-duo {
+      gap: var(--space-2);
+    }
+
+    .exp-video-overlay {
+      font-size: 0.55rem;
+      padding: 3px 6px;
+    }
+  }
 </style>
 
 <script>

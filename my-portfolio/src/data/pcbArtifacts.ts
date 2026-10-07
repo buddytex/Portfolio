@@ -1,20 +1,25 @@
 export interface PCBArtifact {
   id: string;
   name: string;
+  /** Short uppercase label for the showcase tab bar */
+  tabLabel?: string;
   subsystem: string;
   project: string;
-  projectId: string;
+  /** Project page id (omit when the board has no dedicated project page) */
+  projectId?: string;
   dimensions: string;
   layerCount: string;
   finish: string;
-  problemSolved: string;
-  designDecisions: string;
+  problemSolved?: string;
+  designDecisions?: string;
   specs: { label: string; value: string }[];
   testPoints: { id: string; x: number; y: number; label: string; desc: string }[];
   /** Path to original Gerber archive for download (relative to /media/) */
   gerberArchive?: string;
   /** Path to preprocessed JSON geometry (relative to /pcb-data/) */
   gerberDataFile?: string;
+  /** Static renders for reuse on other sites (relative to /media/) */
+  renders?: { top?: string; bottom?: string; iso?: string };
   /** Board type label */
   boardType?: string;
   /** Design CAD Software */
@@ -29,6 +34,7 @@ export const pcbArtifacts: PCBArtifact[] = [
   {
     id: 'vehicle-ecu',
     name: 'Custom Multi-Layer Vehicle ECU',
+    tabLabel: '★ BACK-BOX ECU (2026)',
     subsystem: 'Steer-by-Wire & Isolated CAN Gateway',
     project: 'aBAJA SAEINDIA 2026 (Car A18 · AIR 11)',
     projectId: 'baja-2026',
@@ -60,6 +66,7 @@ export const pcbArtifacts: PCBArtifact[] = [
   {
     id: 'front-box-ecu',
     name: 'Front-Box ECU — Sensor Interface & Steering Controller',
+    tabLabel: 'FRONT-BOX ECU (2026)',
     subsystem: 'Front Sensor Hub & Steering Actuator Interface',
     project: 'aBAJA SAEINDIA 2026 (Car A18 · AIR 11)',
     projectId: 'baja-2026',
@@ -87,47 +94,172 @@ export const pcbArtifacts: PCBArtifact[] = [
       { id: 'tp-sensor', x: 60, y: 55, label: 'TP_SENS: Sensor Headers', desc: 'Multi-channel sensor interface headers for LiDAR, camera, and proximity inputs.' },
     ],
   },
+
+  // ── Gerber-backed boards added from media/gerbers.zip ──
+  // Specs below are measured directly from the fabrication files (outline, drill tables, KiCad job header).
   {
-    id: 'estop-interlock',
-    name: 'Fail-Safe Hardware E-Stop Interlock Board',
-    subsystem: 'Dual-Channel Emergency Power Severing',
-    project: 'aBAJA SAEINDIA 2026 Safety Architecture',
-    projectId: 'baja-2026',
-    dimensions: '82 mm × 64 mm',
-    layerCount: '2-Layer 2oz Heavy Copper',
-    finish: 'Lead-Free HASL with Conformal Coating',
-    designSoftware: 'KiCad EDA',
-    dataUsed: 'Hardware Safety Prototype Architecture',
-    whatIDesigned: 'Purely hardware-arbitrated dual-channel latching circuit with SCR latching relay, sub-5ms contact separation, and isolated telemetry dry-contact feedback.',
-    problemSolved: 'Prevented autonomous vehicle runaway in the event of trajectory software faults, communication link loss, or compute freeze during competition trials.',
-    designDecisions: 'Purely hardware-arbitrated dual-channel latching circuit requiring active manual reset. Operates completely independent of microcontroller firmware or software state with sub-5ms relay contact separation.',
+    id: 'abaja-main-2025',
+    name: 'aBAJA 2025 Main PCB',
+    tabLabel: 'MAIN PCB (2025)',
+    subsystem: 'Vehicle Electronics · Main Board',
+    project: 'aBAJA SAEINDIA 2025 (Car A12 · AIR 7)',
+    projectId: 'baja-2025',
+    dimensions: '159.5 mm × 151.0 mm',
+    layerCount: '2-Layer FR4 (1.6mm)',
+    finish: 'Production Gerber Set',
+    designSoftware: 'KiCad 9.0.3 (Pcbnew)',
+    dataUsed: 'RS-274X Gerber Archive (aBAJA_Main_PCB_2025.rar)',
+    gerberArchive: 'Gerbers/aBAJA_Main_PCB_2025.rar',
+    gerberDataFile: 'abaja-main-2025.json',
+    renders: { top: 'pcb-renders/abaja-main-2025/top.png', bottom: 'pcb-renders/abaja-main-2025/bottom.png', iso: 'pcb-renders/abaja-main-2025/iso.png' },
+    boardType: 'Main PCB',
     specs: [
-      { label: 'Relay Configuration', value: 'Dual Form-C Normally Closed' },
-      { label: 'Response Latency', value: '< 5 ms Hardware Trip' },
-      { label: 'Current Rating', value: '40 A Continuous (80 A Peak)' },
-      { label: 'Trigger Channels', value: 'RF Wireless Link + Physical Cockpit Slap' },
-      { label: 'Interlock Logic', value: 'Hardware SCR Latching Relay' },
+      { label: 'Board Outline', value: '159.5 × 151.0 mm' },
+      { label: 'Copper Layers', value: '2 (F.Cu / B.Cu)' },
+      { label: 'Plated Through-Holes', value: '129' },
+      { label: 'Mounting / NPTH Holes', value: '6' },
+      { label: 'EDA Tool', value: 'KiCad 9.0.3' },
     ],
-    testPoints: [
-      { id: 'tp-relay', x: 68, y: 48, label: 'TP_RELAY: Safety Contacts', desc: 'Dual redundant relay contacts switching the high-current battery line.' },
-      { id: 'tp-trip', x: 32, y: 30, label: 'TP_TRIP: Latch Trigger', desc: 'Hardware latch trigger input with optocoupled RC noise debounce.' },
-      { id: 'tp-stat', x: 45, y: 75, label: 'TP_STAT: Telemetry Out', desc: 'Isolated dry-contact feedback to ROS 2 logger indicating safety state.' },
+    testPoints: [],
+  },
+  {
+    id: 'abaja-tbu-2025',
+    name: 'aBAJA 2025 TBU Board',
+    tabLabel: 'TBU (2025)',
+    subsystem: 'Vehicle Electronics · TBU',
+    project: 'aBAJA SAEINDIA 2025 (Car A12 · AIR 7)',
+    projectId: 'baja-2025',
+    dimensions: '161.0 mm × 140.0 mm',
+    layerCount: '2-Layer FR4 (1.6mm)',
+    finish: 'Production Gerber Set',
+    designSoftware: 'KiCad 9.0.3 (Pcbnew)',
+    dataUsed: 'RS-274X Gerber Archive (aBAJA_TBU_2025.rar)',
+    gerberArchive: 'Gerbers/aBAJA_TBU_2025.rar',
+    gerberDataFile: 'abaja-tbu-2025.json',
+    renders: { top: 'pcb-renders/abaja-tbu-2025/top.png', bottom: 'pcb-renders/abaja-tbu-2025/bottom.png', iso: 'pcb-renders/abaja-tbu-2025/iso.png' },
+    boardType: 'TBU',
+    specs: [
+      { label: 'Board Outline', value: '161.0 × 140.0 mm' },
+      { label: 'Copper Layers', value: '2 (F.Cu / B.Cu)' },
+      { label: 'Plated Through-Holes', value: '152' },
+      { label: 'Mounting / NPTH Holes', value: '4' },
+      { label: 'EDA Tool', value: 'KiCad 9.0.3' },
     ],
+    testPoints: [],
+  },
+  {
+    id: 'abaja-ssu-2025',
+    name: 'aBAJA 2025 SSU Board',
+    tabLabel: 'SSU (2025)',
+    subsystem: 'Vehicle Electronics · SSU',
+    project: 'aBAJA SAEINDIA 2025 (Car A12 · AIR 7)',
+    projectId: 'baja-2025',
+    dimensions: '136.5 mm × 123.5 mm',
+    layerCount: '2-Layer FR4 (1.6mm)',
+    finish: 'Production Gerber Set',
+    designSoftware: 'KiCad 9.0.3 (Pcbnew)',
+    dataUsed: 'RS-274X Gerber Archive (aBAJA_SSU_2025.rar)',
+    gerberArchive: 'Gerbers/aBAJA_SSU_2025.rar',
+    gerberDataFile: 'abaja-ssu-2025.json',
+    renders: { top: 'pcb-renders/abaja-ssu-2025/top.png', bottom: 'pcb-renders/abaja-ssu-2025/bottom.png', iso: 'pcb-renders/abaja-ssu-2025/iso.png' },
+    boardType: 'SSU',
+    specs: [
+      { label: 'Board Outline', value: '136.5 × 123.5 mm' },
+      { label: 'Copper Layers', value: '2 (F.Cu / B.Cu)' },
+      { label: 'Plated Through-Holes', value: '128' },
+      { label: 'EDA Tool', value: 'KiCad 9.0.3' },
+    ],
+    testPoints: [],
+  },
+  {
+    id: 'abaja-dashboard-2025',
+    name: 'aBAJA 2025 Driver Dashboard PCB',
+    tabLabel: 'DASHBOARD (2025)',
+    subsystem: 'Vehicle Electronics · Dashboard',
+    project: 'aBAJA SAEINDIA 2025 (Car A12 · AIR 7)',
+    projectId: 'baja-2025',
+    dimensions: '133.0 mm × 115.0 mm',
+    layerCount: '2-Layer FR4 (1.6mm)',
+    finish: 'Production Gerber Set',
+    designSoftware: 'KiCad 9.0.3 (Pcbnew)',
+    dataUsed: 'RS-274X Gerber Archive (aBAJA_Dashboard_2025.rar)',
+    gerberArchive: 'Gerbers/aBAJA_Dashboard_2025.rar',
+    gerberDataFile: 'abaja-dashboard-2025.json',
+    renders: { top: 'pcb-renders/abaja-dashboard-2025/top.png', bottom: 'pcb-renders/abaja-dashboard-2025/bottom.png', iso: 'pcb-renders/abaja-dashboard-2025/iso.png' },
+    boardType: 'Dashboard',
+    specs: [
+      { label: 'Board Outline', value: '133.0 × 115.0 mm' },
+      { label: 'Copper Layers', value: '2 (F.Cu / B.Cu)' },
+      { label: 'Plated Through-Holes', value: '147' },
+      { label: 'Mounting / NPTH Holes', value: '4' },
+      { label: 'EDA Tool', value: 'KiCad 9.0.3' },
+    ],
+    testPoints: [],
+  },
+  {
+    id: 'rail-agent',
+    name: 'Rail-Agent Controller PCB',
+    tabLabel: 'RAIL-AGENT',
+    subsystem: 'Rail-Agent · Rover Electronics',
+    project: 'RailGuard AI / Rail-Agent',
+    projectId: 'railguard-ai',
+    dimensions: '≈114 mm × 85.5 mm (component extents)',
+    layerCount: '2-Layer FR4 (1.6mm)',
+    finish: 'Production Gerber Set',
+    designSoftware: 'KiCad 10.0.2 (Pcbnew)',
+    dataUsed: 'RS-274X Gerber Archive (Rail_Agent.rar)',
+    gerberArchive: 'Gerbers/Rail_Agent.rar',
+    gerberDataFile: 'rail-agent.json',
+    renders: { top: 'pcb-renders/rail-agent/top.png', bottom: 'pcb-renders/rail-agent/bottom.png', iso: 'pcb-renders/rail-agent/iso.png' },
+    boardType: 'Controller PCB',
+    specs: [
+      { label: 'Footprint Extents', value: '≈114 × 85.5 mm' },
+      { label: 'Copper Layers', value: '2 (F.Cu / B.Cu)' },
+      { label: 'Plated Through-Holes', value: '102' },
+      { label: 'Mounting / NPTH Holes', value: '4' },
+      { label: 'EDA Tool', value: 'KiCad 10.0.2' },
+    ],
+    testPoints: [],
+  },
+  {
+    id: 'atbots-v4',
+    name: 'Atbots v4 PCB',
+    tabLabel: 'ATBOTS v4',
+    subsystem: 'Industry Client Work · Atbots',
+    project: 'Atbots (company project)',
+    dimensions: '80.0 mm × 93.0 mm',
+    layerCount: '2-Layer FR4 (1.6mm)',
+    finish: 'Production Gerber Set',
+    designSoftware: 'KiCad 10.0.2 (Pcbnew)',
+    dataUsed: 'RS-274X Gerber Archive (Atbots_v4.zip)',
+    gerberArchive: 'Gerbers/Atbots_v4.zip',
+    gerberDataFile: 'atbots-v4.json',
+    renders: { top: 'pcb-renders/atbots-v4/top.png', bottom: 'pcb-renders/atbots-v4/bottom.png', iso: 'pcb-renders/atbots-v4/iso.png' },
+    boardType: 'Revision v4',
+    specs: [
+      { label: 'Board Outline', value: '80.0 × 93.0 mm' },
+      { label: 'Copper Layers', value: '2 (F.Cu / B.Cu)' },
+      { label: 'Plated Through-Holes', value: '177' },
+      { label: 'Mounting / NPTH Holes', value: '5' },
+      { label: 'EDA Tool', value: 'KiCad 10.0.2' },
+    ],
+    testPoints: [],
   },
   {
     id: 'swarm-node',
     name: 'Swarm Robotics Mesh & Motor Node',
+    tabLabel: 'SWARM NODE',
     subsystem: 'Distributed Agent Compute & Motor Driver',
     project: 'Swarm Robotics Platform',
     projectId: 'swarm-robotics',
-    dimensions: '62 mm × 62 mm',
-    layerCount: '2-Layer FR4 Standard',
-    finish: 'ENIG Gold',
-    designSoftware: 'KiCad EDA',
-    dataUsed: 'Multi-Agent Mesh Architecture',
-    whatIDesigned: 'ESP32 modular compute carrier, dual H-bridge motor driver interface, optical wheel encoder conditioning, and regulated LiPo power rail.',
-    problemSolved: 'Packaged dual-core compute, ad-hoc wireless mesh communications, dual H-bridge motor drivers, and 4-channel proximity sensing into a compact mobile agent footprint.',
-    designDecisions: 'Dedicated Core 0 to real-time closed-loop encoder PID and Core 1 to peer-to-peer TCP/IP mesh consensus broadcasts, eliminating latency jitter.',
+    dimensions: '74 mm × 78 mm × 77 mm',
+    layerCount: 'Multi-Tier Modular Stackup',
+    finish: 'ENIG Gold / Double-Sided FR4',
+    designSoftware: 'EAGLE CAD & KiCad EDA',
+    dataUsed: 'VeRLab HeRo Common (CAD, Meshes & EAGLE Architecture)',
+    whatIDesigned: 'ESP32 two-robot master-slave coordination firmware, IR proximity ring thresholding, motor driver integration, and peer-to-peer TCP communication protocols.',
+    problemSolved: 'Integrated decentralized compute, ad-hoc wireless mesh comms, dual DC motor drivers, and infrared proximity sensing into a compact 74mm swarm mobile robot footprint.',
+    designDecisions: 'Modular stacked architecture separating power and motor drive plane from microcontroller logic and optical tracking hat. Differential drive with dual micro-motors.',
     specs: [
       { label: 'Microcontroller', value: 'Dual-Core ESP32 @ 240 MHz' },
       { label: 'Motor Drivers', value: 'Dual Integrated Full H-Bridge' },

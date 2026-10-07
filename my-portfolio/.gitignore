@@ -28,3 +28,4 @@ pnpm-debug.log*
 .ff_*
 browser_log.json
 public/test_roles_snap.html
+.gerber-inspect/

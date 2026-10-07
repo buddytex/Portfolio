@@ -366,31 +366,58 @@ const navItems = [
   .nav-toggle {
     display: none;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 5px;
-    padding: 4px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px;
     cursor: pointer;
+    border-radius: var(--r-sm);
+    background: transparent;
+    border: 1px solid transparent;
+    transition: background var(--dur-micro) var(--ease-standard),
+                border-color var(--dur-micro) var(--ease-standard);
+  }
+
+  .nav-toggle:hover,
+  .nav-toggle:focus-visible {
+    background: rgba(20, 24, 34, 0.05);
+    border-color: var(--border-subtle);
+  }
+
+  .nav-dark .nav-toggle:hover,
+  .nav-dark .nav-toggle:focus-visible {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .nav-dark .nav-toggle span {
+    background: #F8FAFC;
   }
 
   .nav-toggle span {
     display: block;
-    width: 20px;
-    height: 1.5px;
+    width: 22px;
+    height: 2px;
     background: var(--text-primary);
-    transition: transform 120ms var(--ease-in-quart),
-                opacity 120ms var(--ease-in-quart);
+    transition: transform 140ms var(--ease-in-quart),
+                opacity 140ms var(--ease-in-quart);
     transform-origin: center;
   }
 
   .nav-toggle.open span:first-child {
-    transform: translateY(3.25px) rotate(45deg);
+    transform: translateY(3.5px) rotate(45deg);
     transition: transform var(--dur-micro) var(--ease-out-expo);
   }
   .nav-toggle.open span:last-child {
-    transform: translateY(-3.25px) rotate(-45deg);
+    transform: translateY(-3.5px) rotate(-45deg);
     transition: transform var(--dur-micro) var(--ease-out-expo);
   }
 
-  /* Mobile drawer (§6 exit state: close is faster via --ease-in-quart) */
+  /* Mobile drawer */
   .mobile-drawer {
     display: none;
     position: fixed;
@@ -398,7 +425,7 @@ const navItems = [
     inset-inline: 0;
     bottom: 0;
     background: var(--surface);
-    padding: var(--space-8) 24px;
+    padding: var(--space-6) 20px calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
     opacity: 0;
     transform: translateY(-8px);
     pointer-events: none;
@@ -407,6 +434,14 @@ const navItems = [
     transition: opacity 160ms var(--ease-in-quart),
                 transform 160ms var(--ease-in-quart);
     border-top: 1px solid var(--border);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .nav-dark .mobile-drawer {
+    background: #0B0E14;
+    border-top-color: rgba(255, 255, 255, 0.1);
   }
 
   .mobile-drawer.open {
@@ -420,25 +455,75 @@ const navItems = [
   .mobile-nav {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-2);
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .mobile-link {
-    font-size: var(--text-3xl);
+    font-size: clamp(1.2rem, 4.5vw, 1.65rem);
     font-weight: 700;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     letter-spacing: -0.02em;
-    transition: color var(--dur-fast) var(--ease-out);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: var(--r-sm);
+    transition: all var(--dur-fast) var(--ease-out);
+    touch-action: manipulation;
   }
-  .mobile-link:hover { color: var(--text-primary); }
+
+  .mobile-link:hover,
+  .mobile-link:focus-visible {
+    background: rgba(184, 146, 74, 0.08);
+    color: var(--color-gold);
+    transform: translateX(4px);
+  }
+
+  .mobile-link.active {
+    color: var(--accent-primary);
+    background: rgba(184, 146, 74, 0.1);
+    font-weight: 800;
+  }
+
+  .nav-dark .mobile-link {
+    color: #E2E8F0;
+  }
+
+  .nav-dark .mobile-link:hover,
+  .nav-dark .mobile-link:focus-visible {
+    background: rgba(245, 158, 11, 0.15);
+    color: #FDE68A;
+  }
+
+  .nav-dark .mobile-link.active {
+    color: #F59E0B;
+    background: rgba(245, 158, 11, 0.15);
+  }
 
   .mobile-resume {
     font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-top: var(--space-6);
-    padding-top: var(--space-6);
-    border-top: 1px solid var(--border-subtle);
+    font-weight: 600;
+    color: #FFFFFF !important;
+    background: var(--color-ink);
+    margin-top: var(--space-4);
+    padding: 12px 16px;
+    border-radius: var(--r-sm);
+    justify-content: center;
+    border: 1px solid transparent;
+  }
+
+  .mobile-resume:hover {
+    background: var(--color-gold);
+    color: var(--color-ink) !important;
+  }
+
+  .nav-dark .mobile-resume {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #F59E0B;
+    color: #FDE68A !important;
   }
 
   @media (max-width: 860px) {

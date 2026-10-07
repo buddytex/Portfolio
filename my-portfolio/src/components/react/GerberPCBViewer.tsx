@@ -120,6 +120,8 @@ interface GerberPCBViewerProps {
   boardName: string;
   gerberArchive?: string;
   onClose?: () => void;
+  /** Chrome-less tile mode for collages: fills parent height, no toolbars, canvas unmounts off-screen */
+  compact?: boolean;
 }
 
 export default function GerberPCBViewer({
@@ -127,6 +129,7 @@ export default function GerberPCBViewer({
   boardName,
   gerberArchive,
   onClose,
+  compact = false,
 }: GerberPCBViewerProps) {
   const [pcbData, setPcbData] = useState<PCBData | null>(null);
   const [phase, setPhase] = useState<LoadingPhase>('idle');
@@ -231,16 +234,18 @@ export default function GerberPCBViewer({
   return (
     <div ref={containerRef} className="gerber-viewer-container" style={{
       width: '100%',
+      height: compact ? '100%' : undefined,
       display: 'flex',
       flexDirection: 'column',
       gap: '0',
       position: 'relative',
-      borderRadius: '8px',
+      borderRadius: compact ? '0' : '8px',
       overflow: 'hidden',
-      border: '1px solid rgba(255, 255, 255, 0.08)',
+      border: compact ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
       background: '#0E1117',
     }}>
       {/* ── Top Control Bar ── */}
+      {!compact && (
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -369,12 +374,14 @@ export default function GerberPCBViewer({
           </button>
         )}
       </div>
+      )}
 
       {/* ── 3D Canvas Viewport ── */}
       <div style={{
         width: '100%',
-        height: '470px',
-        minHeight: '400px',
+        height: compact ? '100%' : 'clamp(320px, 46vh, 470px)',
+        minHeight: compact ? '0' : '280px',
+        flex: compact ? '1 1 auto' : undefined,
         position: 'relative',
         background: 'radial-gradient(circle at center, #151923 0%, #0B0E14 100%)',
       }}>
@@ -414,13 +421,14 @@ export default function GerberPCBViewer({
           </div>
         )}
 
-        {pcbData && (
+        {pcbData && (!compact || isInView) && (
           <Canvas
             frameloop={isInView ? 'always' : 'never'}
-            gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
-            style={{ width: '100%', height: '100%' }}
+            gl={{ antialias: typeof window !== 'undefined' ? window.innerWidth >= 768 : true, alpha: false, preserveDrawingBuffer: true }}
+            style={{ width: '100%', height: '100%', touchAction: 'none' }}
             onCreated={({ gl }) => {
-              gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+              const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+              gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.1 : 1.75));
               gl.setClearColor(0x0E1117, 1);
               gl.toneMapping = THREE.ACESFilmicToneMapping;
               gl.toneMappingExposure = 1.05;
@@ -438,9 +446,31 @@ export default function GerberPCBViewer({
             </Suspense>
           </Canvas>
         )}
+
+        {compact && pcbData && (
+          <div style={{
+            position: 'absolute',
+            left: '10px',
+            bottom: '10px',
+            zIndex: 5,
+            pointerEvents: 'none',
+            fontSize: '0.58rem',
+            fontFamily: "'JetBrains Mono', monospace",
+            color: '#E5C378',
+            background: 'rgba(14, 17, 23, 0.72)',
+            border: '1px solid rgba(229, 195, 120, 0.25)',
+            borderRadius: '4px',
+            padding: '3px 7px',
+            letterSpacing: '0.05em',
+            backdropFilter: 'blur(4px)',
+          }}>
+            ⬡ LIVE 3D · {pcbData.dimensions.width} × {pcbData.dimensions.height} mm · DRAG TO ROTATE
+          </div>
+        )}
       </div>
 
       {/* ── Bottom Controls Bar ── */}
+      {!compact && (
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -575,6 +605,7 @@ export default function GerberPCBViewer({
           </a>
         )}
       </div>
+      )}
 
       <style>{`
         @keyframes gerber-spin {
@@ -652,6 +683,7 @@ function PCBScene({ data, layerVisibility, cameraPreset, presetTrigger, viewMode
 }) {
   const controlsRef = useRef<any>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
+  const fit = getFitScale(data);
 
   // Smooth camera transitions on preset trigger
   useEffect(() => {
@@ -661,7 +693,7 @@ function PCBScene({ data, layerVisibility, cameraPreset, presetTrigger, viewMode
     const controls = controlsRef.current;
 
     const startPos = cam.position.clone();
-    const endPos = new THREE.Vector3(...preset.position);
+    const endPos = new THREE.Vector3(...preset.position).multiplyScalar(fit);
     const startTime = Date.now();
     const duration = 600;
 
@@ -679,7 +711,7 @@ function PCBScene({ data, layerVisibility, cameraPreset, presetTrigger, viewMode
       }
     }
     animate();
-  }, [cameraPreset, presetTrigger]);
+  }, [cameraPreset, presetTrigger, fit]);
 
   // Subtle continuous auto-rotation with user interaction pause & resume
   const [isAutoRotating, setIsAutoRotating] = useState(() => {
@@ -714,7 +746,7 @@ function PCBScene({ data, layerVisibility, cameraPreset, presetTrigger, viewMode
       <PerspectiveCamera
         ref={cameraRef}
         makeDefault
-        position={CAMERA_PRESETS.isometric.position}
+        position={CAMERA_PRESETS.isometric.position.map(v => v * fit) as [number, number, number]}
         fov={40}
         near={0.01}
         far={100}
@@ -761,7 +793,15 @@ function PCBScene({ data, layerVisibility, cameraPreset, presetTrigger, viewMode
 
 // ─── PCB Board Mesh (Raw Gerber Geometry) ───────────────────────────
 
-function PCBBoardMesh({ data, layerVisibility }: {
+/** Camera distance multiplier so every board fills the frame like a ~200 mm board. */
+export function getFitScale(data: PCBData): number {
+  const maxDim = Math.max(data.dimensions.width, data.dimensions.height);
+  return Math.min(2, Math.max(0.35, maxDim / 200));
+}
+
+export { CAMERA_PRESETS };
+
+export function PCBBoardMesh({ data, layerVisibility }: {
   data: PCBData;
   layerVisibility: Record<string, boolean>;
 }) {

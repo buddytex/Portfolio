@@ -373,6 +373,12 @@ const clusterData = skillCategories.map(cat => ({
       bubble.addEventListener('click', (e) => {
         e.preventDefault();
         activateBubble(bubble);
+        if (window.innerWidth <= 1024) {
+          const hud = document.getElementById('mapHud');
+          if (hud) {
+            hud.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
       });
     });
 
@@ -1053,8 +1059,9 @@ const clusterData = skillCategories.map(cat => ({
     .map-hud-inspector {
       position: static;
       opacity: 1;
-      order: -1;
-      margin-bottom: var(--space-6);
+      order: 2;
+      margin-top: var(--space-6);
+      margin-bottom: 0;
     }
 
     .skill-map-canvas {
@@ -1085,6 +1092,13 @@ const clusterData = skillCategories.map(cat => ({
 
     .hud-inner {
       padding: var(--space-4);
+    }
+
+    .skill-bubble {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .skill-bubble.proficiency-strong {

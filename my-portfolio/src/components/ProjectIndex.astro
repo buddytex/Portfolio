@@ -8,7 +8,7 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
 const featuredProjects = projects.filter(p => p.featured);
 const bajaProjects = featuredProjects.filter(p => p.id === 'baja-2025' || p.id === 'baja-2026');
 const duoProjects = featuredProjects.filter(p => p.id === 'hospital-amr' || p.id === 'smart-cctv');
-const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.id === 'swarm-robotics' || p.id === 'balancing-robot');
+const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' || p.id === 'swarm-robotics' || p.id === 'balancing-robot' || p.id === 'automated-vertical-parking');
 ---
 
 <section id="work" class="section work-section">
@@ -110,6 +110,11 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                       <span>{project.ownershipStory.title}</span>
                     </div>
                   )}
+                  <div class="card-mobile-areas mono">
+                    {project.keyAreas.slice(0, 3).map((area) => (
+                      <span class="mobile-area-chip">{area}</span>
+                    ))}
+                  </div>
                 </div>
                 <div class="footer-secondary-col">
                   <span class="role-badge mono">{project.shortRole}</span>
@@ -222,6 +227,11 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                   </div>
                   <h3 class="card-title" transition:name={`project-title-${project.id}`}>{project.title}</h3>
                   <div class="card-subtitle mono">{project.subtitle}</div>
+                  <div class="card-mobile-areas mono">
+                    {project.keyAreas.slice(0, 3).map((area) => (
+                      <span class="mobile-area-chip">{area}</span>
+                    ))}
+                  </div>
                 </div>
                 <div class="footer-secondary-col">
                   <span class="role-badge mono">{project.shortRole}</span>
@@ -234,7 +244,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
         ))}
       </div>
 
-      <!-- 03. RESEARCH PLATFORMS & MULTI-AGENT SYSTEMS: RailGuard AI & Swarm Robotics -->
+      <!-- 03. RESEARCH PLATFORMS, MULTI-AGENT SYSTEMS & AUTOMATION: RailGuard AI, Swarm Robotics, Balancing Robot & Automated Vertical Parking System -->
       <div class="trio-grid-row">
         {supportingProjects.map((project) => (
           <article 
@@ -336,6 +346,11 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
                   </div>
                   <h3 class="card-title" transition:name={`project-title-${project.id}`}>{project.title}</h3>
                   <div class="card-subtitle mono">{project.subtitle}</div>
+                  <div class="card-mobile-areas mono">
+                    {project.keyAreas.slice(0, 3).map((area) => (
+                      <span class="mobile-area-chip">{area}</span>
+                    ))}
+                  </div>
                 </div>
                 <div class="footer-secondary-col">
                   <span class="role-badge mono">{project.shortRole}</span>
@@ -381,6 +396,26 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
 
   let projectCleanup: (() => void) | null = null;
 
+  function initCardClicks() {
+    const cards = document.querySelectorAll<HTMLElement>('.project-card');
+    cards.forEach((card) => {
+      if (card.dataset.navBound === 'true') return;
+      card.dataset.navBound = 'true';
+
+      card.addEventListener('click', (e) => {
+        // If an anchor was already clicked directly, allow native link navigation
+        const closestAnchor = (e.target as HTMLElement).closest('a');
+        if (closestAnchor) return;
+
+        // If clicked on any outer part of the card, activate its primary link
+        const cardLink = card.querySelector<HTMLAnchorElement>('a.card-link');
+        if (cardLink) {
+          cardLink.click();
+        }
+      });
+    });
+  }
+
   function initProjects() {
     if (projectCleanup) {
       projectCleanup();
@@ -390,6 +425,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
     if (workSection) {
       projectCleanup = initProjectCardsAnimation(workSection);
     }
+    initCardClicks();
   }
 
   document.addEventListener('astro:page-load', initProjects);
@@ -496,10 +532,19 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
   .card-link {
     display: flex;
     flex-direction: column;
+    flex: 1 1 100%;
+    width: 100%;
     height: 100%;
     text-decoration: none;
     color: inherit;
     border-radius: var(--r-card);
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-link:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
   }
 
   /* Hardware Photo / Blueprint Artifact Stage: Visual-Dominant (75–80%) */
@@ -602,6 +647,16 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
     object-position: center 40%;
   }
 
+  #card-automated-vertical-parking .project-real-img,
+  #card-parking-system .project-real-img {
+    object-position: center 36%;
+  }
+
+  #card-automated-vertical-parking .img-secondary,
+  #card-parking-system .img-secondary {
+    object-position: center 25%;
+  }
+
   .img-primary {
     position: absolute;
     inset: 0;
@@ -614,6 +669,7 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
     inset: 0;
     opacity: 0;
     z-index: 2;
+    pointer-events: none;
   }
 
   .project-card:hover .img-primary {
@@ -738,7 +794,11 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
   .project-card:hover .card-hover-overlay {
     opacity: 1;
     transform: translateY(0);
-    pointer-events: auto;
+    pointer-events: none;
+  }
+
+  .card-hover-overlay * {
+    pointer-events: none;
   }
 
   .hover-overlay-content {
@@ -958,38 +1018,62 @@ const supportingProjects = featuredProjects.filter(p => p.id === 'railguard-ai' 
     }
   }
 
+  .card-mobile-areas {
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .baja-grid-row,
     .duo-grid-row,
     .trio-grid-row {
       grid-template-columns: 1fr;
+      gap: 1.25rem;
     }
 
-    .flagship-visual {
-      height: 280px;
-    }
-
-    .baja-visual {
-      height: 280px;
-    }
-
-    .duo-visual {
-      height: 250px;
-    }
-
+    .flagship-visual,
+    .baja-visual,
+    .duo-visual,
     .trio-visual {
-      height: 220px;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      min-height: 200px;
+      max-height: 340px;
     }
 
     .card-footer-minimal {
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-2);
+      padding: var(--space-4);
+    }
+
+    .card-title {
+      font-size: clamp(1.15rem, 4.5vw, 1.4rem);
+    }
+
+    .card-mobile-areas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 6px;
+    }
+
+    .mobile-area-chip {
+      font-size: 0.62rem;
+      padding: 2px 7px;
+      background: rgba(20, 24, 34, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-xs);
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
     }
 
     .footer-secondary-col {
       width: 100%;
       justify-content: space-between;
+      margin-top: 2px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-subtle);
     }
   }
 

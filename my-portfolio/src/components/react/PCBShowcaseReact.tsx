@@ -7,8 +7,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { pcbArtifacts } from '../../data/pcbArtifacts';
 import GerberPCBViewer from './GerberPCBViewer';
+import { resolveMediaUrl } from '../../utils/media';
 
 function ShowcaseRenderTrigger({ isInView }: { isInView: boolean }) {
   const { invalidate } = useThree();
@@ -87,7 +89,7 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
   }, []);
 
   return (
-    <div ref={containerRef} style={{ width: '100%', minHeight: '440px', position: 'relative', height: '100%' }}>
+    <div ref={containerRef} style={{ width: '100%', minHeight: 'clamp(320px, 46vh, 440px)', position: 'relative', height: '100%' }}>
       {currentBoard.gerberDataFile ? (
         <GerberPCBViewer
           key={currentBoard.id}
@@ -99,10 +101,11 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
         <Canvas
           frameloop={isInView ? 'always' : 'never'}
           camera={{ position: [0, 0, 3.5], fov: 42 }}
-          gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
-          style={{ width: '100%', height: '100%', display: 'block', minHeight: '440px' }}
+          gl={{ antialias: typeof window !== 'undefined' ? window.innerWidth >= 768 : true, alpha: false, preserveDrawingBuffer: true }}
+          style={{ width: '100%', height: '100%', display: 'block', minHeight: 'clamp(320px, 46vh, 440px)' }}
           onCreated={({ gl }) => {
-            gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+            const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+            gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.1 : 1.75));
             gl.setClearColor(0x0E1117, 1);
           }}
         >
@@ -140,6 +143,75 @@ export default function PCBShowcaseReact({ initialBoardIndex = 0 }: PCBShowcaseR
   );
 }
 
+function HeroSwarmRobotModel() {
+  const [model, setModel] = useState<THREE.Group | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loader = new GLTFLoader();
+    const url = resolveMediaUrl('/models/hero_robot.glb');
+
+    loader.load(
+      url,
+      (gltf) => {
+        if (!isMounted) return;
+        const scene = gltf.scene;
+
+        // Auto-center and normalize size
+        const box = new THREE.Box3().setFromObject(scene);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z) || 1;
+        const targetScale = 2.4 / maxDim;
+
+        scene.scale.set(targetScale, targetScale, targetScale);
+        scene.position.set(-center.x * targetScale, -center.y * targetScale, -center.z * targetScale);
+
+        scene.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            if (mesh.material) {
+              const mat = mesh.material as THREE.MeshStandardMaterial;
+              mat.roughness = Math.max(0.2, mat.roughness ?? 0.4);
+              mat.metalness = Math.min(0.85, mat.metalness ?? 0.3);
+            }
+          }
+        });
+
+        setModel(scene);
+      },
+      undefined,
+      (err) => {
+        console.warn('Could not load hero_robot.glb:', err);
+      }
+    );
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!model) {
+    return (
+      <group>
+        <PCBSubstrate />
+        <mesh position={[0, 0, 0.2]}>
+          <boxGeometry args={[0.5, 0.5, 0.1]} />
+          <meshStandardMaterial color={0x2b3846} wireframe={true} />
+        </mesh>
+      </group>
+    );
+  }
+
+  return (
+    <group rotation={[0.2, -0.4, 0]}>
+      <primitive object={model} />
+    </group>
+  );
+}
+
 // ── Decorative PCB Board (existing showcase) ────────────────────────
 
 function PCBBoard({ board }: { board: PCBBoardData }) {
@@ -148,6 +220,10 @@ function PCBBoard({ board }: { board: PCBBoardData }) {
   useEffect(() => {
     if (!groupRef.current) return;
   }, [board.id]);
+
+  if (board.id === 'swarm-node') {
+    return <HeroSwarmRobotModel />;
+  }
 
   return (
     <group ref={groupRef}>

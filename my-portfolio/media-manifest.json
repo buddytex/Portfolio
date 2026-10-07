@@ -1810,5 +1810,77 @@
     "sizeBytes": 695827,
     "sha256": "cab4e1058503ddd4db7a808719f475acea6be140244bae9a8b8dc02417eddd05",
     "duplicateOf": null
+  },
+  {
+    "filename": "naveen_with_a18_vehicle.jpg",
+    "currentPath": "media/projects/baja/baja-2026/naveen_with_a18_vehicle.jpg",
+    "category": "Projects",
+    "project": "aBAJA 2026",
+    "mediaType": "image",
+    "subject": "Naveen Shaji George sitting on Car A18 tyre in race workshop",
+    "intendedUsage": "Project Engineering Evidence",
+    "sizeBytes": 406938,
+    "sha256": "bc0c38809f2959ac200fd8eaac7760cc5961c3d581f7b6f38cae9f55b949efaf",
+    "duplicateOf": null
+  },
+  {
+    "filename": "automated_parking_team.jpg",
+    "currentPath": "media/projects/parking-system/automated_parking_team.jpg",
+    "category": "Projects",
+    "project": "Automated Vertical Parking System",
+    "mediaType": "image",
+    "subject": "Engineering team standing beside automated rotary parking system",
+    "intendedUsage": "Project Engineering Evidence",
+    "sizeBytes": 159895,
+    "sha256": "c16bc64797c5ea9637f7d9b4c2a0086ee7dee15301f2996c82d220f9384b7fa0",
+    "duplicateOf": null
+  },
+  {
+    "filename": "automated_parking_mechanism.jpg",
+    "currentPath": "media/projects/parking-system/automated_parking_mechanism.jpg",
+    "category": "Projects",
+    "project": "Automated Vertical Parking System",
+    "mediaType": "image",
+    "subject": "Close-up perspective of rotary parking prototype mechanism and pallets",
+    "intendedUsage": "Project Engineering Evidence",
+    "sizeBytes": 158127,
+    "sha256": "e32aab6ed509d3028b0e922140eb99340aa95e067c97785b635126c121c6de22",
+    "duplicateOf": null
+  },
+  {
+    "filename": "hero_pcb_assembly.jpg",
+    "currentPath": "media/projects/swarm-robotics/hero_pcb_assembly.jpg",
+    "category": "Projects",
+    "project": "Swarm Robotics Platform",
+    "mediaType": "image",
+    "subject": "Workbench PCB assembly and soldering fixture for HERO 2.0 swarm robots",
+    "intendedUsage": "Project Engineering Evidence",
+    "sizeBytes": 421856,
+    "sha256": "ab024a71aa053e5a4467e980b37a507206588a60130bb1009592c88bd3d83a9d",
+    "duplicateOf": null
+  },
+  {
+    "filename": "arduino_radar_first_build.mp4",
+    "currentPath": "media/projects/arduino-radar/arduino_radar_first_build.mp4",
+    "category": "Projects",
+    "project": "Arduino Radar \u2014 First Robotics Build",
+    "mediaType": "video",
+    "subject": "Video demonstration of first robotics build: SG90 servo + ultrasonic sensor + Processing radar sweep",
+    "intendedUsage": "Project Engineering Evidence",
+    "sizeBytes": 707234,
+    "sha256": "2cf51219fc94ae8e63e0cde0500ecae88a740db7b7173f0c2e4c57209de072ba",
+    "duplicateOf": null
+  },
+  {
+    "filename": "arduino_radar_poster.jpg",
+    "currentPath": "media/projects/arduino-radar/arduino_radar_poster.jpg",
+    "category": "Projects",
+    "project": "Arduino Radar \u2014 First Robotics Build",
+    "mediaType": "image",
+    "subject": "Workbench hardware setup for Arduino radar scanner",
+    "intendedUsage": "Project Engineering Evidence",
+    "sizeBytes": 32749,
+    "sha256": "4fc24241287b370a5810535fa8f5ec5687764cdc50be1cd6fdff507a1ba436e3",
+    "duplicateOf": null
   }
 ]

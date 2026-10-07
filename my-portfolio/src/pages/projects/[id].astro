@@ -5,6 +5,7 @@ import Navigation from '../../components/Navigation.astro';
 import Footer from '../../components/Footer.astro';
 import { projects, type Project } from '../../data/projects';
 import { resolveMediaUrl, resolveHref } from '../../utils/media';
+import HeroRobotViewer from '../../components/react/HeroRobotViewer';
 
 export function getStaticPaths() {
   const paths = projects.map((project) => ({
@@ -16,6 +17,9 @@ export function getStaticPaths() {
   if (baja25) paths.push({ params: { id: 'abaja-2025' }, props: { project: baja25 } });
   const baja26 = projects.find((p) => p.id === 'baja-2026');
   if (baja26) paths.push({ params: { id: 'abaja-2026' }, props: { project: baja26 } });
+  // Backward-compatible route alias for parking-system
+  const parking = projects.find((p) => p.id === 'automated-vertical-parking');
+  if (parking) paths.push({ params: { id: 'parking-system' }, props: { project: parking } });
   return paths;
 }
 
@@ -182,6 +186,16 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
             </p>
           </div>
         </aside>
+      )}
+      
+      {project.id === 'swarm-robotics' && (
+        <section class="case-section hero-3d-model-section" aria-label="Interactive 3D HERO Swarm Robot Inspection">
+          <div class="section-kicker mono">
+            <span class="accent-glyph">⬡</span>
+            <span>INTERACTIVE 3D CAD INSPECTION // REAL HERO SWARM ROBOT GEOMETRY</span>
+          </div>
+          <HeroRobotViewer client:visible />
+        </section>
       )}
 
       <!-- Continuous Ambient Video Feature Block (Where Verified Video Exists) -->
@@ -633,11 +647,13 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
   }
 
   .project-title {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-size: clamp(1.85rem, 5vw, 4.5rem);
     font-weight: 900;
     letter-spacing: -0.04em;
-    line-height: 1.05;
+    line-height: 1.08;
     color: var(--text-primary);
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .project-subtitle {
@@ -881,7 +897,7 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
 
   .decisions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: var(--space-4);
     margin-top: var(--space-4);
   }
@@ -1192,6 +1208,48 @@ const nextProject = safeIndex < projects.length - 1 ? projects[safeIndex + 1] : 
     .pagination-center-btn {
       justify-content: center;
       order: -1;
+    }
+    .project-title {
+      font-size: clamp(1.85rem, 6.5vw, 2.8rem);
+    }
+    .project-attributes {
+      gap: var(--space-4) var(--space-6);
+    }
+    .project-hero-visual {
+      min-height: 220px;
+      aspect-ratio: 16 / 10;
+    }
+    .dossier-tab-btn {
+      min-height: 40px;
+      padding: 8px 14px;
+    }
+    .decisions-section,
+    .skills-applied-section,
+    .col-box,
+    .team-system-section,
+    .contributions-section {
+      padding: clamp(1rem, 4vw, 1.5rem);
+    }
+    .decisions-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .project-title {
+      font-size: clamp(1.65rem, 7.5vw, 2.2rem);
+    }
+    .project-hero-visual {
+      min-height: 200px;
+    }
+    .dossier-tabs {
+      gap: 0.35rem;
+    }
+    .dossier-tab-btn {
+      flex: 1 1 calc(50% - 0.35rem);
+      justify-content: center;
+      font-size: 0.68rem;
+      padding: 8px 10px;
     }
   }
 

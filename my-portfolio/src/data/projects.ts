@@ -333,6 +333,13 @@ export const projects: Project[] = [
         title: 'Car A18 — Competition Vehicle',
         items: [
           {
+            path: '/media/projects/baja/baja-2026/naveen_with_a18_vehicle.jpg',
+            type: 'image',
+            title: 'Physical Integration & Vehicle Build · Car A18',
+            caption: 'Naveen Shaji George at the racing garage workshop sitting on the tyre of the completed autonomous Baja vehicle (Car A18) following electrical, wiring harness, and steer-by-wire system integration.',
+            badge: 'PHYSICAL BUILD'
+          },
+          {
             path: '/media/projects/baja/baja-2026/vehicle/WhatsApp Image 2026-09-14 at 00.14.44.jpeg',
             type: 'image',
             title: 'Car A18 Autonomous Baja Vehicle',
@@ -845,7 +852,7 @@ export const projects: Project[] = [
     subtitle: 'Edge Vision Anomaly Detection & Autonomous Rover System',
     role: 'Lead AI & Embedded Systems Architect',
     shortRole: 'Lead AI & Embedded Systems Architect',
-    keyAreas: ['Autonomous Rover', 'LiDAR Terrain Mapping', 'Neural Track Segmentation', 'Sub-50ms Inference', 'National Winner'],
+    keyAreas: ['Autonomous Rover', 'LiDAR Terrain Mapping', 'Neural Track Segmentation', 'Raspberry Pi 4 Compute', 'National Winner'],
     skillsUsed: [
       'Autonomous Mobile Platforms',
       '2D LiDAR Perception',
@@ -862,29 +869,29 @@ export const projects: Project[] = [
       'Won 1st Place National Honors at the Faraway International Hackathon among competitive collegiate teams.'
     ],
     engineeringDecisions: [
-      'Deployed TensorRT INT8 model quantization on the Jetson edge accelerator, reducing defect inference latency under 50ms.',
-      'Implemented local SQLite buffer queues to prevent data loss during transient cellular blackouts along railway tracks.'
+      'Optimized lightweight YOLO defect inference on Raspberry Pi 4 edge compute, pairing edge vision with real-time anomaly telemetry.',
+      'Implemented local SQLite buffer queues to prevent data loss during transient wireless blackouts along railway tracks.'
     ],
     year: '2026',
     status: 'NATIONAL HACKATHON WINNER',
     domain: 'Edge AI / Computer Vision / Android / Railway Safety',
     category: 'vision',
-    summary: 'Built an end-to-end autonomous railway inspection rover utilizing quantized edge vision models for real-time track anomaly identification, paired with an Android telemetry station for sub-second emergency operator alerts.',
-    challenge: 'Detecting subtle track defects and micro-fissures at high vehicle velocities under extreme variable outdoor lighting, vibration, and low compute availability.',
-    approach: 'Deployed customized YOLO vision models optimized with TensorRT INT8 quantization onto onboard compute hardware, feeding synchronized GPS tags and defect bounding boxes over a robust cellular bridge.',
+    summary: 'Built an end-to-end autonomous railway inspection rover utilizing lightweight edge vision models on Raspberry Pi 4 for real-time track anomaly identification, paired with an Android telemetry station for sub-second emergency operator alerts.',
+    challenge: 'Detecting subtle track defects and micro-fissures at vehicle velocities under extreme variable outdoor lighting, vibration, and constrained embedded compute availability.',
+    approach: 'Deployed customized lightweight YOLO vision models onto onboard Raspberry Pi 4 compute hardware, feeding synchronized GPS tags and defect bounding boxes over a robust telemetry bridge.',
     systemArchitecture: [
-      'High-Speed Global Shutter Optical Sensor Mount',
-      'Quantized Edge YOLO Inference & Defect Classifier',
+      'High-Speed Optical Sensor Mount',
+      'Lightweight Edge YOLO Inference & Defect Classifier',
       'Real-Time Telemetry Dispatcher & Local SQLite Buffer',
       'Android Ground Station Companion App',
       'Automated GPS-Tagged Defect Incident Logger'
     ],
-    softwareStack: ['Python', 'YOLO / TensorRT', 'Android Kotlin', 'OpenCV', 'SQLite', 'REST API'],
-    hardwareStack: ['Jetson Edge Accelerator', 'Global Shutter Industrial Cameras', 'High-Gain 4G/LTE Bridge', 'Shock-Isolated Enclosure'],
+    softwareStack: ['Python', 'YOLO', 'Android Kotlin', 'OpenCV', 'SQLite', 'REST API'],
+    hardwareStack: ['Raspberry Pi 4 (Edge Compute)', 'Industrial Cameras', 'Wireless Telemetry Bridge', 'Shock-Isolated Enclosure'],
     keyResults: [
-      'Sub-50ms inference latency at 1080p stream resolution',
+      'Real-time defect classification and bounding box localization on Raspberry Pi 4',
       '94.2% precision on rail obstacle and track distortion classification',
-      'Instant cellular alert dispatch to track maintenance crews with sub-meter GPS accuracy'
+      'Instant wireless alert dispatch to maintenance station with sub-meter GPS accuracy'
     ],
     failuresAndIterations: [
       {
@@ -1094,6 +1101,13 @@ export const projects: Project[] = [
             badge: 'GAZEBO SIMULATION'
           },
           {
+            path: '/media/projects/swarm-robotics/hero_pcb_assembly.jpg',
+            type: 'image',
+            title: 'HERO 2.0 Swarm Robot PCB Workbench Assembly',
+            caption: 'Workbench soldering and component assembly of the circular HERO 2.0 swarm robot circuit boards using precision soldering iron and helping-hands holding fixture.',
+            badge: 'PCB ASSEMBLY'
+          },
+          {
             path: '/media/projects/swarm-robotics/hero_pcb.png',
             type: 'image',
             title: 'Modular Octagonal Swarm Robot PCB Hardware',
@@ -1215,8 +1229,92 @@ export const projects: Project[] = [
     ]
   },
   {
-    id: 'agv-sensor-fusion',
+    id: 'automated-vertical-parking',
     index: '08',
+    title: 'Automated Vertical Parking System',
+    featured: true,
+    subtitle: 'Automated Multi-Level Vehicle Storage & Retrieval System',
+    role: 'Robotics & Embedded Systems Engineer',
+    shortRole: 'Robotics & Embedded Engineer',
+    keyAreas: ['Rotary Lift Mechanism', 'Geared Motor Drive', 'Pallet Alignment', 'Embedded Logic', 'Electromechanical Interlocks', 'Hardware Prototyping'],
+    skillsUsed: [
+      'Embedded C++',
+      'Mechatronics Integration',
+      'Motor Control & Drive Electronics',
+      'Hardware Prototyping',
+      'Team Collaboration',
+      'Electrical Wiring'
+    ],
+    teamSystem: [
+      'Multi-tier circular mechanical structure with central rotation spindle and pallet carriages.',
+      'High-torque geared transmission system driving rotary position indexing.'
+    ],
+    personalContributions: [
+      'Integrated the electronic drive circuitry, position sensing interlocks, and control logic for automated pallet alignment.',
+      'Co-developed the physical prototype assembly and electrical power distribution with the collegiate robotics team.'
+    ],
+    engineeringDecisions: [
+      'Used optical and limit switch feedback for discrete slot indexing to prevent pallet misregistration.',
+      'Integrated dual-relay H-bridge with emergency stop brake interlock to guarantee failsafe stoppage.'
+    ],
+    year: '2023',
+    status: 'ACADEMIC PROTOTYPE',
+    domain: 'Robotics / Mechatronics / Automation',
+    category: 'robotics',
+    summary: 'Engineered a functional multi-level automated vertical rotary parking system prototype with sensor-guided pallet alignment, bi-directional rotary indexing, and electromechanical safety interlocks.',
+    challenge: 'Achieving repeatable discrete rotational alignment of parking pallets while handling unbalanced mechanical cantilever loads and preventing overshooting.',
+    approach: 'Designed position feedback interlocks with limit switches and motor braking circuits, wired a robust power distribution harness, and co-built the physical mechanism with the collegiate project team.',
+    systemArchitecture: [
+      'Multi-Tier Rotary Spindle Carriage',
+      'High-Torque DC Geared Motor & Drive Relays',
+      'Pallet Position Sensing Interlocks',
+      'Embedded Logic Controller',
+      'Operator Push-Button & Safety Interface'
+    ],
+    softwareStack: ['Embedded C++', 'State Machine Control', 'Position Calibration Routines'],
+    hardwareStack: ['Geared DC Drive Motor', 'Limit Switches & Optical Proximity Sensors', 'Relay Switching Board', 'Regulated Power Supply', 'Mechanical Frame & Timber Pallets'],
+    keyResults: [
+      'Successful continuous rotary multi-car indexing with zero mechanical jam',
+      'Precision sensor-guided slot alignment across all tiers',
+      'Complete team delivery and functional physical demonstration'
+    ],
+    failuresAndIterations: [
+      {
+        issue: 'Rotational inertia caused the loaded pallet to overshoot the target docking slot.',
+        rootCause: 'Mechanical coasting after relay de-energization.',
+        iteration: 'Added dynamic motor shorting brake circuit via normally-closed relay contacts to halt spindle instantly.'
+      }
+    ],
+    githubUrl: 'https://github.com/buddytex',
+    visualSignature: 'mechatronics',
+    imagePath: '/media/projects/parking-system/automated_parking_mechanism.jpg',
+    secondaryImage: '/media/projects/parking-system/automated_parking_team.jpg',
+    mediaGalleries: [
+      {
+        id: 'parking-prototype',
+        title: 'Rotary Mechanism & Engineering Team',
+        items: [
+          {
+            path: '/media/projects/parking-system/automated_parking_mechanism.jpg',
+            type: 'image',
+            title: 'Automated Rotary Parking Prototype Mechanism',
+            caption: 'Close-up perspective of the multi-tier rotary mechanism showing central drive belt transmission, car parking pallets, and sensor wiring.',
+            badge: 'MECHANISM'
+          },
+          {
+            path: '/media/projects/parking-system/automated_parking_team.jpg',
+            type: 'image',
+            title: 'Automated Vertical Parking System — Engineering Team',
+            caption: 'Naveen Shaji George standing with the collegiate engineering team beside the completed functional multi-tier automated rotary parking system prototype.',
+            badge: 'TEAM COLLABORATION'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'agv-sensor-fusion',
+    index: '09',
     title: 'AGV Industrial Odometry & Sensor Fusion',
     featured: false,
     subtitle: 'Multi-Rate Pose Estimation for Industrial Guided Vehicles',
@@ -1282,7 +1380,7 @@ export const projects: Project[] = [
   },
   {
     id: 'lane-keep-assist',
-    index: '09',
+    index: '10',
     title: 'Autonomous Lane-Keep Assist (LKA) System',
     featured: false,
     subtitle: 'Real-Time Polynomial Lane Boundary Tracking & Steering Feedforward',
@@ -1356,7 +1454,7 @@ export const projects: Project[] = [
   },
   {
     id: 'waste-segregator',
-    index: '10',
+    index: '11',
     title: 'Automated Waste Segregation Robot',
     featured: false,
     subtitle: 'Sensor Fusion · Inductive / Capacitive / Ultrasonic · Rotary Diverter',
@@ -1423,6 +1521,95 @@ export const projects: Project[] = [
             title: 'Automated Waste Segregation Mechanism in Action',
             caption: 'Video demonstrating the multi-sensor detection aperture, ultrasonic proximity gating, and servo diverter mechanism classifying waste.',
             badge: 'PROTOTYPE DEMO'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'arduino-radar',
+    index: '12',
+    title: 'Arduino Radar — First Robotics Build',
+    featured: false,
+    subtitle: 'My First-Ever Arduino Project · SG90 Servo & Ultrasonic Sensor with Processing IDE',
+    role: 'Maker & Early Robotics Explorer',
+    shortRole: 'First Robotics Project',
+    keyAreas: ['Arduino Programming', 'SG90 Micro Servo', 'HC-SR04 Ultrasonic Sensor', 'Processing IDE GUI', 'Serial Telemetry', 'Early Experimentation'],
+    skillsUsed: [
+      'Arduino C++',
+      'Processing IDE (Java)',
+      'Serial Communication',
+      'Sensor Interfacing',
+      'PWM Servo Control',
+      'Hardware Prototyping'
+    ],
+    personalContributions: [
+      'My first ever hands-on robotics project that sparked my engineering journey.',
+      'Wired an SG90 micro-servo and HC-SR04 ultrasonic sensor to an Arduino board on a breadboard.',
+      'Wrote the Arduino sketch to sweep the sensor from 15° to 165° and transmit polar distance coordinates over UART.',
+      'Programmed a graphical radar display in Processing IDE to visualize obstacle detections in real time.'
+    ],
+    engineeringDecisions: [
+      'Calibrated 15ms step intervals for smooth 1-degree servo increments without ultrasonic acoustic reverberation overlap.',
+      'Parsed comma-delimited polar coordinates (angle, distance) over 9600 baud serial into Processing for smooth polar sweeps.'
+    ],
+    year: '2022',
+    status: 'FIRST ROBOTICS BUILD',
+    domain: 'Early Experimentation / Embedded Sensing / Robotics Origins',
+    category: 'embedded',
+    summary: 'My first ever robotics and Arduino project: a rotating ultrasonic radar scanner using an SG90 micro-servo, HC-SR04 ultrasonic distance sensor, and real-time polar sweep visualization in the Processing IDE. This early experimentation marked the very beginning of my hands-on robotics engineering journey.',
+    challenge: 'Synchronizing mechanical servo sweep angles with ultrasonic acoustic pulse-echo timings and streaming reliable polar coordinates over serial without packet fragmentation.',
+    approach: 'Programmed an Arduino microcontroller to step an SG90 servo in 1-degree increments, trigger acoustic distance measurement, and stream serialized angle/distance strings to a custom Processing IDE radar display.',
+    systemArchitecture: [
+      'Arduino Microcontroller (Core Logic)',
+      'TowerPro SG90 Micro-Servo (180° Sweep)',
+      'HC-SR04 Ultrasonic Acoustic Transceiver',
+      '9600 Baud UART Serial Bridge',
+      'Processing IDE Radar Polar Display GUI'
+    ],
+    softwareStack: ['Arduino C++', 'Processing IDE', 'Serial Data Streaming', 'Trigonometric Polar Mapping'],
+    hardwareStack: ['Arduino Uno', 'SG90 Micro Servo', 'HC-SR04 Ultrasonic Distance Sensor', 'Breadboard & Jumper Harness', 'USB-UART Interface'],
+    keyResults: [
+      'Reliable real-time obstacle detection up to 40cm across 150-degree field of view',
+      'Smooth 60 FPS polar radar beam drawing in Processing IDE',
+      'Established the foundational hands-on hardware curiosity that led to autonomous vehicles and robotics'
+    ],
+    failuresAndIterations: [
+      {
+        issue: 'Processing radar screen flashed and missed coordinates due to buffer overruns.',
+        rootCause: 'Arduino was streaming faster than the Processing serial event buffer was reading strings.',
+        iteration: 'Implemented delimiter-terminated strings (angle,distance.) and used bufferUntil(\'.\') in Processing for rock-solid framing.'
+      }
+    ],
+    githubUrl: 'https://github.com/buddytex',
+    visualSignature: 'mechatronics',
+    imagePath: '/media/projects/arduino-radar/arduino_radar_poster.jpg',
+    featuredVideo: {
+      path: '/media/projects/arduino-radar/arduino_radar_first_build.mp4',
+      poster: '/media/projects/arduino-radar/arduino_radar_poster.jpg',
+      title: 'My First Arduino Radar — Sweep Visualization',
+      caption: 'Authentic video showing the rotating SG90 servo and ultrasonic sensor mounted on the Arduino board, with real-time green radar beam visualization on screen.',
+      badge: 'FIRST BUILD VIDEO'
+    },
+    mediaGalleries: [
+      {
+        id: 'radar-demo',
+        title: 'First Robotics Build Video & Workbench',
+        items: [
+          {
+            path: '/media/projects/arduino-radar/arduino_radar_first_build.mp4',
+            poster: '/media/projects/arduino-radar/arduino_radar_poster.jpg',
+            type: 'video',
+            title: 'Arduino Radar Sweep & Processing GUI',
+            caption: 'Video of my first-ever robotics build: SG90 servo rotating the HC-SR04 ultrasonic sensor with live radar-style polar sweep in Processing IDE.',
+            badge: 'VIDEO'
+          },
+          {
+            path: '/media/projects/arduino-radar/arduino_radar_poster.jpg',
+            type: 'image',
+            title: 'Arduino Radar Workbench Hardware',
+            caption: 'Hardware setup showing Arduino microcontroller, SG90 servo, ultrasonic sensor, and breadboard connections.',
+            badge: 'WORKBENCH'
           }
         ]
       }

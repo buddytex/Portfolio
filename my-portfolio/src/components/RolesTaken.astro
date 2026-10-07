@@ -1304,6 +1304,12 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
   /* ------------------------------------------------------------
      Responsive Breakpoints
      ------------------------------------------------------------ */
+  @media (max-width: 1100px) {
+    .roles-container {
+      padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+    }
+  }
+
   @media (max-width: 960px) {
     .roles-grid {
       grid-template-columns: 1fr;
@@ -1325,11 +1331,16 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
     }
 
     .roles-container {
-      padding: 0 1.25rem;
+      padding: 0 clamp(0.85rem, 3.5vw, 1.25rem);
     }
 
     .bio-panel {
-      padding: 1.4rem;
+      padding: clamp(1.1rem, 3.5vw, 1.4rem);
+    }
+
+    .cred-tab-pill {
+      min-height: 32px;
+      padding: 4px 8px;
     }
 
     .role-expanded-content {
@@ -1344,6 +1355,7 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
     .btn-cv-pill {
       width: 100%;
       justify-content: center;
+      min-height: 44px;
     }
 
     .role-row-btn {
@@ -1356,6 +1368,21 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
 
     .role-expanded-body {
       padding: 0 0.8rem 1.2rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cred-preview-row {
+      grid-template-columns: 48px 1fr;
+      gap: 0.5rem;
+    }
+
+    .cred-award-name {
+      font-size: 0.76rem;
+    }
+
+    .cred-meta {
+      font-size: 0.65rem;
     }
   }
 </style>

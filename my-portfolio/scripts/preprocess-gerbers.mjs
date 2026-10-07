@@ -10,6 +10,7 @@ import { createExtractorFromFile } from 'node-unrar-js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execFileSync } from 'child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -31,7 +32,17 @@ const BOARDS = [
     archive: 'Front_Box_2026.rar',
     prefix: 'FRONTBOXFINAL',
   },
+  // ── Added from media/gerbers.zip ──
+  { id: 'abaja-main-2025',      name: 'aBAJA 2025 Main PCB',      archive: 'aBAJA_Main_PCB_2025.rar' },
+  { id: 'abaja-tbu-2025',       name: 'aBAJA 2025 TBU',           archive: 'aBAJA_TBU_2025.rar' },
+  { id: 'abaja-ssu-2025',       name: 'aBAJA 2025 SSU',           archive: 'aBAJA_SSU_2025.rar' },
+  { id: 'abaja-dashboard-2025', name: 'aBAJA 2025 Dashboard PCB', archive: 'aBAJA_Dashboard_2025.rar' },
+  { id: 'rail-agent',           name: 'Rail-Agent PCB',           archive: 'Rail_Agent.rar' },
+  { id: 'atbots-v4',            name: 'Atbots v4 PCB',            archive: 'Atbots_v4.zip' },
 ];
+
+// Optional CLI filter: `node scripts/preprocess-gerbers.mjs rail-agent atbots-v4`
+const ONLY = process.argv.slice(2);
 
 // ─── Layer file mapping (KiCad naming convention) ────────────────────
 const LAYER_MAP = {
@@ -47,6 +58,46 @@ const LAYER_MAP = {
   '-PTH.drl':          'PTH',
   '-NPTH.drl':         'NPTH',
 };
+
+// Extension-agnostic layer match (KiCad can export everything as .gbr)
+const LAYER_STEMS = {
+  '-F_Cu': 'F.Cu', '-B_Cu': 'B.Cu',
+  '-F_Mask': 'F.Mask', '-B_Mask': 'B.Mask',
+  '-F_Silkscreen': 'F.Silkscreen', '-B_Silkscreen': 'B.Silkscreen',
+  '-F_Paste': 'F.Paste', '-B_Paste': 'B.Paste',
+  '-Edge_Cuts': 'Edge.Cuts',
+  '-PTH': 'PTH', '-NPTH': 'NPTH',
+};
+
+function matchLayer(fname) {
+  const base = path.basename(fname);
+  for (const [suffix, layerName] of Object.entries(LAYER_MAP)) {
+    if (base.endsWith(suffix)) return layerName;
+  }
+  const stem = base.replace(/\.[^.]+$/, '');
+  for (const [suffix, layerName] of Object.entries(LAYER_STEMS)) {
+    if (stem.endsWith(suffix)) return layerName;
+  }
+  return null;
+}
+
+function listFilesRecursive(dir) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...listFilesRecursive(p));
+    else out.push(p);
+  }
+  return out;
+}
+
+function isZipFile(p) {
+  const fd = fs.openSync(p, 'r');
+  const buf = Buffer.alloc(4);
+  fs.readSync(fd, buf, 0, 4, 0);
+  fs.closeSync(fd);
+  return buf[0] === 0x50 && buf[1] === 0x4b; // 'PK'
+}
 
 // ═══════════════════════════════════════════════════════════════════════
 // GERBER RS-274X PARSER
@@ -505,50 +556,49 @@ async function processBoard(boardDef) {
     return null;
   }
 
-  // Extract RAR archive
+  // Extract archive (RAR via node-unrar-js, real ZIP via system unzip)
   const extractDir = path.join(TEMP_DIR, boardDef.id);
   fs.mkdirSync(extractDir, { recursive: true });
 
-  const extractor = await createExtractorFromFile({
-    filepath: archivePath,
-    targetPath: extractDir,
-  });
-  const { files } = extractor.extract();
-  const fileList = [...files];
+  if (isZipFile(archivePath)) {
+    execFileSync('unzip', ['-o', '-q', archivePath, '-d', extractDir]);
+  } else {
+    const extractor = await createExtractorFromFile({
+      filepath: archivePath,
+      targetPath: extractDir,
+    });
+    const { files } = extractor.extract();
+    [...files]; // force iteration so files are written
+  }
+  const fileList = listFilesRecursive(extractDir);
 
   console.log(`  ✓ Extracted ${fileList.length} files`);
 
   // Map files to layers
   const layerFiles = {};
-  for (const file of fileList) {
-    const fname = file.fileHeader.name;
-    for (const [suffix, layerName] of Object.entries(LAYER_MAP)) {
-      if (fname.endsWith(suffix)) {
-        layerFiles[layerName] = path.join(extractDir, fname);
-      }
-    }
+  for (const filePath of fileList) {
+    const layerName = matchLayer(filePath);
+    if (layerName) layerFiles[layerName] = filePath;
   }
 
   console.log(`  Layers found: ${Object.keys(layerFiles).join(', ')}`);
 
-  // Parse Edge Cuts → Board outline
-  if (!layerFiles['Edge.Cuts']) {
-    console.error('  ✗ No Edge.Cuts file found!');
-    return null;
+  // Parse Edge Cuts → Board outline (fallback derived later if empty)
+  let outline = null;
+  if (layerFiles['Edge.Cuts']) {
+    const edgeCutsContent = fs.readFileSync(layerFiles['Edge.Cuts'], 'utf-8');
+    outline = extractBoardOutline(edgeCutsContent);
   }
-
-  const edgeCutsContent = fs.readFileSync(layerFiles['Edge.Cuts'], 'utf-8');
-  const outline = extractBoardOutline(edgeCutsContent);
-  if (!outline) {
-    console.error('  ✗ Failed to extract board outline');
-    return null;
+  if (outline) {
+    console.log(`  ✓ Board outline: ${outline.width.toFixed(1)} × ${outline.height.toFixed(1)} mm`);
+  } else {
+    console.warn('  ⚠ Edge.Cuts empty/missing — will derive outline from geometry bounds');
   }
-
-  console.log(`  ✓ Board outline: ${outline.width.toFixed(1)} × ${outline.height.toFixed(1)} mm`);
 
   // Parse each Gerber layer
   const layers = {};
   const gerberLayers = ['F.Cu', 'B.Cu', 'F.Mask', 'B.Mask', 'F.Silkscreen', 'B.Silkscreen', 'F.Paste', 'B.Paste'];
+  const boundsPts = [];
 
   for (const layerName of gerberLayers) {
     if (!layerFiles[layerName]) continue;
@@ -557,6 +607,12 @@ async function processBoard(boardDef) {
     const parser = new GerberParser();
     const result = parser.parse(content);
     layers[layerName] = optimizeLayerData(result);
+
+    if (/Cu|Silkscreen/.test(layerName)) {
+      for (const d of result.draws) boundsPts.push([d.x1, d.y1], [d.x2, d.y2]);
+      for (const f of result.flashes) boundsPts.push([f.x, f.y]);
+      for (const r of result.regions) boundsPts.push(...r.points);
+    }
 
     const stats = `${result.draws.length} draws, ${result.flashes.length} flashes, ${result.regions.length} regions`;
     console.log(`  ✓ ${layerName}: ${stats}`);
@@ -587,6 +643,29 @@ async function processBoard(boardDef) {
     console.log(`  ✓ NPTH: ${drills.npth.length} holes`);
   }
 
+  let outlineDerived = false;
+  if (!outline) {
+    for (const h of [...drills.pth, ...drills.npth]) boundsPts.push([h.x - h.d, h.y - h.d], [h.x + h.d, h.y + h.d]);
+    const pts = boundsPts.filter(p => Number.isFinite(p[0]) && Number.isFinite(p[1]));
+    if (pts.length === 0) {
+      console.error('  ✗ No geometry to derive an outline from');
+      return null;
+    }
+    const M = 2; // mm margin
+    const minX = Math.min(...pts.map(p => p[0])) - M;
+    const minY = Math.min(...pts.map(p => p[1])) - M;
+    const maxX = Math.max(...pts.map(p => p[0])) + M;
+    const maxY = Math.max(...pts.map(p => p[1])) + M;
+    outline = {
+      minX, minY, maxX, maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+      outline: [[minX, minY], [maxX, minY], [maxX, maxY], [minX, maxY]],
+    };
+    outlineDerived = true;
+    console.log(`  ✓ Derived outline: ${outline.width.toFixed(1)} × ${outline.height.toFixed(1)} mm`);
+  }
+
   // Determine layer count from available copper layers
   const copperLayers = Object.keys(layers).filter(l => l.endsWith('.Cu'));
   const layerCount = copperLayers.length;
@@ -611,6 +690,7 @@ async function processBoard(boardDef) {
     ]),
     layers,
     drills,
+    ...(outlineDerived ? { outlineDerived: true } : {}),
   };
 
   return boardData;
@@ -628,7 +708,7 @@ async function main() {
 
   let successCount = 0;
 
-  for (const board of BOARDS) {
+  for (const board of BOARDS.filter(b => ONLY.length === 0 || ONLY.includes(b.id))) {
     try {
       const data = await processBoard(board);
       if (data) {
@@ -648,7 +728,7 @@ async function main() {
   fs.rmSync(TEMP_DIR, { recursive: true, force: true });
 
   console.log(`\n══════════════════════════════════════════════`);
-  console.log(`  Done: ${successCount}/${BOARDS.length} boards processed`);
+  console.log(`  Done: ${successCount} boards processed`);
   console.log(`══════════════════════════════════════════════\n`);
 
   if (successCount === 0) {

@@ -428,4 +428,34 @@ import { resolveHref } from '../utils/media';
       min-height: auto;
     }
   }
+
+  @media (max-width: 640px) {
+    .card-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .card-actions .btn {
+      width: 100%;
+      justify-content: center;
+      min-height: 44px;
+    }
+
+    .network-link {
+      padding: var(--space-4);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .preset-btn {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+    }
+
+    .email-display {
+      font-size: clamp(1.1rem, 5.5vw, 1.35rem);
+    }
+  }
 </style>

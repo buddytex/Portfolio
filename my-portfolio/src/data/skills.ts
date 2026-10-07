@@ -219,11 +219,10 @@ export const skillCategories: SkillCategory[] = [
         proficiency: 'working',
         category: 'Embedded Systems & Hardware Protocols',
         categoryIndex: '02',
-        evidence: 'Configured Jetson Orin Nano for onboard aBAJA perception processing and RailGuard AI quantized defect inference.',
+        evidence: 'Configured Jetson Orin Nano for onboard aBAJA perception processing and sensor integration in Car A18.',
         context: 'Linux GPIO, camera CSI/USB interfaces, and UART/CAN gateway links.',
         connectedEntities: [
-          { id: 'baja-2026', name: 'aBAJA SAEINDIA 2026', type: 'project', badge: 'AUTONOMY COMPUTE', url: '/projects/baja-2026' },
-          { id: 'railguard-ai', name: 'RailGuard AI Rover', type: 'project', badge: 'TENSORRT EDGE', url: '/projects/railguard-ai' }
+          { id: 'baja-2026', name: 'aBAJA SAEINDIA 2026', type: 'project', badge: 'AUTONOMY COMPUTE', url: '/projects/baja-2026' }
         ],
         tools: ['NVIDIA Jetson Orin Nano', 'JetPack Linux', 'TensorRT']
       },
@@ -501,13 +500,14 @@ export const skillCategories: SkillCategory[] = [
         proficiency: 'strong',
         category: 'Software & Systems Development',
         categoryIndex: '05',
-        evidence: 'Primary operating environment across all autonomous compute platforms (Ubuntu 22.04 LTS on Jetson and workstation).',
+        evidence: 'Primary operating environment across all autonomous compute platforms (Ubuntu on Raspberry Pi 4, Jetson Orin Nano, and workstations).',
         context: 'Systemd service management, serial tty permissions, udev rules for sensors, bash automation, and networking.',
         connectedEntities: [
           { id: 'baja-2026', name: 'aBAJA SAEINDIA 2026', type: 'project', badge: 'JETSON UBUNTU', url: '/projects/baja-2026' },
+          { id: 'railguard-ai', name: 'RailGuard AI Rover', type: 'project', badge: 'RPI 4 LINUX', url: '/projects/railguard-ai' },
           { id: 'smart-cctv', name: 'Smart CCTV Platform', type: 'project', badge: 'LINUX EDGE', url: '/projects/smart-cctv' }
         ],
-        tools: ['Ubuntu LTS', 'Bash Shell', 'systemd', 'udev Rules', 'SSH / SCP']
+        tools: ['Ubuntu LTS', 'Raspberry Pi OS', 'Bash Shell', 'systemd', 'udev Rules', 'SSH / SCP']
       },
       {
         id: 'git-github',

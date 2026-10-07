@@ -32,16 +32,15 @@ This document categorizes all missing, unverified, or ambiguous information need
 
 ---
 
-### Question 3: RailGuard AI Rover — Competition Award & Hardware Specs
-- **Question**: For the RailGuard AI track defect rover: Which competition or event was this demonstrated at (Faraway International Hackathon?), what was the official team rank/award, and what specific onboard compute ran the inference (Jetson Orin Nano / Raspberry Pi / laptop tether)?
+### Question 3: RailGuard AI Rover — Competition Award & Hardware Specs [CONFIRMED COMPUTE: Raspberry Pi 4]
+- **Question**: For the RailGuard AI track defect rover: Which competition or event was this demonstrated at (Faraway International Hackathon?), and what was the official team rank/award?
+- **Status**: Onboard compute confirmed as **Raspberry Pi 4**.
 - **Why it matters**: The project has excellent hardware testing videos (`media/projects/railguard-ai/hardware-testing/`) and a mobile telemetry dashboard, but the competition standing needs exact verification so we don't understate or overstate it.
 - **Where it will be used**: In the **Achievements** section and `/projects/railguard-ai` case study overview.
-- **Example Answer Format**:
+- **Verified Specs**:
   ```text
-  Event: Faraway International Hackathon 2024
-  Result: Top 10 Finalist / Best Hardware Prototype Award
-  Onboard Compute: NVIDIA Jetson Orin Nano 8GB running YOLOv8n at 18 FPS
-  Sensors: Wide-angle ultrasonic rangefinder array + HD CMOS camera
+  Onboard Compute: Raspberry Pi 4 (Edge Compute) running lightweight YOLO vision models
+  Sensors & Telemetry: Industrial Cameras, LiDAR range-finding, Android Ground Station
   ```
 
 ---
