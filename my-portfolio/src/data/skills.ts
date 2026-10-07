@@ -573,6 +573,7 @@ export const skillCategories: SkillCategory[] = [
         context: 'Sub-35ms frame processing pipelines for Smart CCTV and autonomous lane boundary detection.',
         connectedEntities: [
           { id: 'smart-cctv', name: 'Smart CCTV Platform', type: 'project', badge: 'oneAPI HACKATHON', url: '/projects/smart-cctv' },
+          { id: 'vanis', name: 'VANIS Vision Test Robot', type: 'project', badge: 'EDGE VISION', url: '/projects/vanis' },
           { id: 'lane-keep-assist', name: 'Lane-Keep Assist (LKA)', type: 'project', badge: 'VISION GUIDANCE', url: '/projects/lane-keep-assist' }
         ],
         tools: ['OpenCV (C++ / Python)', 'Sobel Filter', 'Hough Transform', 'Color Space Filtering']

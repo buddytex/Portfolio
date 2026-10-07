@@ -1623,5 +1623,168 @@ export const projects: Project[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'vanis',
+    index: '13',
+    title: 'VANIS: Vision & Human Detection Mobile Robot',
+    subtitle: 'Edge Vision & Obstacle Reflex Mobile Platform · Raspberry Pi 4 · OpenCV & MediaPipe',
+    role: 'Lead Developer & Embedded Systems Integrator',
+    shortRole: 'Edge Vision & Mobile Robotics Prototyping',
+    keyAreas: [
+      'Edge Computer Vision',
+      'Human & Face Detection',
+      'Differential Drive Control',
+      'Ultrasonic Pan-Tilt Reflex',
+      'Raspberry Pi GPIO Hardware PWM'
+    ],
+    skillsUsed: [
+      'Python',
+      'OpenCV',
+      'MediaPipe',
+      'lgpio',
+      'RPi.GPIO',
+      'L298N Motor Driver',
+      'Ultrasonic Ranging',
+      'PWM Servo Control'
+    ],
+    personalContributions: [
+      'Designed and assembled the physical dual-tier differential drive mobile robot chassis with Raspberry Pi 4, L298N H-bridge, and micro-servo pan assembly.',
+      'Developed real-time video stream ingestion and multi-model edge vision pipelines integrating MediaPipe Face Detection, HOG+SVM people detection, and Haar cascades.',
+      'Authored low-level hardware-timed PWM motor control scripts using Linux lgpio to drive left and right TT gear motors smoothly without jitter.',
+      'Engineered autonomous reactive obstacle avoidance routines ("sweep, hide, and free") combining servo-panned HC-SR04 ultrasonic readings with emergency motor reversals.'
+    ],
+    engineeringDecisions: [
+      'Utilized Linux lgpio kernel library instead of legacy software polling to generate accurate 1 kHz hardware-timed PWM for the L298N motor driver on Raspberry Pi 4.',
+      'Downscaled camera frames to 640px width before feature extraction and applied Intersection-over-Union (IoU) Non-Maximum Suppression (NMS) to eliminate overlapping bounding boxes while maintaining real-time frame rates.',
+      'Level-shifted the 5V HC-SR04 echo signal down to 3.3V logic to protect Raspberry Pi GPIO inputs from overvoltage stress.'
+    ],
+    year: '2025',
+    status: 'WORKING TESTBED / PROTOTYPE',
+    domain: 'Mobile Robotics / Edge Computer Vision / Embedded Control',
+    category: 'vision',
+    summary: 'An autonomous vision and obstacle reflex mobile robot testbed developed on Raspberry Pi 4 and differential drive chassis. Integrates real-time edge computer vision (MediaPipe face detection, HOG+SVM people tracking, and Haar cascade filters) with closed-loop ultrasonic servo scanning and hardware-timed PWM motor control.',
+    challenge: 'Executing multi-model computer vision inference (face and body detection) concurrently with low-latency ultrasonic ranging and continuous differential motor actuation on an embedded ARM single-board computer.',
+    approach: 'Constructed a modular Python architecture separating computer vision processing from motor and sensor control loops. Implemented optimized downscaled frame inference, non-maximum suppression (NMS), and reactive obstacle avoidance state machines.',
+    systemArchitecture: [
+      'Raspberry Pi 4 Model B (Primary SBC & Vision Compute)',
+      'Dual-Tier Acrylic Differential Drive Mobile Robot Platform',
+      'L298N Dual H-Bridge Motor Driver Module (1 kHz PWM)',
+      'Wide-Angle Vision Camera Module / RTSP Video Stream Receiver',
+      'TowerPro SG90 Pan-Tilt Micro-Servo for Sensor Sweeps',
+      'HC-SR04 Ultrasonic Distance Sensor with 3.3V Level Shifting',
+      'Real-Time OpenCV & MediaPipe Edge Detection Engine'
+    ],
+    softwareStack: [
+      'Python 3',
+      'OpenCV (cv2)',
+      'MediaPipe Face Detection',
+      'HOG + SVM People Detector',
+      'Haar Cascades (Upper / Full Body)',
+      'lgpio Linux GPIO Library',
+      'RPi.GPIO',
+      'Non-Maximum Suppression (NMS)'
+    ],
+    hardwareStack: [
+      'Raspberry Pi 4 Model B',
+      'L298N H-Bridge Motor Driver',
+      'Dual TT DC Gear Motors with Rubber Wheels',
+      'TowerPro SG90 Micro-Servo',
+      'HC-SR04 Ultrasonic Transceiver',
+      'Acrylic Dual-Deck Mobile Robot Chassis',
+      'Dual Li-ion / 5V DC Power Regulators'
+    ],
+    keyResults: [
+      'Reliable real-time edge face and person detection operating with sub-40ms latency',
+      'Smooth differential drive motion and 1 kHz PWM speed control via lgpio',
+      'Autonomous ultrasonic reactive obstacle reflex with sweeping servo and evasive reverse-pivot navigation',
+      'Open-source testing harness published at github.com/buddytex/VANIS'
+    ],
+    ownershipStory: {
+      title: 'Rapid Prototyping of Edge Vision & Autonomous Reflexes',
+      narrative: 'VANIS was built as a hands-on physical testbed to evaluate how vision-based human perception and reactive obstacle reflexes interact in real hardware. By coupling a Raspberry Pi 4 with dual-motor differential drive and a pan-tilt ultrasonic sensor, I created a versatile mobile robotics platform for benchmarking lightweight neural and cascade detection models against physical actuation constraints.',
+      takeaways: [
+        'Validated the importance of hardware-timed PWM over software-timed GPIO pulses for smooth DC motor control.',
+        'Gained deep experience balancing computer vision resolution against embedded inference latency.',
+        'Demonstrated rapid hardware-software prototyping from breadboard wiring to operational mobile robot.'
+      ]
+    },
+    failuresAndIterations: [
+      {
+        issue: 'HC-SR04 echo line risked damaging Raspberry Pi GPIO pins due to voltage differences.',
+        rootCause: 'The ultrasonic sensor operates on a 5V supply and outputs 5V TTL pulses on the Echo pin, while Raspberry Pi GPIO pins are strictly 3.3V tolerant.',
+        iteration: 'Integrated a resistive voltage divider circuit on the Echo return line to step down the signal safely to 3.3V.'
+      },
+      {
+        issue: 'Frame rate drops and CPU throttling during concurrent face and full-body Haar cascade evaluation.',
+        rootCause: 'Evaluating multi-scale Haar cascades and HOG descriptors at full camera resolution overwhelmed the ARM CPU cores.',
+        iteration: 'Downscaled input frames to 640px width before inference, tuned scale factors, and implemented IoU Non-Maximum Suppression to filter false-positive overlaps efficiently.'
+      }
+    ],
+    githubUrl: 'https://github.com/buddytex/VANIS',
+    visualSignature: 'vision',
+    imagePath: '/media/projects/vanis/robot_photo.jpg',
+    featuredVideo: {
+      path: '/media/projects/vanis/VID-20250809-WA0004.mp4',
+      poster: '/media/projects/vanis/VID-20250809-WA0004_poster.jpg',
+      title: 'VANIS Mobile Robot — Actuation & Benchtop Validation',
+      caption: 'Real-time hardware bench testing of differential drive motor pulses, servo panning mechanism, and ultrasonic obstacle detection response.',
+      badge: 'BENCH TEST VIDEO'
+    },
+    mediaGalleries: [
+      {
+        id: 'vanis-hardware-testing',
+        title: 'Physical Prototype & Live Hardware Testing',
+        items: [
+          {
+            path: '/media/projects/vanis/robot_photo.jpg',
+            type: 'image',
+            title: 'VANIS Mobile Robot Chassis & Sensor Array',
+            caption: 'Physical dual-tier acrylic chassis equipped with Raspberry Pi 4, L298N motor driver, TT gearmotors, panning ultrasonic sensor, and vision camera mount.',
+            badge: 'HARDWARE'
+          },
+          {
+            path: '/media/projects/vanis/VID-20250809-WA0004.mp4',
+            poster: '/media/projects/vanis/VID-20250809-WA0004_poster.jpg',
+            type: 'video',
+            title: 'Dual-Wheel Differential Drive & Servo Actuation',
+            caption: 'Validation of differential drive motor directionality and panning servo synchronization.',
+            badge: 'TEST VIDEO'
+          },
+          {
+            path: '/media/projects/vanis/VID-20250809-WA0005.mp4',
+            poster: '/media/projects/vanis/VID-20250809-WA0005_poster.jpg',
+            type: 'video',
+            title: 'PWM Motor Speed & Driver Responsiveness Test',
+            caption: 'Hardware-timed PWM duty cycle ramping on L298N dual H-bridge motor driver.',
+            badge: 'TEST VIDEO'
+          },
+          {
+            path: '/media/projects/vanis/VID-20250809-WA0006.mp4',
+            poster: '/media/projects/vanis/VID-20250809-WA0006_poster.jpg',
+            type: 'video',
+            title: 'Continuous Ultrasonic Sweep & Evasive Reflex Test',
+            caption: 'Testing the autonomous sweep and reverse reaction loop under simulated obstacle proximity.',
+            badge: 'TEST VIDEO'
+          },
+          {
+            path: '/media/projects/vanis/VID-20250809-WA0003.mp4',
+            poster: '/media/projects/vanis/VID-20250809-WA0003_poster.jpg',
+            type: 'video',
+            title: 'SG90 Servo Sweep Angle & Duty Cycle Calibration',
+            caption: 'Verifying calibrated angular sweep range between 40° and 80° for obstacle clearance.',
+            badge: 'TEST VIDEO'
+          },
+          {
+            path: '/media/projects/vanis/VID-20250809-WA0002.mp4',
+            poster: '/media/projects/vanis/VID-20250809-WA0002_poster.jpg',
+            type: 'video',
+            title: 'Initial GPIO Motor Pulse Verification',
+            caption: 'Sanity testing low-level GPIO pin state toggling and motor driver enable lines.',
+            badge: 'TEST VIDEO'
+          }
+        ]
+      }
+    ]
   }
 ];
