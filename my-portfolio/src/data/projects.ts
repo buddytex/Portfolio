@@ -1016,54 +1016,63 @@ export const projects: Project[] = [
   {
     id: 'swarm-robotics',
     index: '06',
-    title: 'Swarm Robotics Platform',
+    title: 'Two-Robot Swarm Platform: Decentralized Multi-Agent Mini Project',
     featured: true,
-    subtitle: 'B.Tech Mini Project · Decentralized Two-Robot Coordination & Swarm Study',
-    role: 'B.Tech Mini Project Lead · Swarm Systems & Simulation',
-    shortRole: 'Mini Project Lead — Swarm Systems',
-    keyAreas: ['Two-Robot Master-Slave', 'Multi-Agent Consensus', 'ROS 2 Swarm Arena', 'Gazebo 16-Agent Simulation', 'Peer-to-Peer TCP/IP'],
+    subtitle: 'B.Tech 3rd Year Mini Project · Two Physical Bots, SMD PCB Assembly, Soldering, Custom Firmware & Inter-Bot Communication',
+    role: 'B.Tech Mini Project Lead · Swarm Hardware, Firmware & Systems Integration',
+    shortRole: 'Mini Project Lead — Swarm Hardware & Firmware',
+    keyAreas: ['Two Physical Swarm Bots', 'SMD PCB Assembly & Soldering', 'ESP32 Firmware & Inter-Bot Comm', 'Peer-to-Peer Protocol', 'Gazebo Multi-Agent Simulation'],
     skillsUsed: [
       'Swarm Robotics',
+      'SMD PCB Assembly',
+      'PCB Soldering & Debugging',
+      'ESP32 & Embedded C++',
+      'Peer-to-Peer Communication',
       'ROS 2 (Humble)',
       'Gazebo 3D Simulation',
-      'Peer-to-Peer Communication',
-      'Technology Benchmarking',
-      'C++',
-      'Python'
+      'Python',
+      'Hands-on Prototyping'
     ],
     projectType: 'academic',
     personalContributions: [
-      'Designed and built the physical two-robot master-slave swarm coordination platform for my B.Tech College Mini Project at Saintgits College of Engineering.',
-      'Implemented peer-to-peer TCP/HTTP wireless communication sockets between ESP32 microcontrollers for synchronized trajectory following and collision avoidance.',
-      'Benchmarked 16-agent distributed swarm simulations in Gazebo evaluating decentralized consensus and virtual attractor flocking dynamics.',
-      'Analyzed modular micro-robot PCB hardware architectures and sensory ring geometries for scalable swarm agents.'
+      'Built two physical autonomous micro-robots from the ground up as my 3rd Year B.Tech Mini Project at Saintgits College of Engineering.',
+      'Performed hands-on surface-mount (SMD) PCB assembly and precision soldering of octagonal motor-carrier and sensor breakout boards under magnification.',
+      'Developed embedded firmware on ESP32 microcontrollers, implementing PWM motor driver control, infrared proximity ring polling, and power management.',
+      'Architected peer-to-peer wireless communication between the two physical bots for synchronized multi-agent maneuvers, dynamic leader-follower tracking, and collision evasion.',
+      'Simulated and benchmarked decentralized consensus and swarm coordination algorithms in a 16-agent Gazebo 3D simulation arena.'
     ],
     engineeringDecisions: [
-      'Grouped high-frequency infrared proximity raycasters into radial sector collision cones at 20 Hz to sustain 60 FPS in Gazebo physics.',
-      'Employed virtual attractor potential fields to guide decentralized agent clusters around irregular arena obstacles.'
+      'Hand-soldered compact SMD ICs, passives, and optical IR transceivers with fine-tip temperature control and flux to ensure reliable solder joint integrity on small octagonal PCBs.',
+      'Designed a low-overhead peer-to-peer messaging protocol between the two ESP32 microcontrollers over ad-hoc wireless sockets to minimize inter-bot transmission latency.',
+      'Optimized Gazebo simulation proximity raycasters into grouped 20 Hz radial collision cones to sustain real-time 60 FPS physics without CPU bottleneck.'
     ],
     year: '2024',
     status: 'COLLEGE MINI PROJECT',
     domain: 'Swarm Robotics / Decentralized Coordination / Multi-Agent Simulation',
     category: 'robotics',
-    summary: 'Developed a decentralized two-robot swarm coordination system as my B.Tech College Mini Project at Saintgits College of Engineering, combined with multi-agent Gazebo simulation studies and architectural analysis of the open-source HeRo Common swarm robotics framework.',
-    challenge: 'Understanding scalable multi-robot consensus, peer-to-peer decentralized communication constraints, and coordinate frame alignment across 16+ simultaneous autonomous agents without centralized bottleneck controllers.',
-    approach: 'Studied the open-source ROS-based HeRo framework, set up Gazebo multi-agent simulation arenas with custom proximity-sensing cones, benchmarked virtual attractor flocking dynamics, and analyzed the octagonal modular micro-robot PCB architecture.',
+    summary: 'Engineered two physical autonomous micro-robots for my 3rd Year B.Tech Mini Project at Saintgits College of Engineering. Hand-assembled and soldered custom SMD PCB hardware, flashed custom ESP32 firmware for motor drive and peer-to-peer inter-robot communication, and conducted multi-agent coordination simulation in Gazebo.',
+    challenge: 'Achieving dependable peer-to-peer communication between two physical micro-robots while soldering dense surface-mount components onto miniature octagonal PCBs and coordinating distributed multi-agent consensus without centralized computing bottlenecks.',
+    approach: 'Constructed two physical micro-robots from bare PCBs, performing SMD component soldering and assembly in the workshop. Flashed ESP32 firmware for real-time motor control and peer-to-peer wireless telemetry. Complemented the physical dual-bot deployment with 16-agent Gazebo simulation benchmarks for decentralized consensus and obstacle evasion.',
     systemArchitecture: [
-      'ROS-Based Distributed Multi-Agent Node Architecture',
-      'Decentralized Peer-to-Peer Consensus & Flocking Protocol',
-      'Gazebo 3D Simulation Arena with 16+ Concurrent Swarm Agents',
-      'ArUco Marker Optical Ground-Truth Position Tracking Hat',
-      'Modular Octagonal PCB Architecture with Integrated Motor Drivers'
+      'Two Physical Autonomous Micro-Robots (ESP32 Compute Cores)',
+      'Octagonal SMD Carrier PCB with Dual H-Bridge Motor Drivers',
+      'Radial Infrared Proximity & Inter-Agent Sensing Ring',
+      'Low-Latency Peer-to-Peer Wireless Messaging Protocol',
+      'Gazebo 3D Multi-Agent Simulation Arena with 16 Concurrent Swarm Nodes'
     ],
-    softwareStack: ['ROS / ROS 2', 'Gazebo 3D Simulation', 'Python', 'C++', 'VeRLab HeRo Common Stack'],
-    hardwareStack: ['HeRo v2.5 Micro-Robot Architecture', 'ESP32 Compute Core', 'Modular Octagonal PCB', 'Infrared Ring Sensors', 'Dual DC Micro-Motors'],
+    softwareStack: ['ESP32 Embedded C++', 'Inter-Robot Wireless Communication', 'FreeRTOS', 'ROS 2 Humble', 'Gazebo 3D Simulation', 'Python'],
+    hardwareStack: ['Two Physical Autonomous Bots', 'Custom Octagonal PCBs', 'SMD Component Assembly & Soldering', 'ESP32 Microcontrollers', 'Dual Micro DC Gear Motors', 'Radial Infrared Sensor Rings', 'LiPo Battery Management'],
     keyResults: [
-      'Successfully benchmarked 16-agent distributed swarm simulations in Gazebo with zero inter-agent collision',
-      'Analyzed peer-to-peer ad-hoc messaging protocols for decentralized agent consensus',
-      'Documented modular PCB architecture and power distribution for low-cost swarm micro-robots'
+      'Successfully assembled, soldered, and powered two physical autonomous swarm micro-robots',
+      'Demonstrated reliable peer-to-peer inter-bot communication for coordinated movement and obstacle evasion',
+      'Benchmarked 16-agent distributed swarm simulations in Gazebo with zero inter-agent collision at 60 FPS'
     ],
     failuresAndIterations: [
+      {
+        issue: 'Bridged solder joints on fine-pitch SMD IC pads during manual PCB assembly.',
+        rootCause: 'Excess solder paste and capillary flow across sub-millimeter pin spacings.',
+        iteration: 'Used flux pen pre-treatment, fine-tip temperature-controlled soldering, and desoldering braid cleanup under a magnifying inspection fixture to ensure clean trace isolation.'
+      },
       {
         issue: 'Simulation frame drops when simulating dense infrared raycaster beams for 16+ simultaneous robots.',
         rootCause: 'High-frequency raycaster collision checks overwhelmed the Gazebo physics thread.',
@@ -1080,53 +1089,53 @@ export const projects: Project[] = [
     githubUrl: 'https://github.com/verlab/hero_common',
     visualSignature: 'swarm',
     imagePath: '/media/projects/swarm-robotics/hero_swarm_test.png',
-    secondaryImage: '/media/projects/swarm-robotics/hero_gazebo_swarm.png',
+    secondaryImage: '/media/projects/swarm-robotics/hero_pcb_assembly.jpg',
     mediaGalleries: [
       {
-        id: 'swarm-platform',
-        title: 'HeRo Platform & Multi-Agent Swarm Arena',
+        id: 'swarm-hardware',
+        title: 'Physical Hardware, SMD Assembly & Dual-Bot Swarm',
         items: [
-          {
-            path: '/media/projects/swarm-robotics/hero_swarm_test.png',
-            type: 'image',
-            title: 'HeRo v2.5 Physical Micro-Robot Swarm',
-            caption: 'Physical HeRo swarm micro-robots in formation (Source: VeRLab / hero_common).',
-            badge: 'PHYSICAL SWARM'
-          },
-          {
-            path: '/media/projects/swarm-robotics/hero_gazebo_swarm.png',
-            type: 'image',
-            title: '16-Agent Gazebo Swarm Simulation Arena',
-            caption: 'Multi-agent simulation environment showing sensor cones and distributed swarm paths (Source: VeRLab / hero_common).',
-            badge: 'GAZEBO SIMULATION'
-          },
           {
             path: '/media/projects/swarm-robotics/hero_pcb_assembly.jpg',
             type: 'image',
-            title: 'HERO 2.0 Swarm Robot PCB Workbench Assembly',
-            caption: 'Workbench soldering and component assembly of the circular HERO 2.0 swarm robot circuit boards using precision soldering iron and helping-hands holding fixture.',
-            badge: 'PCB ASSEMBLY'
+            title: 'SMD PCB Assembly & Soldering Workbench',
+            caption: 'Hands-on SMD component soldering and assembly of the octagonal swarm robot circuit boards on the workbench using precision soldering iron, tweezers, flux, and component reels.',
+            badge: 'PHYSICAL SMD SOLDERING'
           },
           {
-            path: '/media/projects/swarm-robotics/hero_pcb.png',
+            path: '/media/projects/swarm-robotics/hero_swarm_test.png',
             type: 'image',
-            title: 'Modular Octagonal Swarm Robot PCB Hardware',
-            caption: 'White octagonal modular PCB architecture for HeRo micro-robots (Source: VeRLab / hero_common).',
-            badge: 'MODULAR PCB'
+            title: 'Physical Micro-Robots with Carrier PCBs & Sensors',
+            caption: 'Physical micro-robot platforms equipped with custom soldered octagonal carrier PCBs, IMU modules, and radial IR sensor rings for inter-bot communication.',
+            badge: 'PHYSICAL BOTS'
           },
           {
             path: '/media/projects/swarm-robotics/hero_robot_single.jpg',
             type: 'image',
-            title: 'Single HeRo Agent with Optical Tracking Hat',
-            caption: 'Individual HeRo robot featuring ArUco optical marker for overhead camera tracking (Source: VeRLab / hero_common).',
-            badge: 'SINGLE AGENT'
+            title: 'Assembled Swarm Bot with Optical Tracking Hat',
+            caption: 'Fully assembled physical micro-robot bot featuring 3D-printed enclosure, differential drive wheels, and top ArUco optical marker hat.',
+            badge: 'ASSEMBLED BOT'
           },
           {
             path: '/media/projects/swarm-robotics/hero_robot_ehat.jpg',
             type: 'image',
-            title: 'HeRo 08 Micro-Robot with Ring Sensors',
-            caption: 'Front perspective of physical 3D-printed HeRo 08 showing infrared proximity sensor ring and ArUco marker top hat (Source: VeRLab / hero_common).',
-            badge: 'ROBOT ANATOMY'
+            title: 'Swarm Bot Front Perspective & Sensor Ring',
+            caption: 'Front perspective of the assembled micro-robot showing radial infrared proximity sensors, drive wheels, and chassis integration.',
+            badge: 'SENSOR INTEGRATION'
+          },
+          {
+            path: '/media/projects/swarm-robotics/hero_pcb.png',
+            type: 'image',
+            title: 'Octagonal Swarm Robot PCB Architecture',
+            caption: 'Octagonal modular PCB hardware design integrating ESP32 compute, motor drive circuitry, and radial sensor ring breakouts.',
+            badge: 'PCB ARCHITECTURE'
+          },
+          {
+            path: '/media/projects/swarm-robotics/hero_gazebo_swarm.png',
+            type: 'image',
+            title: '16-Agent Gazebo Multi-Robot Simulation Arena',
+            caption: 'Multi-agent simulation environment benchmarking decentralized consensus, virtual attractor flocking, and collision evasion in Gazebo.',
+            badge: 'GAZEBO SIMULATION'
           }
         ]
       }

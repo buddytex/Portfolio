@@ -129,17 +129,17 @@ export const skillCategories: SkillCategory[] = [
       },
       {
         id: 'swarm-robotics',
-        name: 'Swarm Robotics & Consensus',
+        name: 'Swarm Robotics & Inter-Bot Communication',
         tier: 'core',
-        proficiency: 'working',
+        proficiency: 'strong',
         category: 'Robotics & Autonomous Systems',
         categoryIndex: '01',
-        evidence: 'Designed a physical two-robot master-slave system for B.Tech college mini project and benchmarked 16-agent HeRo Common Gazebo simulations.',
-        context: 'Decentralized peer-to-peer consensus, virtual attractor potential fields, and flocking dynamics.',
+        evidence: 'Built two physical autonomous micro-robots for B.Tech mini project with hands-on SMD PCB assembly, soldering, ESP32 firmware, and peer-to-peer wireless communication, coupled with 16-agent Gazebo simulations.',
+        context: 'Decentralized peer-to-peer consensus, virtual attractor potential fields, SMD assembly, and inter-bot telemetry.',
         connectedEntities: [
-          { id: 'swarm-robotics', name: 'Swarm Robotics Platform', type: 'project', badge: 'MINI PROJECT', url: '/projects/swarm-robotics' }
+          { id: 'swarm-robotics', name: 'Two-Robot Swarm Platform', type: 'project', badge: 'MINI PROJECT', url: '/projects/swarm-robotics' }
         ],
-        tools: ['Gazebo 3D', 'TCP/HTTP Sockets', 'VeRLab HeRo Common']
+        tools: ['ESP32 C++', 'Peer-to-Peer Sockets', 'SMD Soldering', 'Gazebo 3D', 'ROS 2 Humble']
       },
       {
         id: 'robot-kinematics',
@@ -302,10 +302,11 @@ export const skillCategories: SkillCategory[] = [
         proficiency: 'strong',
         category: 'Electronics, PCB & Harness Design',
         categoryIndex: '03',
-        evidence: 'Personally hand-soldered SMD passive components (0805/0603), SOIC ICs, power MOSFETs, and terminal headers for aBAJA ECUs.',
+        evidence: 'Personally hand-soldered SMD passive components (0805/0603), SOIC ICs, and motor driver headers for aBAJA ECUs and Swarm Robotics octagonal boards.',
         context: 'Fine-pitch soldering, flux application, hot-air rework, and microscope solder joint inspection.',
         connectedEntities: [
-          { id: 'baja-2026', name: 'aBAJA SAEINDIA 2026', type: 'project', badge: 'PHYSICAL BUILDS', url: '/projects/baja-2026' }
+          { id: 'baja-2026', name: 'aBAJA SAEINDIA 2026', type: 'project', badge: 'PHYSICAL BUILDS', url: '/projects/baja-2026' },
+          { id: 'swarm-robotics', name: 'Two-Robot Swarm Platform', type: 'project', badge: 'SMD ASSEMBLY', url: '/projects/swarm-robotics' }
         ],
         tools: ['SMD Soldering Station', 'Hot Air Rework', 'Desoldering Braid', 'Flux']
       },

@@ -25,8 +25,14 @@ Thumbs.db
 *.swp
 *.swo
 
-# Temporary test screenshots and browser profiles
+# Temporary test screenshots and browser profiles (ignore root/test pngs, keep media/public/src)
 *.png
+!media/**/*.png
+!public/**/*.png
+!src/**/*.png
+!**/media/**/*.png
+!**/public/**/*.png
+!**/src/**/*.png
 .ff_*
 browser_log.json
 test_*.html

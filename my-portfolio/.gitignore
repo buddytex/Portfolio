@@ -23,8 +23,14 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# temporary diagnostic and test artifacts
+# temporary diagnostic and test artifacts (ignore test pngs, keep media/public/src)
 *.png
+!media/**/*.png
+!public/**/*.png
+!src/**/*.png
+!**/media/**/*.png
+!**/public/**/*.png
+!**/src/**/*.png
 .ff_*
 browser_log.json
 public/test_roles_snap.html
