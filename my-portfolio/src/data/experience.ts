@@ -15,6 +15,7 @@ export interface ExperienceItem {
   appliedLearnings: string[];
   imagePath: string;
   secondaryImage?: string;
+  certificateImage?: string;
   videoPath?: string;
   badge: string;
 }
@@ -49,6 +50,7 @@ export const experiences: ExperienceItem[] = [
     ],
     imagePath: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Image 2026-09-14 at 01.05.35.jpeg',
     secondaryImage: '/media/internships/surgical-robotics/hospital-experience/WhatsApp Image 2026-09-14 at 01.05.36(1).jpeg',
+    certificateImage: '/media/achievements/certificates/muthoot-surgical-robotics-internship-cert.png',
     videoPath: '/media/internships/surgical-robotics/robot-hardware/WhatsApp Video 2026-09-14 at 01.05.33.mp4',
     badge: 'CLINICAL ROBOTICS INTERNSHIP',
   },

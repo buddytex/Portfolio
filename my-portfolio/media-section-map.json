@@ -125,6 +125,13 @@
     "target": "restrained-credential-selector",
     "certificates": [
       {
+        "id": "sae-baja-2026",
+        "title": "BAJA SAEINDIA 2026 aBAJA Participation",
+        "file": "/media/achievements/certificates/sae-baja-2026-cert.jpg",
+        "issuer": "SAEINDIA",
+        "category": "Autonomous All-Terrain Vehicle"
+      },
+      {
         "id": "sae-baja-2025",
         "title": "SAEINDIA BAJA 2025 Participation",
         "file": "/media/achievements/certificates/sae-baja-2025-cert.jpg",

@@ -58,7 +58,8 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
 
             <!-- Restrained micro-selector tabs -->
             <div class="cred-tabs" role="tablist" aria-label="Credential Selector">
-              <button type="button" class="cred-tab-pill mono active" data-cred="baja" role="tab" aria-selected="true">BAJA SAE</button>
+              <button type="button" class="cred-tab-pill mono active" data-cred="baja-26" role="tab" aria-selected="true">BAJA '26</button>
+              <button type="button" class="cred-tab-pill mono" data-cred="baja-25" role="tab" aria-selected="false">BAJA '25</button>
               <button type="button" class="cred-tab-pill mono" data-cred="intel" role="tab" aria-selected="false">INTEL AI</button>
               <button type="button" class="cred-tab-pill mono" data-cred="sae-ad" role="tab" aria-selected="false">AUTONOMOUS</button>
               <button type="button" class="cred-tab-pill mono" data-cred="srishti" role="tab" aria-selected="false">SRISHTI '24</button>
@@ -68,18 +69,18 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
             <div class="cred-preview-row">
               <a 
                 id="credLink" 
-                href={resolveMediaUrl('/media/achievements/certificates/sae-baja-2025-cert.jpg')} 
+                href={resolveMediaUrl('/media/achievements/certificates/sae-baja-2026-cert.jpg')} 
                 class="cred-thumb-wrap img-expandable" 
-                data-lightbox={resolveMediaUrl('/media/achievements/certificates/sae-baja-2025-cert.jpg')}
-                data-title="SAEINDIA aBAJA 2025 Certificate"
+                data-lightbox={resolveMediaUrl('/media/achievements/certificates/sae-baja-2026-cert.jpg')}
+                data-title="BAJA SAEINDIA 2026 Certificate"
                 data-badge="OFFICIAL CREDENTIAL"
-                data-caption="Certificate of Participation & Technical Safety Compliance · Team Equinox"
+                data-caption="Certificate of Participation · BAJA SAEINDIA 2026 (aBAJA) · Team Equinox (Car A18)"
                 title="Inspect Official Certificate in Full Resolution"
               >
                 <img
                   id="credImg"
-                  src={resolveMediaUrl('/media/achievements/certificates/sae-baja-2025-cert.jpg')}
-                  alt="SAEINDIA aBAJA 2025 Certificate of Participation awarded to Naveen Shaji George"
+                  src={resolveMediaUrl('/media/achievements/certificates/sae-baja-2026-cert.jpg')}
+                  alt="BAJA SAEINDIA 2026 Certificate of Participation awarded to Naveen Shaji George"
                   class="cred-thumb-img img-contain"
                   width="140"
                   height="180"
@@ -88,9 +89,9 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
                 <span class="cred-zoom-glyph mono" aria-hidden="true">↗</span>
               </a>
               <div class="cred-info">
-                <span id="credAward" class="cred-award-name">SAEINDIA aBAJA 2025</span>
-                <span id="credRecipient" class="cred-recipient mono">Naveen Shaji George · AIR 7</span>
-                <span id="credMeta" class="cred-meta">Certificate of Participation &amp; Technical Safety Compliance · Team Equinox</span>
+                <span id="credAward" class="cred-award-name">BAJA SAEINDIA 2026</span>
+                <span id="credRecipient" class="cred-recipient mono">Naveen Shaji George · E&E Head</span>
+                <span id="credMeta" class="cred-meta">Certificate of Participation · aBAJA Physical Round · Team Equinox (Car A18)</span>
               </div>
             </div>
           </div>
@@ -305,7 +306,21 @@ import { resolveMediaUrl, resolveHref } from '../utils/media';
     const resolve = (p: string) => `${basePath}${p}`;
 
     const credData: Record<string, { href: string; src: string; award: string; recipient: string; meta: string }> = {
+      'baja-26': {
+        href: resolve('/media/achievements/certificates/sae-baja-2026-cert.jpg'),
+        src: resolve('/media/achievements/certificates/sae-baja-2026-cert.jpg'),
+        award: 'BAJA SAEINDIA 2026',
+        recipient: 'Naveen Shaji George · E&E Head',
+        meta: 'Certificate of Participation · aBAJA Physical Round · Team Equinox (Car A18)'
+      },
       baja: {
+        href: resolve('/media/achievements/certificates/sae-baja-2026-cert.jpg'),
+        src: resolve('/media/achievements/certificates/sae-baja-2026-cert.jpg'),
+        award: 'BAJA SAEINDIA 2026',
+        recipient: 'Naveen Shaji George · E&E Head',
+        meta: 'Certificate of Participation · aBAJA Physical Round · Team Equinox (Car A18)'
+      },
+      'baja-25': {
         href: resolve('/media/achievements/certificates/sae-baja-2025-cert.jpg'),
         src: resolve('/media/achievements/certificates/sae-baja-2025-cert.jpg'),
         award: 'SAEINDIA aBAJA 2025',

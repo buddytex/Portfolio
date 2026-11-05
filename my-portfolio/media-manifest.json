@@ -288,6 +288,18 @@
     "duplicateOf": null
   },
   {
+    "filename": "sae-baja-2026-cert.jpg",
+    "currentPath": "media/achievements/certificates/sae-baja-2026-cert.jpg",
+    "category": "Projects / Baja 2026",
+    "project": "aBAJA 2026 (Car A18)",
+    "mediaType": "image",
+    "subject": "Official SAEINDIA Certificate of Participation for Physical Round (Phase 3)",
+    "intendedUsage": "Baja 2026 Team Evidence & Verified Credential",
+    "sizeBytes": 329261,
+    "sha256": "1309cda5d49bee1011dfa267fac498f06067258303a3236d82e6aab9829a0afc",
+    "duplicateOf": null
+  },
+  {
     "filename": "sae-baja-2025-cert.jpg",
     "currentPath": "media/achievements/certificates/sae-baja-2025-cert.jpg",
     "category": "Projects / Baja 2025",

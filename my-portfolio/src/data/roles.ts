@@ -57,7 +57,7 @@ export const rolesData: RoleItem[] = [
     title: 'Vice President of Anchoring Club',
     domainCategory: 'Event Leadership & Stage Direction',
     organization: 'Anchoring Club · Saintgits College of Engineering',
-    period: '2023 – 2025',
+    period: '2023 – 2026',
     description: 'Began anchoring in 10th grade and have hosted ~10 major events. As Vice President, directed anchoring operations, groomed collegiate talent, wrote scripts, secured permissions, and managed main-stage flow and celebrity guest coordination for Nakshatra—Saintgits College of Engineering\'s premier national-level cultural fest.',
     responsibilities: [
       'Groomed, trained, and mentored new anchors across voice modulation, pacing, and spontaneous stage recovery.',
@@ -77,9 +77,9 @@ export const rolesData: RoleItem[] = [
       image: '/media/activities/anchoring/Nakshatra_25/WhatsApp Image 2026-09-14 at 00.37.50.jpeg',
       badge: 'STAGE LEADERSHIP · NAKSHATRA',
       caption: 'Leading live stage hosting in formal tuxedo under main auditorium lights at national-level Nakshatra Cultural Fest',
-      secondaryImage: '/media/activities/anchoring/Nakshatra_26/IMG_0824.JPG',
-      secondaryBadge: 'NATIONAL CULTURAL FESTIVAL',
-      secondaryCaption: 'Backstage and on-stage live coordination during the Nakshatra cultural festival at Saintgits College of Engineering'
+      secondaryImage: '/media/achievements/certificates/nakshatra-2026-vice-president-cert.png',
+      secondaryBadge: 'OFFICIAL VP CREDENTIAL',
+      secondaryCaption: 'Official Certificate of Appreciation presented to Naveen Shaji George as Vice President for Compering at Nakshatra 2026'
     }
   },
   {

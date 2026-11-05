@@ -52,10 +52,10 @@ export const achievementsData: AchievementItem[] = [
     organization: 'SAEINDIA · Team Equinox (Car A18)',
     date: '2026',
     resultBadge: 'AIR 11 · E&E HEAD',
-    description: 'Headed the Electrical & Electronics division for the autonomous vehicle campaign. Designed custom ECU PCBs in KiCad, differential CAN 2.0B bus network, Drive-by-Wire (SBW/TBW/BBW), and cleared all technical safety scrutiny inspections.',
-    certificateImage: '/media/projects/baja/baja-2026/electrical/WhatsApp Image 2026-09-14 at 00.15.05.jpeg',
+    description: 'Headed the Electrical & Electronics division for the autonomous vehicle campaign. Designed custom ECU PCBs in KiCad, differential CAN 2.0B bus network, Drive-by-Wire (SBW/TBW/BBW), and cleared all technical safety scrutiny inspections at Sri Sairam Engineering College, Chennai.',
+    certificateImage: '/media/achievements/certificates/sae-baja-2026-cert.jpg',
     supportingImage: '/media/projects/baja/baja-2026/team/Electrical-Head.jpeg',
-    verifiedSource: 'Signed Accumulator Check Scrutiny Pass Sticker & Team Records',
+    verifiedSource: 'Official SAEINDIA Certificate of Participation (sae-baja-2026-cert.jpg)',
   },
   {
     id: 'intel-hackathon-top25',
@@ -382,6 +382,20 @@ export const achievementMediaItems: AchievementMediaItem[] = [
   },
 
   // CERTIFICATES (Formal documents shown in uncropped contain mode)
+  {
+    id: 'media-cert-baja-2026',
+    category: 'certificate',
+    categoryLabel: 'OFFICIAL CREDENTIAL',
+    title: 'aBAJA SAEINDIA 2026 — Certificate of Participation',
+    event: 'BAJA SAEINDIA 2026 (aBAJA)',
+    year: '2026',
+    resultBadge: 'AIR 11 · E&E HEAD',
+    description: 'Official SAEINDIA Certificate of Participation awarded to Naveen Shaji George representing Saintgits College of Engineering for BAJA SAEINDIA 2026 – aBAJA Physical Round (Phase 3) held at Sri Sairam Engineering College, Chennai.',
+    imagePath: '/media/achievements/certificates/sae-baja-2026-cert.jpg',
+    fit: 'contain',
+    aspectRatio: '4/3',
+    verifiedSource: 'Official SAEINDIA Certificate of Participation',
+  },
   {
     id: 'media-cert-baja-2025',
     category: 'certificate',
