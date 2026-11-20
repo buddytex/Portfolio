@@ -513,7 +513,7 @@ export const projects: Project[] = [
             badge: 'DIVISION HEAD'
           },
           {
-            path: '/media/achievements/certificates/sae-baja-2026-cert.jpg',
+            path: '/media/projects/baja/baja-2026/sae-baja-2026-cert.jpg',
             type: 'image',
             title: 'BAJA SAEINDIA 2026 Certificate',
             caption: 'Official Certificate of Participation awarded to Naveen Shaji George representing Saintgits College of Engineering for BAJA SAEINDIA 2026 – aBAJA Physical Round (Phase 3) held at Sri Sairam Engineering College, Chennai.',

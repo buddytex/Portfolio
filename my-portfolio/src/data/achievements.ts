@@ -53,9 +53,9 @@ export const achievementsData: AchievementItem[] = [
     date: '2026',
     resultBadge: 'AIR 11 · E&E HEAD',
     description: 'Headed the Electrical & Electronics division for the autonomous vehicle campaign. Designed custom ECU PCBs in KiCad, differential CAN 2.0B bus network, Drive-by-Wire (SBW/TBW/BBW), and cleared all technical safety scrutiny inspections at Sri Sairam Engineering College, Chennai.',
-    certificateImage: '/media/achievements/certificates/sae-baja-2026-cert.jpg',
+    certificateImage: '/media/projects/baja/baja-2026/sae-baja-2026-cert.jpg',
     supportingImage: '/media/projects/baja/baja-2026/team/Electrical-Head.jpeg',
-    verifiedSource: 'Official SAEINDIA Certificate of Participation (sae-baja-2026-cert.jpg)',
+    verifiedSource: 'Official SAEINDIA Certificate of Participation (sae-baja-2026-cert.jpg at Baja 2026)',
   },
   {
     id: 'intel-hackathon-top25',
